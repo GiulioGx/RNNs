@@ -1,0 +1,17 @@
+02/03/2015
+
+    chfo: 
+        -riletto i capitoli introduttivi di 'Metodi di ottimizzazione non vincolata'
+        -letto il capitolo sulla ricerca unidimensionale
+     oei:
+        -ci sn varie possibilità per la ricerca unidimensionale, metodi monotoni e non monotoni(utili quando ci sn valli ripide!) e con limitazione inferiore del passo. Mi sembra interessante esplorare i metodi non monotoni col limitazione inferiore del passo; tuttavia tutti i metodi esplorati prevedono un certo numero di valutazioni della funzione obbiettivo (e del gradiente); non so quanto queste valutazioni possano costare; potrebbero essere vie impraticabili.
+        
+        -trovare soluzioni con una certa struttura; si potrebbe scommettere sul fatto che le soluzioni migliori(minimi locali) sono quelle attivano il minor numero di neuroni, una specie di feature selection automatica; l'idea è quindi inserire un termine di regolarizzazione che penalizzi soluzioni con molti neuroni attivi ad ogni esempio; come fare? idelmente il termine sarebbe la norma 0 dell'output di ogni layer, praticamente si potrebbe pensare di utilizzare la norma 1. Se funzionasse questa strategia risolverebbe anche (è vero?) il problema del vanishing gradient, fornendo una direzione di discesa anche quando il gradiente della funzione di loss fosse 0.
+        
+        -il passo costante va evitato! La prima idea è adottare una ricerca unidimensionale ma bisogna stabilire se i costi sono proponibili.
+        
+09/03/2015
+
+    chfo:
+        -prima lettura di 'Learning RNNs with hessian free optimization. Martens-Sutskever (2011)'; 
+        -aggiunto alcune letture che sembrano interessanti

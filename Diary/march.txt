@@ -15,3 +15,11 @@
     chfo:
         -prima lettura di 'Learning RNNs with hessian free optimization. Martens-Sutskever (2011)'; 
         -aggiunto alcune letture che sembrano interessanti
+
+10/03/2015
+
+    chfo:
+        -ripassato il metodo di Newton standard (da approfondire)
+	-letto il capitolo 3 di pascanu sull'importanza della profondità; potrebbe essere interessante approfondire la cosa
+	-letto il capitolo 6 di pascanu; potrebbe essere interessante sviluppare a partire dalle idee del capitolo un formalismo per descrivere RNNs in modo più generale, magari con una sintassi da utilizzare poi anche in un eventuale sviluppo software
+	-aggiunto alle references due articoli sull'equivalenza fra macchine di turing e RNNs; potrebbe essere interssante inserire le dimostrazioni di equivalenza nel primo capitolo della tesi.
