@@ -1,0 +1,57 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+\usepackage{graphicx}
+\usepackage{cite}
+\usepackage[hidelinks]{hyperref}
+\usepackage{listings}
+\usepackage{latexsym}
+\usepackage{amsmath}
+\usepackage{proof}
+\usepackage{stmaryrd}
+\usepackage{amssymb}
+\usepackage{epstopdf}
+\usepackage{pgf}
+\usepackage{tikz}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+\usetikzlibrary{automata,arrows}
+\let\emptyset\varnothing
+
+\graphicspath{ {./images/} }
+
+\title{ Patological Tasks}
+\author{Giulio Galvan}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\end{abstract}
+
+\section{Introduction}
+The problems discussed below were first proposed by Hochreiter and Schmidhuber\cite{Hochreiter95longshort-term} as examples of difficult problems becouse they require learning long term correlations and have
+been commonly used as benchmark tasks since.
+
+\section{Temporal order problem}
+\section{Addition problem}
+The problem consists in performing an addition between two real numbers $x_i$ and $x_j$ in $[-1.1]$ belonging to a sequence of randomly generated numbers. The difficulty in this problem is that such numbers can be arbitraly
+distant in the input sequence, so the learnining net must exibit a long term memory. More specifically the input is a sequence of pairs; each pair is composed of a real number and a marker which can be in
+$\{1,0\}$. The marker is used to select the two numbers in the sequence to add. The prediciton is the last value in the output sequence, the target is $\frac{x_i+x_j}{2}$. The predicion $y$ is considered correct
+if $|y-\frac{x_i+x_j}{2}| < 0.04$ 
+
+\section{Multiplication problem}
+\section{Random permutation problem}
+
+
+
+
+
+
+\newpage
+\nocite{*}		 % Mostra in bibliografia anche gli oggetti non citati 
+\bibliography{biblio}{}
+\bibliographystyle{plain}
+
+
+\end{document}     
