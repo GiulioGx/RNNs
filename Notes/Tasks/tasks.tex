@@ -33,7 +33,7 @@
 The problems discussed below were first proposed by Hochreiter and Schmidhuber\cite{Hochreiter95longshort-term} as examples of difficult problems because they require learning long term correlations and have
 been commonly used as benchmark tasks since.
 
-\section{Temporal order problem}
+
 \section{Addition problem}
 The problem consists in performing an addition between two real numbers $x_i$ and $x_j$ in $[-1.1]$ belonging to a sequence of randomly generated numbers. The difficulty in this problem is that such numbers can be arbitraly
 distant in the input sequence, so the learning net must exhibit a long term memory. More specifically the input is a sequence of pairs; each pair is composed of a real number and a marker which can be in
@@ -46,7 +46,13 @@ instead sampled in $[\frac{4L}{10},\frac{5L}{10}]$
 \section{Multiplication problem}
 The problem is very similar to the addition problem, here we select two numbers in the input sequences of real numbers in $[0,1]$ and we need to predict the product.
 
+\section{Temporal order problem}
+The input sequences are composed $T$ randomly choosen symbols in $\{a,b,c,d\}$ except for two randomly selected positions where the symbols is choosen in $\{x,y\}$.
+The task is to predict the relative order of the two special symbols, that is $\{xx,xy,yx,yy\}$. A variant of the task is to use three special symbols instead of two.
+Again, the difficulty of the problem is the possibly distance from the special symbols whose relative order is to be detected.
+
 \section{Random permutation problem}
+
 
 
 
