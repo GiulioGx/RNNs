@@ -1,0 +1,82 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+\usepackage{graphicx}
+\usepackage{cite}
+\usepackage[hidelinks]{hyperref}
+\usepackage{listings}
+\usepackage{latexsym}
+\usepackage{amsmath}
+\usepackage{proof}
+\usepackage{stmaryrd}
+\usepackage{amssymb}
+\usepackage{epstopdf}
+\usepackage{pgf}
+\usepackage{tikz}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+\usetikzlibrary{automata,arrows}
+\let\emptyset\varnothing
+
+\graphicspath{ {./images/} }
+
+\title{On Gradient}
+\author{Giulio Galvan}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\end{abstract}
+
+\section{How to compute gradient}
+\subsection{Backpropagation}
+
+First of all we need to define a loss function over the training data, so we define a dataset as 
+
+\begin{equation}
+D=\{x^{(i)} \in \mathbb{R}^p, y^{(i)} \in \mathbb{R}^q,  i\in[1,N]\}
+\end{equation}
+
+and the loss function as
+\begin{equation}
+L(W)=\frac{1}{N}\sum_{i=1}^N L^{(i)}(W) 
+\end{equation}
+
+where $W$ is represents all the weights of the net.
+The network is defined by
+\begin{equation}
+a_l = \sum_j w_{lj}\phi_j
+\end{equation}
+
+\begin{equation}
+\phi_l = \sigma(a_l)
+\end{equation}
+
+
+where $w_{lj}$ is the weight of the connection between neuron $j$ and neuron $l$ and $\sigma$ is the non linear activation function
+
+So we can compute partial derivatives with respect to a single weight $w_{lj}$, using simply the chain ruly, as 
+
+$$\frac{\partial L^{(i)}}{\partial w_{lj}}=\frac{\partial L^{(i)}}{\partial a_l} \cdot \frac{\partial a_l}{\partial w_{lj}}=\delta_l \cdot \phi_j$$
+where we put 
+$$\delta_l \triangleq \frac{\partial L^{(i)}}{\partial a_l}$$
+
+
+So we can easily compute $\delta_u = \frac{\partial L^{(i)}}{\partial a_u} $ for each output unit $u$ once we choose a differtiable loss function; note
+that we dont need the weights for such a computation. 
+
+Let $P(l)$ be the set of parents of neuron $l$, formally:
+\begin{equation} 
+P(l) = \{ k: \exists \text{ a link between $l$ and $k$ with weight } w_{lk} \}
+\end{equation}
+
+
+
+\newpage
+\nocite{*}		 % Mostra in bibliografia anche gli oggetti non citati 
+\bibliography{biblio}{}
+\bibliographystyle{plain}
+
+
+\end{document}     
