@@ -46,28 +46,99 @@ L(W)=\frac{1}{N}\sum_{i=1}^N L^{(i)}(W)
 where $W$ is represents all the weights of the net.
 The network is defined by
 \begin{equation}
-a_l = \sum_j w_{lj}\phi_j
+a_l \triangleq \sum_j w_{lj}\phi_j
 \end{equation}
 
 \begin{equation}
-\phi_l = \sigma(a_l)
+\phi_l \triangleq \sigma(a_l)
 \end{equation}
 
 
 where $w_{lj}$ is the weight of the connection between neuron $j$ and neuron $l$ and $\sigma$ is the non linear activation function
 
 
-DISEGNOO
+\tikzstyle{rnn_style}=[->,shorten >=1pt,auto,node distance=1.5cm,
+  thick,
+  neuron/.style={circle,fill=white!50,draw,minimum size=0.7cm,font=\sffamily\Large\bfseries},
+  missing/.style={circle,fill=white!50,draw=none,minimum size=0.7cm,font=\sffamily\Huge\bfseries},
+  label/.style={node distance=1.2cm,rectangle,fill=white!50,draw=none,minimum size=0.7cm,font=\sffamily\normalsize},
+  layer/.style={rectangle,fill=white!50,draw,minimum width=4cm,font=\sffamily\normalsize},
+  loopStyle/.style={in=120,out=60, distance=2.5cm},]
+\begin{figure}[h!]
+ \centering
+\begin{tikzpicture}[rnn_style]
+
+  \node[neuron]    (x0)       {};
+  \node[neuron]    (x1)[right of=x0]   {};
+  \node[neuron]    (x2)[right of=x1]   {};
+  \node[missing]   (x3)[right of=x2]   { $\hdots$};
+  \node[neuron]    (xn)[right of=x3]   {};
+  
+  \node[label]    (u0)[below of=x0]   {$u_0[t]$};
+  \node[label]    (u1)[below of=x1]   {$u_1[t]$};
+  \node[label]    (u2)[below of=x2]   {$u_2[t]$};
+  \node[label]    (un)[below of=xn]   {$u_n[t]$};
+  
+  
+  
+  \node[layer] (hl)[above of=x2,node distance=2.5cm] {Hidden layer};
+  \node[neuron](b) [right of=hl,node distance=3.5cm] {};
+  \node[label] (b_l) [right of=b] {bias=1};
+  \node[layer] (ol)[above of=hl,node distance=2.5cm] {Output layer};
+  
+  \node[neuron] (o1) at (0,7) {};
+  \node[neuron] (o2)[right of=o1] {};
+  \node[neuron] (o3)[right of=o2] {};
+  \node[missing](o4)[right of=o3] {$\hdots$};
+  \node[neuron] (on)[right of=o4] {};
+  
+  
+  \node[label]    (y0)[above of=o1]   {$y_0[t]$};
+  \node[label]    (y1)[above of=o2]   {$y_1[t]$};
+  \node[label]    (y2)[above of=o3]   {$y_2[t]$};
+  \node[label]    (yn)[above of=on]   {$y_n[t]$};
+  
+  
+  \path[->] (x0) edge [] node[]{$W_{in}$}   (hl)
+	    (x1) edge []   (hl)
+	    (x2) edge []   (hl)
+	    (xn) edge []   (hl)
+	    (u0) edge []   (x0)
+	    (u1) edge []   (x1)
+	    (u2) edge []   (x2)
+	    (un) edge []   (xn)
+	    (ol) edge []   (o1)
+	    (ol) edge []   (o2)
+	    (ol) edge []   (o3)
+	    (ol) edge []   (on)
+	    (o1) edge []   (y0)
+	    (o2) edge []   (y1)
+	    (o3) edge []   (y2)
+	    (on) edge []   (yn)
+	    (hl) edge []  node[]{$W_{out}$} (ol)
+	    (b)  edge [bend left]  node[]{$b_{rec}$} (hl)
+	    (b)  edge [bend left,anchor=west, in= -160]  node[]{$b_{out}$} (ol)
+	    (hl) edge [loop ,in=-180,out=150, distance=2.5cm,anchor=east ]      node [align=center]  {$W_{rec} $} (hl);
+
+
+\end{tikzpicture}
+\caption{Modello per RNN}
+\label{rnn_model}
+\end{figure}
 
 So we can compute partial derivatives with respect to a single weight $w_{lj}$, using simply the chain rule, as 
 
 $$\frac{\partial L^{(i)}}{\partial w_{lj}}=\frac{\partial L^{(i)}}{\partial a_l} \cdot \frac{\partial a_l}{\partial w_{lj}}=\delta_l \cdot \phi_j$$
-where we put 
-$$\delta_l \triangleq \frac{\partial L^{(i)}}{\partial a_l}$$
+where we put
+
+\begin{equation}
+\delta_l \triangleq \frac{\partial L^{(i)}}{\partial a_l}
+\end{equation}
 
 
-So we can easily compute $\delta_u = \frac{\partial L^{(i)}}{\partial a_u} $ for each output unit $u$ once we choose a differtiable loss function; note
-that we dont need the weights for such a computation. 
+
+So we can easily compute $\delta_u = \frac{\partial L^{(i)}}{\partial a_u} $ for each output unit $u$ once we choose a differentiable loss function; note
+that we don't need the weights for such a computation. 
 
 Let $P(l)$ be the set of parents of neuron $l$, formally:
 \begin{equation} 
@@ -76,22 +147,52 @@ P(l) = \{ k: \exists \text{ a link between $l$ and $k$ with weight } w_{lk} \}
 
 Again, simply using the chain rule, we can write, for each non output unit $l$:
 
-$$\delta_l = \sum_{k\in P(l)} \frac{\partial L^{(i)}}{\partial a_k} \cdot \frac{\partial a_k}{\partial a_l}= \sum_{k\in P(l)} \delta_k \cdot 
+\begin{equation}
+\label{loss_deriv}
+\delta_l = \sum_{k\in P(l)} \frac{\partial L^{(i)}}{\partial a_k} \cdot \frac{\partial a_k}{\partial a_l}= \sum_{k\in P(l)} \delta_k \cdot 
 \frac{\partial a_k}{\partial \phi_l} \cdot \frac{\partial \phi_l}{\partial a_l} = \sum_{k\in P(l)} \delta_k \cdot 
-w_{kl} \cdot \sigma'(a_l) $$
+w_{kl} \cdot \sigma'(a_l)
+\end{equation}
 
-For output units instead we can compute $\delta_u = \frac{\partial L^{(i)}}{\partial a_u} $ directly once we define the loss funciton.
+
+For output units instead we can compute $\delta_u = \frac{\partial L^{(i)}}{\partial a_u} $ directly once we define the loss function.
 
 \subsection{Backpropagation matrix notation}
 
 Here we rewrite the previously derived equations in matrix notation.
 
 Let us define the weight matrix $W_i \in \mathbb{R}_{(p(i),p(i-1))}$, whose element $W_{i,j}$ is the weight of the arc which links neuron j from level i-1 to neuron i from level i, where
-$p(i)$ is the neuron number for $i^th$ level.
+$p(i)$ is the neuron number for $i^{th}$ level.
 
 \begin{equation}
- \overrightarrow{\phi_1} \triangleq \overrightarrow{x}
+ \overrightarrow{\phi}_1 \triangleq \overrightarrow{x}
 \end{equation}
+
+\begin{equation}
+ \overrightarrow{a}_{i+1} \triangleq W_{i+1} \cdot \overrightarrow{\phi}_i
+\end{equation}
+
+\begin{equation}
+ \overrightarrow{\phi}_{i+1} \triangleq \sigma(\overrightarrow{a}_{i+1})
+\end{equation}
+
+where $\sigma(\cdot)$ is the non-linear activation function and it's applied element by element.
+We can rewrite equation \ref{loss_deriv} in matrix notation as:
+
+\begin{equation}
+ \frac{\partial L}{\partial W_i} = \frac{\partial L}{\partial \overrightarrow{a}_{i}} \cdot\frac{\partial \overrightarrow{a}_{i}}{\partial W_i}^T =
+ \Delta_i \cdot \overrightarrow{\phi}_{i-1}^T
+\end{equation}
+
+where
+\begin{equation}
+\Delta_i  \triangleq  \frac{\partial L}{\partial \overrightarrow{a}_{i}} 
+\end{equation}
+
+\begin{equation}
+ \Delta_i = W_{i+1}^T \cdot \Delta_{i+1} \circ \sigma(\Delta_i)
+\end{equation}
+
 
 
 
