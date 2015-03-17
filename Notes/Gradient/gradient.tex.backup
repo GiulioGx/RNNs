@@ -56,7 +56,10 @@ a_l = \sum_j w_{lj}\phi_j
 
 where $w_{lj}$ is the weight of the connection between neuron $j$ and neuron $l$ and $\sigma$ is the non linear activation function
 
-So we can compute partial derivatives with respect to a single weight $w_{lj}$, using simply the chain ruly, as 
+
+DISEGNOO
+
+So we can compute partial derivatives with respect to a single weight $w_{lj}$, using simply the chain rule, as 
 
 $$\frac{\partial L^{(i)}}{\partial w_{lj}}=\frac{\partial L^{(i)}}{\partial a_l} \cdot \frac{\partial a_l}{\partial w_{lj}}=\delta_l \cdot \phi_j$$
 where we put 
@@ -69,6 +72,25 @@ that we dont need the weights for such a computation.
 Let $P(l)$ be the set of parents of neuron $l$, formally:
 \begin{equation} 
 P(l) = \{ k: \exists \text{ a link between $l$ and $k$ with weight } w_{lk} \}
+\end{equation}
+
+Again, simply using the chain rule, we can write, for each non output unit $l$:
+
+$$\delta_l = \sum_{k\in P(l)} \frac{\partial L^{(i)}}{\partial a_k} \cdot \frac{\partial a_k}{\partial a_l}= \sum_{k\in P(l)} \delta_k \cdot 
+\frac{\partial a_k}{\partial \phi_l} \cdot \frac{\partial \phi_l}{\partial a_l} = \sum_{k\in P(l)} \delta_k \cdot 
+w_{kl} \cdot \sigma'(a_l) $$
+
+For output units instead we can compute $\delta_u = \frac{\partial L^{(i)}}{\partial a_u} $ directly once we define the loss funciton.
+
+\subsection{Backpropagation matrix notation}
+
+Here we rewrite the previously derived equations in matrix notation.
+
+Let us define the weight matrix $W_i \in \mathbb{R}_{(p(i),p(i-1))}$, whose element $W_{i,j}$ is the weight of the arc which links neuron j from level i-1 to neuron i from level i, where
+$p(i)$ is the neuron number for $i^th$ level.
+
+\begin{equation}
+ \overrightarrow{\phi_1} \triangleq \overrightarrow{x}
 \end{equation}
 
 
