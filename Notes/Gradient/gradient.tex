@@ -18,6 +18,8 @@
 \usetikzlibrary{automata,arrows,decorations.pathreplacing}
 \let\emptyset\varnothing
 
+\renewcommand{\vec}[1]{\boldsymbol{#1}}
+
 \graphicspath{ {./images/} }
 
 \title{On Gradient}
@@ -32,18 +34,15 @@
 \section{How to compute gradient}
 \subsection{Backpropagation}
 
-First of all we need to define a loss function over the training data, so we define a dataset as 
-
+First of all we need to define a loss function over the training data, so we define a dataset $D$ as 
 \begin{equation}
-D=\{x^{(i)} \in \mathbb{R}^p, y^{(i)} \in \mathbb{R}^q,  i\in[1,N]\}
+D\triangleq\{x^{(i)} \in \mathbb{R}^p, y^{(i)} \in \mathbb{R}^q,  i\in[1,N]\}
 \end{equation}
-
-and the loss function $L:\mathbb{R}^U \rightarrow \mathbb{R}$ as
+and the loss function $L_D:\mathbb{R}^U \rightarrow \mathbb{R}_{\geq 0}$ over $D$ as
 \begin{equation}
-L(w)=\frac{1}{N}\sum_{i=1}^N L(w) 
+L_D(w)\triangleq\frac{1}{N}\sum_{i=1}^N L_i(w) 
 \end{equation}
-
-where $w\in \mathbb{R}^U$ represents all the weights of the net.
+where $w\in \mathbb{R}^U$ represents all the weights of the net and $L_i$ is an arbitrary loss function for the $i^{th}$ example.
 
 \tikzstyle{rnn_style}=[->,shorten >=1pt,auto,node distance=1.5cm,
   thick,
@@ -119,9 +118,7 @@ where $w\in \mathbb{R}^U$ represents all the weights of the net.
 \end{figure}
 
 
-
-
-The network is composed of several layers as show in figure \ref{ffnnet}, each layer consists in several neuron defined, as show in figure \ref{neuron_model}, by
+The network is composed of several layers as show in figure \ref{ffnnet}, each layer is composed of several neuron defined, as show in figure \ref{neuron_model}, by
 \begin{equation}
 a_l \triangleq \sum_j w_{lj}\phi_j
 \end{equation}
@@ -217,33 +214,30 @@ For output units instead we can compute $\delta_u = \frac{\partial L^{(i)}}{\par
 \subsection{Backpropagation matrix notation}
 
 Here we rewrite the previously derived equations in matrix notation.
-
-Let us define the weight matrix $W_i \in \mathbb{R}_{(p(i),p(i-1))}$, whose element $W_{i,j}$ is the weight of the arc which links neuron j from level i-1 to neuron i from level i, where
-$p(i)$ is the neuron number for $i^{th}$ level.
+Let us define the weight matrix for the $i^{th}$ layer as the $p(i) \times p(i-1)$ matrix whose elements $w_{l,k}$ are the weights of the arcs which link neuron $k$ from level $i-1$ to neuron $l$ from level $i$, where
+$p(i)$ is the number of neuron layer $i$ is composed of.
 
 \begin{equation}
- \overrightarrow{\phi}_1 \triangleq \overrightarrow{x}
+ \vec{a}_{i+1} \triangleq W_{i+1} \cdot \vec{\phi}_i
 \end{equation}
-
 \begin{equation}
- \overrightarrow{a}_{i+1} \triangleq W_{i+1} \cdot \overrightarrow{\phi}_i
+ \vec{\phi}_{i+1} \triangleq \sigma(\vec{a}_{i+1})
 \end{equation}
-
 \begin{equation}
- \overrightarrow{\phi}_{i+1} \triangleq \sigma(\overrightarrow{a}_{i+1})
+ \vec{\phi}_1 \triangleq \vec{x}
 \end{equation}
 
 where $\sigma(\cdot)$ is the non-linear activation function and it's applied element by element.
 We can rewrite equation \ref{loss_deriv} in matrix notation as:
 
 \begin{equation}
- \frac{\partial L}{\partial W_i} = \frac{\partial L}{\partial \overrightarrow{a}_{i}} \cdot\frac{\partial \overrightarrow{a}_{i}}{\partial W_i}^T =
- \Delta_i \cdot \overrightarrow{\phi}_{i-1}^T
+ \frac{\partial L}{\partial W_i} = \frac{\partial L}{\partial \vec{a}_{i}} \cdot\frac{\partial \vec{a}_{i}}{\partial W_i}^T =
+ \Delta_i \cdot \vec{\phi}_{i-1}^T
 \end{equation}
 
 where
 \begin{equation}
-\Delta_i  \triangleq  \frac{\partial L}{\partial \overrightarrow{a}_{i}} 
+\Delta_i  \triangleq  \frac{\partial L}{\partial \vec{a}_{i}} 
 \end{equation}
 
 \begin{equation}
