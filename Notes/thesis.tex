@@ -1,0 +1,49 @@
+\documentclass{book}
+\usepackage[utf8]{inputenc}
+\usepackage[UKenglish]{babel}
+\usepackage{graphicx}
+\usepackage{cite}
+\usepackage[hidelinks]{hyperref}
+\usepackage{listings}
+\usepackage{latexsym}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage{proof}
+\usepackage{stmaryrd}
+\usepackage{epstopdf}
+\usepackage{pgf}
+\usepackage{tikz}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+\usetikzlibrary{automata,arrows,decorations.pathreplacing}
+\let\emptyset\varnothing
+
+\renewcommand{\vec}[1]{\boldsymbol{#1}}
+
+% \newtheoremstyle{definition}{}{}{\itshape}{}{\bfseries}{.}{.5em}{\thmnote{#3's }#1}
+\theoremstyle{definition}
+\newtheorem{defn}{Definition}
+
+\graphicspath{ {./images/} }
+
+\title{On recurrent neural networks}
+\author{Giulio Galvan}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\chapter{Artificial neural networks model}
+
+\section{Feed foward neural networks}
+\input{chapter1/ffnn}
+\section{Recursive neural networks}
+
+
+
+
+\newpage
+% \nocite{*}		 % Mostra in bibliografia anche gli oggetti non citati 
+\bibliography{biblio}{}
+\bibliographystyle{plain}
+
+
+\end{document}     

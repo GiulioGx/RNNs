@@ -1,38 +1,8 @@
-\documentclass{article}
-\usepackage[utf8]{inputenc}
-\usepackage[UKenglish]{babel}
-\usepackage{graphicx}
-\usepackage{cite}
-\usepackage[hidelinks]{hyperref}
-\usepackage{listings}
-\usepackage{latexsym}
-\usepackage{amsmath}
-\usepackage{proof}
-\usepackage{stmaryrd}
-\usepackage{amssymb}
-\usepackage{epstopdf}
-\usepackage{pgf}
-\usepackage{tikz}
-\usepackage{algorithm}
-\usepackage[noend]{algpseudocode}
-\usetikzlibrary{automata,arrows,decorations.pathreplacing}
-\let\emptyset\varnothing
+\begin{defn}{RNN}
 
-\renewcommand{\vec}[1]{\boldsymbol{#1}}
-
-\graphicspath{ {./images/} }
-
-\title{On Gradient}
-\author{Giulio Galvan}
-
-\begin{document}
-\maketitle
-
-\begin{abstract}
-\end{abstract}
-
-\section{How to compute gradient}
-\subsection{Backpropagation}
+Here is a new definition.
+\end{defn}
+\subsection{Gradient}
 
 First of all we need to define a loss function over the training data, so we define a dataset $D$ as 
 \begin{equation}
@@ -242,15 +212,4 @@ where
 
 \begin{equation}
  \Delta_i = W_{i+1}^T \cdot \Delta_{i+1} \circ \sigma(\Delta_i)
-\end{equation}
-
-
-
-
-\newpage
-% \nocite{*}		 % Mostra in bibliografia anche gli oggetti non citati 
-\bibliography{biblio}{}
-\bibliographystyle{plain}
-
-
-\end{document}     
+\end{equation} 
