@@ -3,4 +3,4 @@
 \contentsline {section}{\numberline {1.1}Feed foward neural networks}{5}{section.1.1}
 \contentsline {subsection}{\numberline {1.1.1}Gradient}{5}{subsection.1.1.1}
 \contentsline {subsection}{\numberline {1.1.2}Backpropagation matrix notation}{7}{subsection.1.1.2}
-\contentsline {section}{\numberline {1.2}Recursive neural networks}{7}{section.1.2}
+\contentsline {section}{\numberline {1.2}Recursive neural networks}{8}{section.1.2}

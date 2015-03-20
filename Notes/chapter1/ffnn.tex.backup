@@ -1,15 +1,13 @@
 
 
 \begin{defn}{Feed foward neural network}
-
 A feed foward neural network is tuple
-$$FNN\triangleq<\vec{p},L,\sigma(\cdot),f(\cdot)>$$
+$$FNN\triangleq<\vec{p},\{W^{k}\},\sigma(\cdot),f(\cdot)>$$
 \begin{itemize}
- \item $\vec{p} \in \mathbb{N}^U, p(k)=$ number of neuron of layer $k$, where $U$ is the number of layers
- \item $L\triangleq \{W^k_{p(k+1) \times p(k)} \}_{k=1:U}$ is the set of weight matrixes of each layer
- \item $\sigma(\cdot): \mathbb{R}\rightarrow \mathbb{R}$ is the activation function
- \item $f(\cdot): \mathbb{R}^{p(U)}\rightarrow \mathbb{R}^{p(U)}$ is the output function
+ \item $\vec{p} \triangleq$
+ \item 	
 \end{itemize}
+
 \end{defn}
 \subsection{Gradient}
 
