@@ -1,0 +1,45 @@
+Recurrent neural networks differ from feed foward neural networks because of the presence of recurrent connections: at least one perceptron output at a given layer $i$ is \textit{fed} to another perceptron
+at a level $j<i$. This is a key difference: as we will see in the next section, rnn are not only more powerfull than ffnn but as powerfull as turing machines.
+
+
+This difference in topology reflects also on the network's input and output domain, where in feed foward neural networks inputs and outputs were real valued vectors, recursive neural networks deal with
+sequences of vectors, that is to say that now time is also considered. One may argue that taking time (and sequences) into consideration is some sort of limitation because it restricts our model to deal only
+with a temporal inputs; that's not true, in fact we can apply rnn to non temporal data by considering space as the temporal dimension or we can feed the network with the same input for all time steps, or just
+providing no input after the first time step.
+
+
+\begin{defn}[Recurrent neural network]
+\label{def_rnn}
+A recurrent  neural network is tuple
+$$RNN\triangleq< W_{in}, W_{out}, W_{rec},\vec{b}_{out} \vec{b}_{rec} ,\sigma(\cdot),f(\cdot)>$$
+\begin{itemize}
+ \item $W_{in}$ is the $r\times p$ input weight matrix
+ \item $W_{rec}$ is the $r\times r$ recurrent weight matrix
+ \item $W_{out}$ is the $o \times r$ output weight matrix
+ \item $\vec{b}_{rec} \in \mathbb{R}^{r}$ is the bias vector for the recurrent layer
+ \item $\vec{b}_{out} \in \mathbb{R}^{o}$ is the bias vector for the output layer
+ \item $\sigma(\cdot): \mathbb{R}\rightarrow \mathbb{R}$ is the activation function
+ \item $f(\cdot): \mathbb{R}^{o)}\rightarrow \mathbb{R}^{o}$ is the output function
+\end{itemize}
+
+$p$ is the size of input vecotors, $r$ is the number of hidden units, $o$ is the size of output vectors. 
+\end{defn}
+
+Given a $RNN$ and an input sequences $\{\vec{x}\}_t$ the output sequence $\{\vec{y}\}_t$ of the net is defined by the following:
+\begin{align}
+&\vec{y}_t \triangleq f(W_{out}\vec{\phi}_t + \vec{b}_{out})\\
+&\vec{a}_t \triangleq W_{rec}\vec{\phi}_{t-1}+W_{in}\vec{x}_t+\vec{b}_{rec}\\
+&\vec{\phi}_t \triangleq  \sigma(\vec{a}_t)
+\end{align}
+
+Now we give a formal definition of recurrent neural network which we will extend in later chapters.
+
+
+
+
+
+
+
+
+
+
