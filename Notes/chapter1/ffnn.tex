@@ -1,165 +1,82 @@
 
+A feed foward neural network is an artificial neural network in which there are no cycles, that is to say each layer output is \textit{fed} to the next one and connections to any earlier layer are not possible. 
 
-\begin{defn}{Feed foward neural network}
+
+\begin{defn}{Feed foward neural networks}
 
 A feed foward neural network is tuple
-$$FNN\triangleq<\vec{p},L,\sigma(\cdot),f(\cdot)>$$
+$$FFNN\triangleq<\vec{p},W,\vec{b},\sigma(\cdot),f(\cdot)>$$
 \begin{itemize}
  \item $\vec{p} \in \mathbb{N}^U, p(k)=$ number of neuron of layer $k$, where $U$ is the number of layers
- \item $L\triangleq \{W^k_{p(k+1) \times p(k)} \}_{k=1:U}$ is the set of weight matrixes of each layer
+ \item $W\triangleq \{W^k_{p(k+1) \times p(k)}, k=1,...,U \}$ is the set of weight matrixes of each layer
+ \item $b \in \mathbb{R}^{U}$ is the bias vector
  \item $\sigma(\cdot): \mathbb{R}\rightarrow \mathbb{R}$ is the activation function
  \item $f(\cdot): \mathbb{R}^{p(U)}\rightarrow \mathbb{R}^{p(U)}$ is the output function
 \end{itemize}
 \end{defn}
-\subsection{Gradient}
 
-First of all we need to define a loss function over the training data, so we define a dataset $D$ as 
+Given a $FFNN$ and an input vector $\vec{x}$ the output $\vec{y}$ of the net is defined by the following:
+\begin{align}
+&\vec{y}=f(\vec{\phi}_{U}) &\\
+&\vec{\phi}_{i} \triangleq \sigma(\vec{a}_{i}), & i=1,...,U\\
+&\vec{a}_{i} \triangleq W_{i+1} \cdot \vec{\phi}_{i-1} +\vec{b}_i  & i=1,...,U\\
+&\vec{\phi}_{0} \triangleq \vec{x} &
+\end{align}
+
+
+\subsection{On expressivness of ffnn}
+\subsection{Learning with ffnn}
+
+As we have seen in the previous section a model sush as $FFNN$ can approximate arbitrary well any smooth function, so a natural application of feed foward neural networks is machine learning.
+To model an optimization problem we first need to define a dataset $D$ as 
 \begin{equation}
 D\triangleq\{x^{(i)} \in \mathbb{R}^p, y^{(i)} \in \mathbb{R}^q,  i\in[1,N]\}
 \end{equation}
-and the loss function $L_D:\mathbb{R}^U \rightarrow \mathbb{R}_{\geq 0}$ over $D$ as
+Then we need a loss function $L_D:\mathbb{R}^U \rightarrow \mathbb{R}_{\geq 0}$ over $D$ defined as
 \begin{equation}
-L_D(w)\triangleq\frac{1}{N}\sum_{i=1}^N L_i(w) 
+L_D(W)\triangleq\frac{1}{N}\sum_{i=1}^N L_i(W) 
 \end{equation}
-where $w\in \mathbb{R}^U$ represents all the weights of the net and $L_i$ is an arbitrary loss function for the $i^{th}$ example.
-
-\tikzstyle{rnn_style}=[->,shorten >=1pt,auto,node distance=1.5cm,
-  thick,
-  neuron/.style={circle,fill=white!50,draw,minimum size=0.7cm,font=\sffamily\Large\bfseries},
-  missing/.style={circle,fill=white!50,draw=none,minimum size=0.7cm,font=\sffamily\Huge\bfseries},
-  label/.style={node distance=1.2cm,rectangle,fill=white!50,draw=none,minimum size=0.7cm,font=\sffamily\normalsize},
-  layer/.style={rectangle,fill=white!50,draw,minimum width=4cm,font=\sffamily\normalsize},
-  loopStyle/.style={in=120,out=60, distance=2.5cm},]
-\begin{figure}[h!]
- \centering
-\begin{tikzpicture}[rnn_style]
-
-  \node[neuron]    (x0)       {};
-  \node[neuron]    (x1)[right of=x0]   {};
-  \node[neuron]    (x2)[right of=x1]   {};
-  \node[missing]   (x3)[right of=x2]   { $\hdots$};
-  \node[neuron]    (xn)[right of=x3]   {};
-  
-  \node[label]    (u0)[below of=x0]   {$x_0$};
-  \node[label]    (u1)[below of=x1]   {$x_1$};
-  \node[label]    (u2)[below of=x2]   {$x_2$};
-  \node[label]    (un)[below of=xn]   {$x_p$};
-  
-  
-
-    
-  \node[layer] (hl)[above of=x2,node distance=1.8cm] {First hidden layer};
-  \node[missing] (hls)[above of=hl,node distance=1.5cm]{$\hdots$};
-  \node[layer] (ol)[above of=hls,node distance=1.5cm] {Last hidden layer};
-  
-  \draw[decorate,decoration={brace,raise=6pt,amplitude=8pt}, thick,-]
-   (ol.south east)--(hl.north east);
-   
-  \node[label]    (hls_label)[right of=hls,node distance=4.2cm]   {hidden layers};
-
-  
-  \node[neuron] (o1) at (0,6.5) {};
-  \node[neuron] (o2)[right of=o1] {};
-  \node[neuron] (o3)[right of=o2] {};
-  \node[missing](o4)[right of=o3] {$\hdots$};
-  \node[neuron] (on)[right of=o4] {};
-  
-  
-  \node[label]    (y0)[above of=o1]   {$y_0$};
-  \node[label]    (y1)[above of=o2]   {$y_1$};
-  \node[label]    (y2)[above of=o3]   {$y_2$};
-  \node[label]    (yn)[above of=on]   {$y_q$};
-  
-  
-  \path[->] (x0) edge [] node[]{}   (hl)
-	    (x2) edge []   (hl)
-	    (x1) edge []   (hl)
-	    (xn) edge []   (hl)
-	    (u0) edge []   (x0)
-	    (u1) edge []   (x1)
-	    (u2) edge []   (x2)
-	    (un) edge []   (xn)
-	    (ol) edge []   (o1)
-	    (ol) edge []   (o2)
-	    (ol) edge []   (o3)
-	    (ol) edge []   (on)
-	    (o1) edge []   (y0)
-	    (o2) edge []   (y1)
-	    (o3) edge []   (y2)
-	    (on) edge []   (yn)
-	    (hl) edge []  node[]{} (hls)
-	    (hls) edge []  node[]{} (ol);
+$L_i$ is an arbitrary loss function for the $i^{th}$ example.
 
 
-\end{tikzpicture}
-\caption{Feed forward neural network model}
-\label{ffnnet}
-\end{figure}
+The problem is then fo find a $FFNN$ which minimize $L$. As we have seen feed foward neural network allow for large customization: the only variables in the optimization problem are the weights, the other
+parameters are said \textit{hyper-parameters} and are determined \textit{a priori}. Usually the output function is choosen depending on the output, for instance for multi-way classification
+is generally used the softmax function, for regression a simple identity function.
 
-
-The network is composed of several layers as show in figure \ref{ffnnet}, each layer is composed of several neuron defined, as show in figure \ref{neuron_model}, by
+The activation function $\sigma(\cdot)$ is often choose from:
 \begin{equation}
-a_l \triangleq \sum_j w_{lj}\phi_j
+ sigmoid(x)=\frac{1}{1-e^{-x}}
+\end{equation}
+\begin{equation}
+ tanh(x)=\frac{e^x-e^{-x}}{e^x+e^{-x}}
 \end{equation}
 
 \begin{equation}
-\phi_l \triangleq \sigma(a_l)
+  ReLU(x)=\begin{cases}
+    x, & \text{if $x>0$}.\\
+    0, & \text{otherwise}.
+  \end{cases}
+\end{equation}
+
+For what concerns the number of layers and the number of units per layers they are choosen relying on experience or performing some kind of hyper-parameter tuning, which usually consists on training nets
+with some different configurations of such parameters and choosing the best one.
+
+Once we have selected the values for all hyper-paramters the optimization problem becomes:
+\begin{equation}
+\begin{aligned}
+& \underset{W}{\text{min}}
+& & L_D(W) \\
+\end{aligned}
 \end{equation}
 
 
-where $w_{lj}$ is the weight of the connection between neuron $j$ and neuron $l$ and $\sigma$ is the non linear activation function.
-
-
-\tikzstyle{nn_style}=[->,shorten >=1pt,auto,node distance=1.5cm,
-  thick,
-  neuron/.style={circle,fill=white!50,node distance=1cm,draw,minimum size=0.7cm,font=\sffamily\Large\bfseries},
-  missing/.style={circle,font=\sffamily\Large,node distance=0.95cm},
-  label/.style={node distance=1.2cm,rectangle,fill=white!50,draw=none,minimum size=0.7cm,font=\sffamily\normalsize},
-  layer/.style={rectangle,fill=white!50,draw,minimum width=1.5cm,font=\sffamily\Large},
-  loopStyle/.style={in=120,out=60, distance=2.5cm},
-  weight/.style = {above,sloped,pos=0.3},]
-\begin{figure}[!h]
- \centering
-\begin{tikzpicture}[nn_style]
-
-  \node[neuron]    (x0)       {};
-  \node[neuron]    (x1)[below of=x0]   {};
-  \node[neuron]    (x2)[below of=x1]   {};
-  \node[missing]   (x3)[below of=x2]   {$\vdots$};
-  \node[neuron]    (xn)[below of=x3]   {};
-  
-  
-  \node[label]    (u0)[left of=x0]   {$\phi_0$};
-  \node[label]    (u1)[left of=x1]   {$\phi_1$};
-  \node[label]    (u2)[left of=x2]   {$\phi_2$};
-  \node[label]    (un)[left of=xn]   {$\phi_n$};
-  
-  
-  \node[layer] (hl)[ right of=x2,node distance=3.5cm] {$\Sigma$};
-  \node[layer] (ol)[right of=hl,node distance=2.5cm] {$\sigma$};
-  
-  \node[label]  (phi)[right of=ol,node distance=2cm] {$\phi_j$};
-   
-  
-  \path[->] (x0) edge [] node[weight]{$w_{0j}$}   (hl)
-	    (x1) edge [] node[weight]{$w_{1j}$}   (hl)
-	    (x2) edge [] node[weight]{$w_{2j}$}   (hl)
-	    (xn) edge [] node[weight]{$w_{nj}$}   (hl)
-	    (u0) edge []   (x0)
-	    (u1) edge []   (x1)
-	    (u2) edge []   (x2)
-	    (un) edge []   (xn)
-	    (hl) edge []   node[]{$a_{j}$}(ol)
-	    (ol) edge []   (phi);
-
-\end{tikzpicture}
-\caption{Neuron model}
-\label{neuron_model}
-\end{figure}
 
 
 
-So we can compute partial derivatives with respect to a single weight $w_{lj}$, using simply the chain rule, as 
+
+\subsection{Gradient}
+
+We can compute partial derivatives with respect to a single weight $w_{lj}$, using simply the chain rule, as 
 
 $$\frac{\partial L}{\partial w_{lj}}=\frac{\partial L}{\partial a_l} \cdot \frac{\partial a_l}{\partial w_{lj}}=\delta_l \cdot \phi_j$$
 where we put
@@ -190,23 +107,12 @@ w_{kl} \cdot \sigma'(a_l)
 
 For output units instead we can compute $\delta_u = \frac{\partial L^{(i)}}{\partial a_u} $ directly once we define the loss function.
 
-\subsection{Backpropagation matrix notation}
 
-Here we rewrite the previously derived equations in matrix notation.
-Let us define the weight matrix for the $i^{th}$ layer as the $p(i) \times p(i-1)$ matrix whose elements $w_{l,k}$ are the weights of the arcs which link neuron $k$ from level $i-1$ to neuron $l$ from level $i$, where
+In the following we rewrite the previously derived equations in matrix notation.
+Let us recall that the weight matrix for the $i^{th}$ layer is the $p(i) \times p(i-1)$ matrix whose elements $w_{l,k}$ are the weights of the arcs which link neuron $k$ from level $i-1$ to neuron $l$ from level $i$, where
 $p(i)$ is the number of neuron layer $i$ is composed of.
 
-\begin{equation}
- \vec{a}_{i+1} \triangleq W_{i+1} \cdot \vec{\phi}_i
-\end{equation}
-\begin{equation}
- \vec{\phi}_{i+1} \triangleq \sigma(\vec{a}_{i+1})
-\end{equation}
-\begin{equation}
- \vec{\phi}_1 \triangleq \vec{x}
-\end{equation}
 
-where $\sigma(\cdot)$ is the non-linear activation function and it's applied element by element.
 We can rewrite equation \ref{loss_deriv} in matrix notation as:
 
 \begin{equation}
