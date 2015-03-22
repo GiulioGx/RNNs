@@ -2,16 +2,17 @@
 A feed foward neural network is an artificial neural network in which there are no cycles, that is to say each layer output is \textit{fed} to the next one and connections to any earlier layer are not possible. 
 
 
-\begin{defn}{Feed foward neural networks}
-
+\begin{defn}[Feed foward neural network]
+\label{def_ffnn}
 A feed foward neural network is tuple
 $$FFNN\triangleq<\vec{p},W,\vec{b},\sigma(\cdot),f(\cdot)>$$
 \begin{itemize}
  \item $\vec{p} \in \mathbb{N}^U, p(k)=$ number of neuron of layer $k$, where $U$ is the number of layers
  \item $W\triangleq \{W^k_{p(k+1) \times p(k)}, k=1,...,U \}$ is the set of weight matrixes of each layer
- \item $b \in \mathbb{R}^{U}$ is the bias vector
+ \item $b \triangleq \{\vec{b}^k \in \mathbb{R}^{p(k)}, k=1,...,U \} $ is the set of bias vectors
  \item $\sigma(\cdot): \mathbb{R}\rightarrow \mathbb{R}$ is the activation function
  \item $f(\cdot): \mathbb{R}^{p(U)}\rightarrow \mathbb{R}^{p(U)}$ is the output function
+ \\\\The total number of weights si given by $\mathcal{N}(W) \triangleq \sum_{k=1}^U p(k+1)p(k)$, the number of biases by $\mathcal{N}(b) \triangleq \sum_{k=1}^U p(k)$
 \end{itemize}
 \end{defn}
 
@@ -32,11 +33,11 @@ To model an optimization problem we first need to define a dataset $D$ as
 \begin{equation}
 D\triangleq\{x^{(i)} \in \mathbb{R}^p, y^{(i)} \in \mathbb{R}^q,  i\in[1,N]\}
 \end{equation}
-Then we need a loss function $L_D:\mathbb{R}^U \rightarrow \mathbb{R}_{\geq 0}$ over $D$ defined as
+Then we need a loss function $L_D:\mathbb{R}^{\mathcal{N}(W)} \rightarrow \mathbb{R}_{\geq 0}$ over $D$ defined as
 \begin{equation}
-L_D(W)\triangleq\frac{1}{N}\sum_{i=1}^N L_i(W) 
+L_D(W)\triangleq\frac{1}{N}\sum_{i=1}^N L^i(W) 
 \end{equation}
-$L_i$ is an arbitrary loss function for the $i^{th}$ example.
+$L^i$ is an arbitrary loss function on the $i^{th}$ example.
 
 
 The problem is then fo find a $FFNN$ which minimize $L$. As we have seen feed foward neural network allow for large customization: the only variables in the optimization problem are the weights, the other
@@ -108,21 +109,11 @@ w_{kl} \cdot \sigma'(a_l)
 For output units instead we can compute $\delta_u = \frac{\partial L^{(i)}}{\partial a_u} $ directly once we define the loss function.
 
 
-Here we rewrite the previously derived equations in matrix notation.
-Let us define the weight matrix for the $i^{th}$ layer as the $p(i) \times p(i-1)$ matrix whose elements $w_{l,k}$ are the weights of the arcs which link neuron $k$ from level $i-1$ to neuron $l$ from level $i$, where
+In the following we rewrite the previously derived equations in matrix notation.
+Let us recall that the weight matrix for the $i^{th}$ layer is the $p(i) \times p(i-1)$ matrix whose elements $w_{l,k}$ are the weights of the arcs which link neuron $k$ from level $i-1$ to neuron $l$ from level $i$, where
 $p(i)$ is the number of neuron layer $i$ is composed of.
 
-\begin{equation}
- \vec{a}_{i+1} \triangleq W_{i+1} \cdot \vec{\phi}_i
-\end{equation}
-\begin{equation}
- \vec{\phi}_{i+1} \triangleq \sigma(\vec{a}_{i+1})
-\end{equation}
-\begin{equation}
- \vec{\phi}_1 \triangleq \vec{x}
-\end{equation}
 
-where $\sigma(\cdot)$ is the non-linear activation function and it's applied element by element.
 We can rewrite equation \ref{loss_deriv} in matrix notation as:
 
 \begin{equation}

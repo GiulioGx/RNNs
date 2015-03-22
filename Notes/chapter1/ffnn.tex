@@ -5,22 +5,23 @@ A feed foward neural network is an artificial neural network in which there are 
 \begin{defn}[Feed foward neural network]
 \label{def_ffnn}
 A feed foward neural network is tuple
-$$FFNN\triangleq<\vec{p},W,\vec{b},\sigma(\cdot),f(\cdot)>$$
+$$FFNN\triangleq<\vec{p},W,b,\sigma(\cdot),f(\cdot)>$$
 \begin{itemize}
- \item $\vec{p} \in \mathbb{N}^U, p(k)=$ number of neuron of layer $k$, where $U$ is the number of layers
+ \item $\vec{p} \in \mathbb{N}^U$ is the vector whose elements $p(k)$ are the number of neurons of layer $k$; $U$ is the number of layers
  \item $W\triangleq \{W^k_{p(k+1) \times p(k)}, k=1,...,U \}$ is the set of weight matrixes of each layer
- \item $b \in \mathbb{R}^{U}$ is the bias vector
+ \item $b \triangleq \{\vec{b}^k \in \mathbb{R}^{p(k)}, k=1,...,U \} $ is the set of bias vectors
  \item $\sigma(\cdot): \mathbb{R}\rightarrow \mathbb{R}$ is the activation function
  \item $f(\cdot): \mathbb{R}^{p(U)}\rightarrow \mathbb{R}^{p(U)}$ is the output function
 \end{itemize}
+The total number of weights si given by $\mathcal{N}(W) \triangleq \sum_{k=1}^U p(k+1)p(k)$, the number of biases by $\mathcal{N}(b) \triangleq \sum_{k=1}^U p(k)$
 \end{defn}
 
 Given a $FFNN$ and an input vector $\vec{x}$ the output $\vec{y}$ of the net is defined by the following:
 \begin{align}
-&\vec{y}=f(\vec{\phi}_{U}) &\\
-&\vec{\phi}_{i} \triangleq \sigma(\vec{a}_{i}), & i=1,...,U\\
-&\vec{a}_{i} \triangleq W_{i+1} \cdot \vec{\phi}_{i-1} +\vec{b}_i  & i=1,...,U\\
-&\vec{\phi}_{0} \triangleq \vec{x} &
+&\vec{y}=f(\vec{\phi}^{U}) &\\
+&\vec{\phi}^{i} \triangleq \sigma(\vec{a}_{i}), & i=1,...,U\\
+&\vec{a}^{i} \triangleq W^{i+1} \cdot \vec{\phi}^{i-1} +\vec{b}^i  & i=1,...,U\\
+&\vec{\phi}^{0} \triangleq \vec{x} &
 \end{align}
 
 
@@ -32,11 +33,11 @@ To model an optimization problem we first need to define a dataset $D$ as
 \begin{equation}
 D\triangleq\{x^{(i)} \in \mathbb{R}^p, y^{(i)} \in \mathbb{R}^q,  i\in[1,N]\}
 \end{equation}
-Then we need a loss function $L_D:\mathbb{R}^U \rightarrow \mathbb{R}_{\geq 0}$ over $D$ defined as
+Then we need a loss function $L_D:\mathbb{R}^{\mathcal{N}(W)+\mathcal{N}(b)} \rightarrow \mathbb{R}_{\geq 0}$ over $D$ defined as
 \begin{equation}
-L_D(W)\triangleq\frac{1}{N}\sum_{i=1}^N L_i(W) 
+L_D(W,b)\triangleq\frac{1}{N}\sum_{i=1}^N L^i(W,b) 
 \end{equation}
-$L_i$ is an arbitrary loss function for the $i^{th}$ example.
+$L^i$ is an arbitrary loss function on the $i^{th}$ example.
 
 
 The problem is then fo find a $FFNN$ which minimize $L$. As we have seen feed foward neural network allow for large customization: the only variables in the optimization problem are the weights, the other
@@ -64,8 +65,8 @@ with some different configurations of such parameters and choosing the best one.
 Once we have selected the values for all hyper-paramters the optimization problem becomes:
 \begin{equation}
 \begin{aligned}
-& \underset{W}{\text{min}}
-& & L_D(W) \\
+& \underset{W,b}{\text{min}}
+& & L_D(W,b) \\
 \end{aligned}
 \end{equation}
 
@@ -107,6 +108,11 @@ w_{kl} \cdot \sigma'(a_l)
 
 For output units instead we can compute $\delta_u = \frac{\partial L^{(i)}}{\partial a_u} $ directly once we define the loss function.
 
+For biases variables partial derivatives are simply given by:
+$$\frac{\partial L}{\partial b_{l}}=\frac{\partial L}{\partial a_l} \cdot \frac{\partial a_l}{\partial w_{l}}=\delta_l \cdot 1$$
+
+
+
 
 In the following we rewrite the previously derived equations in matrix notation.
 Let us recall that the weight matrix for the $i^{th}$ layer is the $p(i) \times p(i-1)$ matrix whose elements $w_{l,k}$ are the weights of the arcs which link neuron $k$ from level $i-1$ to neuron $l$ from level $i$, where
@@ -116,15 +122,20 @@ $p(i)$ is the number of neuron layer $i$ is composed of.
 We can rewrite equation \ref{loss_deriv} in matrix notation as:
 
 \begin{equation}
- \frac{\partial L}{\partial W_i} = \frac{\partial L}{\partial \vec{a}_{i}} \cdot\frac{\partial \vec{a}_{i}}{\partial W_i}^T =
- \Delta_i \cdot \vec{\phi}_{i-1}^T
+ \frac{\partial L}{\partial W^i} = \frac{\partial L}{\partial \vec{a}^{i}} \cdot\frac{\partial \vec{a}^{i}}{\partial W^i}^T =
+ \Delta^i \cdot \vec{\phi}^{{i-1}^T}
 \end{equation}
 
 where
 \begin{equation}
-\Delta_i  \triangleq  \frac{\partial L}{\partial \vec{a}_{i}} 
+\Delta^i  \triangleq  \frac{\partial L}{\partial \vec{a}^{i}} 
 \end{equation}
 
 \begin{equation}
- \Delta_i = W_{i+1}^T \cdot \Delta_{i+1} \circ \sigma(\Delta_i)
+ \Delta^i = W^{{i+1}^T} \cdot \Delta^{i+1} \circ \sigma(\Delta^i)
 \end{equation} 
+
+\begin{equation}
+ \frac{\partial L}{\partial b^i} = \frac{\partial L}{\partial \vec{a}^{i}} \cdot\frac{\partial \vec{a}^{i}}{\partial b^i}^T =
+ \Delta^i \cdot Id
+\end{equation}

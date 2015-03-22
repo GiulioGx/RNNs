@@ -7,11 +7,13 @@ sequences of vectors, that is to say that now time is also considered. One may a
 with a temporal inputs; that's not true, in fact we can apply rnn to non temporal data by considering space as the temporal dimension or we can feed the network with the same input for all time steps, or just
 providing no input after the first time step.
 
+FIGURE RNN
+
 
 \begin{defn}[Recurrent neural network]
 \label{def_rnn}
 A recurrent  neural network is tuple
-$$RNN\triangleq< W_{in}, W_{out}, W_{rec},\vec{b}_{out} \vec{b}_{rec} ,\sigma(\cdot),f(\cdot)>$$
+$$RNN\triangleq< W_{in}, W_{out}, W_{rec},\vec{b}_{out}, \vec{b}_{rec} ,\sigma(\cdot),f(\cdot)>$$
 \begin{itemize}
  \item $W_{in}$ is the $r\times p$ input weight matrix
  \item $W_{rec}$ is the $r\times r$ recurrent weight matrix
@@ -32,8 +34,28 @@ Given a $RNN$ and an input sequences $\{\vec{x}\}_t$ the output sequence $\{\vec
 &\vec{\phi}_t \triangleq  \sigma(\vec{a}_t)
 \end{align}
 
-Now we give a formal definition of recurrent neural network which we will extend in later chapters.
+As we can understand from definition \ref{def_rnn}, there is only one recurrent layer, whose weights are the same for each time step, so one can asks where does the deepness of the network come from.
+The answer lies in the temporal unfolding of the network, in fact if we unfold the network step by step we obtain a structure similar to the structure of a feed foward neural network. As we can observe
+in figure \ref{something}, the unfolding of the network through time consist of putting identical version of the same reccurent layer on top of each other and linking the inputs of one layer to the
+next one. The key difference from feed foward neural networks if, as we have already observed, that the weights in each layer are identical, and of course the additional timed inputs which are different for
+each unfolded layer.
 
+UNFOLDING FIGURE
+
+\subsection{On expressivness of rnn}
+Rnns are as powerful as turing machines
+\subsection{Learning with ffnn}
+We can model an optimization problem in the same way we did for feed foward neural networks, the main difference is, again, that we now deal with temporal sequences so we need a slightly different
+loss function.
+Given a dataset $D$:
+\begin{equation}
+D\triangleq\{\vec{x}_t^{(i)} \in \mathbb{R}^p, \vec{y}_t^{(i)} \in \mathbb{R}^q; t=1,...,T;  i=1,...,N\}
+\end{equation}
+Then we need a loss function $L_D:\mathbb{R}^U \rightarrow \mathbb{R}_{\geq 0}$ over $D$ defined as
+\begin{equation}
+L_D(W)\triangleq\frac{1}{N}\sum_{i=1}^N \sum_{t=1}^T L_t^i(W) 
+\end{equation}
+$L_t^i$ is an arbitrary loss function for the $i^{th}$ example at time step $t$.
 
 
 

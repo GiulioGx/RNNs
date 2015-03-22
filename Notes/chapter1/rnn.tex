@@ -13,24 +13,24 @@ FIGURE RNN
 \begin{defn}[Recurrent neural network]
 \label{def_rnn}
 A recurrent  neural network is tuple
-$$RNN\triangleq< W_{in}, W_{out}, W_{rec},\vec{b}_{out} \vec{b}_{rec} ,\sigma(\cdot),f(\cdot)>$$
+$$RNN\triangleq< W_{in}, W_{out}, W_{rec},\vec{b}_{out}, \vec{b}_{rec} ,\sigma(\cdot),f(\cdot)>$$
 \begin{itemize}
- \item $W_{in}$ is the $r\times p$ input weight matrix
- \item $W_{rec}$ is the $r\times r$ recurrent weight matrix
- \item $W_{out}$ is the $o \times r$ output weight matrix
- \item $\vec{b}_{rec} \in \mathbb{R}^{r}$ is the bias vector for the recurrent layer
- \item $\vec{b}_{out} \in \mathbb{R}^{o}$ is the bias vector for the output layer
+ \item $W^{in}$ is the $r\times p$ input weight matrix
+ \item $W^{rec}$ is the $r\times r$ recurrent weight matrix
+ \item $W^{out}$ is the $o \times r$ output weight matrix
+ \item $\vec{b}^{rec} \in \mathbb{R}^{r}$ is the bias vector for the recurrent layer
+ \item $\vec{b}^{out} \in \mathbb{R}^{o}$ is the bias vector for the output layer
  \item $\sigma(\cdot): \mathbb{R}\rightarrow \mathbb{R}$ is the activation function
  \item $f(\cdot): \mathbb{R}^{o)}\rightarrow \mathbb{R}^{o}$ is the output function
 \end{itemize}
-
-$p$ is the size of input vecotors, $r$ is the number of hidden units, $o$ is the size of output vectors. 
+$p$ is the size of input vectors, $r$ is the number of hidden units, $o$ is the size of output vectors. 
+The total number of weights si given by $\mathcal{N}(W) \triangleq rp+r^2+ro$, the number of biases by $\mathcal{N}(b) \triangleq r+o $
 \end{defn}
 
 Given a $RNN$ and an input sequences $\{\vec{x}\}_t$ the output sequence $\{\vec{y}\}_t$ of the net is defined by the following:
 \begin{align}
-&\vec{y}_t \triangleq f(W_{out}\vec{\phi}_t + \vec{b}_{out})\\
-&\vec{a}_t \triangleq W_{rec}\vec{\phi}_{t-1}+W_{in}\vec{x}_t+\vec{b}_{rec}\\
+&\vec{y}_t \triangleq f(W^{out}\vec{\phi}_t + \vec{b}^{out})\\
+&\vec{a}_t \triangleq W^{rec}\vec{\phi}_{t-1}+W^{in}\vec{x}_t+\vec{b}^{rec}\\
 &\vec{\phi}_t \triangleq  \sigma(\vec{a}_t)
 \end{align}
 
@@ -41,6 +41,22 @@ next one. The key difference from feed foward neural networks if, as we have alr
 each unfolded layer.
 
 UNFOLDING FIGURE
+
+\subsection{On expressivness of rnn}
+Rnns are as powerful as turing machines
+\subsection{Learning with ffnn}
+We can model an optimization problem in the same way we did for feed foward neural networks, the main difference is, again, that we now deal with temporal sequences so we need a slightly different
+loss function.
+Given a dataset $D$:
+\begin{equation}
+D\triangleq\{\vec{x}_t^{(i)} \in \mathbb{R}^p, \vec{y}_t^{(i)} \in \mathbb{R}^q; t=1,...,T;  i=1,...,N\}
+\end{equation}
+Then we need a loss function $L_D:\mathbb{R}^{\mathcal{N}(W)+\mathcal{N}(b)} \rightarrow \mathbb{R}_{\geq 0}$ over $D$ defined as
+\begin{equation}
+L_D(W,b)\triangleq\frac{1}{N}\sum_{i=1}^N \sum_{t=1}^T L_t^i(W,b) 
+\end{equation}
+$L_t^i$ is an arbitrary loss function for the $i^{th}$ example at time step $t$.
+
 
 
 
