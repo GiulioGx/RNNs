@@ -122,8 +122,8 @@ $p(i)$ is the number of neuron layer $i$ is composed of.
 We can rewrite equation \ref{loss_deriv} in matrix notation as:
 
 \begin{equation}
- \frac{\partial L}{\partial W^i} = \frac{\partial L}{\partial \vec{a}^{i}} \cdot\frac{\partial \vec{a}^{i}}{\partial W^i}^T =
- \Delta^i \cdot \vec{\phi}^{{i-1}^T}
+ \frac{\partial L}{\partial W^i} = \frac{\partial L}{\partial \vec{a}^{i}} \cdot\Big(\frac{\partial \vec{a}^{i}}{\partial W^i}\Big)^T =
+ \Delta^i \cdot (\vec{\phi}^{i-1})^T
 \end{equation}
 
 where
@@ -132,10 +132,10 @@ where
 \end{equation}
 
 \begin{equation}
- \Delta^i = W^{{i+1}^T} \cdot \Delta^{i+1} \circ \sigma(\Delta^i)
+ \Delta^i = \big(W^{i+1}\big)^T \cdot \Delta^{i+1} \circ \sigma(\Delta^i)
 \end{equation} 
 
 \begin{equation}
- \frac{\partial L}{\partial b^i} = \frac{\partial L}{\partial \vec{a}^{i}} \cdot\frac{\partial \vec{a}^{i}}{\partial b^i}^T =
+ \frac{\partial L}{\partial b^i} = \frac{\partial L}{\partial \vec{a}^{i}} \cdot\Big(\frac{\partial \vec{a}^{i}}{\partial b^i}\Big)^T =
  \Delta^i \cdot Id
 \end{equation}

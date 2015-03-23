@@ -29,8 +29,8 @@ The total number of weights si given by $\mathcal{N}(W) \triangleq rp+r^2+ro$, t
 
 Given a $RNN$ and an input sequences $\{\vec{x}\}_t$ the output sequence $\{\vec{y}\}_t$ of the net is defined by the following:
 \begin{align}
-&\vec{y}_t \triangleq f(W^{out}\vec{\phi}_t + \vec{b}^{out})\\
-&\vec{a}_t \triangleq W^{rec}\vec{\phi}_{t-1}+W^{in}\vec{x}_t+\vec{b}^{rec}\\
+&\vec{y}_t \triangleq f(W^{out}\cdot\vec{\phi}_t + \vec{b}^{out})\\
+&\vec{a}_t \triangleq W^{rec}\cdot\vec{\phi}_{t-1}+W^{in}\cdot\vec{x}_t+\vec{b}^{rec}\\
 &\vec{\phi}_t \triangleq  \sigma(\vec{a}_t)
 \end{align}
 
@@ -51,7 +51,7 @@ Given a dataset $D$:
 \begin{equation}
 D\triangleq\{\vec{x}_t^{(i)} \in \mathbb{R}^p, \vec{y}_t^{(i)} \in \mathbb{R}^q; t=1,...,T;  i=1,...,N\}
 \end{equation}
-Then we need a loss function $L_D:\mathbb{R}^{\mathcal{N}(W)+\mathcal{N}(b)} \rightarrow \mathbb{R}_{\geq 0}$ over $D$ defined as
+we define a loss function $L_D:\mathbb{R}^{\mathcal{N}(W)+\mathcal{N}(b)} \rightarrow \mathbb{R}_{\geq 0}$ over $D$  as
 \begin{equation}
 L_D(W,b)\triangleq\frac{1}{N}\sum_{i=1}^N \sum_{t=1}^T L_t^i(W,b) 
 \end{equation}
