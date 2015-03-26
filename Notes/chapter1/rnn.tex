@@ -57,11 +57,9 @@ L_D(W,b)\triangleq\frac{1}{N}\sum_{i=1}^N \sum_{t=1}^T L_t^i(W,b)
 \end{equation}
 $L_t^i$ is an arbitrary loss function for the $i^{th}$ example at time step $t$.
 
-
-
-
-
-
+The definition takes into account the output for each temporal step, depending on the task at hand, it could be relevant or not to consider intermediate
+outputs; that's not a limitation, in fact we could define a Loss which is computed only on the last output vecotor, at time $T$, and adds 0 for each
+other time step.
 
 
 

@@ -1,0 +1,129 @@
+\subsection{Gradient}
+Consider a $FFNN=<\vec{p},W,b,\sigma(\cdot),F(\cdot)>$, let $L:\mathbb{R}^{p(U)} \rightarrow \mathbb{R}$ a loss function and 
+$g(\cdot):\mathbb{R}^{\mathcal{N}(W)+\mathcal{N}(b)} \rightarrow \mathbb{R}$ be the function defined by
+$$g(W,b) \triangleq L(F(a(W,b)))$$
+
+\begin{equation}
+\begin{align}
+\frac{\partial g}{\partial \vec{w}} &= \nabla L \cdot J(F) \cdot \frac{\partial \vec{a}^U}{\partial \vec{w}}\\
+&= \frac{\partial g}{\partial \vec{a}} \cdot \frac{\partial \vec{a}^U}{\partial \vec{w}}
+\end{align}
+\end{equation}
+
+We can easily compute $\frac{\partial g}{\partial \vec{a}}$ once we define $F(\cdot)$ and $L(\cdot)$, note that the weights are not involved in such computation.
+Let's derive an expression for $\frac{\partial \vec{a}^U}{\partial \vec{w}}$.
+
+We will start deriving such derivative using linear notation. Let's consider a single output unit $u$ and a weight $w_lj$ linking neuron $j$ to neuron $l$.
+
+\begin{equation}
+\begin{align}
+\frac{\partial a_u}{\partial w_lj} &= \frac{\partial a_u}{\partial a_l} \cdot \frac{\partial a_l}{\partial w_lj}\\
+&=\delta_l^u \cdot \phi_j
+\end{align}
+\end{equation}
+
+where we put $$\delta_l^u \triangleq \frac{\partial a_u}{\partial a_l}$$.
+
+Let $P(l)$ be the set of parents of neuron $l$, formally:
+\begin{equation} 
+P(l) = \{ k: \exists \text{ a link between $l$ and $k$ with weight } w_{lk} \}
+\end{equation}
+We can compute $\delta_l^u$ simply applying the chain rule, if we write it down in bottom-up style, as can be seen in figure \ref{deriv_arcs}, we obtain:
+\begin{equation}
+\delta_l^u = \sum_{k\in P(l)} \delta_k^u \cdot \sigma'(a_k)\cdot w_kl
+\end{equation}
+
+\tikzstyle{rnn_style}=[->,shorten >=1pt,auto,node distance=1.5cm,
+  thick,
+  neuron/.style={circle,fill=white!50,draw,minimum size=0.7cm,font=\sffamily\normalsize},
+  missing/.style={circle,fill=white!50,draw=none,minimum size=0.7cm,font=\sffamily\Huge\bfseries},
+  label/.style={node distance=1.2cm,rectangle,fill=white!50,draw=none,minimum size=0.7cm,font=\sffamily\normalsize},
+  thick_edge/.style={line width=1.2pt},
+  thin_edge/.style={line width=0.5pt}
+  ]
+\begin{figure}[]
+ \centering
+\begin{tikzpicture}[rnn_style]
+
+  \node[neuron]    (u)       {$u$};
+  
+  \node[neuron]    (x1)[left of=u, below of=u]   {};
+  \node[neuron]    (x2)[right of=x1]   {};
+  \node[neuron]    (x3)[right of=x2]   {};
+  
+  \node[neuron]    (y1)[below of=x1]   {$l$};
+  \node[neuron]    (y2)[right of=y1]   {};
+  \node[neuron]    (y3)[right of=y2]   {};
+  
+  \node[neuron]    (z1)[below of=y1]   {};
+  \node[neuron]    (z2)[right of=z1]   {};
+  \node[neuron]    (z3)[right of=z2]   {};
+  
+%   \node[label]      (lu)[left of=u] {$u$};
+%   \node[label]      (ll)[left of=z1] {$l$};
+  
+  
+  \path[->] (x1) edge [thick_edge] node[]{}   (u)
+	    (x2) edge [thick_edge]   (u)
+	    (x3) edge [thick_edge]   (u)
+	    (y1) edge [thick_edge]   (x1)
+	    (y1) edge [thick_edge]   (x2)
+	    (y1) edge [thick_edge]   (x3)
+	    (y1) edge [thin_edge]   (x2)
+	    (y2) edge [thin_edge]   (x3)
+	    (y3) edge [thin_edge]   (x1)
+	    (y1) edge [thin_edge]   (x3)
+	    (y2) edge [thin_edge]   (x2)
+	    (y3) edge [thin_edge]   (x1)
+	  
+	    (z1) edge [thin_edge]   (y1)
+	    (z1) edge [thin_edge]   (y2)
+	    (z1) edge [thin_edge]   (y3)
+	    (z1) edge [thin_edge]   (y2)
+	    (z2) edge [thin_edge]   (y3)
+	    (z3) edge [thin_edge]   (y1)
+	    (z1) edge [thin_edge]   (y3)
+	    (z2) edge [thin_edge]   (y2)
+	    (z3) edge [thin_edge]   (y1);
+
+
+\end{tikzpicture}
+\caption{Nodes involved in $\frac{\partial a_u }{\partial a_l}$}
+\label{deriv_arcs}
+\end{figure}
+
+
+In matrix notation we can rewrite the previous equations as:
+\begin{equation}
+ \frac{\partial a^U}{\partial \vec{w^i}} = \frac{\partial a^U}{\partial a^i} \cdot \frac{\partial a^i}{\partial \vec{w^i}}
+\end{equation}
+
+\begin{equation}
+\frac{\partial a^i}{\partial \vec{w^i}} =
+ \begin{bmatrix}
+   \phi_1^{i-1}    & 0                & \cdots      & \cdots       & 0  \\
+   0               & \phi_2^{i-1}     & \cdots      & \cdots       & 0  \\
+   \vdots          & \vdots           & \ddots      & \vdots       &\vdots\\
+   0               & \cdots           & \cdots      & \cdots       & \phi^{i-1}_{p(i-1)}
+\end{bmatrix}
+\end{equation}
+
+\begin{equation}
+\frac{\partial a^U}{\partial a^i} \triangleq \Delta^i = \Delta^{i+1} \cdot diag(\sigma'(\vec{a}^{i+i})) \cdot W^{i+1}
+\end{equation}
+
+where
+\begin{equation}
+diag(\sigma'(\vec{a}^{i+i})) =
+ \begin{bmatrix}
+   \sigma'(a^{i+1}_1)    & 0                & \cdots      & \cdots       & 0  \\
+   0                     & \sigma'(a^{i+1}_2)     & \cdots      & \cdots       & 0  \\
+   \vdots                & \vdots           & \ddots      & \vdots       &\vdots\\
+   0                     & \cdots           & \cdots      & \cdots       &\sigma'(a^{i+1}_{p(i+1)})
+\end{bmatrix}
+\end{equation}
+
+
+
+
+

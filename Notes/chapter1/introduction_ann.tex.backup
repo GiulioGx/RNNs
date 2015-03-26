@@ -6,7 +6,7 @@ is defined as:
  
 \begin{align}
 &\phi_j \triangleq \sigma(a_j)\\
-&a_j \triangleq \sum_l w_{jl}\phi_l
+&a_j \triangleq \sum_l w_{jl}\phi_l +b_j
 \end{align}
 
 where $w_{jl}$ is the weight of the connection between neuron $l$ and neuron $j$, $\sigma(\cdot)$ is a non linear function and $b_j \in \mathbb{R}$ is called bias.
@@ -20,7 +20,7 @@ where $w_{jl}$ is the weight of the connection between neuron $l$ and neuron $j$
   layer/.style={rectangle,fill=white!50,draw,minimum width=1.5cm,font=\sffamily\Large},
   loopStyle/.style={in=120,out=60, distance=2.5cm},
   weight/.style = {above,sloped,pos=0.3},]
-\begin{figure}[!h]
+\begin{figure}[]
  \centering
 \begin{tikzpicture}[nn_style]
 
@@ -63,14 +63,15 @@ where $w_{jl}$ is the weight of the connection between neuron $l$ and neuron $j$
 
 
 A neural network looks like:
-INSERT FIGURE
+INSERT FIGURE FULLY CONNECTED
 
 It sometime useful to think of a neurual network as series of layers, one on top of each other, as depicted in figure \ref{ffnnet}. The first layer is called the input layer and its units are \textit{fed}
 with external inputs, the upper layers are called \textit{hidden layers} because their's outputs are not observed from outside except the last one which is called \textit{output layer} because it's output 
 is the output of the net.
 
 Whene we describe a network in this way is also useful to adopt a different notation: we describe the weights of the net with a set of matrixes $W_i$ one for each layer, and neurons are no more
-linearly indexed, insted with refer to a neuron with a relative index with respect to the layer; this allows to write easier equations in matrix notation.
+linearly indexed, insted with refer to a neuron with a relative index with respect to the layer; this allows to write easier equations in matrix notation
+\footnotetext{In the rest of the book we will refer to the latter notation as \textsl{matrix notation} and to the previous one as \textsl{linear notation}}.
 
 
 \tikzstyle{rnn_style}=[->,shorten >=1pt,auto,node distance=1.5cm,
@@ -80,7 +81,7 @@ linearly indexed, insted with refer to a neuron with a relative index with respe
   label/.style={node distance=1.2cm,rectangle,fill=white!50,draw=none,minimum size=0.7cm,font=\sffamily\normalsize},
   layer/.style={rectangle,fill=white!50,draw,minimum width=4cm,font=\sffamily\normalsize},
   loopStyle/.style={in=120,out=60, distance=2.5cm},]
-\begin{figure}[h!]
+\begin{figure}[]
  \centering
 \begin{tikzpicture}[rnn_style]
 
@@ -103,9 +104,9 @@ linearly indexed, insted with refer to a neuron with a relative index with respe
   \node[layer] (ol)[above of=hls,node distance=1.5cm] {Last hidden layer};
   
   \draw[decorate,decoration={brace,raise=6pt,amplitude=8pt}, thick,-]
-   (ol.south east)--(hl.north east);
-   
-  \node[label]    (hls_label)[right of=hls,node distance=4.2cm]   {hidden layers};
+   (ol.north east)--(hl.south east);
+
+
 
   
   \node[neuron] (o1) at (0,6.5) {};
@@ -119,6 +120,11 @@ linearly indexed, insted with refer to a neuron with a relative index with respe
   \node[label]    (y1)[above of=o2]   {$y_1$};
   \node[label]    (y2)[above of=o3]   {$y_2$};
   \node[label]    (yn)[above of=on]   {$y_q$};
+  
+     
+  \node[label]    (hls_label)[right of=hls,node distance=5cm]   {hidden layers};
+  \node[label]    (input_label)[right of=xn,node distance=2cm]   {input layer};
+  \node[label]    (output_label)[right of=on,node distance=2cm]   {output layer};
   
   
   \path[->] (x0) edge [] node[]{}   (hl)

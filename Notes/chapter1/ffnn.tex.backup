@@ -5,25 +5,35 @@ A feed foward neural network is an artificial neural network in which there are 
 \begin{defn}[Feed foward neural network]
 \label{def_ffnn}
 A feed foward neural network is tuple
-$$FFNN\triangleq<\vec{p},W,\vec{b},\sigma(\cdot),f(\cdot)>$$
+$$FFNN\triangleq<\vec{p},W,b,\sigma(\cdot),f(\cdot)>$$
 \begin{itemize}
- \item $\vec{p} \in \mathbb{N}^U, p(k)=$ number of neuron of layer $k$, where $U$ is the number of layers
+ \item $\vec{p} \in \mathbb{N}^U$ is the vector whose elements $p(k)$ are the number of neurons of layer $k$; $U$ is the number of layers
  \item $W\triangleq \{W^k_{p(k+1) \times p(k)}, k=1,...,U \}$ is the set of weight matrixes of each layer
  \item $b \triangleq \{\vec{b}^k \in \mathbb{R}^{p(k)}, k=1,...,U \} $ is the set of bias vectors
  \item $\sigma(\cdot): \mathbb{R}\rightarrow \mathbb{R}$ is the activation function
  \item $f(\cdot): \mathbb{R}^{p(U)}\rightarrow \mathbb{R}^{p(U)}$ is the output function
- \\\\The total number of weights si given by $\mathcal{N}(W) \triangleq \sum_{k=1}^U p(k+1)p(k)$, the number of biases by $\mathcal{N}(b) \triangleq \sum_{k=1}^U p(k)$
 \end{itemize}
 \end{defn}
 
-Given a $FFNN$ and an input vector $\vec{x}$ the output $\vec{y}$ of the net is defined by the following:
-\begin{align}
-&\vec{y}=f(\vec{\phi}_{U}) &\\
-&\vec{\phi}_{i} \triangleq \sigma(\vec{a}_{i}), & i=1,...,U\\
-&\vec{a}_{i} \triangleq W_{i+1} \cdot \vec{\phi}_{i-1} +\vec{b}_i  & i=1,...,U\\
-&\vec{\phi}_{0} \triangleq \vec{x} &
-\end{align}
+\begin{remark}{}
+Given a FFNN:
+\begin{itemize}
+ \item The number of output units is $p(U)$
+ \item The number of input units is $p(1)$
+ \item The total number of weights is $\mathcal{N}(W) \triangleq \sum_{k=1}^U p(k+1)p(k)$
+ \item The total number of biases is $\mathcal{N}(b) \triangleq \sum_{k=1}^U p(k)$
+\end{itemize}
+\end{remark}
 
+\begin{defn}[Output of a FFNN]
+Given a $FFNN$ and an input vector $\vec{x} \in \mathbb{R}^{p(1)}$ the output $\vec{y} \in \mathbb{R}^U$ of the net is defined by the following:
+\begin{align}
+&\vec{y}=f(\vec{a}^{U}) &\\
+&\vec{\phi}^{i} \triangleq \sigma(\vec{a}_{i}), & i=1,...,U\\
+&\vec{a}^{i} \triangleq W^{i+1} \cdot \vec{\phi}^{i-1} +\vec{b}^i  & i=1,...,U\\
+&\vec{\phi}^{0} \triangleq \vec{x} &
+\end{align}
+\end{defn}
 
 \subsection{On expressivness of ffnn}
 \subsection{Learning with ffnn}
@@ -31,20 +41,21 @@ Given a $FFNN$ and an input vector $\vec{x}$ the output $\vec{y}$ of the net is 
 As we have seen in the previous section a model sush as $FFNN$ can approximate arbitrary well any smooth function, so a natural application of feed foward neural networks is machine learning.
 To model an optimization problem we first need to define a dataset $D$ as 
 \begin{equation}
-D\triangleq\{x^{(i)} \in \mathbb{R}^p, y^{(i)} \in \mathbb{R}^q,  i\in[1,N]\}
+D\triangleq\{x^{(i)} \in \mathbb{R}^p, y^{(i)} \in \mathbb{R}^q,  i=1,...,N\}
 \end{equation}
-Then we need a loss function $L_D:\mathbb{R}^{\mathcal{N}(W)} \rightarrow \mathbb{R}_{\geq 0}$ over $D$ defined as
+Then we need a loss function $L_D:\mathbb{R}^{\mathcal{N}(W)+\mathcal{N}(b)} \rightarrow \mathbb{R}_{\geq 0}$ over $D$ defined as
 \begin{equation}
-L_D(W)\triangleq\frac{1}{N}\sum_{i=1}^N L^i(W) 
+L_D(W,b)\triangleq\frac{1}{N}\sum_{i=1}^N L(\vec{x}^{(i)},\vec{y}^{(i)}) 
 \end{equation}
-$L^i$ is an arbitrary loss function on the $i^{th}$ example.
+$L(\vec{x},\vec{y}):\mathbb{R}^{p(U)} \rightarrow \mathbb{R}$ is an arbitrary loss function computed on the $i^{th}$ example. Note that $\vec{y}$ is the output of the
+networks, so it depends on $(W,b)$
 
 
-The problem is then fo find a $FFNN$ which minimize $L$. As we have seen feed foward neural network allow for large customization: the only variables in the optimization problem are the weights, the other
+The problem is then fo find a $FFNN$ which minimize $L_D$. As we have seen feed foward neural network allow for large customization: the only variables in the optimization problem are the weights, the other
 parameters are said \textit{hyper-parameters} and are determined \textit{a priori}. Usually the output function is choosen depending on the output, for instance for multi-way classification
 is generally used the softmax function, for regression a simple identity function.
 
-The activation function $\sigma(\cdot)$ is often choose from:
+The activation function $\sigma(\cdot)$ is often choosen from:
 \begin{equation}
  sigmoid(x)=\frac{1}{1-e^{-x}}
 \end{equation}
@@ -65,67 +76,11 @@ with some different configurations of such parameters and choosing the best one.
 Once we have selected the values for all hyper-paramters the optimization problem becomes:
 \begin{equation}
 \begin{aligned}
-& \underset{W}{\text{min}}
-& & L_D(W) \\
+& \underset{W,b}{\text{min}}
+& & L_D(W,b) \\
 \end{aligned}
 \end{equation}
 
 
+\input{chapter1/fnn_grad_revised}
 
-
-
-
-\subsection{Gradient}
-
-We can compute partial derivatives with respect to a single weight $w_{lj}$, using simply the chain rule, as 
-
-$$\frac{\partial L}{\partial w_{lj}}=\frac{\partial L}{\partial a_l} \cdot \frac{\partial a_l}{\partial w_{lj}}=\delta_l \cdot \phi_j$$
-where we put
-
-\begin{equation}
-\delta_l \triangleq \frac{\partial L}{\partial a_l}
-\end{equation}
-
-
-
-So we can easily compute $\delta_u = \frac{\partial L^{(i)}}{\partial a_u} $ for each output unit $u$ once we choose a differentiable loss function; note
-that we don't need the weights for such a computation. 
-
-Let $P(l)$ be the set of parents of neuron $l$, formally:
-\begin{equation} 
-P(l) = \{ k: \exists \text{ a link between $l$ and $k$ with weight } w_{lk} \}
-\end{equation}
-
-Again, simply using the chain rule, we can write, for each non output unit $l$:
-
-\begin{equation}
-\label{loss_deriv}
-\delta_l = \sum_{k\in P(l)} \frac{\partial L^{(i)}}{\partial a_k} \cdot \frac{\partial a_k}{\partial a_l}= \sum_{k\in P(l)} \delta_k \cdot 
-\frac{\partial a_k}{\partial \phi_l} \cdot \frac{\partial \phi_l}{\partial a_l} = \sum_{k\in P(l)} \delta_k \cdot 
-w_{kl} \cdot \sigma'(a_l)
-\end{equation}
-
-
-For output units instead we can compute $\delta_u = \frac{\partial L^{(i)}}{\partial a_u} $ directly once we define the loss function.
-
-
-In the following we rewrite the previously derived equations in matrix notation.
-Let us recall that the weight matrix for the $i^{th}$ layer is the $p(i) \times p(i-1)$ matrix whose elements $w_{l,k}$ are the weights of the arcs which link neuron $k$ from level $i-1$ to neuron $l$ from level $i$, where
-$p(i)$ is the number of neuron layer $i$ is composed of.
-
-
-We can rewrite equation \ref{loss_deriv} in matrix notation as:
-
-\begin{equation}
- \frac{\partial L}{\partial W_i} = \frac{\partial L}{\partial \vec{a}_{i}} \cdot\frac{\partial \vec{a}_{i}}{\partial W_i}^T =
- \Delta_i \cdot \vec{\phi}_{i-1}^T
-\end{equation}
-
-where
-\begin{equation}
-\Delta_i  \triangleq  \frac{\partial L}{\partial \vec{a}_{i}} 
-\end{equation}
-
-\begin{equation}
- \Delta_i = W_{i+1}^T \cdot \Delta_{i+1} \circ \sigma(\Delta_i)
-\end{equation} 
