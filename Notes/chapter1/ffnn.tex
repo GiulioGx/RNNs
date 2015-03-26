@@ -27,6 +27,7 @@ Given a FFNN:
 
 \begin{defn}[Output of a FFNN]
 Given a $FFNN$ and an input vector $\vec{x} \in \mathbb{R}^{p(1)}$ the output $\vec{y} \in \mathbb{R}^U$ of the net is defined by the following:
+
 \begin{align}
 &\vec{y}=F(\vec{a}^{U}) &\\
 &\vec{\phi}^{i} \triangleq \sigma(\vec{a}_{i}), & i=1,...,U\\
@@ -74,12 +75,11 @@ For what concerns the number of layers and the number of units per layers they a
 with some different configurations of such parameters and choosing the best one.
 
 Once we have selected the values for all hyper-paramters the optimization problem becomes:
-\begin{equation}
-\begin{aligned}
+
+\begin{align}
 & \underset{W,b}{\text{min}}
 & & L_D(W,b) \\
-\end{aligned}
-\end{equation}
+\end{align}
 
 
 \input{chapter1/fnn_grad_revised}

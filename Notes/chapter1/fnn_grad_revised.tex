@@ -3,24 +3,22 @@ Consider a $FFNN=<\vec{p},W,b,\sigma(\cdot),F(\cdot)>$, let $L:\mathbb{R}^{p(U)}
 $g(\cdot):\mathbb{R}^{\mathcal{N}(W)+\mathcal{N}(b)} \rightarrow \mathbb{R}$ be the function defined by
 $$g(W,b) \triangleq L(F(a(W,b)))$$
 
-\begin{equation}
+
 \begin{align}
 \frac{\partial g}{\partial \vec{w}} &= \nabla L \cdot J(F) \cdot \frac{\partial \vec{a}^U}{\partial \vec{w}}\\
 &= \frac{\partial g}{\partial \vec{a}} \cdot \frac{\partial \vec{a}^U}{\partial \vec{w}}
 \end{align}
-\end{equation}
+
 
 We can easily compute $\frac{\partial g}{\partial \vec{a}}$ once we define $F(\cdot)$ and $L(\cdot)$, note that the weights are not involved in such computation.
 Let's derive an expression for $\frac{\partial \vec{a}^U}{\partial \vec{w}}$.
-
 We will start deriving such derivative using linear notation. Let's consider a single output unit $u$ and a weight $w_lj$ linking neuron $j$ to neuron $l$.
 
-\begin{equation}
+
 \begin{align}
 \frac{\partial a_u}{\partial w_lj} &= \frac{\partial a_u}{\partial a_l} \cdot \frac{\partial a_l}{\partial w_lj}\\
 &=\delta_l^u \cdot \phi_j
 \end{align}
-\end{equation}
 
 where we put $$\delta_l^u \triangleq \frac{\partial a_u}{\partial a_l}$$.
 
@@ -41,7 +39,7 @@ We can compute $\delta_l^u$ simply applying the chain rule, if we write it down 
   thick_edge/.style={line width=1.2pt},
   thin_edge/.style={line width=0.5pt}
   ]
-\begin{figure}[]
+\begin{figure}
  \centering
 \begin{tikzpicture}[rnn_style]
 
@@ -122,8 +120,3 @@ diag(\sigma'(\vec{a}^{i+i})) =
    0                     & \cdots           & \cdots      & \cdots       &\sigma'(a^{i+1}_{p(i+1)})
 \end{bmatrix}
 \end{equation}
-
-
-
-
-
