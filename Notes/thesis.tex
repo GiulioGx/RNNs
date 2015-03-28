@@ -1,4 +1,7 @@
 \documentclass{book}
+
+%%Packages:
+
 \usepackage[utf8]{inputenc}
 \usepackage[UKenglish]{babel}
 \usepackage{graphicx}
@@ -15,9 +18,21 @@
 \usepackage{algorithm}
 \usepackage[noend]{algpseudocode}
 \usetikzlibrary{automata,arrows,decorations.pathreplacing}
+
+%Symbols:
+
 \let\emptyset\varnothing
 
+%%Notation:
+
+%%vectors
 \renewcommand{\vec}[1]{\boldsymbol{#1}}
+%%sets
+\newcommand{\set}[1]{\mathcal{#1}}
+%%matrixes
+\newcommand{\mat}[1]{#1}
+
+%%Envirorments:
 
 % \newtheoremstyle{definition}{}{}{\itshape}{}{\bfseries}{.}{.5em}{\thmnote{#3's }#1}
 \theoremstyle{definition}
@@ -25,10 +40,14 @@
 \theoremstyle{definition}
 \newtheorem{remark}{Remark}
 
+%Paths:
+
 \graphicspath{ {./images/} }
 
 \title{On recurrent neural networks}
 \author{Giulio Galvan}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{document}
 \maketitle
@@ -40,6 +59,11 @@
 \input{chapter1/ffnn}
 \section{Recursive neural networks}
 \input{chapter1/rnn}
+
+
+\appendix
+\chapter{Notation}
+\input{notation_appendix/notation}
 
 
 \newpage

@@ -1,34 +1,34 @@
 \subsection{Gradient}
 Consider a $FFNN=<\vec{p},W,b,\sigma(\cdot),F(\cdot)>$, let $L:\mathbb{R}^{p(U)} \rightarrow \mathbb{R}$ a loss function and 
-$g(\cdot):\mathbb{R}^{\mathcal{N}(W)+\mathcal{N}(b)} \rightarrow \mathbb{R}$ be the function defined by
-$$g(W,b) \triangleq L(F(a(W,b)))$$
+$g(\cdot):\mathbb{R}^{\mathcal{N}(\set{W})+\mathcal{N}(\set{B})} \rightarrow \mathbb{R}$ be the function defined by
+$$g(\set{W},\set{B}) \triangleq L(F(a(\set{W},\set{B})))$$
 
 
 \begin{align}
-\frac{\partial g}{\partial \vec{w}} &= \nabla L \cdot J(F) \cdot \frac{\partial \vec{a}^U}{\partial \vec{w}}\\
-&= \frac{\partial g}{\partial \vec{a}} \cdot \frac{\partial \vec{a}^U}{\partial \vec{w}}
+\frac{\partial g}{\partial \mat{W}^i} &= \nabla L \cdot J(F) \cdot \frac{\partial \vec{a}^U}{\partial \mat{W}^i}\\
+&= \frac{\partial g}{\partial \vec{a}} \cdot \frac{\partial \vec{a}^U}{\partial \mat{W^i}}
 \end{align}
 
 
 We can easily compute $\frac{\partial g}{\partial \vec{a}}$ once we define $F(\cdot)$ and $L(\cdot)$, note that the weights are not involved in such computation.
-Let's derive an expression for $\frac{\partial \vec{a}^U}{\partial \vec{w}}$.
-We will start deriving such derivative using linear notation. Let's consider a single output unit $u$ and a weight $w_lj$ linking neuron $j$ to neuron $l$.
+Let's derive an expression for $\frac{\partial \vec{a}^U}{\partial \mat{W}^i}$.
+We will start deriving such derivative using linear notation. Let's consider a single output unit $u$ and a weight $w_{lj}$ linking neuron $j$ to neuron $l$.
 
 
 \begin{align}
 \frac{\partial a_u}{\partial w_{lj}} &= \frac{\partial a_u}{\partial a_l} \cdot \frac{\partial a_l}{\partial w_{lj}}\\
-&=\delta_l^u \cdot \phi_j
+&=\delta_{ul} \cdot \phi_j
 \end{align}
 
-where we put $$\delta_l^u \triangleq \frac{\partial a_u}{\partial a_l}$$.
+where we put $$\delta_{ul} \triangleq \frac{\partial a_u}{\partial a_l}$$.
 
 Let $P(l)$ be the set of parents of neuron $l$, formally:
 \begin{equation} 
 P(l) = \{ k: \exists \text{ a link between $l$ and $k$ with weight } w_{lk} \}
 \end{equation}
-We can compute $\delta_l^u$ simply applying the chain rule, if we write it down in bottom-up style, as can be seen in figure \ref{deriv_arcs}, we obtain:
+We can compute $\delta_{ul}$ simply applying the chain rule, if we write it down in bottom-up style, as can be seen in figure \ref{deriv_arcs}, we obtain:
 \begin{equation}
-\delta_l^u = \sum_{k\in P(l)} \delta_k^u \cdot \sigma'(a_k)\cdot w_kl
+\delta_{ul} = \sum_{k\in P(l)} \delta_{uk} \cdot \sigma'(a_k)\cdot w_kl
 \end{equation}
 
 \tikzstyle{rnn_style}=[->,shorten >=1pt,auto,node distance=1.5cm,
@@ -94,28 +94,29 @@ The derivates with respect to biases are compute in the same way:
 
 \begin{align}
 \frac{\partial a_u}{\partial b_{l}} &= \frac{\partial a_u}{\partial a_l} \cdot \frac{\partial a_l}{\partial b_{l}}\\
-&=\delta_l^u \cdot 1
+&=\delta_{ul} \cdot 1
 \end{align}
 
 
 
 In matrix notation we can rewrite the previous equations as:
 \begin{equation}
- \frac{\partial a^U}{\partial \vec{w^i}} = \frac{\partial a^U}{\partial a^i} \cdot \frac{\partial a^i}{\partial \vec{w^i}}
+ \frac{\partial a^U}{\partial \mat{W}^i} = \frac{\partial a^U}{\partial a^{i+1}} \cdot \frac{\partial a^{i+1}}{\partial \mat{W}^i}
 \end{equation}
 
+
 \begin{equation}
-\frac{\partial a^i}{\partial \vec{w^i}} =
+\frac{\partial a^{i+1}}{\partial \mat{W}_j^i} =
  \begin{bmatrix}
-   \phi_1^{i-1}    & 0                & \cdots      & \cdots       & 0  \\
-   0               & \phi_2^{i-1}     & \cdots      & \cdots       & 0  \\
+   \phi_1^{i}    & 0                & \cdots      & \cdots       & 0  \\
+   0               & \phi_2^{i}     & \cdots      & \cdots       & 0  \\
    \vdots          & \vdots           & \ddots      & \vdots       &\vdots\\
-   0               & \cdots           & \cdots      & \cdots       & \phi^{i-1}_{p(i-1)}
+   0               & \cdots           & \cdots      & \cdots       & \phi^{i}_{p(i-1)}
 \end{bmatrix}
 \end{equation}
 
 \begin{equation}
-\frac{\partial a^U}{\partial a^i} \triangleq \Delta^i = \Delta^{i+1} \cdot diag(\sigma'(\vec{a}^{i+i})) \cdot W^{i+1}
+\frac{\partial a^U}{\partial a^{i+1}} \triangleq \Delta^i = \Delta^{i+1}  \cdot W^{i} \cdot diag(\sigma'(\vec{a}^{i}))
 \end{equation}
 
 where
