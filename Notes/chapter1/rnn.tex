@@ -81,26 +81,44 @@ providing no input after the first time step.
 \begin{defn}[Recurrent neural network]
 \label{def_rnn}
 A recurrent  neural network is tuple
-$$RNN\triangleq< W_{in}, W_{out}, W_{rec},\vec{b}_{out}, \vec{b}_{rec} ,\sigma(\cdot),f(\cdot)>$$
+$$RNN\triangleq< \set{W},\set{B} ,\sigma(\cdot),F(\cdot)>$$
 \begin{itemize}
- \item $W^{in}$ is the $r\times p$ input weight matrix
- \item $W^{rec}$ is the $r\times r$ recurrent weight matrix
- \item $W^{out}$ is the $o \times r$ output weight matrix
- \item $\vec{b}^{rec} \in \mathbb{R}^{r}$ is the bias vector for the recurrent layer
- \item $\vec{b}^{out} \in \mathbb{R}^{o}$ is the bias vector for the output layer
+ \item $\set{W} \triangleq \{\mat{W}^{in},\mat{W^{rec},\mat{W^{out}}}\}$ where
+ \begin{itemize}
+  \item $W^{in}$ is the $r\times p$ input weight matrix
+  \item $W^{rec}$ is the $r\times r$ recurrent weight matrix
+  \item $W^{out}$ is the $o \times r$ output weight matrix
+ \end{itemize}
+ \item $\set{B} \triangleq \{\vec{b^{rec},\vec{b^{out}}}\}$ where
+ \begin{itemize}
+   \item $\vec{b}^{rec} \in \mathbb{R}^{r}$ is the bias vector for the recurrent layer
+   \item $\vec{b}^{out} \in \mathbb{R}^{o}$ is the bias vector for the output layer
+ \end{itemize}
  \item $\sigma(\cdot): \mathbb{R}\rightarrow \mathbb{R}$ is the activation function
- \item $F(\cdot): \mathbb{R}^{o)}\rightarrow \mathbb{R}^{o}$ is the output function
+ \item $F(\cdot): \mathbb{R}^{o}\rightarrow \mathbb{R}^{o}$ is the output function
 \end{itemize}
-$p$ is the size of input vectors, $r$ is the number of hidden units, $o$ is the size of output vectors. 
-The total number of weights si given by $\mathcal{N}(W) \triangleq rp+r^2+ro$, the number of biases by $\mathcal{N}(b) \triangleq r+o $
 \end{defn}
 
-Given a $RNN$ and an input sequences $\{\vec{x}\}_t$ the output sequence $\{\vec{y}\}_t$ of the net is defined by the following:
+\begin{remark}{}
+Given a RNN
+\begin{itemize}
+ \item The total number of weights si given by $\mathcal{N}(W) \triangleq rp+r^2+ro$
+ \item The number of biases by $\mathcal{N}(b) \triangleq r+o $
+ \item $p$ is the size of input vectors, 
+ \item$r$ is the number of hidden units
+ \item $o$ is the size of output vectors. 
+\end{itemize}
+\end{remark}
+
+\begin{defn}[Output of a RNN]
+Given a $RNN$ and an input sequences $\{\vec{x}\}_{t=1,...,T}, \vec{x}_t \in \mathbb{R}^p$ the output sequence $\{\vec{y}\}_{t=1,...,T}, \vec{y}_t \in \mathbb{R}^o$ of the net is defined by the following:
 \begin{align}
-&\vec{y}_t \triangleq f(W^{out}\cdot\vec{\phi}_t + \vec{b}^{out})\\
+&\vec{y}_t \triangleq F(W^{out}\cdot\vec{a}_t + \vec{b}^{out})\\
 &\vec{a}_t \triangleq W^{rec}\cdot\vec{\phi}_{t-1}+W^{in}\cdot\vec{x}_t+\vec{b}^{rec}\\
 &\vec{\phi}_t \triangleq  \sigma(\vec{a}_t)
 \end{align}
+\end{defn}
+
 
 As we can understand from definition \ref{def_rnn}, there is only one recurrent layer, whose weights are the same for each time step, so one can asks where does the deepness of the network come from.
 The answer lies in the temporal unfolding of the network, in fact if we unfold the network step by step we obtain a structure similar to the structure of a feed foward neural network. As we can observe
@@ -200,17 +218,21 @@ We can model an optimization problem in the same way we did for feed foward neur
 loss function.
 Given a dataset $D$:
 \begin{equation}
-D\triangleq\{\vec{x}_t^{(i)} \in \mathbb{R}^p, \vec{y}_t^{(i)} \in \mathbb{R}^q; t=1,...,T;  i=1,...,N\}
+D\triangleq\{\{\overline{\vec{x}}\}_{t=1,...,T}, \overline{\vec{x}}_t \in \mathbb{R}^p, \{\overline{\vec{y}}\}_{t=1,...,T}, \overline{\vec{y}}_t \in \mathbb{R}^o;  i=1,...,N\}
 \end{equation}
 we define a loss function $L_D:\mathbb{R}^{\mathcal{N}(W)+\mathcal{N}(b)} \rightarrow \mathbb{R}_{\geq 0}$ over $D$  as
 \begin{equation}
-L_D(W,b)\triangleq\frac{1}{N}\sum_{i=1}^N \sum_{t=1}^T L_t^i(W,b) 
+L_D(\set{W},\set{B})\triangleq\frac{1}{N}\sum_{i=1}^N \sum_{t=1}^T L_t(\overline{\vec{x}}_t^{(i)},\vec{y}_t^{(i)}) 
 \end{equation}
-$L_t^i$ is an arbitrary loss function for the $i^{th}$ example at time step $t$.
+$L_t$ is an arbitrary loss function at time step $t$.
 
 The definition takes into account the output for each temporal step, depending on the task at hand, it could be relevant or not to consider intermediate
-outputs; that's not a limitation, in fact we could define a Loss which is computed only on the last output vecotor, at time $T$, and adds 0 for each
+outputs; that's not a limitation, in fact we could define a loss which is computed only on the last output vector, at time $T$, and adds 0 for each
 other time step.
+
+
+\subsection{Gradient}
+\input{chapter1/rnn_gradient}
 
 
 

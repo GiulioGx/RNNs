@@ -1,16 +1,15 @@
-\subsection{Gradient}
-Consider a $FFNN=<\vec{p},W,b,\sigma(\cdot),F(\cdot)>$, let $L:\mathbb{R}^{p(U)} \rightarrow \mathbb{R}$ a loss function and 
+Consider a $FFNN=<\vec{p},\set{W},\set{B},\sigma(\cdot),F(\cdot)>$, let $L:\mathbb{R}^{p(U)} \rightarrow \mathbb{R}$ a loss function and 
 $g(\cdot):\mathbb{R}^{\mathcal{N}(\set{W})+\mathcal{N}(\set{B})} \rightarrow \mathbb{R}$ be the function defined by
-$$g(\set{W},\set{B}) \triangleq L(F(a(\set{W},\set{B})))$$
+$$g(\set{W},\set{B}) \triangleq L(F(a^U(\set{W},\set{B})))$$
 
 
 \begin{align}
 \frac{\partial g}{\partial \mat{W}^i} &= \nabla L \cdot J(F) \cdot \frac{\partial \vec{a}^U}{\partial \mat{W}^i}\\
-&= \frac{\partial g}{\partial \vec{a}} \cdot \frac{\partial \vec{a}^U}{\partial \mat{W^i}}
+&= \frac{\partial g}{\partial \vec{a}^U} \cdot \frac{\partial \vec{a}^U}{\partial \mat{W^i}}
 \end{align}
 
 
-We can easily compute $\frac{\partial g}{\partial \vec{a}}$ once we define $F(\cdot)$ and $L(\cdot)$, note that the weights are not involved in such computation.
+We can easily compute $\frac{\partial g}{\partial \vec{a^U}}$ once we define $F(\cdot)$ and $L(\cdot)$, note that the weights are not involved in such computation.
 Let's derive an expression for $\frac{\partial \vec{a}^U}{\partial \mat{W}^i}$.
 We will start deriving such derivative using linear notation. Let's consider a single output unit $u$ and a weight $w_{lj}$ linking neuron $j$ to neuron $l$.
 

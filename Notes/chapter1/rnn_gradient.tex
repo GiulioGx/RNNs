@@ -1,0 +1,136 @@
+Consider a $RNN=<\set{W},\set{B},\sigma(\cdot),F(\cdot)>$. Let $L:\mathbb{R}^o \rightarrow \mathbb{R}$ a loss function:
+
+$$L(\set{W},\set{B})\triangleq\frac{1}{N}\sum_{i=1}^N \sum_{t=1}^T L_t(\overline{\vec{x}}_t^{(i)},\vec{y}_t^{(i)}) $$
+
+Let $g_t(\cdot):\mathbb{R}^{\mathcal{N}(\set{W})+\mathcal{N}(\set{B})} \rightarrow \mathbb{R}$ be the function defined by
+$$g_t(\set{W},\set{B}) \triangleq L(F(a^t(\set{W},\set{B})))$$
+and $$g(\set{W},\set{B}) \triangleq \sum_{t=1}^T g_t(\set{W},\set{B})$$
+
+
+
+\begin{align}
+\frac{\partial g}{\partial \mat{W}^{rec}} &= \sum_{t=1}^T \nabla L_t \cdot J(F) \cdot \frac{\partial \vec{a}^t}{\partial \mat{W}^{rec}}\\
+&= \sum_{t=1}^T\frac{\partial g_t}{\partial \vec{a}^t} \cdot \frac{\partial \vec{a}^t}{\partial \mat{W^{rec}}}
+\end{align}
+
+As we noticed for ffnn it's easy to compute $\frac{\partial g_t}{\partial \vec{a}^t}$ once we define $F(\cdot)$ and $L(\cdot)$, note that the weights are not involved in such computation.
+Let's see how to compute $\frac{\partial \vec{a}^t}{\partial \mat{W}^{rec}}$.
+
+Let's consider a single output unit $u$, and a weight $w_{lj}$, we have
+
+\begin{align}
+ \label{sum_over_time}
+ \frac{\partial a^t_u}{\partial w_{lj}} &= \sum_{k=1}^t \frac{\partial a_u^t}{\partial a^k_l} \cdot \frac{\partial a^k_l}{\partial w_{lj}}\\
+ &= \sum_{k=1}^t \delta^{tk}_{lu} \cdot \phi_j^{t-1}
+\end{align}
+where
+\begin{equation}
+\delta_{lu}^{tk} \triangleq \frac{\partial a_u^t}{\partial a^k_l}
+\end{equation}
+
+Let's observe a first difference from ffnn case: since the weights are shared in each unfolded layer, in equation \ref{sum_over_time} we have to sum over time.
+
+Let $P(l)$ be the set of parents of neuron $l$, as we did for ffnn.
+
+\begin{equation}
+ \delta_{lu}^{tk} = \sum_{h\in P(l)} \delta_{hu}^{tk} \cdot \sigma'(a_h^{t-1}\cdot w_{hl})
+\end{equation}
+
+In figure \ref{deriv_arcs_rnn} we can see the arcs wich are involved in the derivatives in the unfolded network.
+
+\tikzstyle{rnn_style}=[->,shorten >=1pt,auto,node distance=1.5cm,
+  thick,
+  neuron/.style={circle,fill=white!50,draw,minimum size=0.7cm,font=\sffamily\normalsize},
+  missing/.style={circle,fill=white!50,draw=none,minimum size=0.7cm,font=\sffamily\Huge\bfseries},
+  label/.style={node distance=1.2cm,rectangle,fill=white!50,draw=none,minimum size=0.7cm,font=\sffamily\normalsize},
+  thick_edge/.style={line width=1.2pt},
+  thin_edge/.style={line width=0.5pt}
+  ]
+\begin{figure}
+ \centering
+\begin{tikzpicture}[rnn_style]
+
+  
+  \node[neuron]    (x1)[]   {$u$};
+  \node[neuron]    (x2)[right of=x1]   {$l$};
+  \node[neuron]    (x3)[right of=x2]   {};
+  \node[label]     (xl)[left of=x1] {$t$};
+  
+  \node[neuron]    (h1)[below of =x1]   {$u$};
+  \node[neuron]    (h2)[right of=h1]   {$l$};
+  \node[neuron]    (h3)[right of=h2]   {};
+  \node[label]     (hl)[left of=h1] {$\hdots$};
+  
+  \node[neuron]    (y1)[below of=h1]   {$u$};
+  \node[neuron]    (y2)[right of=y1]   {$l$};
+  \node[neuron]    (y3)[right of=y2]   {};
+  \node[label]     (yl)[left of=y1] {$k+2$};
+
+  
+  \node[neuron]    (z1)[below of=y1]   {$u$};
+  \node[neuron]    (z2)[right of=z1]   {$l$};
+  \node[neuron]    (z3)[right of=z2]   {};
+  \node[label]     (zl)[left of=z1] {$k+1$};
+  
+  \node[neuron]    (w1)[below of=z1]   {$u$};
+  \node[neuron]    (w2)[right of=w1]   {$l$};
+  \node[neuron]    (w3)[right of=w2]   {};
+  \node[label]     (wl)[left of=w1] {$k$};
+
+  
+%   \node[label]      (lu)[left of=u] {$u$};
+%   \node[label]      (ll)[left of=z1] {$l$};
+
+
+  \path[->] (h1) edge [thick_edge]  (x1)
+	    (h1) edge [thin_edge]   (x2)
+	    (h1) edge [thin_edge]   (x3)
+	    (h2) edge [thick_edge]  (x1)
+	    (h2) edge [thin_edge]   (x2)
+	    (h2) edge [thin_edge]   (x3)
+	    (h3) edge [thick_edge]  (x1)
+	    (h3) edge [thin_edge]   (x2)
+	    (h3) edge [thin_edge]   (x3);
+
+  \path[->] (y1) edge [thick_edge]   (h1)
+	    (y1) edge [thick_edge]   (h2)
+	    (y1) edge [thick_edge]   (h3)
+	    (y2) edge [thick_edge]   (h1)
+	    (y2) edge [thick_edge]   (h2)
+	    (y2) edge [thick_edge]   (h3)
+	    (y3) edge [thick_edge]   (h1)
+	    (y3) edge [thick_edge]   (h2)
+	    (y3) edge [thick_edge]   (h3);
+  
+  
+  \path[->] (z1) edge [thin_edge]   (y1)
+	    (z1) edge [thick_edge]  (y2)
+	    (z1) edge [thin_edge]   (y3)
+	    (z2) edge [thick_edge]  (y1)
+	    (z2) edge [thick_edge]  (y2)
+	    (z2) edge [thick_edge]  (y3)
+	    (z3) edge [thin_edge]   (y1)
+	    (z3) edge [thin_edge]   (y2)
+	    (z3) edge [thin_edge]   (y3);
+	    
+  \path[->] (w1) edge [thin_edge]   (z1)
+	    (w1) edge [thick_edge]  (z2)
+	    (w1) edge [thin_edge]   (z3)
+	    (w2) edge [thin_edge]   (z1)
+	    (w2) edge [thin_edge]   (z2)
+	    (w2) edge [thin_edge]   (z3)
+	    (w3) edge [thin_edge]   (z1)
+	    (w3) edge [thin_edge]   (z2)
+	    (w3) edge [thin_edge]   (z3);
+
+	    
+
+
+\end{tikzpicture}
+\caption{Nodes involved in $\frac{\partial a^t_u }{\partial a^k_l}$}
+\label{deriv_arcs_rnn}
+\end{figure}
+
+
+
+

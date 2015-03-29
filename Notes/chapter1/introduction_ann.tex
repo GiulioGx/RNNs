@@ -66,44 +66,45 @@ A neural network looks like the one in figure \ref{fully_connected}
 
 \tikzstyle{nn_style}=[->,shorten >=1pt,auto,node distance=1.5cm,
   thick,
-  neuron/.style={circle,fill=white!50,node distance=2.5cm,draw,minimum size=0.7cm,font=\sffamily\normalsize},
+  neuron/.style={circle,fill=white!50,node distance=2cm,draw,minimum size=0.7cm,font=\sffamily\normalsize},
   missing/.style={circle,font=\sffamily\Large,node distance=0.95cm},
   label/.style={node distance=1.2cm,rectangle,fill=white!50,draw=none,minimum size=0.7cm,font=\sffamily\normalsize},
   layer/.style={rectangle,fill=white!50,draw,minimum width=1.5cm,font=\sffamily\Large},
   loopStyle/.style={in=120,out=60, distance=2.5cm},
-  weight/.style = {above,sloped,pos=0.3},]
+  weight/.style = {above,sloped,pos=0.3},
+  thin_edge/.style={line width=0.5pt}]
 \begin{figure}
  \centering
 \begin{tikzpicture}[nn_style]
    
-   \def\layersep{3cm}
+   \def\layersep{2cm}
   
     % Draw the input layer nodes
     \foreach \name / \y in {1,...,4}
     % This is the same as writing \foreach \name / \y in {1/1,2/2,3/3,4/4}
-        \node[neuron, pin=below:$x_\y$] (I-\name) at (-\y *2,0) {};
+        \node[neuron, pin=below:$x_\y$] (I-\name) at (-\y *1.5,0) {};
 
     % Draw the hidden layer nodes
     \foreach \name / \y in {1,...,5}
-        \path[yshift=0.5cm]
-            node[neuron] (H-\name) at (-\y *2  + 1.1, \layersep) {};
+        \path[yshift=0.5cm,thin_edge]
+            node[neuron] (H-\name) at (-\y *1.5  + 0.7, \layersep) {};
 
     % Draw the output layer nodes
     \foreach \name / \y in {1,...,3}
-        \path[yshift=0.5cm]
-            node[neuron, pin=above:$y_\y$] (O-\name) at (-\y *2 - 0.9, \layersep*2) {};
+        \path[yshift=0.5cm,thin_edge]
+            node[neuron, pin=above:$y_\y$] (O-\name) at (-\y *1.5 - 0.9, \layersep*2) {};
 
     % Connect every node in the input layer with every node in the
     % hidden layer.
     \foreach \source in {1,...,4}
         \foreach \dest in {1,...,5}
-            \path (I-\source) edge (H-\dest);
+            \path[thin_edge] (I-\source) edge (H-\dest);
             
     % Connect every node in the hidden layer with every node in the
     % output layer.
     \foreach \source in {1,...,5}
         \foreach \dest in {1,...,3}
-            \path (H-\source) edge (O-\dest);
+            \path[thin_edge] (H-\source) edge (O-\dest);
 
 \end{tikzpicture}
 \caption{Artificial neural network example}
