@@ -131,6 +131,40 @@ In figure \ref{deriv_arcs_rnn} we can see the arcs wich are involved in the deri
 \label{deriv_arcs_rnn}
 \end{figure}
 
+In matrix notation we have:
+
+\begin{equation}
+ \frac{\partial \vec{a}^t}{\partial \mat{W}^{rec}} = \sum_{k=1}^t \frac{\partial \vec{a}^t}{\partial \vec{a}^k} \cdot \frac{\partial \vec{a}^k}{\partial \mat{W}^{rec}}
+\end{equation}
+
+
+\begin{equation}
+\frac{\partial a^{k}}{\partial \mat{W}_j^{rec}} =
+ \begin{bmatrix}
+   \phi_1^{k-1}    & 0                & \cdots      & \cdots       & 0  \\
+   0               & \phi_2^{k-1}     & \cdots      & \cdots       & 0  \\
+   \vdots          & \vdots           & \ddots      & \vdots       &\vdots\\
+   0               & \cdots           & \cdots      & \cdots       & \phi^{k-1}_{r}
+\end{bmatrix}
+\end{equation}
+
+\begin{equation}
+\frac{\partial \vec{a}^t}{\partial \vec{a}^k} \triangleq \mat{\Delta}^{tk} = \mat{\Delta}^{t(k+1)} \cdot \mat{W}^{rec} \cdot diag(\sigma'(\vec{a}^k))
+\end{equation}
+The derivatives with respect to $\mat{W}^{in}$ and $\vec{b}^{rec}$ have the same structure.
+The derivatives with respect to $W^{out}, b^{out}$ are straightfoward:
+
+\begin{equation}
+\frac{\partial \vec{g}}{\partial \mat{W}^{out}} = \sum_{t=1}^T \frac{\partial g_t}{\partial \vec{y^t}} \cdot J(F) \cdot \frac{\partial \vec{y}^t}{\partial \mat{W}^{out}} 
+\end{equation}
+
+\begin{equation}
+\frac{\partial \vec{g}}{\partial \vec{b}^{out}} = \sum_{t=1}^T \frac{\partial g_t}{\partial \vec{y^t}} \cdot J(F) \cdot \frac{\partial \vec{y}^t}{\partial \vec{b}^{out}} 
+\end{equation}
+
+
+
+
 
 
 
