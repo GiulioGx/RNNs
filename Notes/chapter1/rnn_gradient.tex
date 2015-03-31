@@ -149,8 +149,14 @@ In matrix notation we have:
 \end{equation}
 
 \begin{equation}
-\frac{\partial \vec{a}^t}{\partial \vec{a}^k} \triangleq \mat{\Delta}^{tk} = \mat{\Delta}^{t(k+1)} \cdot \mat{W}^{rec} \cdot diag(\sigma'(\vec{a}^k))
+\triangleq \mat{\Delta}^{tk}
 \end{equation}
+
+\begin{align}
+\mat{\Delta}^{tk} &= \mat{\Delta}^{t(k+1)} \cdot \mat{W}^{rec} \cdot diag(\sigma'(\vec{a}^k))\\
+&= \prod_{i=t}^{k+1} \mat{W}^{rec} \cdot diag(\sigma'(\vec{a}^i))
+\end{align}
+
 The derivatives with respect to $\mat{W}^{in}$ and $\vec{b}^{rec}$ have the same structure.
 The derivatives with respect to $W^{out}, b^{out}$ are straightfoward:
 

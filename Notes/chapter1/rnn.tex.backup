@@ -4,8 +4,8 @@ at a level $j<i$, as can be seen in figure \ref{rnn_model}. This is a key differ
 
 \tikzstyle{rnn_style}=[->,shorten >=1pt,auto,node distance=1.5cm,
   thick,
-  neuron/.style={circle,fill=white!50,draw,minimum size=0.7cm,font=\sffamily\Large\bfseries},
-  missing/.style={circle,fill=white!50,draw=none,minimum size=0.7cm,font=\sffamily\Huge\bfseries},
+  neuron/.style={circle,fill=white!50,node distance =1.2cm,draw,minimum size=0.7cm,font=\sffamily\Large\bfseries},
+  missing/.style={rectangle,node distance =1.2cm,fill=white!50,draw=none,minimum size=0.7cm,font=\sffamily\Huge\bfseries},
   label/.style={node distance=1.2cm,rectangle,fill=white!50,draw=none,minimum size=0.7cm,font=\sffamily\normalsize},
   layer/.style={rectangle,fill=white!50,draw,minimum width=4cm,font=\sffamily\normalsize},
   loopStyle/.style={in=120,out=60, distance=2.5cm},]
@@ -26,12 +26,12 @@ at a level $j<i$, as can be seen in figure \ref{rnn_model}. This is a key differ
   
   
   
-  \node[layer] (hl)[above of=x2,node distance=2.5cm] {Hidden layer};
-  \node[neuron](b) [right of=hl,node distance=3.5cm] {};
+  \node[layer] (hl)[above of=x2,node distance=2cm] {Hidden layer};
+  \node[neuron](b) [right of=hl,node distance=3cm] {};
   \node[label] (b_l) [right of=b] {bias=1};
-  \node[layer] (ol)[above of=hl,node distance=2.5cm] {Output layer};
+  \node[layer] (ol)[above of=hl,node distance=2cm] {Output layer};
   
-  \node[neuron] (o1) at (0,7) {};
+  \node[neuron] (o1) at (0,5.5) {};
   \node[neuron] (o2)[right of=o1] {};
   \node[neuron] (o3)[right of=o2] {};
   \node[missing](o4)[right of=o3] {$\hdots$};
@@ -61,9 +61,9 @@ at a level $j<i$, as can be seen in figure \ref{rnn_model}. This is a key differ
 	    (o3) edge []   (y2)
 	    (on) edge []   (yn)
 	    (hl) edge []  node[]{$W_{out}$} (ol)
-	    (b)  edge [bend left,dotted]  node[]{$b_{rec}$} (hl)
+	    (b)  edge [bend left,dotted,in= 160]  node[]{$b_{rec}$} (hl)
 	    (b)  edge [bend left,dotted,anchor=west, in= -160]  node[]{$b_{out}$} (ol)
-	    (hl) edge [loop ,in=-180,out=150, distance=2.5cm,anchor=east ]      node [align=center]  {$W_{rec} $} (hl);
+	    (hl) edge [loop ,in=-160,out=160, distance=3cm,anchor=east ]      node [align=center]  {$W_{rec} $} (hl);
 
 
 \end{tikzpicture}
@@ -229,6 +229,10 @@ $L_t$ is an arbitrary loss function at time step $t$.
 The definition takes into account the output for each temporal step, depending on the task at hand, it could be relevant or not to consider intermediate
 outputs; that's not a limitation, in fact we could define a loss which is computed only on the last output vector, at time $T$, and adds 0 for each
 other time step.
+
+
+\subsection{Gradient}
+\input{chapter1/rnn_gradient}
 
 
 
