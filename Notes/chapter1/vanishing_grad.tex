@@ -1,4 +1,4 @@
-We have senn in the previous section that
+We have seen in the previous section that
 \begin{equation}
 \frac{\partial \vec{a}^t}{\partial \vec{a}^k} = \prod_{i=t}^{k+1} \mat{W}^{rec} \cdot diag(\sigma'(\vec{a}^i))
 \end{equation}
@@ -21,8 +21,9 @@ Now, since hadamart product is commutative the following holds:
 \right]
 \end{equation}
 where the product over $i$ is intened to by element by element.
-Reshaping back the matrix to a diagonal form we obtain
-
+Reshaping back the matrix to a diagonal form we obtain:
 \begin{equation}
 \frac{\partial \vec{a}^t}{\partial \vec{a}^k} = (\mat{W}^{rec})^{(t-k-1)} \cdot diag(\prod_{i=t}^{k+1}\sigma'(\vec{a}^i))
 \end{equation}
+
+Let's observe that the first component depends only on the weight matrix, the second one instead depends both on inputs and the weight matrix.
