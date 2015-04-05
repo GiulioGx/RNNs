@@ -2,28 +2,3 @@ We have seen in the previous section that
 \begin{equation}
 \frac{\partial \vec{a}^t}{\partial \vec{a}^k} = \prod_{i=t}^{k+1} \mat{W}^{rec} \cdot diag(\sigma'(\vec{a}^i))
 \end{equation}
-We can dig a bit deeper into this equation, we can rewrite the latter using hadamart product
-\begin{equation}
-\frac{\partial \vec{a}^t}{\partial \vec{a}^k} = \prod_{i=t}^{k+1} \mat{W}^{rec} \circ  
-\left[
-\begin{array}{c|c|c|c}
-\sigma'(\vec{a}^i) & \sigma'(\vec{a}^i) & \cdots & \sigma'(\vec{a}^i) \\
-\end{array}
-\right]
-\end{equation}
-Now, since hadamart product is commutative the following holds:
-\begin{equation}
-\frac{\partial \vec{a}^t}{\partial \vec{a}^k} =  (\mat{W}^{rec})^{(t-k-1)} \circ  
-\left[
-\begin{array}{c|c|c|c}
-\prod_{i=t}^{k+1} \sigma'(\vec{a}^i) & \prod_{i=t}^{k+1} \sigma'(\vec{a}^i) & \cdots &  \prod_{i=t}^{k+1} \sigma'(\vec{a}^i) \\
-\end{array}
-\right]
-\end{equation}
-where the product over $i$ is intened to by element by element.
-Reshaping back the matrix to a diagonal form we obtain:
-\begin{equation}
-\frac{\partial \vec{a}^t}{\partial \vec{a}^k} = (\mat{W}^{rec})^{(t-k-1)} \cdot diag(\prod_{i=t}^{k+1}\sigma'(\vec{a}^i))
-\end{equation}
-
-Let's observe that the first component depends only on the weight matrix, the second one instead depends both on inputs and the weight matrix.
