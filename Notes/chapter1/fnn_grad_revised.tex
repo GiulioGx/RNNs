@@ -100,24 +100,25 @@ The derivates with respect to biases are compute in the same way:
 
 In matrix notation we can rewrite the previous equations as:
 \begin{equation}
- \frac{\partial a^U}{\partial \mat{W}^i} = \frac{\partial a^U}{\partial a^{i+1}} \cdot \frac{\partial a^{i+1}}{\partial \mat{W}^i}
+ \frac{\partial a^U}{\partial \mat{W}^i} = \frac{\partial a^U}{\partial a^{i}} \cdot \frac{\partial a^{i}}{\partial \mat{W}^i}
 \end{equation}
 
 
 \begin{equation}
-\frac{\partial a^{i+1}}{\partial \mat{W}_j^i} =
+\frac{\partial a^{i}}{\partial \mat{W}_j^i} =
  \begin{bmatrix}
-   \phi_1^{i}    & 0                & \cdots      & \cdots       & 0  \\
-   0               & \phi_2^{i}     & \cdots      & \cdots       & 0  \\
+   \phi_1^{i-1}    & 0                & \cdots      & \cdots       & 0  \\
+   0               & \phi_2^{i-1}     & \cdots      & \cdots       & 0  \\
    \vdots          & \vdots           & \ddots      & \vdots       &\vdots\\
-   0               & \cdots           & \cdots      & \cdots       & \phi^{i}_{p(i-1)}
+   0               & \cdots           & \cdots      & \cdots       & \phi^{i-1}_{p(i-1)}
 \end{bmatrix}
 \end{equation}
 
 \begin{equation}
-\frac{\partial a^U}{\partial a^{i+1}} \triangleq 
+\frac{\partial a^U}{\partial a^{i}} \triangleq \Delta^{i} = 
 \begin{cases}
-    \Delta^{i} =   \Delta^{i+1} \cdot W^{i} \cdot diag(\sigma'(\vec{a}^{i})) & \text{if} i<U\\
+      \Delta^{i+1} \cdot diag(\sigma'(\vec{a}^{i+1})) \cdot W^{i+1}  & \text{if } i<U\\
+      Id & \text{if } i==U\\
     0 & \text{otherwise}.
 \end{cases}
 \end{equation}

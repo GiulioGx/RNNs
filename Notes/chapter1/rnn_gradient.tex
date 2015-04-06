@@ -153,8 +153,8 @@ In matrix notation we have:
 \end{equation}
 
 \begin{align}
-\mat{\Delta}^{tk} &= \mat{\Delta}^{t(k+1)} \cdot \mat{W}^{rec} \cdot diag(\sigma'(\vec{a}^k))\\
-&= \prod_{i=t}^{k+1} \mat{W}^{rec} \cdot diag(\sigma'(\vec{a}^i))
+\mat{\Delta}^{tk} &= \mat{\Delta}^{t(k+1)} \cdot diag(\sigma'(\vec{a}^k)) \cdot \mat{W}^{rec} \\
+&= \prod_{i=t}^{k+1} diag(\sigma'(\vec{a}^i)) \cdot \mat{W}^{rec}  
 \end{align}
 
 The derivatives with respect to $\mat{W}^{in}$ and $\vec{b}^{rec}$ have the same structure.
