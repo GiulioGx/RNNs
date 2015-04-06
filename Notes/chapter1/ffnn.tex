@@ -8,7 +8,7 @@ A feed foward neural network is tuple
 $$FFNN\triangleq<\vec{p},\set{W},\set{B},\sigma(\cdot),F(\cdot)>$$
 \begin{itemize}
  \item $\vec{p} \in \mathbb{N}^U$ is the vector whose elements $p(k)$ are the number of neurons of layer $k$; $U$ is the number of layers
- \item $\set{W} \triangleq \{W^k_{p(k+1) \times p(k)}, k=1,...,U \}$ is the set of weight matrixes of each layer
+ \item $\set{W} \triangleq \{W^k_{p(k) \times p(k-1)}, k=1,...,U \}$ is the set of weight matrixes of each layer
  \item $\set{B} \triangleq \{\vec{b}^k \in \mathbb{R}^{p(k)}, k=1,...,U \} $ is the set of bias vectors
  \item $\sigma(\cdot): \mathbb{R}\rightarrow \mathbb{R}$ is the activation function
  \item $F(\cdot): \mathbb{R}^{p(U)}\rightarrow \mathbb{R}^{p(U)}$ is the output function
@@ -19,8 +19,8 @@ $$FFNN\triangleq<\vec{p},\set{W},\set{B},\sigma(\cdot),F(\cdot)>$$
 Given a FFNN:
 \begin{itemize}
  \item The number of output units is $p(U)$
- \item The number of input units is $p(1)$
- \item The total number of weights is $\mathcal{N}(\set{W}) \triangleq \sum_{k=1}^U p(k+1)p(k)$
+ \item The number of input units is $p(0)$
+ \item The total number of weights is $\mathcal{N}(\set{W}) \triangleq \sum_{k=1}^U p(k)p(k-1)$
  \item The total number of biases is $\mathcal{N}(\set{B}) \triangleq \sum_{k=1}^U p(k)$
 \end{itemize}
 \end{remark}
@@ -31,7 +31,7 @@ Given a $FFNN$ and an input vector $\vec{x} \in \mathbb{R}^{p(1)}$ the output $\
 \begin{align}
 &\vec{y}=F(\vec{a}^{U}) &\\
 &\vec{\phi}^{i} \triangleq \sigma(\vec{a}_{i}), & i=1,...,U\\
-&\vec{a}^{i} \triangleq W^{i+1} \cdot \vec{\phi}^{i-1} +\vec{b}^i  & i=1,...,U\\
+&\vec{a}^{i} \triangleq W^{i} \cdot \vec{\phi}^{i-1} +\vec{b}^i  & i=1,...,U\\
 &\vec{\phi}^{0} \triangleq \vec{x} &
 \end{align}
 \end{defn}
@@ -66,8 +66,8 @@ The activation function $\sigma(\cdot)$ is often choosen from:
 
 \begin{equation}
   ReLU(x)=\begin{cases}
-    x, & \text{if $x>0$}.\\
-    0, & \text{otherwise}.
+    x & \text{if $x>0$}.\\
+    0 & \text{otherwise}.
   \end{cases}
 \end{equation}
 

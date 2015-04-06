@@ -31,7 +31,7 @@ Given a $FFNN$ and an input vector $\vec{x} \in \mathbb{R}^{p(1)}$ the output $\
 \begin{align}
 &\vec{y}=F(\vec{a}^{U}) &\\
 &\vec{\phi}^{i} \triangleq \sigma(\vec{a}_{i}), & i=1,...,U\\
-&\vec{a}^{i} \triangleq W^{i+1} \cdot \vec{\phi}^{i-1} +\vec{b}^i  & i=1,...,U\\
+&\vec{a}^{i} \triangleq W^{i} \cdot \vec{\phi}^{i-1} +\vec{b}^i  & i=1,...,U\\
 &\vec{\phi}^{0} \triangleq \vec{x} &
 \end{align}
 \end{defn}
@@ -42,11 +42,11 @@ Given a $FFNN$ and an input vector $\vec{x} \in \mathbb{R}^{p(1)}$ the output $\
 As we have seen in the previous section a model sush as $FFNN$ can approximate arbitrary well any smooth function, so a natural application of feed foward neural networks is machine learning.
 To model an optimization problem we first need to define a dataset $D$ as 
 \begin{equation}
-D\triangleq\{x^{(i)} \in \mathbb{R}^p, y^{(i)} \in \mathbb{R}^q,  i=1,...,N\}
+D\triangleq\{\overline{\vec{x}}^{(i)} \in \mathbb{R}^p, \overline{\vec{y}}^{(i)} \in \mathbb{R}^q,  i=1,...,N\}
 \end{equation}
 Then we need a loss function $L_D:\mathbb{R}^{\mathcal{N}(\set{W})+\mathcal{N}(\set{B})} \rightarrow \mathbb{R}_{\geq 0}$ over $D$ defined as
 \begin{equation}
-L_D(\set{W},\set{B})\triangleq\frac{1}{N}\sum_{i=1}^N L(\vec{x}^{(i)},\vec{y}^{(i)}) 
+L_D(\set{W},\set{B})\triangleq\frac{1}{N}\sum_{i=1}^N L(\overline{\vec{x}}^{(i)},\vec{y}^{(i)}) 
 \end{equation}
 $L(\vec{x},\vec{y}):\mathbb{R}^{p(U)} \rightarrow \mathbb{R}$ is an arbitrary loss function computed on the $i^{th}$ example. Note that $\vec{y}$ is the output of the
 networks, so it depends on $(\set{W},\set{B})$
@@ -81,6 +81,6 @@ Once we have selected the values for all hyper-paramters the optimization proble
 \end{equation}
 
 
-
+\subsection{Gradient}
 \input{chapter1/fnn_grad_revised}
 

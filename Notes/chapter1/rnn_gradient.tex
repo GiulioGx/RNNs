@@ -30,7 +30,7 @@ where
 
 Let's observe a first difference from ffnn case: since the weights are shared in each unfolded layer, in equation \ref{sum_over_time} we have to sum over time.
 
-Let $P(l)$ be the set of parents of neuron $l$, as we did for ffnn.
+Let $P(l)$ be the set of parents of neuron $l$, defined as the set of parents in the unfolded network.
 
 \begin{equation}
  \delta_{lu}^{tk} = \sum_{h\in P(l)} \delta_{hu}^{tk} \cdot \sigma'(a_h^{t-1}\cdot w_{hl})
