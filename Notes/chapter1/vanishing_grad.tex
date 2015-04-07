@@ -1,12 +1,13 @@
 We have seen in the previous section that
 \begin{equation}
-\frac{\partial \vec{a}^t}{\partial \vec{a}^k} = \prod_{i=t}^{k+1}  diag(\sigma'(\vec{a}^i)) \cdot \mat{W}^{rec}
+\frac{\partial \vec{a}^t}{\partial \vec{a}^k} = \prod_{i=t-1}^{k}  diag(\sigma'(\vec{a}^i)) \cdot \mat{W}^{rec}
 \end{equation}
 
 In an equivalent way with can rewtite the previous equation with respect to a couple of neurons $i$ and $j$
 
 \begin{equation}
-\frac{\partial \vec{a}_i^t}{\partial \vec{a}_j^k} = \sum_{q\in P(j)} \sum_{l \in P(q)} \hdots \sum_{h : i \in P(h)} w_{qj} \hdots w_{jh} \cdot \sigma'(a_j^k)\sigma'(a_q^{k+1}) \hdots \sigma'(a_i^t)
+\frac{\partial \vec{a}_i^t}{\partial \vec{a}_j^k} = \sum_{q\in P(j)} \sum_{l \in P(q)} \hdots \sum_{h : i \in P(h)} w_{qj} \hdots w_{jh} \cdot \sigma'(a_j^k)\sigma'(a_q^{k+1}) \hdots \sigma'(a_i^{t-1})
+\label{expanded_mem}
 \end{equation}
 
 
@@ -105,16 +106,45 @@ the weight of each arc we walk through and the cost of each neuron we cross, as 
 
 
 \end{tikzpicture}
-\caption{The cost for a path from neuron $2$ at time $k$ to neuron $1$ at time $t$ is $w_{12}w_{31}w_{13}\hdots w_{11}\cdot \sigma_2^k \sigma_1^{k+1}\sigma_3^{k+2} \hdots \sigma_1^t $ }
+\caption{The cost for a path from neuron $2$ at time $k$ to neuron $1$ at time $t$ is $w_{12}w_{31}w_{13}\hdots w_{11}\cdot \sigma_2^k \sigma_1^{k+1}\sigma_3^{k+2} \hdots \sigma_1^{t-1} $ }
 \label{gradient_path_cost}
 \end{figure}
 
 
 We can further characterize each path cost noticing that we can separate two components, one that depends only on the weights $w_{qj} \hdots w_{jh}$ and the other that depends both on the weights and the inputs
-$\sigma'(a_j^k)\sigma'(a_q^{k+1}) \hdots \sigma'(a_i^t)$.
+$\sigma'(a_j^k)\sigma'(a_q^{k}) \hdots \sigma'(a_i^{t-1})$.
 
 
-CITARE HOCHREITER\\
+\paragraph{Hochreiter Analysis: Weak upper bound}
+
+Let's put $$\sigma'_{max} \triangleq \underset{i=k,...,t-1}{\text{max  }} \{||diag(\sigma'(a^i))||_1\}$$.
+
+We have then:
+$$\left\Vert \prod_{i=t-1}^{k}  diag(\sigma'(\vec{a}^i)) \cdot \mat{W}^{rec} \right\Vert_1 <= \prod_{i=t-1}^{k} p \cdot ||diag(\sigma'(\vec{a}^i))||_1 \cdot ||\mat{W}^{rec}||_1 $$
+since 
+$$||diag(\sigma)\cdot \mat{W}||_1 =
+\left\Vert 
+\begin{array}{c c c c}
+\sigma_1 w_{11} & \sigma_1 w_{12} & \hdots & \sigma_1 w_{1p}  \\
+\sigma_1 w_{21} & \sigma_2 w_{22} & \hdots & \sigma_2 w_{2p}  \\
+\vdots & \vdots  & \vdots & \vdots  \\
+\sigma_p w_{p1} & \sigma_p w_{p2} & \hdots & \sigma_p w_{pp}  \\
+\end{array}  
+\right\Vert_1
+<=p \cdot \sigma_{max} \cdot ||\mat{W}||_1
+$$
+
+Hence
+\begin{align}
+\left\Vert \prod_{i=t-1}^{k}  diag(\sigma'(\vec{a}^i)) \cdot \mat{W}^{rec} \right\Vert_1 & <= p \cdot \big(\sigma'_{max}\cdot ||\mat{W}||_1\big)^{t-k-1} \\
+& = p \cdot \tau^{t-k-1}
+\end{align}
+where $$\tau \triangleq \sigma'_{max}\cdot ||\mat{W}||_1$$
+
+So we have exponential decay if $\tau<1$; We can match this condition assuring that
+$$\frac{p\cdot ||w_{max}||}{\sigma_{max}}<1$$ where $w_{max}$ is the maxixum value in the weight matrix.
+
+
 COMPORTAMENTO SBALIATO STRUTTURALE\\
 RELU-NON POSSIAMO IMPARARE AD ACCENDERE \\
 MEMORIA\\
