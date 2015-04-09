@@ -135,34 +135,25 @@ $\sigma'(a_j^k)\sigma'(a_q^{k}) \hdots \sigma'(a_i^{t-1})$.
 \paragraph{Hochreiter Analysis: Weak upper bound}
 In this paragraph we report some useful consideration made by Hochreiter, please see \cite{Hochreiter95longshort-term} for more details.
 
-Let's put $$\sigma'_{max} \triangleq \underset{i=k,...,t-1}{\text{max  }} \{||diag(\sigma'(a^i))||_1\}$$.
-
-We have then:
-$$\left\Vert \prod_{i=t-1}^{k}  diag(\sigma'(\vec{a}^i)) \cdot \mat{W}^{rec} \right\Vert_1 <= \prod_{i=t-1}^{k} p \cdot ||diag(\sigma'(\vec{a}^i))||_1 \cdot ||\mat{W}^{rec}||_1 $$
-since 
-$$||diag(\sigma)\cdot \mat{W}||_1 =
-\left\Vert 
-\begin{array}{c c c c}
-\sigma_1 w_{11} & \sigma_1 w_{12} & \hdots & \sigma_1 w_{1p}  \\
-\sigma_1 w_{21} & \sigma_2 w_{22} & \hdots & \sigma_2 w_{2p}  \\
-\vdots & \vdots  & \vdots & \vdots  \\
-\sigma_p w_{p1} & \sigma_p w_{p2} & \hdots & \sigma_p w_{pp}  \\
-\end{array}  
-\right\Vert_1
-<=p \cdot \sigma_{max} \cdot ||\mat{W}||_1
-$$
-
-Hence
+Let's put:
+$$\norm{\mat{A}}_{max}\triangleq \underset{i,j}{\text{max}}|a_{ij}| $$
+$$\sigma'_{max} \triangleq \underset{i=k,...,t-1}{\text{max  }} \{\norm{diag(\sigma'(a^i))}_{max}\}$$
+Since
 \begin{align}
-\left\Vert \prod_{i=t-1}^{k}  diag(\sigma'(\vec{a}^i)) \cdot \mat{W}^{rec} \right\Vert_1 & <= p \cdot \big(\sigma'_{max}\cdot ||\mat{W}||_1\big)^{t-k-1} \\
-& = p \cdot \tau^{t-k-1}
+\norm{\mat{A}\cdot\mat{B}}_{max} &<= p \cdot \norm{\mat{A}}\cdot \norm{\mat{B}}_{max} & \forall \mat{A},\mat{B} \in \mathbb{R}_{p\times p} 
 \end{align}
-where $$\tau \triangleq \sigma'_{max}\cdot ||\mat{W}||_1$$
+it holds:
+\begin{align}
+\norm{\frac{\partial \vec{a}^t}{\partial \vec{a}^k}}_{max} &= \norm{ \prod_{i=t-1}^{k}  diag(\sigma'(\vec{a}^i)) \cdot \mat{W}^{rec} }_{max}\\
+&\leq \prod_{i=t-1}^{k} p \cdot \norm{diag(\sigma'(\vec{a}^i))}_{max} \cdot \norm{\mat{W}^{rec}}_{max}\\
+&\leq \big(p \cdot \sigma'_{max} \cdot \norm{\mat{W}^{rec}}_{max}\big)^{t-k-1} \\
+&= \tau^{t-k-1}
+\end{align}
+where $$\tau \triangleq p \cdot \sigma'_{max} \cdot \norm{\mat{W}^{rec}}_{max}$$
 
-So we have exponential decay if $\tau<1$; We can match this condition if
-$$\frac{p\cdot ||w_{max}||}{\sigma_{max}}<1$$ where $w_{max}$ is the maxixum value in the weight matrix.
+So we have exponential decay if $\tau<1$; We can match this condition if $\norm{\mat{W}^{rec}}_{max} \leq \frac{1}{p\cdot \sigma'_{max}}$
 
-As pointed out by Hochreiter in his work we can match this condition, in the case of sigmoid activation function by choosing $w_{max} < \frac{4}{n}$.
+As pointed out by Hochreiter in his work we can match this condition, in the case of sigmoid activation function by choosing $\norm{\mat{W}^{rec}}_{max} < \frac{4}{p}$.
 
 \paragraph{The ReLU case}
 
