@@ -9,4 +9,5 @@
 \BOOKMARK [2][-]{subsection.1.3.2}{Learning with ffnn}{section.1.3}% 9
 \BOOKMARK [2][-]{subsection.1.3.3}{Gradient}{section.1.3}% 10
 \BOOKMARK [2][-]{subsection.1.3.4}{The vanishing and exploding gradient problem}{section.1.3}% 11
-\BOOKMARK [0][-]{appendix.A}{Notation}{}% 12
+\BOOKMARK [1][-]{section.1.4}{Activation functions and gradient}{chapter.1}% 12
+\BOOKMARK [0][-]{appendix.A}{Notation}{}% 13

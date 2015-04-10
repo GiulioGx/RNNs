@@ -11,6 +11,8 @@ the overall norm of the gradient to explode.
 We refer to \textit{vanishing} gradient problem when, vice versa, \textit{long terms} diminish exponentially.
 
 
+PERCHE E UN PROBLEMO???
+
 We have seen in the previous section that
 \begin{equation}
 \frac{\partial \vec{a}^t}{\partial \vec{a}^k} = \prod_{i=t-1}^{k}  diag(\sigma'(\vec{a}^i)) \cdot \mat{W}^{rec}
@@ -158,18 +160,7 @@ Let's note that we would actually reach this upper bound for some $i,j$ only if 
 value.
 
 \paragraph{The ReLU case}
-
 ReLU case is a bit special, because of it's derivative.
-\begin{align}
-  \sigma(x)&=\begin{cases}
-    x & \text{if $x>0$}.\\
-    0 & \text{otherwise}.
-  \end{cases} \\ 
-    \sigma'(x)&=\begin{cases}
-    1 & \text{if $x>0$}.\\
-    0 & \text{otherwise}.
-  \end{cases}
-\end{align}
 ReLU's derivative is a step function, it can assume only two values: $1$ when the neuron is active, $0$ otherwise.
 Returning to the path graph we introduced earlier we can say that a path is \textit{enabled} if each neuron in that path is active. In fact if we
 encounter a path wich cross a non active neuron it's path cost will be 0; on the contrary for an \textit{enabled} path thw cost will be simply the product
@@ -274,18 +265,6 @@ of weight of the arcs we went through, as we can see in figure \ref{gradient_pat
 
 So $\vert (\frac{\partial \vec{a}^t}{\partial \vec{a}^k})_{ij}\vert$ ranges from 0, when no path is enabled to, $\vert ((\mat{W}^{rec})^{t-k-1})_{ij} \vert$ when all
 paths are enabled, which is consistent with what we found in Hochreiter analysis.
-
-\begin{remark}
-We can see from ReLU's derivative expression that when a neuron is not active it doesn't contribute to the gradient, i.e the derivative with respct to that
-neuron is zero. This leads to notice that we cannot learn to 'turn on' a neuron with ReLU activation function. This behaviour is somehow different from what
-we would have using sigmoid activation function, for instance, which have always derivative different from zero. Such activation function though
-exhibit a good behaviour near zero, they enter \textit{saturation} regions when they are too distant from zero. In such region derivatives are close to zero,
-so again we cannot learn anything good from there.
-//DISEGNINO DELLE FUNZIONI
-\end{remark}
-
-
-
 
 COMPORTAMENTO SBALIATO STRUTTURALE\\
 
