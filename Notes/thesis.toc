@@ -12,6 +12,6 @@
 \contentsline {subsection}{\numberline {1.3.4}The vanishing and exploding gradient problem}{16}{subsection.1.3.4}
 \contentsline {paragraph}{Hochreiter Analysis: Weak upper bound}{17}{section*.2}
 \contentsline {paragraph}{The ReLU case}{18}{section*.3}
-\contentsline {chapter}{\numberline {A}Notation}{19}{appendix.A}
-\contentsline {paragraph}{Derivative with respect to vector}{19}{section*.4}
-\contentsline {paragraph}{Derivative with respect to matrix}{19}{section*.5}
+\contentsline {chapter}{\numberline {A}Notation}{21}{appendix.A}
+\contentsline {paragraph}{Derivative with respect to vector}{21}{section*.4}
+\contentsline {paragraph}{Derivative with respect to matrix}{21}{section*.5}

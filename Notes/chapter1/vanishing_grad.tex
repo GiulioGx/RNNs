@@ -152,12 +152,14 @@ it holds:
 where $$\tau \triangleq p \cdot \sigma'_{max} \cdot \norm{\mat{W}^{rec}}_{max}$$
 
 So we have exponential decay if $\tau<1$; We can match this condition if $\norm{\mat{W}^{rec}}_{max} \leq \frac{1}{p\cdot \sigma'_{max}}$
-
 As pointed out by Hochreiter in his work we can match this condition, in the case of sigmoid activation function by choosing $\norm{\mat{W}^{rec}}_{max} < \frac{4}{p}$.
+
+Let's note that we would actually reach this upper bound for some $i,j$ only if all the path cost have the same sign and the activations function take maximal
+value.
 
 \paragraph{The ReLU case}
 
-Relu case is a bit special, because of it's derivative.
+ReLU case is a bit special, because of it's derivative.
 \begin{align}
   \sigma(x)&=\begin{cases}
     x & \text{if $x>0$}.\\
@@ -168,7 +170,7 @@ Relu case is a bit special, because of it's derivative.
     0 & \text{otherwise}.
   \end{cases}
 \end{align}
-Relu's derivative is a step function, it can assume only two values: $1$ when the neuron is active, $0$ otherwise.
+ReLU's derivative is a step function, it can assume only two values: $1$ when the neuron is active, $0$ otherwise.
 Returning to the path graph we introduced earlier we can say that a path is \textit{enabled} if each neuron in that path is active. In fact if we
 encounter a path wich cross a non active neuron it's path cost will be 0; on the contrary for an \textit{enabled} path thw cost will be simply the product
 of weight of the arcs we went through, as we can see in figure \ref{gradient_path_cost_relu}
@@ -271,12 +273,21 @@ of weight of the arcs we went through, as we can see in figure \ref{gradient_pat
 
 
 So $\vert (\frac{\partial \vec{a}^t}{\partial \vec{a}^k})_{ij}\vert$ ranges from 0, when no path is enabled to, $\vert ((\mat{W}^{rec})^{t-k-1})_{ij} \vert$ when all
-paths are enabled, which is a more strict bound that what we can find with Hochreiter analysis.
+paths are enabled, which is consistent with what we found in Hochreiter analysis.
+
+\begin{remark}
+We can see from ReLU's derivative expression that when a neuron is not active it doesn't contribute to the gradient, i.e the derivative with respct to that
+neuron is zero. This leads to notice that we cannot learn to 'turn on' a neuron with ReLU activation function. This behaviour is somehow different from what
+we would have using sigmoid activation function, for instance, which have always derivative different from zero. Such activation function though
+exhibit a good behaviour near zero, they enter \textit{saturation} regions when they are too distant from zero. In such region derivatives are close to zero,
+so again we cannot learn anything good from there.
+//DISEGNINO DELLE FUNZIONI
+\end{remark}
+
 
 
 
 COMPORTAMENTO SBALIATO STRUTTURALE\\
-RELU-NON POSSIAMO IMPARARE AD ACCENDERE \\
 
 
 
