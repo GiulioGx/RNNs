@@ -1,17 +1,26 @@
-The training of recurrent neural networks is afflicted by the so called \textit{exploding} and \textit{vanishing} gradient problem; such problem is directly linked to
-the notion of memory. When we talk about memory what are we really talking about is the dependecy of neuron output at a given time $t$ from previous time steps,
+The training of recurrent neural networks is afflicted by the so called \textit{exploding} and \textit{vanishing} gradient problem.
+Such problem is directly linked to the notion of memory. When we talk about memory what are we really talking about is the dependecy of neuron output at a given time $t$ from previous time steps,
 that is how $\phi^t$ depends on $\phi^{k}$ with $t>k$. This dependecy is captured by the expression $\frac{\partial \vec{a}^t}{\partial \vec{a}^k}$.
-Obiuvsly when such expression equals zero it means neuron output at time $t$ is not affected by output at time $k$, so if this situation occurs during training
-we have no hope to produce output sequence that take into consideration input sequence components previous  to time $k$.
+Obiuvsly when such expression equals zero it means neuron output at time $t$ is not affected by output at time $k$.
 The terms $\frac{\partial \vec{a}^t}{\partial \vec{a}^k}$ are usually referred as \textit{long term} contribution when $k<<t$ or \textit{short term} contributions
 otherwise.
-
 We talk of \textit{exploding} gradient problem when \textit{long term} components grow exponentially, on the contrary of \textit{short term} ones, causing
 the overall norm of the gradient to explode.
 We refer to \textit{vanishing} gradient problem when, vice versa, \textit{long terms} diminish exponentially.
 
+\textit{Vanishing} gradient means long term components approach zero value, this in turn leads to the fact that the output of the net won't depend on inputs of distant temporal steps, i.e the output
+sequence is determined only using recent temporal input: we say that the network doesn't have memory. Evidently this can have catastrofic effects on the classification error. Imagine we would like
+to classiy an input sequence as positive wheter or not it contains a zero character. It would seem a rather easy task, a task other classification models wouldn't have difficulties with. If the neural network
+we are trainign has \textit{vanishing} gradient issue, it means it perform classification only using the most recent temporal input. What if the zero character was at the beginning of the sequence? Of course
+the predicition would be wrong.
 
-PERCHE E UN PROBLEMO???
+\textit{Exploding} gradient seems to be a different kind of a problem, it does not affect the ability of the network to use information from distant temporal step, on the contrary we have very strong
+information about where to go. One could argue that some components, namely, the long term ones, have gradient norm exponentially bigger than short term ones. I fail to see why this could be a problem:
+of course output of the first timke stepes influences all successive steps, so changing the output of a long term neuron do imply big changes in the output of more distant in time neurons.
+The only reason i see for considering this a problem is that big gradient norm, in general, is a problem if we are using algortithms like gradient descent with constant step.
+If we are to compute a step in the gradient direction with a fixed step and gradient has too big norm we may make a too big step.
+
+Let's now return to the nature of the problem and try to explaining the mechanics of it.
 
 We have seen in the previous section that
 \begin{equation}
@@ -22,6 +31,8 @@ Intuitively we can understand why such problems arises, more evidently in \texti
 We can notice each temporal contribution is the product of $l=t-k-1$ jacobian matrix, so in \textit{long term} components $l$ is large and depening on
 eigenvalues of the matrixes in the product we can go exponentially fast towards 0 or infinty.
 
+
+\paragraph{Explaining the problem using network's graph}
 Let's now dig a bit deeper and rewrite equation \ref{memory_eq} with respect to a couple of neurons $i$ and $j$
 
 \begin{equation} 

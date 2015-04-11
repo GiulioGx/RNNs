@@ -50,27 +50,28 @@
 \@writefile{lof}{\contentsline {figure}{\numberline {1.7}{\ignorespaces Nodes involved in $\frac  {\partial a^t_u }{\partial a^k_l}$}}{15}{figure.1.7}}
 \newlabel{deriv_arcs_rnn}{{1.7}{15}{Nodes involved in $\frac {\partial a^t_u }{\partial a^k_l}$}{figure.1.7}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {1.3.4}The vanishing and exploding gradient problem}{16}{subsection.1.3.4}}
-\newlabel{memory_eq}{{1.45}{16}{The vanishing and exploding gradient problem}{equation.1.3.45}{}}
-\newlabel{expanded_mem}{{1.46}{16}{The vanishing and exploding gradient problem}{equation.1.3.46}{}}
 \citation{Hochreiter95longshort-term}
-\@writefile{lof}{\contentsline {figure}{\numberline {1.8}{\ignorespaces The cost for a path from neuron $2$ at time $k$ to neuron $1$ at time $t$ is $w_{12}w_{31}w_{13}\mathinner {\ldotp \ldotp \ldotp }w_{11}\cdot \sigma _2^k \sigma _1^{k+1}\sigma _3^{k+2} \mathinner {\ldotp \ldotp \ldotp }\sigma _1^{t-1} $ }}{17}{figure.1.8}}
-\newlabel{gradient_path_cost}{{1.8}{17}{The cost for a path from neuron $2$ at time $k$ to neuron $1$ at time $t$ is $w_{12}w_{31}w_{13}\hdots w_{11}\cdot \sigma _2^k \sigma _1^{k+1}\sigma _3^{k+2} \hdots \sigma _1^{t-1} $}{figure.1.8}{}}
-\@writefile{toc}{\contentsline {paragraph}{Hochreiter Analysis: Weak upper bound}{17}{section*.2}}
-\@writefile{lof}{\contentsline {figure}{\numberline {1.9}{\ignorespaces The cost for an enabled path from neuron $2$ at time $k$ to neuron $1$ at time $t$ is $w_{12}w_{31}w_{13}\mathinner {\ldotp \ldotp \ldotp }w_{11}$ }}{18}{figure.1.9}}
-\newlabel{gradient_path_cost_relu}{{1.9}{18}{The cost for an enabled path from neuron $2$ at time $k$ to neuron $1$ at time $t$ is $w_{12}w_{31}w_{13}\hdots w_{11}$}{figure.1.9}{}}
-\@writefile{toc}{\contentsline {paragraph}{The ReLU case}{18}{section*.3}}
+\newlabel{memory_eq}{{1.45}{17}{The vanishing and exploding gradient problem}{equation.1.3.45}{}}
+\@writefile{toc}{\contentsline {paragraph}{Explaining the problem using network's graph}{17}{section*.2}}
+\newlabel{expanded_mem}{{1.46}{17}{Explaining the problem using network's graph}{equation.1.3.46}{}}
+\@writefile{toc}{\contentsline {paragraph}{Hochreiter Analysis: Weak upper bound}{17}{section*.3}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1.8}{\ignorespaces The cost for a path from neuron $2$ at time $k$ to neuron $1$ at time $t$ is $w_{12}w_{31}w_{13}\mathinner {\ldotp \ldotp \ldotp }w_{11}\cdot \sigma _2^k \sigma _1^{k+1}\sigma _3^{k+2} \mathinner {\ldotp \ldotp \ldotp }\sigma _1^{t-1} $ }}{18}{figure.1.8}}
+\newlabel{gradient_path_cost}{{1.8}{18}{The cost for a path from neuron $2$ at time $k$ to neuron $1$ at time $t$ is $w_{12}w_{31}w_{13}\hdots w_{11}\cdot \sigma _2^k \sigma _1^{k+1}\sigma _3^{k+2} \hdots \sigma _1^{t-1} $}{figure.1.8}{}}
+\@writefile{toc}{\contentsline {paragraph}{The ReLU case}{18}{section*.4}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1.9}{\ignorespaces The cost for an enabled path from neuron $2$ at time $k$ to neuron $1$ at time $t$ is $w_{12}w_{31}w_{13}\mathinner {\ldotp \ldotp \ldotp }w_{11}$ }}{19}{figure.1.9}}
+\newlabel{gradient_path_cost_relu}{{1.9}{19}{The cost for an enabled path from neuron $2$ at time $k$ to neuron $1$ at time $t$ is $w_{12}w_{31}w_{13}\hdots w_{11}$}{figure.1.9}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {1.4}Activation functions and gradient}{19}{section.1.4}}
-\@writefile{toc}{\contentsline {paragraph}{Sigmoid}{19}{section*.4}}
-\@writefile{lof}{\contentsline {figure}{\numberline {1.10}{\ignorespaces sigmoid and it's derivative}}{19}{figure.1.10}}
-\newlabel{sigmoid_plot}{{1.10}{19}{sigmoid and it's derivative}{figure.1.10}{}}
-\@writefile{toc}{\contentsline {paragraph}{ReLU}{19}{section*.5}}
-\@writefile{lof}{\contentsline {figure}{\numberline {1.11}{\ignorespaces ReLU and it's derivative}}{20}{figure.1.11}}
-\newlabel{relu_plot}{{1.11}{20}{ReLU and it's derivative}{figure.1.11}{}}
-\@writefile{toc}{\contentsline {chapter}{\numberline {A}Notation}{21}{appendix.A}}
+\@writefile{toc}{\contentsline {paragraph}{Sigmoid}{19}{section*.5}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1.10}{\ignorespaces sigmoid and it's derivative}}{20}{figure.1.10}}
+\newlabel{sigmoid_plot}{{1.10}{20}{sigmoid and it's derivative}{figure.1.10}{}}
+\@writefile{toc}{\contentsline {paragraph}{ReLU}{20}{section*.6}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1.11}{\ignorespaces ReLU and it's derivative}}{21}{figure.1.11}}
+\newlabel{relu_plot}{{1.11}{21}{ReLU and it's derivative}{figure.1.11}{}}
+\@writefile{toc}{\contentsline {chapter}{\numberline {A}Notation}{23}{appendix.A}}
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\@writefile{toc}{\contentsline {paragraph}{Derivative with respect to vector}{21}{section*.6}}
-\@writefile{toc}{\contentsline {paragraph}{Derivative with respect to matrix}{21}{section*.7}}
+\@writefile{toc}{\contentsline {paragraph}{Derivative with respect to vector}{23}{section*.7}}
+\@writefile{toc}{\contentsline {paragraph}{Derivative with respect to matrix}{23}{section*.8}}
 \bibdata{biblio}
 \bibcite{Hochreiter95longshort-term}{1}
 \bibstyle{plain}
