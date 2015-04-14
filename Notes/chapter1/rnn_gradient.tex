@@ -154,7 +154,8 @@ In matrix notation we have:
 
 \begin{align}
 \mat{\Delta}^{tk} &= \mat{\Delta}^{t(k+1)} \cdot diag(\sigma'(\vec{a}^k)) \cdot \mat{W}^{rec} \\
-&= \prod_{i=t-1}^{k} diag(\sigma'(\vec{a}^i)) \cdot \mat{W}^{rec}  
+&= \prod_{i=t-1}^{k} diag(\sigma'(\vec{a}^i)) \cdot \mat{W}^{rec}
+\label{rnn_delta}
 \end{align}
 
 The derivatives with respect to $\mat{W}^{in}$ and $\vec{b}^{rec}$ have the same structure.
@@ -168,6 +169,11 @@ The derivatives with respect to $W^{out}, b^{out}$ are straightfoward:
 \frac{\partial \vec{g}}{\partial \vec{b}^{out}} = \sum_{t=1}^T \frac{\partial g_t}{\partial \vec{y^t}} \cdot J(F) \cdot \frac{\partial \vec{y}^t}{\partial \vec{b}^{out}} 
 \end{equation}
 
+\paragraph{Backpropagation through time (BPTT)}
+\textit{Backpropagation through time} is an extension of the \textit{backpropagation} algorithm we described for FNNs, we can think of BPTT
+simply as a standard BP in the unfolded network. The same consideration done for BP also apply for BPTT, the difference is of course in how derivatives
+are computed, equation \ref{rnn_delta}. Time complexity is easily derived noticing that in the unfolded network there are $n \cdot T$ units, this
+yields time complexity $\mathcal{O}(n\cdot T)$. Please see \cite{Williams90anefficient} for more details.
 
 
 

@@ -121,6 +121,7 @@ In matrix notation we can rewrite the previous equations as:
       Id & \text{if } i==U\\
     0 & \text{otherwise}.
 \end{cases}
+\label{fnn_delta}
 \end{equation}
 
 where
@@ -138,3 +139,16 @@ diag(\sigma'(\vec{a}^{i})) =
 \frac{\partial a^U}{\partial b^i} &= \frac{\partial a^U}{\partial a^i} \cdot \frac{\partial a^i}{\partial b^i}\\
 &= \Delta^{i} \cdot Id
 \end{align}
+
+
+\paragraph{Backpropagation}
+
+Previous equations form the basis of the famous \textit{backpropagation} algorithm which was first introduced by Rumelhart et al. \cite{Rumelhart86}.
+The algorithm consists in two \textit{passes}, a \textit{foward pass} and a \textit{backward pass} which give the name to the algorithm.
+The \textit{foward pass} start from the first level, compute the hidden units value and the proceed to upper layers using the value of the hidden units 
+$\vec{a^i}$ of previous layers which have been already computed. The \textit{backward pass} instead, start from the upmost layer and computes $\Delta^{i}$
+which we can compute, as we can see from equation \ref{fnn_delta} , once we know $\Delta^{i+1}$, which we have computed in the previous step, and $\vec{a^i}$ which
+we have computed in the \textit{foward pass}.
+
+\textit{Backpropagation} algorithm has time complexity $\mathcal{O}(n)$ where $n$ is the number of units.
+

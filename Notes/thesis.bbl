@@ -4,4 +4,17 @@
 Sepp Hochreiter and Jürgen Schmidhuber.
 \newblock Long short-term memory, 1995.
 
+\bibitem{Rumelhart86}
+D.~E. Rumelhart, G.~E. Hinton, and R.~J. Williams.
+\newblock Parallel distributed processing: Explorations in the microstructure
+  of cognition, vol. 1.
+\newblock chapter Learning Internal Representations by Error Propagation, pages
+  318--362. MIT Press, Cambridge, MA, USA, 1986.
+
+\bibitem{Williams90anefficient}
+Ronald~J. Williams and Jing Peng.
+\newblock An efficient gradient-based algorithm for on-line training of
+  recurrent network trajectories.
+\newblock {\em Neural Computation}, 2:490--501, 1990.
+
 \end{thebibliography}

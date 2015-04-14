@@ -16,7 +16,7 @@ the predicition would be wrong.
 
 \textit{Exploding} gradient seems to be a different kind of a problem, it does not affect the ability of the network to use information from distant temporal step, on the contrary we have very strong
 information about where to go. One could argue that some components, namely, the long term ones, have gradient norm exponentially bigger than short term ones. I fail to see why this could be a problem:
-of course output of the first timke stepes influences all successive steps, so changing the output of a long term neuron do imply big changes in the output of more distant in time neurons.
+of course output of the first time stepes influences all successive steps, so changing the output of a long term neuron do imply big changes in the output of more distant in time neurons.
 The only reason i see for considering this a problem is that big gradient norm, in general, is a problem if we are using algortithms like gradient descent with constant step.
 If we are to compute a step in the gradient direction with a fixed step and gradient has too big norm we may make a too big step.
 
@@ -30,6 +30,31 @@ We have seen in the previous section that
 Intuitively we can understand why such problems arises, more evidently in \textit{long term} components, just by looking at equation \ref{memory_eq};
 We can notice each temporal contribution is the product of $l=t-k-1$ jacobian matrix, so in \textit{long term} components $l$ is large and depening on
 eigenvalues of the matrixes in the product we can go exponentially fast towards 0 or infinty.
+
+\paragraph{Hochreiter Analysis: Weak upper bound}
+In this paragraph we report some useful consideration made by Hochreiter, please see \cite{Hochreiter95longshort-term} for more details.
+
+Let's put:
+$$\norm{\mat{A}}_{max}\triangleq \underset{i,j}{\text{max}}|a_{ij}| $$
+$$\sigma'_{max} \triangleq \underset{i=k,...,t-1}{\text{max  }} \{\norm{diag(\sigma'(a^i))}_{max}\}$$
+Since
+\begin{align}
+\norm{\mat{A}\cdot\mat{B}}_{max} &<= p \cdot \norm{\mat{A}}\cdot \norm{\mat{B}}_{max} & \forall \mat{A},\mat{B} \in \mathbb{R}_{p\times p} 
+\end{align}
+it holds:
+\begin{align}
+\norm{\frac{\partial \vec{a}^t}{\partial \vec{a}^k}}_{max} &= \norm{ \prod_{i=t-1}^{k}  diag(\sigma'(\vec{a}^i)) \cdot \mat{W}^{rec} }_{max}\\
+&\leq \prod_{i=t-1}^{k} p \cdot \norm{diag(\sigma'(\vec{a}^i))}_{max} \cdot \norm{\mat{W}^{rec}}_{max}\\
+&\leq \big(p \cdot \sigma'_{max} \cdot \norm{\mat{W}^{rec}}_{max}\big)^{t-k-1} \\
+&= \tau^{t-k-1}
+\end{align}
+where $$\tau \triangleq p \cdot \sigma'_{max} \cdot \norm{\mat{W}^{rec}}_{max}$$
+
+So we have exponential decay if $\tau<1$; We can match this condition if $\norm{\mat{W}^{rec}}_{max} \leq \frac{1}{p\cdot \sigma'_{max}}$
+As pointed out by Hochreiter in his work we can match this condition, in the case of sigmoid activation function by choosing $\norm{\mat{W}^{rec}}_{max} < \frac{4}{p}$.
+
+Let's note that we would actually reach this upper bound for some $i,j$ only if all the path cost have the same sign and the activations function take maximal
+value.
 
 
 \paragraph{Explaining the problem using network's graph}
@@ -145,31 +170,6 @@ We can further characterize each path cost noticing that we can separate two com
 $\sigma'(a_j^k)\sigma'(a_q^{k}) \hdots \sigma'(a_i^{t-1})$.
 
 
-\paragraph{Hochreiter Analysis: Weak upper bound}
-In this paragraph we report some useful consideration made by Hochreiter, please see \cite{Hochreiter95longshort-term} for more details.
-
-Let's put:
-$$\norm{\mat{A}}_{max}\triangleq \underset{i,j}{\text{max}}|a_{ij}| $$
-$$\sigma'_{max} \triangleq \underset{i=k,...,t-1}{\text{max  }} \{\norm{diag(\sigma'(a^i))}_{max}\}$$
-Since
-\begin{align}
-\norm{\mat{A}\cdot\mat{B}}_{max} &<= p \cdot \norm{\mat{A}}\cdot \norm{\mat{B}}_{max} & \forall \mat{A},\mat{B} \in \mathbb{R}_{p\times p} 
-\end{align}
-it holds:
-\begin{align}
-\norm{\frac{\partial \vec{a}^t}{\partial \vec{a}^k}}_{max} &= \norm{ \prod_{i=t-1}^{k}  diag(\sigma'(\vec{a}^i)) \cdot \mat{W}^{rec} }_{max}\\
-&\leq \prod_{i=t-1}^{k} p \cdot \norm{diag(\sigma'(\vec{a}^i))}_{max} \cdot \norm{\mat{W}^{rec}}_{max}\\
-&\leq \big(p \cdot \sigma'_{max} \cdot \norm{\mat{W}^{rec}}_{max}\big)^{t-k-1} \\
-&= \tau^{t-k-1}
-\end{align}
-where $$\tau \triangleq p \cdot \sigma'_{max} \cdot \norm{\mat{W}^{rec}}_{max}$$
-
-So we have exponential decay if $\tau<1$; We can match this condition if $\norm{\mat{W}^{rec}}_{max} \leq \frac{1}{p\cdot \sigma'_{max}}$
-As pointed out by Hochreiter in his work we can match this condition, in the case of sigmoid activation function by choosing $\norm{\mat{W}^{rec}}_{max} < \frac{4}{p}$.
-
-Let's note that we would actually reach this upper bound for some $i,j$ only if all the path cost have the same sign and the activations function take maximal
-value.
-
 \paragraph{The ReLU case}
 ReLU case is a bit special, because of it's derivative.
 ReLU's derivative is a step function, it can assume only two values: $1$ when the neuron is active, $0$ otherwise.
@@ -273,13 +273,15 @@ of weight of the arcs we went through, as we can see in figure \ref{gradient_pat
 \label{gradient_path_cost_relu}
 \end{figure}
 
-
 So $\vert (\frac{\partial \vec{a}^t}{\partial \vec{a}^k})_{ij}\vert$ ranges from 0, when no path is enabled to, $\vert ((\mat{W}^{rec})^{t-k-1})_{ij} \vert$ when all
-paths are enabled, which is consistent with what we found in Hochreiter analysis.
+paths are enabled and all path cost have the same sign, which is consistent with what we found in Hochreiter analysis.
 
-COMPORTAMENTO SBALIATO STRUTTURALE\\
+As a final observation on this matter it's worth noticing how a bad initiliazation of $\mat{W^{rec}}$ can lead to poor solutions or extremely large convergence time
+just because such initialization imply $\frac{\partial \vec{a}^t}{\partial \vec{a}^k}$ approaching zero norm for $t>>k$. Moreover, even if we somehow provide
+an initialization matrix wich is unafflicted by this curse, it's certainy possible that we reach such a bad matrix during learning phase.
+Several techniques have been proposed to overcome this problem, they will be the topic of later chapters.
 
-
+//SAREBBE CARINO COLLEGARE TALI MATRICI PROBLEMATICHE CON OTTIMI LOCALI, SARA VERO?
 
 
 
