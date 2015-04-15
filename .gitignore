@@ -109,4 +109,5 @@ hs_err_pid*
 #non references pdf
 Notes/*.pdf
 
-#Reference folder
+#References folder
+References/*
