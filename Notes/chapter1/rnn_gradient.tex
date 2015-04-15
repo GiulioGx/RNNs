@@ -172,8 +172,8 @@ The derivatives with respect to $W^{out}, b^{out}$ are straightfoward:
 \paragraph{Backpropagation through time (BPTT)}
 \textit{Backpropagation through time} is an extension of the \textit{backpropagation} algorithm we described for FNNs, we can think of BPTT
 simply as a standard BP in the unfolded network. The same consideration done for BP also apply for BPTT, the difference is of course in how derivatives
-are computed, equation \ref{rnn_delta}. Time complexity is easily derived noticing that in the unfolded network there are $n \cdot T$ units, this
-yields time complexity $\mathcal{O}(n\cdot T)$. Please see \cite{Williams90anefficient} for more details.
+are computed, equation \ref{rnn_delta}. Time complexity is easily derived noticing that in the unfolded network there are $n \cdot T$ units, where $n$ is the number of units of the RNN .This
+yields time complexity $\mathcal{O}(\mathcal{N}(\set{W})\cdot T)$. Please see \cite{Williams90anefficient} for more details.
 
 
 

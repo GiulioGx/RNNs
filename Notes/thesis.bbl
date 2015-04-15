@@ -4,6 +4,11 @@
 Sepp Hochreiter and Jürgen Schmidhuber.
 \newblock Long short-term memory, 1995.
 
+\bibitem{Hornik89}
+K.~Hornik, M.~Stinchcombe, and H.~White.
+\newblock Multilayer feedforward networks are universal approximators.
+\newblock {\em Neural Netw.}, 2(5):359--366, July 1989.
+
 \bibitem{Rumelhart86}
 D.~E. Rumelhart, G.~E. Hinton, and R.~J. Williams.
 \newblock Parallel distributed processing: Explorations in the microstructure
