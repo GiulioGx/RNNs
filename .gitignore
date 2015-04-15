@@ -88,6 +88,7 @@ hs_err_pid*
 *.synctex.gz
 *.bbl
 *.blg
+*.out
 
 #Archives
 *.zip
