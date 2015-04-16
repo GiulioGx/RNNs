@@ -13,7 +13,17 @@ I was expecting a `{' or a `('---line 33 of file biblio.bib
  : ON EXPRESSIVENESS
 (Error may have been on previous line)
 I'm skipping whatever remains of this entry
-I was expecting a `{' or a `('---line 55 of file biblio.bib
+I was expecting a `{' or a `('---line 36 of file biblio.bib
+ : 
+ : @article{Hornik89,
+(Error may have been on previous line)
+I'm skipping whatever remains of this entry
+I was expecting a `{' or a `('---line 57 of file biblio.bib
+ : 
+ : @MISC{Hyotyniemi96turingmachines,
+(Error may have been on previous line)
+I'm skipping whatever remains of this entry
+I was expecting a `{' or a `('---line 73 of file biblio.bib
  : 
  : ON LEARNING
 (Error may have been on previous line)
@@ -60,4 +70,4 @@ warning$ -- 1
 while$ -- 15
 width$ -- 5
 write$ -- 44
-(There were 3 error messages)
+(There were 5 error messages)
