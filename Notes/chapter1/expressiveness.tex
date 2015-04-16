@@ -1,0 +1,32 @@
+In this section we will investigate the expressive power of neural networks, presenting some results that motivate the use of neural networks as learning
+model; we will also show how different architectures leads to different kind of computational power.
+ 
+
+Maybe the most important result regarding the expressive power of neural networks it's due to Hornik et al. \cite{Hornik89} which basically states
+\textit{'Multilayered feed foward networks with at least one hidden layer, using an arbitrary squashing function can approximate virtually any function
+of interest to any desired degree of accuracy provided sufficiently many hidden units are available'}.
+
+To give a more formal result we need first to define what \textit{approximate to any degree of accuracy means}, this concept is captured in definition
+\ref{dens_compact}
+ 
+\begin{defn}
+ A subset S of $\mathbb{C}^n$ (continuoos functions in $\mathbb{R}^n$) is said to be \textit{uniformly dense on compacta in} $\mathbb{C}^n$ if $\forall$
+ compact set $K\subset \mathbb{R}^n$ holds: $\forall \epsilon >0$, $\forall g(\cdot) \in \mathbb{C}^n$ $\exists f(\cdot) \in S$ such that 
+ $\underset{x \in K}{\text{sup  }} \norm{f(x)-g(x)}<\epsilon$ 
+ \label{dens_compact}
+\end{defn}
+
+Hornik result is contained in theorem \ref{universal_approx}.
+\begin{thm}
+ For every activation function $\sigma$, $\forall n\in \mathbb{N}$, feed foward neural
+ networks with one hidden layer are a class of functions which is \textit{uniformly dense on compacta in} $\mathbb{C}^n$
+\label{universal_approx}.
+\end{thm}
+Therem \ref{universal_approx} extends also to Borel measurable functions, please see \cite{Hornik89} for more details.
+
+
+This result implies that FNN are \textit{universal approximators}, this is a strong argument for using such models in machine learning.
+It's important to notice, however, that the theorem holds if we have \textit{sufficiently many} units. In praticice the number of units will bounded
+by the machine capabilities and by computational time, of course greater the number of units greater will be the learning time. This will limit
+the expressiveness of the network to a subset of all measurable functions.
+

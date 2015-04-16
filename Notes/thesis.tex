@@ -20,6 +20,9 @@
 \usetikzlibrary{automata,arrows,decorations.pathreplacing}
 \usetikzlibrary{positioning}
 
+%trick to avoid floating images trespassing sections boundaries
+\usepackage[section]{placeins}
+
 %Symbols:
 
 \let\emptyset\varnothing
@@ -42,6 +45,8 @@
 \newtheorem{defn}{Definition}
 \theoremstyle{definition}
 \newtheorem{remark}{Remark}
+\theoremstyle{definition}
+\newtheorem{thm}{Theorem}
 
 %Paths:
 
@@ -56,15 +61,16 @@
 \maketitle
 \tableofcontents
 \chapter{Artificial neural networks}
-\section{A family of models}
-\input{chapter1/introduction_ann}
-\section{Feed foward neural networks}
-\input{chapter1/ffnn}
-\section{Recurrent neural networks}
-\input{chapter1/rnn}
-\section{Activation functions and gradient}
-\input{chapter1/activation_funs}
-\section{On expressiveness}
+  \section{A family of models}
+  \input{chapter1/introduction_ann}
+  \section{Feed foward neural networks}
+  \input{chapter1/ffnn}
+  \section{Recurrent neural networks}
+  \input{chapter1/rnn}
+  \section{Activation functions and gradient}
+  \input{chapter1/activation_funs}
+  \section{On expressiveness}
+  \input{chapter1/expressiveness}
 
 \appendix
 \chapter{Notation}
@@ -72,7 +78,7 @@
 
 
 \newpage
- \nocite{*}		 % Mostra in bibliografia anche gli oggetti non citati 
+% \nocite{*}		 % Mostra in bibliografia anche gli oggetti non citati 
 \bibliography{biblio}{}
 \bibliographystyle{plain}
 
