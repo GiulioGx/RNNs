@@ -275,13 +275,20 @@ of weight of the arcs we went through, as we can see in figure \ref{gradient_pat
 
 So $\vert (\frac{\partial \vec{a}^t}{\partial \vec{a}^k})_{ij}\vert$ ranges from 0, when no path is enabled to, $\vert ((\mat{W}^{rec})^{t-k-1})_{ij} \vert$ when all
 paths are enabled and all path cost have the same sign, which is consistent with what we found in Hochreiter analysis.
+\\\\
+COLLEGARE MELIO
+Let's pretend we have found, with some learning tecnique, an assigment for all the weights which causes the gradient to have zero norm. We could be happy with
+it and claim to have 'solved' the problem. However, by chance, we discover that $\frac{\partial \vec{a}^T}{\partial \vec{a}^k}$ has zero norm for all
+time steps $k<\tau$. So, the output of the network doesn't depend on the inputs of the sequence for those time steps.
+In other words we have found a possibly optimal solution for the truncated sequence ${x}_{k=\tau:T}$. The solution we have found is an optimal candidate to
+be a bad local minimum.
 
 As a final observation on this matter it's worth noticing how a bad initiliazation of $\mat{W^{rec}}$ can lead to poor solutions or extremely large convergence time
 just because such initialization imply $\frac{\partial \vec{a}^t}{\partial \vec{a}^k}$ approaching zero norm for $t>>k$. Moreover, even if we somehow provide
 an initialization matrix wich is unafflicted by this curse, it's certainy possible that we reach such a bad matrix during learning phase.
 Several techniques have been proposed to overcome this problem, they will be the topic of later chapters.
 
-//SAREBBE CARINO COLLEGARE TALI MATRICI PROBLEMATICHE CON OTTIMI LOCALI, SARA VERO?
+
 
 
 
