@@ -1,4 +1,15 @@
+INTRO
 
+\begin{defn}
+A function $f(\cdot):\mathbb{R}\rightarrow\mathbb{R}$ is said to be a \textit{squashing} function if
+\begin{align}
+&\lim_{x \to +\infty} f(x) = b \\
+& \lim_{x \to -\infty} f(x) = a 
+\end{align}
+where $b,a \in \mathbb{R}$ and $b>a$
+\end{defn}
+
+Step function, ramp function and all sigmoidal functions are all examples of squashing functions.
 
 \paragraph{Sigmoid}
 
@@ -18,7 +29,22 @@ to the gradient.
 \label{sigmoid_plot}
 \end{figure}
 
+\paragraph{Tanh}
 
+As we can see from figure \ref{tanh_plot} tanh (and it's derivative) have a behaviour similar to the sigmoid one; Again we have two saturation region towards
+infinity: that's typical of all squashing functions.
+
+\begin{align}
+ tanh(x)&=\frac{e^x-e^{-x}}{e^x+e^{-x}} \\
+ tanh'(x)&= 1 - tanh^2(x)  
+\end{align}
+
+\begin{figure}[h]
+  \centering
+    \includegraphics[width=0.9\textwidth]{tanh_and_deriv.eps}
+  \caption{tanh and it's derivative}
+\label{tanh_plot}
+\end{figure}
 
 \paragraph{ReLU}
 
@@ -35,8 +61,9 @@ to the gradient.
 \end{align}
 
 
-As we can see from figure \ref{relu_plot}, ReLU's derivative is a step function; it has only one \textit{saturation} region $(-\inf, 0]$ and a region in which is always takes value one, $(0,+\inf]$
-This leads to the fact that we cannot learn to 'turn on' a swictched off neuron ($x<0$), but we have no \textit{saturation} region toward $+\inf$.
+ReLU is a bit different from other activation function seen so far: the main difference is that's it's not a squashing function.
+As we can see from figure \ref{relu_plot}, ReLU's derivative is the step function; it has only one \textit{saturation} region $(-\inf, 0]$ and a region in which is always takes value one, $(0,+\inf]$
+This leads to the fact that we cannot learn to 'turn on' a switched off neuron ($x<0$), but we have no \textit{saturation} region toward $+\inf$.
 
 \begin{figure}[h]
   \centering

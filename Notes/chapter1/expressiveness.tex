@@ -1,8 +1,10 @@
 In this section we will investigate the expressive power of neural networks, presenting some results that motivate the use of neural networks as learning
-model; we will also show how different architectures leads to different kind of computational power.
+model. 
+
+ALTRO
  
 
-Maybe the most important result regarding the expressive power of neural networks it's due to Hornik et al. \cite{Hornik89} which basically states
+One of the first import results regarding the expressive power of neural networks it's due to Hornik et al. \cite{Hornik89} which basically states
 \textit{'Multilayered feed foward networks with at least one hidden layer, using an arbitrary squashing function can approximate virtually any function
 of interest to any desired degree of accuracy provided sufficiently many hidden units are available'}.
 
@@ -18,17 +20,37 @@ To give a more formal result we need first to define what \textit{approximate to
 
 Hornik result is contained in theorem \ref{universal_approx}.
 \begin{thm}
- For every activation function $\sigma$, $\forall n\in \mathbb{N}$, feed foward neural
+ For every squashing function $\sigma$, $\forall n\in \mathbb{N}$, feed foward neural
  networks with one hidden layer are a class of functions which is \textit{uniformly dense on compacta in} $\mathbb{C}^n$
 \label{universal_approx}.
 \end{thm}
-Therem \ref{universal_approx} extends also to Borel measurable functions, please see \cite{Hornik89} for more details.
 
+Theorem \ref{universal_approx} extends also to Borel measurable functions, please see \cite{Hornik89} for more details.
 
-This result implies that FNN are \textit{universal approximators}, this is a strong argument for using such models in machine learning.
-It's important to notice, however, that the theorem holds if we have \textit{sufficiently many} units. In praticice the number of units will bounded
+A survey of other approches, some of which constructive, which achieve similar results can be found in \cite{Scarselli98}
+At the momement I dont know of any results concerning ReLU activation function.
+
+This results implies that FNN are \textit{universal approximators}, this is a strong argument for using such models in machine learning.
+It's important to notice, however, that the theorem holds if we have \textit{sufficiently many} units. In practice the number of units will bounded
 by the machine capabilities and by computational time, of course greater the number of units greater will be the learning time. This will limit
-the expressiveness of the network to a subset of all measurable functions.
-\\\\POGGIO GIROSI?
-\\\\RNNs
+the expressiveness of the network to a subset of all measurable functions. 
+\\\\Let's now turn our attention to RNNs and see how the architectural changes, namely the addition of backward links, affect the expressive power of the model.
+It's suffice to say that RNNs are as powerfull as turing machine. Siegelman and Sontag \cite{Siegelmann91turingcomputability} proved the existence 
+of a finite neural network, with sigmoid activation function, which simulates a universal Turing machine. Hy{\"o}tyniemi \cite{Hyotyniemi96turingmachines} proved, equivalently,
+that turing machine are recurrrent neural network showing how to build a network, using instead ReLU activation function, that performs step by step 
+all the instruction of a computer program.
+
+This seems extremely good news, since we could simulate turing machines, hence all algorithms we can think of, using a recurrent neural network with a finite
+number of units; recall that for FFNN we had to suppose infinitely many units to obtain the universal approximator property.
+Of course there is a pitfall: we can simulate any turing machine but we have to allow sufficiently many time steps.
+
+SPACE-TIME STRUGGLE
+
+IMPLICT REPRESENTATION
+
+DISCORSI SULL UTILIZZO
+
+
+
+
 

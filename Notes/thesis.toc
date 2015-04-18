@@ -17,8 +17,9 @@
 \contentsline {paragraph}{The ReLU case}{19}{section*.8}
 \contentsline {section}{\numberline {1.4}Activation functions and gradient}{21}{section.1.4}
 \contentsline {paragraph}{Sigmoid}{21}{section*.9}
-\contentsline {paragraph}{ReLU}{21}{section*.10}
-\contentsline {section}{\numberline {1.5}On expressiveness}{23}{section.1.5}
-\contentsline {chapter}{\numberline {A}Notation}{25}{appendix.A}
-\contentsline {paragraph}{Derivative with respect to vector}{25}{section*.11}
-\contentsline {paragraph}{Derivative with respect to matrix}{25}{section*.12}
+\contentsline {paragraph}{Tanh}{22}{section*.10}
+\contentsline {paragraph}{ReLU}{22}{section*.11}
+\contentsline {section}{\numberline {1.5}On expressiveness}{24}{section.1.5}
+\contentsline {chapter}{\numberline {A}Notation}{27}{appendix.A}
+\contentsline {paragraph}{Derivative with respect to vector}{27}{section*.12}
+\contentsline {paragraph}{Derivative with respect to matrix}{27}{section*.13}

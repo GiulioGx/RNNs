@@ -18,56 +18,56 @@ I was expecting a `{' or a `('---line 36 of file biblio.bib
  : @article{Hornik89,
 (Error may have been on previous line)
 I'm skipping whatever remains of this entry
-I was expecting a `{' or a `('---line 57 of file biblio.bib
+I was expecting a `{' or a `('---line 79 of file biblio.bib
  : 
  : @MISC{Hyotyniemi96turingmachines,
 (Error may have been on previous line)
 I'm skipping whatever remains of this entry
-I was expecting a `{' or a `('---line 73 of file biblio.bib
+I was expecting a `{' or a `('---line 95 of file biblio.bib
  : 
  : ON LEARNING
 (Error may have been on previous line)
 I'm skipping whatever remains of this entry
 Warning--empty booktitle in Rumelhart86
-You've used 4 entries,
+You've used 7 entries,
             2118 wiz_defined-function locations,
-            529 strings with 4818 characters,
-and the built_in function-call counts, 1455 in all, are:
-= -- 146
-> -- 62
+            548 strings with 5296 characters,
+and the built_in function-call counts, 2279 in all, are:
+= -- 229
+> -- 95
 < -- 2
-+ -- 25
-- -- 20
-* -- 102
-:= -- 234
-add.period$ -- 12
-call.type$ -- 4
-change.case$ -- 22
++ -- 38
+- -- 30
+* -- 155
+:= -- 372
+add.period$ -- 20
+call.type$ -- 7
+change.case$ -- 36
 chr.to.int$ -- 0
-cite$ -- 5
-duplicate$ -- 53
-empty$ -- 117
-format.name$ -- 20
-if$ -- 308
+cite$ -- 8
+duplicate$ -- 82
+empty$ -- 188
+format.name$ -- 30
+if$ -- 478
 int.to.chr$ -- 0
-int.to.str$ -- 4
-missing$ -- 3
-newline$ -- 22
-num.names$ -- 8
-pop$ -- 26
+int.to.str$ -- 7
+missing$ -- 5
+newline$ -- 36
+num.names$ -- 14
+pop$ -- 41
 preamble$ -- 1
-purify$ -- 18
+purify$ -- 29
 quote$ -- 0
-skip$ -- 42
+skip$ -- 66
 stack$ -- 0
-substring$ -- 103
-swap$ -- 13
+substring$ -- 156
+swap$ -- 16
 text.length$ -- 2
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 16
+type$ -- 28
 warning$ -- 1
-while$ -- 15
-width$ -- 5
-write$ -- 44
+while$ -- 25
+width$ -- 8
+write$ -- 74
 (There were 5 error messages)
