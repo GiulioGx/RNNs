@@ -37,7 +37,7 @@ the expressiveness of the network to a subset of all measurable functions.
 \\\\Let's now turn our attention to RNNs and see how the architectural changes, namely the addition of backward links, affect the expressive power of the model.
 It's suffice to say that RNNs are as powerfull as turing machine. Siegelman and Sontag \cite{Siegelmann91turingcomputability} proved the existence 
 of a finite neural network, with sigmoid activation function, which simulates a universal Turing machine. Hy{\"o}tyniemi \cite{Hyotyniemi96turingmachines} proved, equivalently,
-that turing machine are recurrrent neural network showing how to build a network, using instead ReLU activation function, that performs step by step 
+that turing machine are recurrent neural network showing how to build a network, using instead ReLU activation function, that performs step by step 
 all the instruction of a computer program.
 
 This seems extremely good news, since we could simulate turing machines, hence all algorithms we can think of, using a recurrent neural network with a finite
@@ -45,7 +45,7 @@ number of units; recall that for FFNN we had to suppose infinitely many units to
 Of course there is a pitfall: we can simulate any turing machine but we have to allow sufficiently many time steps.
 
 
-\paragraph{An Example}
+\paragraph{Understanding the difference between RNN and FFNN models}
 ESEMPIO CONCRETO SU FNN VS RNN
 
 SPACE-TIME STRUGGLE

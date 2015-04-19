@@ -20,6 +20,7 @@
 \contentsline {paragraph}{Tanh}{22}{section*.10}
 \contentsline {paragraph}{ReLU}{22}{section*.11}
 \contentsline {section}{\numberline {1.5}On expressiveness}{24}{section.1.5}
+\contentsline {paragraph}{Understanding the difference between RNN and FFNN models}{25}{section*.12}
 \contentsline {chapter}{\numberline {A}Notation}{27}{appendix.A}
-\contentsline {paragraph}{Derivative with respect to vector}{27}{section*.12}
-\contentsline {paragraph}{Derivative with respect to matrix}{27}{section*.13}
+\contentsline {paragraph}{Derivative with respect to vector}{27}{section*.13}
+\contentsline {paragraph}{Derivative with respect to matrix}{27}{section*.14}
