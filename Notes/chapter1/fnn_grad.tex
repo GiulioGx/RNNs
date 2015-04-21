@@ -1,64 +1,161 @@
-\subsection{Gradient}
-
-We can compute partial derivatives with respect to a single weight $w_{lj}$, using simply the chain rule, as 
-
-$$\frac{\partial L}{\partial w_{lj}}=\frac{\partial L}{\partial a_l} \cdot \frac{\partial a_l}{\partial w_{lj}}=\delta_l \cdot \phi_j$$
-where we put
-
+Consider a $\net{FFNN}=<\vec{p},\set{W},\set{B},\sigma(\cdot),F(\cdot)>$, let $L:\mathbb{R}^{p(U)} \rightarrow \mathbb{R}$ a loss function and 
+$g(\cdot):\mathbb{R}^{\mathcal{N}(\set{W})+\mathcal{N}(\set{B})} \rightarrow \mathbb{R}$ be the function defined by
 \begin{equation}
-\delta_l \triangleq \frac{\partial L}{\partial a_l}
+g(\set{W},\set{B}) \defeq L(F(a^U( \overline{\vec{x}}^{(i)} (\set{W},\set{B}))),\overline{\vec{y}}^{(i)} )
+\label{loss_over_x_i}
 \end{equation}
+Equation $\ref{loss_over_x_i}$, tough it seems rather scary, express a very simple thing: we consider a single input example 
+$\overline{\vec{x}}^{(i)}$, we run it through the network and we confront it's output $F(a^U( \overline{\vec{x}}^{(i)}) $ with it's label
+$\overline{\vec{y}}^{(i)}$ using the loss function $L$; the function $g(\set{W},\set{B})$ it's simply the loss function computed on the $i^{th}$ example
+which of course depends only on the weights and biases of network since the examples are constant.
 
 
+\begin{align}
+\frac{\partial g}{\partial \mat{W}^i} &= \nabla L \cdot J(F) \cdot \frac{\partial \vec{a}^U}{\partial \mat{W}^i}\\
+&= \frac{\partial g}{\partial \vec{a}^U} \cdot \frac{\partial \vec{a}^U}{\partial \mat{W^i}}
+\end{align}
 
-So we can easily compute $\delta_u = \frac{\partial L^{(i)}}{\partial a_u} $ for each output unit $u$ once we choose a differentiable loss function; note
-that we don't need the weights for such a computation. 
+
+We can easily compute $\frac{\partial g}{\partial \vec{a^U}}$ once we define $F(\cdot)$ and $L(\cdot)$, note that the weights are not involved in such computation.
+Let's derive an expression for $\frac{\partial \vec{a}^U}{\partial \mat{W}^i}$.
+We will start deriving such derivative using global notation. Let's consider a single output unit $u$ and a weight $w_{lj}$ linking neuron $j$ to neuron $l$.
+
+
+\begin{align}
+\frac{\partial a_u}{\partial w_{lj}} &= \frac{\partial a_u}{\partial a_l} \cdot \frac{\partial a_l}{\partial w_{lj}}\\
+&=\delta_{ul} \cdot \phi_j
+\end{align}
+
+where we put $$\delta_{ul} \defeq \frac{\partial a_u}{\partial a_l}$$.
 
 Let $P(l)$ be the set of parents of neuron $l$, formally:
 \begin{equation} 
 P(l) = \{ k: \exists \text{ a link between $l$ and $k$ with weight } w_{lk} \}
 \end{equation}
-
-Again, simply using the chain rule, we can write, for each non output unit $l$:
-
+We can compute $\delta_{ul}$ simply applying the chain rule, if we write it down in bottom-up style, as can be seen in figure \ref{deriv_arcs}, we obtain:
 \begin{equation}
-\label{loss_deriv}
-\delta_l = \sum_{k\in P(l)} \frac{\partial L^{(i)}}{\partial a_k} \cdot \frac{\partial a_k}{\partial a_l}= \sum_{k\in P(l)} \delta_k \cdot 
-\frac{\partial a_k}{\partial \phi_l} \cdot \frac{\partial \phi_l}{\partial a_l} = \sum_{k\in P(l)} \delta_k \cdot 
-w_{kl} \cdot \sigma'(a_l)
+\delta_{ul} = \sum_{k\in P(l)} \delta_{uk} \cdot \sigma'(a_k)\cdot w_kl
+\end{equation}
+
+\tikzstyle{rnn_style}=[->,shorten >=1pt,auto,node distance=1.5cm,
+  thick,
+  neuron/.style={circle,fill=white!50,draw,minimum size=0.7cm,font=\sffamily\normalsize},
+  missing/.style={circle,fill=white!50,draw=none,minimum size=0.7cm,font=\sffamily\Huge\bfseries},
+  label/.style={node distance=1.2cm,rectangle,fill=white!50,draw=none,minimum size=0.7cm,font=\sffamily\normalsize},
+  thick/.style={line width=1.2pt},
+  thin_edge/.style={line width=0.5pt}
+  ]
+\begin{figure}
+ \centering
+\begin{tikzpicture}[rnn_style]
+
+  \node[neuron]    (u)       {$u$};
+  
+  \node[neuron,thick]    (x1)[left of=u, below of=u]   {};
+  \node[neuron,thick]    (x2)[right of=x1]   {};
+  \node[neuron,thick]    (x3)[right of=x2]   {};
+  
+  \node[neuron]    (y1)[below of=x1]   {$l$};
+  \node[neuron]    (y2)[right of=y1]   {};
+  \node[neuron]    (y3)[right of=y2]   {};
+  
+  \node[neuron]    (z1)[below of=y1]   {};
+  \node[neuron]    (z2)[right of=z1]   {};
+  \node[neuron]    (z3)[right of=z2]   {};
+  
+%   \node[label]      (lu)[left of=u] {$u$};
+%   \node[label]      (ll)[left of=z1] {$l$};
+  
+  
+  \path[->] (x1) edge [thick] node[]{}   (u)
+	    (x2) edge [thick]   (u)
+	    (x3) edge [thick]   (u)
+	    (y1) edge [thick]   (x1)
+	    (y1) edge [thick]   (x2)
+	    (y1) edge [thick]   (x3)
+	    (y1) edge [thin_edge]   (x2)
+	    (y2) edge [thin_edge]   (x3)
+	    (y3) edge [thin_edge]   (x1)
+	    (y1) edge [thin_edge]   (x3)
+	    (y2) edge [thin_edge]   (x2)
+	    (y3) edge [thin_edge]   (x1)
+	  
+	    (z1) edge [thin_edge]   (y1)
+	    (z1) edge [thin_edge]   (y2)
+	    (z1) edge [thin_edge]   (y3)
+	    (z1) edge [thin_edge]   (y2)
+	    (z2) edge [thin_edge]   (y3)
+	    (z3) edge [thin_edge]   (y1)
+	    (z1) edge [thin_edge]   (y3)
+	    (z2) edge [thin_edge]   (y2)
+	    (z3) edge [thin_edge]   (y1);
+
+
+\end{tikzpicture}
+\caption{Nodes and edges involved in $\frac{\partial a_u }{\partial a_l}$}
+\label{deriv_arcs}
+\end{figure}
+
+The derivatives with respect to biases are compute in the same way:
+
+\begin{align}
+\frac{\partial a_u}{\partial b_{l}} &= \frac{\partial a_u}{\partial a_l} \cdot \frac{\partial a_l}{\partial b_{l}}\\
+&=\delta_{ul} \cdot 1
+\end{align}
+
+
+
+In layered notation we can rewrite the previous equations as:
+\begin{equation}
+ \frac{\partial a^U}{\partial \mat{W}^i} = \frac{\partial a^U}{\partial a^{i+1}} \cdot \frac{\partial a^{i+1}}{\partial \mat{W}^i}
 \end{equation}
 
 
-For output units instead we can compute $\delta_u = \frac{\partial L^{(i)}}{\partial a_u} $ directly once we define the loss function.
-
-For biases variables partial derivatives are simply given by:
-$$\frac{\partial L}{\partial b_{l}}=\frac{\partial L}{\partial a_l} \cdot \frac{\partial a_l}{\partial w_{l}}=\delta_l \cdot 1$$
-
-
-
-
-In the following we rewrite the previously derived equations in matrix notation.
-Let us recall that the weight matrix for the $i^{th}$ layer is the $p(i) \times p(i-1)$ matrix whose elements $w_{l,k}$ are the weights of the arcs which link neuron $k$ from level $i-1$ to neuron $l$ from level $i$, where
-$p(i)$ is the number of neuron layer $i$ is composed of.
-
-
-We can rewrite equation \ref{loss_deriv} in matrix notation as:
+\begin{equation}
+\frac{\partial a^{i+1}}{\partial \mat{W}_j^i} =
+ \begin{bmatrix}
+   \phi_1^{i}    & 0                & \cdots      & \cdots       & 0  \\
+   0               & \phi_2^{i}     & \cdots      & \cdots       & 0  \\
+   \vdots          & \vdots           & \ddots      & \vdots       &\vdots\\
+   0               & \cdots           & \cdots      & \cdots       & \phi^{i}_{p(i)}
+\end{bmatrix}
+\end{equation}
 
 \begin{equation}
- \frac{\partial L}{\partial W^i} = \frac{\partial L}{\partial \vec{a}^{i}} \cdot\Big(\frac{\partial \vec{a}^{i}}{\partial W^i}\Big)^T =
- \Delta^i \cdot (\vec{\phi}^{i-1})^T
+\frac{\partial a^U}{\partial a^{i}} \defeq \Delta^{i} = 
+\begin{cases}
+      \Delta^{i+1} \cdot diag(\sigma'(\vec{a}^{i+1})) \cdot W^{i}  & \text{if } i<U\\
+      Id & \text{if } i==U\\
+    0 & \text{otherwise}.
+\end{cases}
+\label{fnn_delta}
 \end{equation}
 
 where
 \begin{equation}
-\Delta^i  \triangleq  \frac{\partial L}{\partial \vec{a}^{i}} 
+diag(\sigma'(\vec{a}^{i})) =
+ \begin{bmatrix}
+   \sigma'(a^{i}_1)    & 0                & \cdots      & \cdots       & 0  \\
+   0                     & \sigma'(a^{i}_2)     & \cdots      & \cdots       & 0  \\
+   \vdots                & \vdots           & \ddots      & \vdots       &\vdots\\
+   0                     & \cdots           & \cdots      & \cdots       &\sigma'(a^{i}_{p(i)})
+\end{bmatrix}
 \end{equation}
 
-\begin{equation}
- \Delta^i = \big(W^{i+1}\big)^T \cdot \Delta^{i+1} \circ \sigma(\Delta^i)
-\end{equation} 
+\begin{align}
+\frac{\partial a^U}{\partial b^i} &= \frac{\partial a^U}{\partial a^i} \cdot \frac{\partial a^i}{\partial b^i}\\
+&= \Delta^{i} \cdot Id
+\end{align}
 
-\begin{equation}
- \frac{\partial L}{\partial b^i} = \frac{\partial L}{\partial \vec{a}^{i}} \cdot\Big(\frac{\partial \vec{a}^{i}}{\partial b^i}\Big)^T =
- \Delta^i \cdot Id
-\end{equation} 
+
+\paragraph{Backpropagation}
+
+Previous equations are the core of the famous \textit{backpropagation} algorithm which was first introduced by Rumelhart et al. \cite{Rumelhart86}.
+The algorithm consists in two \textit{passes}, a \textit{forward pass} and a \textit{backward pass} which give the name to the algorithm.
+The \textit{forward pass} start from the first layer, compute the hidden units values and the proceed to upper layers using the value of the hidden units 
+$\vec{a^i}$ of previous layers which have already been computed. The \textit{backward pass} instead, start from the upmost layer and computes $\Delta^{i}$
+which can be computed, as we can see from equation \ref{fnn_delta} , once it's known $\Delta^{i+1}$, which has been computed in the previous step, and $\vec{a^i}$ which
+has been computed in the \textit{forward pass}.
+
+\textit{Backpropagation} algorithm has time complexity $\mathcal{O}(\mathcal{N}(\set{W}))$.
+
