@@ -1,63 +1,64 @@
 
-A feed foward neural network is an artificial neural network in which there are no cycles, that is to say each layer output is \textit{fed} to the next one and connections to any earlier layer are not possible. 
+A feed forward neural network is an artificial neural network in which there are no cycles, that is to say each layer output is \textit{fed} to the 
+next one and connections to earlier layers are not possible. 
 
 
-\begin{defn}[Feed foward neural network]
+\begin{defn}[Feed forward neural network]
 \label{def_ffnn}
-A feed foward neural network is tuple
-$$FFNN\triangleq<\vec{p},\set{W},\set{B},\sigma(\cdot),F(\cdot)>$$
+A feed forward neural network is tuple:
+$$\net{FFNN}\defeq<\vec{p},\set{W},\set{B},\sigma(\cdot),F(\cdot)>$$
 \begin{itemize}
  \item $\vec{p} \in \mathbb{N}^U$ is the vector whose elements $p(k)$ are the number of neurons of layer $k$; $U$ is the number of layers
- \item $\set{W} \triangleq \{W^k_{p(k) \times p(k-1)}, k=1,...,U \}$ is the set of weight matrixes of each layer
- \item $\set{B} \triangleq \{\vec{b}^k \in \mathbb{R}^{p(k)}, k=1,...,U \} $ is the set of bias vectors
+ \item $\set{W} \defeq \{W^k_{p(k+1) \times p(k)}, k=1,...,U-1 \}$ is the set of weight matrices of each layer
+ \item $\set{B} \defeq \{\vec{b}^k \in \mathbb{R}^{p(k)}, k=1,...,U \} $ is the set of bias vectors
  \item $\sigma(\cdot): \mathbb{R}\rightarrow \mathbb{R}$ is the activation function
  \item $F(\cdot): \mathbb{R}^{p(U)}\rightarrow \mathbb{R}^{p(U)}$ is the output function
 \end{itemize}
 \end{defn}
 
 \begin{remark}{}
-Given a FFNN:
+Given a $\net{FFNN}$:
 \begin{itemize}
  \item The number of output units is $p(U)$
- \item The number of input units is $p(0)$
- \item The total number of weights is $\mathcal{N}(\set{W}) \triangleq \sum_{k=1}^U p(k)p(k-1)$
- \item The total number of biases is $\mathcal{N}(\set{B}) \triangleq \sum_{k=1}^U p(k)$
+ \item The number of input units is $p(1)$
+ \item The total number of weights is $\mathcal{N}(\set{W}) \defeq \sum_{k=1}^U p(k+1)p(k)$
+ \item The total number of biases is $\mathcal{N}(\set{B}) \defeq \sum_{k=1}^{U} p(k)$
 \end{itemize}
 \end{remark}
 
-\begin{defn}[Output of a FFNN]
-Given a $FFNN$ and an input vector $\vec{x} \in \mathbb{R}^{p(1)}$ the output $\vec{y} \in \mathbb{R}^U$ of the net is defined by the following:
+\begin{defn}[Output of a $\net{FFNN}$]
+Given a $\net{FFNN}$ and an input vector $\vec{x} \in \mathbb{R}^{p(1)}$ the output of the net $\vec{y} \in \mathbb{R}^{p(U)}$  is defined by the following:
 
 \begin{align}
 &\vec{y}=F(\vec{a}^{U}) &\\
-&\vec{\phi}^{i} \triangleq \sigma(\vec{a}_{i}), & i=1,...,U\\
-&\vec{a}^{i} \triangleq W^{i} \cdot \vec{\phi}^{i-1} +\vec{b}^i  & i=1,...,U\\
-&\vec{\phi}^{0} \triangleq \vec{x} &
+&\vec{\phi}^{i} \defeq \sigma(\vec{a}_{i}), & i=1,...,U\\
+&\vec{a}^{i} \defeq W^{i-1} \cdot \vec{\phi}^{i-1} +\vec{b}^i  & i=1,...,U\\
+&\vec{\phi}^{1} \defeq \vec{x} &
 \end{align}
 \end{defn}
 
-\subsection{Learning with FFNN}
-
-As we have seen in the previous section a model sush as $FFNN$ can approximate arbitrary well any smooth function, so a natural application of feed foward neural networks is machine learning.
-To model an optimization problem we first need to define a dataset $D$ as 
+\subsection{Learning with FFNNs}
+A widespread application of neural networks is that of machine learning. In the following we will model an optimisation problem which rely on $\net{FFNNs}$.
+To model an optimisation problem we first need to define a data-set $D$ as 
 \begin{equation}
-D\triangleq\{\overline{\vec{x}}^{(i)} \in \mathbb{R}^p, \overline{\vec{y}}^{(i)} \in \mathbb{R}^q,  i=1,...,N\}
+D\defeq\{\overline{\vec{x}}^{(i)} \in \mathbb{R}^p, \overline{\vec{y}}^{(i)} \in \mathbb{R}^q,  i=1,...,N\}
 \end{equation}
 Then we need a loss function $L_D:\mathbb{R}^{\mathcal{N}(\set{W})+\mathcal{N}(\set{B})} \rightarrow \mathbb{R}_{\geq 0}$ over $D$ defined as
 \begin{equation}
-L_D(\set{W},\set{B})\triangleq\frac{1}{N}\sum_{i=1}^N L(\overline{\vec{x}}^{(i)},\vec{y}^{(i)}) 
+L_D(\set{W},\set{B})\defeq\frac{1}{N}\sum_{i=1}^N L(\overline{\vec{x}}^{(i)},\vec{y}^{(i)}) 
 \end{equation}
 $L(\vec{x},\vec{y}):\mathbb{R}^{p(U)} \rightarrow \mathbb{R}$ is an arbitrary loss function computed on the $i^{th}$ example. Note that $\vec{y}$ is the output of the
 networks, so it depends on $(\set{W},\set{B})$
 
 
-The problem is then fo find a $FFNN$ which minimize $L_D$. As we have seen feed foward neural network allow for large customization: the only variables in the optimization problem are the weights, the other
-parameters are said \textit{hyper-parameters} and are determined \textit{a priori}. Usually the output function is choosen depending on the output, for instance for multi-way classification
-is generally used the softmax function, for regression a simple identity function.
-For what concerns the number of layers and the number of units per layers they are choosen relying on experience or performing some kind of hyper-parameter tuning, which usually consists on training nets
-with some different configurations of such parameters and choosing the best one.
+The problem is then to find a $\net{FFNN}$ which minimise $L_D$. As we have seen feed forward neural networks allow for large customisation: the only variables in the optimisation problem are the weights
+and the biases, the other
+parameters are said \textit{hyper-parameters} and are determined \textit{a priori}. Usually the output function is chosen depending on the output, for instance for multi-way classification
+is generally used the \textit{softmax} function, for regression a simple identity function.
+For what concerns the number of layers and the number of units per layers they are chosen relying on experience or performing some kind of hyper-parameter tuning, which usually consists on training nets
+with some different configurations of such parameters and choosing the 'best one'.
 
-Once we have selected the values for all hyper-paramters the optimization problem becomes:
+Once we have selected the values for all hyper-parameters the optimisation problem becomes:
 
 \begin{equation}
 \underset{\set{W},\set{B}}{\text{min  }} L_D(\set{W},\set{B}) \\
