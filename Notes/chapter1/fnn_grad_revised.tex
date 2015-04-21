@@ -1,6 +1,13 @@
-Consider a $FFNN=<\vec{p},\set{W},\set{B},\sigma(\cdot),F(\cdot)>$, let $L:\mathbb{R}^{p(U)} \rightarrow \mathbb{R}$ a loss function and 
+Consider a $\net{FFNN}=<\vec{p},\set{W},\set{B},\sigma(\cdot),F(\cdot)>$, let $L:\mathbb{R}^{p(U)} \rightarrow \mathbb{R}$ a loss function and 
 $g(\cdot):\mathbb{R}^{\mathcal{N}(\set{W})+\mathcal{N}(\set{B})} \rightarrow \mathbb{R}$ be the function defined by
-$$g(\set{W},\set{B}) \triangleq L(F(a^U(\set{W},\set{B})))$$
+\begin{equation}
+g(\set{W},\set{B}) \defeq L(F(a^U( \overline{\vec{x}}^{(i)} (\set{W},\set{B}))),\overline{\vec{y}}^{(i)} )
+\label{loss_over_x_i}
+\end{equation}
+Equation $\ref{loss_over_x_i}$, tough it seems rather scary, express a very simple thing: we consider a single input example 
+$\overline{\vec{x}}^{(i)}$, we run it through the network and we confront it's output $F(a^U( \overline{\vec{x}}^{(i)}) $ with it's label
+$\overline{\vec{y}}^{(i)}$ using the loss function $L$; the function $g(\set{W},\set{B})$ it's simply the loss function computed on the $i^{th}$ example
+which of course depends only on the weights and biases of network since the examples are constant.
 
 
 \begin{align}
@@ -11,7 +18,7 @@ $$g(\set{W},\set{B}) \triangleq L(F(a^U(\set{W},\set{B})))$$
 
 We can easily compute $\frac{\partial g}{\partial \vec{a^U}}$ once we define $F(\cdot)$ and $L(\cdot)$, note that the weights are not involved in such computation.
 Let's derive an expression for $\frac{\partial \vec{a}^U}{\partial \mat{W}^i}$.
-We will start deriving such derivative using linear notation. Let's consider a single output unit $u$ and a weight $w_{lj}$ linking neuron $j$ to neuron $l$.
+We will start deriving such derivative using global notation. Let's consider a single output unit $u$ and a weight $w_{lj}$ linking neuron $j$ to neuron $l$.
 
 
 \begin{align}
@@ -19,7 +26,7 @@ We will start deriving such derivative using linear notation. Let's consider a s
 &=\delta_{ul} \cdot \phi_j
 \end{align}
 
-where we put $$\delta_{ul} \triangleq \frac{\partial a_u}{\partial a_l}$$.
+where we put $$\delta_{ul} \defeq \frac{\partial a_u}{\partial a_l}$$.
 
 Let $P(l)$ be the set of parents of neuron $l$, formally:
 \begin{equation} 
@@ -35,7 +42,7 @@ We can compute $\delta_{ul}$ simply applying the chain rule, if we write it down
   neuron/.style={circle,fill=white!50,draw,minimum size=0.7cm,font=\sffamily\normalsize},
   missing/.style={circle,fill=white!50,draw=none,minimum size=0.7cm,font=\sffamily\Huge\bfseries},
   label/.style={node distance=1.2cm,rectangle,fill=white!50,draw=none,minimum size=0.7cm,font=\sffamily\normalsize},
-  thick_edge/.style={line width=1.2pt},
+  thick/.style={line width=1.2pt},
   thin_edge/.style={line width=0.5pt}
   ]
 \begin{figure}
@@ -44,9 +51,9 @@ We can compute $\delta_{ul}$ simply applying the chain rule, if we write it down
 
   \node[neuron]    (u)       {$u$};
   
-  \node[neuron]    (x1)[left of=u, below of=u]   {};
-  \node[neuron]    (x2)[right of=x1]   {};
-  \node[neuron]    (x3)[right of=x2]   {};
+  \node[neuron,thick]    (x1)[left of=u, below of=u]   {};
+  \node[neuron,thick]    (x2)[right of=x1]   {};
+  \node[neuron,thick]    (x3)[right of=x2]   {};
   
   \node[neuron]    (y1)[below of=x1]   {$l$};
   \node[neuron]    (y2)[right of=y1]   {};
@@ -60,12 +67,12 @@ We can compute $\delta_{ul}$ simply applying the chain rule, if we write it down
 %   \node[label]      (ll)[left of=z1] {$l$};
   
   
-  \path[->] (x1) edge [thick_edge] node[]{}   (u)
-	    (x2) edge [thick_edge]   (u)
-	    (x3) edge [thick_edge]   (u)
-	    (y1) edge [thick_edge]   (x1)
-	    (y1) edge [thick_edge]   (x2)
-	    (y1) edge [thick_edge]   (x3)
+  \path[->] (x1) edge [thick] node[]{}   (u)
+	    (x2) edge [thick]   (u)
+	    (x3) edge [thick]   (u)
+	    (y1) edge [thick]   (x1)
+	    (y1) edge [thick]   (x2)
+	    (y1) edge [thick]   (x3)
 	    (y1) edge [thin_edge]   (x2)
 	    (y2) edge [thin_edge]   (x3)
 	    (y3) edge [thin_edge]   (x1)
@@ -85,11 +92,11 @@ We can compute $\delta_{ul}$ simply applying the chain rule, if we write it down
 
 
 \end{tikzpicture}
-\caption{Nodes involved in $\frac{\partial a_u }{\partial a_l}$}
+\caption{Nodes and edges involved in $\frac{\partial a_u }{\partial a_l}$}
 \label{deriv_arcs}
 \end{figure}
 
-The derivates with respect to biases are compute in the same way:
+The derivatives with respect to biases are compute in the same way:
 
 \begin{align}
 \frac{\partial a_u}{\partial b_{l}} &= \frac{\partial a_u}{\partial a_l} \cdot \frac{\partial a_l}{\partial b_{l}}\\
@@ -98,26 +105,26 @@ The derivates with respect to biases are compute in the same way:
 
 
 
-In matrix notation we can rewrite the previous equations as:
+In layered notation we can rewrite the previous equations as:
 \begin{equation}
- \frac{\partial a^U}{\partial \mat{W}^i} = \frac{\partial a^U}{\partial a^{i}} \cdot \frac{\partial a^{i}}{\partial \mat{W}^i}
+ \frac{\partial a^U}{\partial \mat{W}^i} = \frac{\partial a^U}{\partial a^{i+1}} \cdot \frac{\partial a^{i+1}}{\partial \mat{W}^i}
 \end{equation}
 
 
 \begin{equation}
-\frac{\partial a^{i}}{\partial \mat{W}_j^i} =
+\frac{\partial a^{i+1}}{\partial \mat{W}_j^i} =
  \begin{bmatrix}
-   \phi_1^{i-1}    & 0                & \cdots      & \cdots       & 0  \\
-   0               & \phi_2^{i-1}     & \cdots      & \cdots       & 0  \\
+   \phi_1^{i}    & 0                & \cdots      & \cdots       & 0  \\
+   0               & \phi_2^{i}     & \cdots      & \cdots       & 0  \\
    \vdots          & \vdots           & \ddots      & \vdots       &\vdots\\
-   0               & \cdots           & \cdots      & \cdots       & \phi^{i-1}_{p(i-1)}
+   0               & \cdots           & \cdots      & \cdots       & \phi^{i}_{p(i)}
 \end{bmatrix}
 \end{equation}
 
 \begin{equation}
-\frac{\partial a^U}{\partial a^{i}} \triangleq \Delta^{i} = 
+\frac{\partial a^U}{\partial a^{i}} \defeq \Delta^{i} = 
 \begin{cases}
-      \Delta^{i+1} \cdot diag(\sigma'(\vec{a}^{i+1})) \cdot W^{i+1}  & \text{if } i<U\\
+      \Delta^{i+1} \cdot diag(\sigma'(\vec{a}^{i+1})) \cdot W^{i}  & \text{if } i<U\\
       Id & \text{if } i==U\\
     0 & \text{otherwise}.
 \end{cases}
@@ -143,12 +150,12 @@ diag(\sigma'(\vec{a}^{i})) =
 
 \paragraph{Backpropagation}
 
-Previous equations form the basis of the famous \textit{backpropagation} algorithm which was first introduced by Rumelhart et al. \cite{Rumelhart86}.
-The algorithm consists in two \textit{passes}, a \textit{foward pass} and a \textit{backward pass} which give the name to the algorithm.
-The \textit{foward pass} start from the first level, compute the hidden units value and the proceed to upper layers using the value of the hidden units 
-$\vec{a^i}$ of previous layers which have been already computed. The \textit{backward pass} instead, start from the upmost layer and computes $\Delta^{i}$
-which we can compute, as we can see from equation \ref{fnn_delta} , once we know $\Delta^{i+1}$, which we have computed in the previous step, and $\vec{a^i}$ which
-we have computed in the \textit{foward pass}.
+Previous equations are the core of the famous \textit{backpropagation} algorithm which was first introduced by Rumelhart et al. \cite{Rumelhart86}.
+The algorithm consists in two \textit{passes}, a \textit{forward pass} and a \textit{backward pass} which give the name to the algorithm.
+The \textit{forward pass} start from the first layer, compute the hidden units values and the proceed to upper layers using the value of the hidden units 
+$\vec{a^i}$ of previous layers which have already been computed. The \textit{backward pass} instead, start from the upmost layer and computes $\Delta^{i}$
+which can be computed, as we can see from equation \ref{fnn_delta} , once it's known $\Delta^{i+1}$, which has been computed in the previous step, and $\vec{a^i}$ which
+has been computed in the \textit{forward pass}.
 
 \textit{Backpropagation} algorithm has time complexity $\mathcal{O}(\mathcal{N}(\set{W}))$.
 
