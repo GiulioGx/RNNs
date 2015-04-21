@@ -1,6 +1,6 @@
  
-An artificial neural network is a network of connected units called neurons or perceptrons, as can be seen in figure \ref{fully_connected}; each arc, which connects two neurons $i$ and $j$, is associated with a weight $w_{ji}$. Perceptrons share the some
-structure for all models, what really distinguish a particular model in the family of artificial neural networks is how the perceptron units are arranged and conneceted,for example whether there are cycles
+An artificial neural network is a network of connected units called neurons or perceptrons, as can be seen in figure \ref{fully_connected}; the link which connects neurons $i$ and $j$, is associated with a weight $w_{ji}$. Perceptrons share the same
+structure for all models, what really distinguish a particular model in the family of artificial neural networks is how the perceptron units are arranged and connected together, for example whether there are cycles
 or not, and how data inputs are \textit{fed} to the network. 
 
 
@@ -13,7 +13,7 @@ or not, and how data inputs are \textit{fed} to the network.
   loopStyle/.style={in=120,out=60, distance=2.5cm},
   weight/.style = {above,sloped,pos=0.3},
   thin_edge/.style={line width=0.5pt}]
-\begin{figure}
+\begin{figure}[h]
  \centering
 \begin{tikzpicture}[nn_style]
    
@@ -55,6 +55,7 @@ or not, and how data inputs are \textit{fed} to the network.
     \foreach \source in {1,...,5}
         \foreach \dest in {1,...,3}
             \path[thin_edge] (H-\source) edge (O-\dest);
+            
 
 \end{tikzpicture}
 \caption{Artificial neural network example}
@@ -67,11 +68,11 @@ Formally the output of a perceptron $\phi_j$
 is defined as:
  
 \begin{align}
-&\phi_j \triangleq \sigma(a_j)\\
-&a_j \triangleq \sum_l w_{jl}\phi_l +b_j
+&\phi_j \defeq \sigma(a_j)\label{def_perceptron_1}\\
+&a_j \defeq \sum_l w_{jl}\phi_l +b_j \label{def_perceptron_2}
 \end{align}
 
-where $w_{jl}$ is the weight of the connection between neuron $l$ and neuron $j$, $\sigma(\cdot)$ is a non linear function and $b_j \in \mathbb{R}$ is called bias.
+where $w_{jl}$ is the weight of the connection between neuron $l$ and neuron $j$, $\sigma(\cdot)$ is a non linear function and $b_j \in \mathbb{R}$ is a bias term.
 It's worth noticing that in this formulation the input $\phi_l$ can be the outputs of other neurons or provided external inputs.
 
 
@@ -83,7 +84,7 @@ It's worth noticing that in this formulation the input $\phi_l$ can be the outpu
   layer/.style={rectangle,fill=white!50,draw,minimum width=1.5cm,font=\sffamily\Large},
   loopStyle/.style={in=120,out=60, distance=2.5cm},
   weight/.style = {above,sloped,pos=0.3},]
-\begin{figure}
+\begin{figure}[h]
  \centering
 \begin{tikzpicture}[nn_style]
 
@@ -124,10 +125,15 @@ It's worth noticing that in this formulation the input $\phi_l$ can be the outpu
 \label{neuron_model}
 \end{figure}
 
+So, given a set of inputs $\{x\}_i$ which are \textit{fed} to some of the units of the net which we call \textit{input units} the output of the network $\{y\}_i$ is given by the
+some of units of the network, the 'upper' ones which we call \textit{output units}. All remaining units, i.e the ones which are neither input nor output units
+are called \textit{hidden units} because their value is not \textit{observed} from the outside. The mapping from input to output is captured by equations \ref{def_perceptron_1} and 
+\ref{def_perceptron_2}. 
+
 \paragraph{The activation function}
-The $\sigma$ function is called \textit{activation} function and should determine wheter a perceptron unit is \textit{active} or not. When artificial neural networks where first conceived, back in 80es,
-trying to mimic the brain structure, such function was a simple threshshold function, trying to reproduce the behaviour of brain neurons: a neuron is \textit{active}, i.e it's output $\phi_j$ is $1$, if
-the input stimuli $\sum_l w_{jl}\phi_l +b_j$ are greater than a given threshold $\tau$.
+The $\sigma$ function is called \textit{activation} function and should determine whether a perceptron unit is \textit{active} or not. When artificial neural networks where first conceived,
+trying to mimic the brain structure, such function was a simple threshold function, trying to reproduce the behaviour of brain neurons: a neuron is \textit{active}, i.e it's output $\phi_j$ is $1$, if
+the sum of input stimuli $\sum_l w_{jl}\phi_l +b_j$ is greater than a given threshold $\tau$.
 
 \begin{equation}
   \sigma_{\tau}(x)=\begin{cases}
@@ -135,8 +141,7 @@ the input stimuli $\sum_l w_{jl}\phi_l +b_j$ are greater than a given threshold 
     0 & \text{otherwise}.
   \end{cases}
 \end{equation}
-
-Such function, however, is problematic when we are to compute gradients because it's not continuoos, so one of the following function is usually choosen:
+Such function, however, is problematic when we are to compute gradients because it's not continuous, so one of the following function is usually chosen:
 
 \begin{equation}
  sigmoid(x)=\frac{1}{1+e^{-x}}
@@ -145,7 +150,6 @@ Such function, however, is problematic when we are to compute gradients because 
  tanh(x)=\frac{e^x-e^{-x}}{e^x+e^{-x}}
 \end{equation}
 These functions behave similarly to the threshold function, but, because of their \textit{smoothness}, present no problems in computing gradients.
-
 Another function which is becoming a very popular choice is the \textit{rectified linear unit}:
 \begin{equation}
   ReLU(x)=\begin{cases}
@@ -153,25 +157,26 @@ Another function which is becoming a very popular choice is the \textit{rectifie
     0 & \text{otherwise}.
   \end{cases}
 \end{equation}
-ReLU activation function is rather different from previous activation functions, some of these difference, in particular with respect to gradients will be analyzied in later sections.
+ReLU activation function is rather different from previous activation functions, some of these difference, in particular with respect to gradients will be analysed in later sections.
 
-It's worth noticing that the activation function it's the only component which make artifical neuron networks a non linear model. Were we to choose a \textit{linear} function as activation funciont we will
-end up with a simple linear model since the outputs of the network would be ultimately composed only of sums and products.
+It's worth noticing that the activation function it's the only component which make artificial neuron networks a non linear model. Were we to choose a \textit{linear} function as activation function we will
+end up with a simple linear model since the outputs of the network would be ultimately composed only of sums of products.
 
 \paragraph{The bias term}
 Let's consider the old threshold function $\sigma_{\tau}$, and ask ourselves what the bias term is for, what does changing this term bring about.
-Suppose neuron $j$ if fed with inputs $a_j = \sum_l w_{jl}\phi_l$; if $a_j>\tau$ that neuron is active otherwise it is not. Now, let's add the bias term to $a_j$;
+Suppose neuron $j$ has no bias term, the neuron value would be $a_j = \sum_l w_{jl}\phi_l$; if $a_j>\tau$ that neuron is active otherwise it is not. Now, let's add the bias term to $a_j$;
 we obtain that neuron $j$ is active if $a_j>\tau-b_j$. So the effect of the bias term is to change the activation threshold of a given neuron. Using bias terms in a neural network architecture gives us
 the ability to change the activation threshold for each neuron; that's particularly important considering that we can learn such bias terms.
-We can do these same considerations in an analogous way for all the other activation funcitons.
-\\\\
-It's often useful to think of a neurual network as series of layers, one on top of each other, as depicted in figure \ref{layered_nnet}. The first layer is called the input layer and its units are \textit{fed}
-with external inputs, the upper layers are called \textit{hidden layers} because their's outputs are not observed from outside except the last one which is called \textit{output layer} because it's output 
+We can do these same considerations in an analogous way for all the other activation functions.
+\paragraph{Layered view of the net}
+It's often useful to think of a neural network as series of layers, one on top of each other, as depicted in figure \ref{layered_nnet}. The first layer is called the input layer and its units are \textit{fed}
+with external inputs, the upper layers are called \textit{hidden layers} because theirs outputs are not observed from outside except the last one which is called \textit{output layer} because it's output 
 is the output of the net.
 
-Whene we describe a network in this way is also useful to adopt a different notation: we describe the weights of the net with a set of matrixes $W_i$ one for each layer, and neurons are no more
-linearly indexed, insted with refer to a neuron with a relative index with respect to the layer; this allows to write easier equations in matrix notation
-\footnote{In the rest of the book we will refer to the latter notation as \textsl{matrix notation} and to the previous one as \textsl{linear notation}}.
+When we describe a network in this way is also useful to adopt a different notation: we describe the weights of the net with a set of matrices $\mat{W^k}$ one for each layer, and neurons are no more
+globally indexed, instead with refer to a neuron with a relative index with respect to the layer; this allows to write easier equations in matrix notation
+\footnote{In the rest of the book we will refer to the latter notation as \textsl{layer notation} and to the previous one as \textsl{global notation}}.
+In this notation $\mat{W^k}_{ij}$ is the weight of the link connecting neuron $j$ of layer $k-1$ to neuron $i$ of level $k$
 
 
 \tikzstyle{rnn_style}=[->,shorten >=1pt,auto,node distance=1.5cm,

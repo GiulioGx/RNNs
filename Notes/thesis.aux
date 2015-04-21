@@ -24,12 +24,15 @@
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
 \@writefile{toc}{\contentsline {section}{\numberline {1.1}A family of models}{5}{section.1.1}}
-\@writefile{toc}{\contentsline {paragraph}{The activation function}{5}{section*.2}}
-\@writefile{lof}{\contentsline {figure}{\numberline {1.1}{\ignorespaces Artificial neural network example}}{6}{figure.1.1}}
-\newlabel{fully_connected}{{1.1}{6}{Artificial neural network example}{figure.1.1}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1.1}{\ignorespaces Artificial neural network example}}{5}{figure.1.1}}
+\newlabel{fully_connected}{{1.1}{5}{Artificial neural network example}{figure.1.1}{}}
+\newlabel{def_perceptron_1}{{1.1}{6}{A family of models}{equation.1.1.1}{}}
+\newlabel{def_perceptron_2}{{1.2}{6}{A family of models}{equation.1.1.2}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {1.2}{\ignorespaces Neuron model}}{6}{figure.1.2}}
 \newlabel{neuron_model}{{1.2}{6}{Neuron model}{figure.1.2}{}}
+\@writefile{toc}{\contentsline {paragraph}{The activation function}{6}{section*.2}}
 \@writefile{toc}{\contentsline {paragraph}{The bias term}{7}{section*.3}}
+\@writefile{toc}{\contentsline {paragraph}{Layered view of the net}{7}{section*.4}}
 \@writefile{lof}{\contentsline {figure}{\numberline {1.3}{\ignorespaces Layered structure of an artificial neural network}}{8}{figure.1.3}}
 \newlabel{layered_nnet}{{1.3}{8}{Layered structure of an artificial neural network}{figure.1.3}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {1.2}Feed foward neural networks}{8}{section.1.2}}
@@ -40,7 +43,7 @@
 \@writefile{lof}{\contentsline {figure}{\numberline {1.4}{\ignorespaces Nodes involved in $\frac  {\partial a_u }{\partial a_l}$}}{11}{figure.1.4}}
 \newlabel{deriv_arcs}{{1.4}{11}{Nodes involved in $\frac {\partial a_u }{\partial a_l}$}{figure.1.4}{}}
 \newlabel{fnn_delta}{{1.24}{11}{Gradient}{equation.1.2.24}{}}
-\@writefile{toc}{\contentsline {paragraph}{Backpropagation}{12}{section*.4}}
+\@writefile{toc}{\contentsline {paragraph}{Backpropagation}{11}{section*.5}}
 \@writefile{toc}{\contentsline {section}{\numberline {1.3}Recurrent neural networks}{12}{section.1.3}}
 \@writefile{lof}{\contentsline {figure}{\numberline {1.5}{\ignorespaces Rnn model}}{12}{figure.1.5}}
 \newlabel{rnn_model}{{1.5}{12}{Rnn model}{figure.1.5}{}}
@@ -52,28 +55,28 @@
 \newlabel{sum_over_time}{{1.35}{15}{Gradient}{equation.1.3.35}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {1.7}{\ignorespaces Nodes involved in $\frac  {\partial a^t_u }{\partial a^k_l}$}}{16}{figure.1.7}}
 \newlabel{deriv_arcs_rnn}{{1.7}{16}{Nodes involved in $\frac {\partial a^t_u }{\partial a^k_l}$}{figure.1.7}{}}
+\newlabel{rnn_delta}{{1.43}{16}{Gradient}{equation.1.3.43}{}}
 \citation{Williams90anefficient}
-\newlabel{rnn_delta}{{1.43}{17}{Gradient}{equation.1.3.43}{}}
-\@writefile{toc}{\contentsline {paragraph}{Backpropagation through time (BPTT)}{17}{section*.5}}
+\@writefile{toc}{\contentsline {paragraph}{Backpropagation through time (BPTT)}{17}{section*.6}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {1.3.3}The vanishing and exploding gradient problem}{17}{subsection.1.3.3}}
 \citation{Hochreiter95longshort-term}
 \newlabel{memory_eq}{{1.46}{18}{The vanishing and exploding gradient problem}{equation.1.3.46}{}}
-\@writefile{toc}{\contentsline {paragraph}{Hochreiter Analysis: Weak upper bound}{18}{section*.6}}
-\@writefile{toc}{\contentsline {paragraph}{Explaining the problem using network's graph}{19}{section*.7}}
+\@writefile{toc}{\contentsline {paragraph}{Hochreiter Analysis: Weak upper bound}{18}{section*.7}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1.8}{\ignorespaces The cost for a path from neuron $2$ at time $k$ to neuron $1$ at time $t$ is $w_{12}w_{31}w_{13}\mathinner {\ldotp \ldotp \ldotp }w_{11}\cdot \sigma _2^k \sigma _1^{k+1}\sigma _3^{k+2} \mathinner {\ldotp \ldotp \ldotp }\sigma _1^{t-1} $ }}{19}{figure.1.8}}
+\newlabel{gradient_path_cost}{{1.8}{19}{The cost for a path from neuron $2$ at time $k$ to neuron $1$ at time $t$ is $w_{12}w_{31}w_{13}\hdots w_{11}\cdot \sigma _2^k \sigma _1^{k+1}\sigma _3^{k+2} \hdots \sigma _1^{t-1} $}{figure.1.8}{}}
+\@writefile{toc}{\contentsline {paragraph}{Explaining the problem using network's graph}{19}{section*.8}}
 \newlabel{expanded_mem}{{1.52}{19}{Explaining the problem using network's graph}{equation.1.3.52}{}}
-\@writefile{toc}{\contentsline {paragraph}{The ReLU case}{19}{section*.8}}
-\@writefile{lof}{\contentsline {figure}{\numberline {1.8}{\ignorespaces The cost for a path from neuron $2$ at time $k$ to neuron $1$ at time $t$ is $w_{12}w_{31}w_{13}\mathinner {\ldotp \ldotp \ldotp }w_{11}\cdot \sigma _2^k \sigma _1^{k+1}\sigma _3^{k+2} \mathinner {\ldotp \ldotp \ldotp }\sigma _1^{t-1} $ }}{20}{figure.1.8}}
-\newlabel{gradient_path_cost}{{1.8}{20}{The cost for a path from neuron $2$ at time $k$ to neuron $1$ at time $t$ is $w_{12}w_{31}w_{13}\hdots w_{11}\cdot \sigma _2^k \sigma _1^{k+1}\sigma _3^{k+2} \hdots \sigma _1^{t-1} $}{figure.1.8}{}}
+\@writefile{toc}{\contentsline {paragraph}{The ReLU case}{19}{section*.9}}
 \@writefile{lof}{\contentsline {figure}{\numberline {1.9}{\ignorespaces The cost for an enabled path from neuron $2$ at time $k$ to neuron $1$ at time $t$ is $w_{12}w_{31}w_{13}\mathinner {\ldotp \ldotp \ldotp }w_{11}$ }}{20}{figure.1.9}}
 \newlabel{gradient_path_cost_relu}{{1.9}{20}{The cost for an enabled path from neuron $2$ at time $k$ to neuron $1$ at time $t$ is $w_{12}w_{31}w_{13}\hdots w_{11}$}{figure.1.9}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {1.4}Activation functions and gradient}{21}{section.1.4}}
-\@writefile{toc}{\contentsline {paragraph}{Sigmoid}{21}{section*.9}}
+\@writefile{toc}{\contentsline {paragraph}{Sigmoid}{21}{section*.10}}
+\@writefile{toc}{\contentsline {paragraph}{Tanh}{21}{section*.11}}
+\@writefile{toc}{\contentsline {paragraph}{ReLU}{21}{section*.12}}
 \@writefile{lof}{\contentsline {figure}{\numberline {1.10}{\ignorespaces sigmoid and it's derivative}}{22}{figure.1.10}}
 \newlabel{sigmoid_plot}{{1.10}{22}{sigmoid and it's derivative}{figure.1.10}{}}
-\@writefile{toc}{\contentsline {paragraph}{Tanh}{22}{section*.10}}
-\@writefile{toc}{\contentsline {paragraph}{ReLU}{22}{section*.11}}
-\@writefile{lof}{\contentsline {figure}{\numberline {1.11}{\ignorespaces tanh and it's derivative}}{23}{figure.1.11}}
-\newlabel{tanh_plot}{{1.11}{23}{tanh and it's derivative}{figure.1.11}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1.11}{\ignorespaces tanh and it's derivative}}{22}{figure.1.11}}
+\newlabel{tanh_plot}{{1.11}{22}{tanh and it's derivative}{figure.1.11}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {1.12}{\ignorespaces ReLU and it's derivative}}{23}{figure.1.12}}
 \newlabel{relu_plot}{{1.12}{23}{ReLU and it's derivative}{figure.1.12}{}}
 \citation{Hornik89}
@@ -84,12 +87,12 @@
 \@writefile{toc}{\contentsline {section}{\numberline {1.5}On expressiveness}{24}{section.1.5}}
 \newlabel{dens_compact}{{6}{24}{}{defn.6}{}}
 \newlabel{universal_approx}{{1}{24}{}{thm.1}{}}
-\@writefile{toc}{\contentsline {paragraph}{Understanding the difference between RNN and FFNN models}{25}{section*.12}}
+\@writefile{toc}{\contentsline {paragraph}{Understanding the difference between RNN and FFNN models}{25}{section*.13}}
 \@writefile{toc}{\contentsline {chapter}{\numberline {A}Notation}{27}{appendix.A}}
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\@writefile{toc}{\contentsline {paragraph}{Derivative with respect to vector}{27}{section*.13}}
-\@writefile{toc}{\contentsline {paragraph}{Derivative with respect to matrix}{27}{section*.14}}
+\@writefile{toc}{\contentsline {paragraph}{Derivative with respect to vector}{27}{section*.14}}
+\@writefile{toc}{\contentsline {paragraph}{Derivative with respect to matrix}{27}{section*.15}}
 \bibdata{biblio}
 \bibcite{Hochreiter95longshort-term}{1}
 \bibcite{Hornik89}{2}
