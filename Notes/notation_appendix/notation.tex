@@ -4,10 +4,8 @@ Let $F:\mathbb{R}^N \rightarrow \mathbb{R^M}$ be defined by
 F(\vec{x}) = (f_1(\vec{x}),f_2(\vec{x}),\cdots,f_M(\vec{x}))) \text{    for some  } f_i:\mathbb{R}^N \rightarrow \mathbb{R}
 \end{equation}
 
-
-\paragraph{Derivative with respect to vector}
-
-We define the derivative of $F(x(\vec{w}))$ with respect to a vector $\vec{w}$ of $p$ elements as the $M \times p$ matrix
+\begin{defn}[Derivative with respect to a vector]
+ We define the derivative of $F(x(\vec{w}))$ with respect to a vector $\vec{w}$ of $p$ elements as the $M \times p$ matrix
 \begin{equation}
 \frac{\partial F}{\partial \vec{w}} \triangleq
 \begin{bmatrix}
@@ -17,12 +15,10 @@ We define the derivative of $F(x(\vec{w}))$ with respect to a vector $\vec{w}$ o
    \frac{\partial f_M}{\partial \vec{w}_1}    & \frac{\partial f_M}{\partial \vec{w}_2}                & \cdots      & \cdots       & \frac{\partial f_M}{\partial \vec{w}_p}
 \end{bmatrix}
 \end{equation}
+\end{defn}
 
 
-
-\paragraph{Derivative with respect to matrix}
-
-
+\begin{defn}[Derivative with respect to a matrix]
 We define the derivative of $F(x(\mat{W}))$ with respect to a vector $\mat{W}$, being $W_j$ the $j^{th}$ column of a $p\times m$ matrix $W$ as the $M\times (p \cdot m )$ matrix:
 \begin{equation}
 \frac{\partial F}{\partial \mat{W}} \triangleq
@@ -32,6 +28,7 @@ We define the derivative of $F(x(\mat{W}))$ with respect to a vector $\mat{W}$, 
 \end{array}
 \right]
 \end{equation}
+\end{defn}
 
 
 
