@@ -7,10 +7,24 @@ A special class of activation function, is that of \textit{squashing} functions.
 A function $f(\cdot):\mathbb{R}\rightarrow[a,b]$ with $a,b \in \mathbb{R}$ is said to be a \textit{squashing} function if it is not decreasing and 
 \begin{align}
 &\lim_{x \to +\infty} f(x) = b \\
-& \lim_{x \to -\infty} f(x) = a 
+&\lim_{x \to -\infty} f(x) = a 
 \end{align}
 \end{defn}
 Step function, ramp function and all sigmoidal functions are all examples of squashing functions.
+
+\begin{remark}
+An important property of a \textit{squashing} function $\sigma(\cdot)$ is that
+\begin{equation}
+ \lim_{\alpha \to +\infty} \sigma(\alpha\cdot x)= 
+ \begin{cases}
+    b \cdot \sigma_{\tau}(x) & \text{if $x>0$}.\\
+    a + \cdot \sigma_{\tau}(x) & \text{otherwise}.
+  \end{cases}
+\end{equation}
+being $\sigma_{\tau}$ the usual step function.
+This property is extensively used in several proofs of the universal approximator property of neural networks.
+\end{remark}
+
 
 \paragraph{Sigmoid}
 
@@ -46,6 +60,8 @@ infinity: that's typical of all squashing functions.
 \label{tanh_plot}
 \end{figure}
 
+
+
 \paragraph{ReLU}
 
 
@@ -62,6 +78,8 @@ infinity: that's typical of all squashing functions.
 ReLU is a bit different from other activation function seen so far: the main difference is that's it's not a squashing function.
 As we can see from figure \ref{relu_plot}, ReLU's derivative is the step function; it has only one \textit{saturation} region $(-\infty, 0]$ and a region in which is always takes value one, $(0,+\infty]$
 This leads to the fact that we cannot learn to \textit{turn on} a switched off neuron ($x<0$), but we have no \textit{saturation} region toward infinity.
+The consteness of the derivative in the \textit{active} region is another distinctive property of ReLU and plays an important role in the \textit{vanishing gradient} problem, as it's exaplained in the relative
+section.
 
 \begin{figure}[ht]
   \centering
