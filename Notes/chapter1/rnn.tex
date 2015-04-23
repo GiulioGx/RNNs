@@ -1,5 +1,7 @@
-Recurrent neural networks differ from feed foward neural networks because of the presence of recurrent connections: at least one perceptron output at a given layer $i$ is \textit{fed} to another perceptron
-at a level $j<i$, as can be seen in figure \ref{rnn_model}. This is a key difference: as we will see in the next section, rnn are not only more powerfull than ffnn but as powerfull as turing machines.
+Recurrent neural networks differ from feed forward neural networks because of the presence of recurrent connections: at least one perceptron output at a given layer $i$ is \textit{fed} to another perceptron
+at a level $j<i$, as can be seen in figure \ref{rnn_model}. 
+This is a key difference, as we will see in later sections, because it introduces \textit{memory} in the network changing, somehow, the expressiveness
+of the model.
 
 
 \tikzstyle{rnn_style}=[->,shorten >=1pt,auto,node distance=1.5cm,
@@ -9,7 +11,7 @@ at a level $j<i$, as can be seen in figure \ref{rnn_model}. This is a key differ
   label/.style={node distance=1.2cm,rectangle,fill=white!50,draw=none,minimum size=0.7cm,font=\sffamily\normalsize},
   layer/.style={rectangle,fill=white!50,draw,minimum width=4cm,font=\sffamily\normalsize},
   loopStyle/.style={in=120,out=60, distance=2.5cm},]
-\begin{figure}[h!]
+\begin{figure}[!h]
  \centering
 \begin{tikzpicture}[rnn_style]
 
@@ -67,29 +69,29 @@ at a level $j<i$, as can be seen in figure \ref{rnn_model}. This is a key differ
 
 
 \end{tikzpicture}
-\caption{Rnn model}
+\caption{$\net{RNN}$ model}
 \label{rnn_model}
 \end{figure}
 
 
 
-This difference in topology reflects also on the network's input and output domain, where in feed foward neural networks inputs and outputs were real valued vectors, recursive neural networks deal with
-sequences of vectors, that is to say that now time is also considered. One may argue that taking time (and sequences) into consideration is some sort of limitation because it restricts our model to deal only
-with a temporal inputs; that's not true, in fact we can apply rnn to non temporal data by considering space as the temporal dimension or we can feed the network with the same input for all time steps, or just
-providing no input after the first time step.
+This difference in topology reflects also on the network's input and output domain, where, in feed froward neural networks, inputs and outputs were real valued vectors, recursive neural networks deal with
+sequences of vectors; in other words, now, time is also considered. One may argue that, taking time (and sequences) into consideration, is some sort of limitation, because it restricts our model to deal only
+with temporal inputs; that's not true, in fact we can apply RNNs to non temporal data by considering space as the temporal dimension, or we can feed the network with the same input for all time steps, or just
+providing no input at all after the first time step.
 
 \begin{defn}[Recurrent neural network]
 \label{def_rnn}
 A recurrent  neural network is tuple
-$$RNN\triangleq< \set{W},\set{B} ,\sigma(\cdot),F(\cdot)>$$
+$$\net{RNN}\defeq< \set{W},\set{B} ,\sigma(\cdot),F(\cdot)>$$
 \begin{itemize}
- \item $\set{W} \triangleq \{\mat{W}^{in},\mat{W^{rec},\mat{W^{out}}}\}$ where
+ \item $\set{W} \defeq \{\mat{W}^{in},\mat{W^{rec},\mat{W^{out}}}\}$ where
  \begin{itemize}
   \item $W^{in}$ is the $r\times p$ input weight matrix
   \item $W^{rec}$ is the $r\times r$ recurrent weight matrix
   \item $W^{out}$ is the $o \times r$ output weight matrix
  \end{itemize}
- \item $\set{B} \triangleq \{\vec{b^{rec},\vec{b^{out}}}\}$ where
+ \item $\set{B} \defeq \{\vec{b^{rec},\vec{b^{out}}}\}$ where
  \begin{itemize}
    \item $\vec{b}^{rec} \in \mathbb{R}^{r}$ is the bias vector for the recurrent layer
    \item $\vec{b}^{out} \in \mathbb{R}^{o}$ is the bias vector for the output layer
@@ -100,31 +102,32 @@ $$RNN\triangleq< \set{W},\set{B} ,\sigma(\cdot),F(\cdot)>$$
 \end{defn}
 
 \begin{remark}{}
-Given a RNN
+Given a $\net{RNN}$
 \begin{itemize}
- \item The total number of weights si given by $\mathcal{N}(W) \triangleq rp+r^2+ro$
- \item The number of biases by $\mathcal{N}(b) \triangleq r+o $
+ \item The total number of weights si given by $\mathcal{N}(W) \defeq rp+r^2+ro$
+ \item The number of biases by $\mathcal{N}(b) \defeq r+o $
  \item $p$ is the size of input vectors, 
  \item$r$ is the number of hidden units
  \item $o$ is the size of output vectors. 
 \end{itemize}
 \end{remark}
 
-\begin{defn}[Output of a RNN]
-Given a $RNN$ and an input sequences $\{\vec{x}\}_{t=1,...,T}, \vec{x}_t \in \mathbb{R}^p$ the output sequence $\{\vec{y}\}_{t=1,...,T}, \vec{y}_t \in \mathbb{R}^o$ of the net is defined by the following:
+\begin{defn}[Output of a $\net{RNN}$]
+\label{def_rnn_output}
+Given a $\net{RNN}$ and an input sequences $\{\vec{x}\}_{t=1,...,T}, \vec{x}_t \in \mathbb{R}^p$ the output sequence $\{\vec{y}\}_{t=1,...,T}, \vec{y}_t \in \mathbb{R}^o$ of the net is defined by the following:
 \begin{align}
-&\vec{y}_t \triangleq F(W^{out}\cdot\vec{a}_t + \vec{b}^{out})\\
-&\vec{a}_t \triangleq W^{rec}\cdot\vec{\phi}_{t-1}+W^{in}\cdot\vec{x}_t+\vec{b}^{rec}\\
-&\vec{\phi}_t \triangleq  \sigma(\vec{a}_t)
+&\vec{y}_t \defeq F(W^{out}\cdot\vec{a}_t + \vec{b}^{out})\\
+&\vec{a}_t \defeq W^{rec}\cdot\vec{\phi}_{t-1}+W^{in}\cdot\vec{x}_t+\vec{b}^{rec}\\
+&\vec{\phi}_t \defeq  \sigma(\vec{a}_t)
 \end{align}
 \end{defn}
 
 
-As we can understand from definition \ref{def_rnn}, there is only one recurrent layer, whose weights are the same for each time step, so one can asks where does the deepness of the network come from.
-The answer lies in the temporal unfolding of the network, in fact if we unfold the network step by step we obtain a structure similar to the structure of a feed foward neural network. As we can observe
-in figure \ref{rnn_unfolding}, the unfolding of the network through time consist of putting identical version of the same reccurent layer on top of each other and linking the inputs of one layer to the
-next one. The key difference from feed foward neural networks if, as we have already observed, that the weights in each layer are identical, and of course the additional timed inputs which are different for
-each unfolded layer.
+As we can understand from definition \ref{def_rnn_output}, there is only one recurrent layer, whose weights are the same for each time step, so one could asks where does the deepness of the network come from.
+The answer lies in the temporal unfolding of the network, in fact if we unfold the network step by step we obtain a structure similar to that of a feed forward neural network. As we can observe
+in figure \ref{rnn_unfolding}, the unfolding of the network through time consist of putting identical version of the same recurrent layer one on top of each other and linking the inputs of one layer to the
+next one. The key difference from feed forward neural networks is, as we have already observed, that the weights in each layer are identical; another
+important unlikeness is of course the presence of additional timed inputs for each unfolded layer.
 
 \tikzstyle{rnn_style}=[->,shorten >=1pt,auto,node distance=1.5cm,
   thick,
@@ -173,8 +176,8 @@ each unfolded layer.
   
   
   %biases
-  \node[neuron](b) [right of=y1,node distance=2cm] {};
-  \node[label] (b_l) [right of=b] {bias=1};
+  \node[neuron](b) [right of=y1,node distance=1.4cm] {};
+  \node[label] (b_l) [above of=b,node distance=0.7cm] {bias=1};
 
   
   \path[->] (x0) edge [bend right] node[]{$W^{in}$}   (hl1)
@@ -202,24 +205,22 @@ each unfolded layer.
        	    (hl2) edge [] node[]{$W^{rec} $} (hld)
     	    (hld) edge [] node[]{$W^{rec} $} (hlT);
 
-
-
 \end{tikzpicture}
-\caption{Unfolding of a rnn}
+\caption{Unfolding of a $\net{RNN}$}
 \label{rnn_unfolding}
 \end{figure}
 
 
-\subsection{Learning with ffnn}
-We can model an optimization problem in the same way we did for feed foward neural networks, the main difference is, again, that we now deal with temporal sequences so we need a slightly different
+\subsection{Learning with RNNs}
+We can model an optimisation problem in the same way we did for feed forward neural networks, the main difference is, again, that we now deal with temporal sequences so we need a slightly different
 loss function.
-Given a dataset $D$:
+Given a data-set $D$:
 \begin{equation}
-D\triangleq\{\{\overline{\vec{x}}\}_{t=1,...,T}, \overline{\vec{x}}_t \in \mathbb{R}^p, \{\overline{\vec{y}}\}_{t=1,...,T}, \overline{\vec{y}}_t \in \mathbb{R}^o;  i=1,...,N\}
+D\defeq\{\{\overline{\vec{x}}\}_{t=1,...,T}, \overline{\vec{x}}_t \in \mathbb{R}^p, \{\overline{\vec{y}}\}_{t=1,...,T}, \overline{\vec{y}}_t \in \mathbb{R}^o;  i=1,...,N\}
 \end{equation}
 we define a loss function $L_D:\mathbb{R}^{\mathcal{N}(W)+\mathcal{N}(b)} \rightarrow \mathbb{R}_{\geq 0}$ over $D$  as
 \begin{equation}
-L_D(\set{W},\set{B})\triangleq\frac{1}{N}\sum_{i=1}^N \sum_{t=1}^T L_t(\overline{\vec{x}}_t^{(i)},\vec{y}_t^{(i)}) 
+L_D(\set{W},\set{B})\defeq\frac{1}{N}\sum_{i=1}^N \sum_{t=1}^T L_t(\overline{\vec{x}}_t^{(i)},\vec{y}_t^{(i)}) 
 \end{equation}
 $L_t$ is an arbitrary loss function at time step $t$.
 

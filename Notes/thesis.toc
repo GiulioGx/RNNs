@@ -9,13 +9,13 @@
 \contentsline {subsection}{\numberline {1.2.2}Gradient}{10}{subsection.1.2.2}
 \contentsline {paragraph}{Backpropagation}{11}{section*.5}
 \contentsline {section}{\numberline {1.3}Recurrent neural networks}{12}{section.1.3}
-\contentsline {subsection}{\numberline {1.3.1}Learning with ffnn}{14}{subsection.1.3.1}
+\contentsline {subsection}{\numberline {1.3.1}Learning with RNNs}{14}{subsection.1.3.1}
 \contentsline {subsection}{\numberline {1.3.2}Gradient}{15}{subsection.1.3.2}
 \contentsline {paragraph}{Backpropagation through time (BPTT)}{17}{section*.6}
 \contentsline {subsection}{\numberline {1.3.3}The vanishing and exploding gradient problem}{17}{subsection.1.3.3}
 \contentsline {paragraph}{Hochreiter Analysis: Weak upper bound}{18}{section*.7}
 \contentsline {paragraph}{Explaining the problem using network's graph}{19}{section*.8}
-\contentsline {paragraph}{The ReLU case}{19}{section*.9}
+\contentsline {paragraph}{The ReLU case}{20}{section*.9}
 \contentsline {section}{\numberline {1.4}Activation functions and gradient}{21}{section.1.4}
 \contentsline {paragraph}{Sigmoid}{21}{section*.10}
 \contentsline {paragraph}{Tanh}{21}{section*.11}
