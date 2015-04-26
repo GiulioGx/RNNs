@@ -1,12 +1,9 @@
 In this section we will investigate the expressive power of neural networks, presenting some results that motivate the use of neural networks as learning
-model. 
-
-ALTRO
- 
+models and underline the differences between the two paradigm of FNNs and RNNs. 
 
 One of the first import results regarding the expressive power of neural networks it's due to Hornik et al. \cite{Hornik89} which basically states
-\textit{'Multilayered feed foward networks with at least one hidden layer, using an arbitrary squashing function can approximate virtually any function
-of interest to any desired degree of accuracy provided sufficiently many hidden units are available'}.
+\textit{``Multilayered feed foward networks with at least one hidden layer, using an arbitrary squashing function, can approximate virtually any function
+of interest to any desired degree of accuracy provided sufficiently many hidden units are available''}.
 
 To give a more formal result we need first to define what \textit{approximate to any degree of accuracy means}, this concept is captured in definition
 \ref{dens_compact}
@@ -20,39 +17,42 @@ To give a more formal result we need first to define what \textit{approximate to
 
 Hornik result is contained in theorem \ref{universal_approx}.
 \begin{thm}
- For every squashing function $\sigma$, $\forall n\in \mathbb{N}$, feed foward neural
+ For every squashing function $\sigma$, $\forall n\in \mathbb{N}$, feed forward neural
  networks with one hidden layer are a class of functions which is \textit{uniformly dense on compacta in} $\mathbb{C}^n$
 \label{universal_approx}.
 \end{thm}
 
 Theorem \ref{universal_approx} extends also to Borel measurable functions, please see \cite{Hornik89} for more details.
 
-A survey of other approches, some of which constructive, which achieve similar results can be found in \cite{Scarselli98}
-At the momement I dont know of any results concerning ReLU activation function.
+A survey of other approaches, some of which constructive, which achieve similar results can be found in \cite{Scarselli98}
+At the moment I don't know of any results concerning ReLU activation function.
 
 This results implies that FNN are \textit{universal approximators}, this is a strong argument for using such models in machine learning.
 It's important to notice, however, that the theorem holds if we have \textit{sufficiently many} units. In practice the number of units will bounded
 by the machine capabilities and by computational time, of course greater the number of units greater will be the learning time. This will limit
 the expressiveness of the network to a subset of all measurable functions. 
+
+BOUNDS?
 \\\\Let's now turn our attention to RNNs and see how the architectural changes, namely the addition of backward links, affect the expressive power of the model.
-It's suffice to say that RNNs are as powerfull as turing machine. Siegelman and Sontag \cite{Siegelmann91turingcomputability} proved the existence 
+It suffice to say that RNNs are as powerfull as turing machine. Siegelman and Sontag \cite{Siegelmann91turingcomputability} proved the existence 
 of a finite neural network, with sigmoid activation function, which simulates a universal Turing machine. Hy{\"o}tyniemi \cite{Hyotyniemi96turingmachines} proved, equivalently,
 that turing machine are recurrent neural network showing how to build a network, using instead ReLU activation function, that performs step by step 
 all the instruction of a computer program.
+Hy{\"o}tyniemi work is particularly interesting because it shows how to construct a network that simulate an algorithm written a simple language equivalent to a turing machine.
+For each instruction type (increment,decrement,conditional branch,...) a particular setting of weights and neuron is devised allowing the net so simulate step by step the behaviour of the program. 
+In the program equivalent network there are a unit for each program variable and one or two, depending on the instruction type, units for each program instruction.
+This is very interesting from an expressiveness point of view since it bounds the number of units we ought to use with the length of the algorithm we are trying to reproduce.
 
-This seems extremely good news, since we could simulate turing machines, hence all algorithms we can think of, using a recurrent neural network with a finite
-number of units; recall that for FFNN we had to suppose infinitely many units to obtain the universal approximator property.
-Of course there is a pitfall: we can simulate any turing machine but we have to allow sufficiently many time steps.
+For better understanding the implications of this fact, imagine how many complex function you can express with short algorithms, for example fractals (approximations).
+It's worth underling the difference with feed forward neural networks where a large number of units seems to be required. This seems to suggest that FFNNs and RNNs differ mainly in a manner of 
+representation, where FNNs use space to define a somehow explicit mapping from input to output, RNNs use time to implicitly define an algorithm responsible for such mapping. 
 
-
-\paragraph{Understanding the difference between RNN and FFNN models}
-ESEMPIO CONCRETO SU FNN VS RNN
-
-SPACE-TIME STRUGGLE
-
-IMPLICT REPRESENTATION
-
-DISCORSI SULL UTILIZZO
+This seems extremely good news, since we could simulate turing machines, hence all algorithms we can think of, using a recurrent neural network with a relatively small number of units; 
+recall that for FFNN we had to suppose infinitely many units to obtain the universal approximator property.
+Of course there is a pitfall: we can simulate any turing machine but we have to allow sufficiently many time steps and choose a termination criterion.
+This is of course impractical, and we don't use RNNs in this way. Usually the number of time steps is choose to be equal to the input sequence length. This of course restrict the class of algorithm
+we can learn with RNNs. A particular class of algorithms suited to be learned by such models is that of algorithms consisting in one loop, inside which some invariants are enforced. The output, step by step,
+depends on cycle invariants.
 
 
 

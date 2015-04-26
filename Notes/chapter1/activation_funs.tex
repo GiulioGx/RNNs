@@ -15,14 +15,16 @@ Step function, ramp function and all sigmoidal functions are all examples of squ
 \begin{remark}
 An important property of a \textit{squashing} function $\sigma(\cdot)$ is that
 \begin{equation}
- \lim_{\alpha \to +\infty} \sigma(\alpha\cdot x)= 
+ \lim_{\alpha \to +\infty} \sigma(\alpha\cdot (x-\tau))= 
  \begin{cases}
-    b \cdot \sigma_{\tau}(x) & \text{if $x>0$}.\\
-    a + \cdot \sigma_{\tau}(x) & \text{otherwise}.
+    b \cdot \sigma_{\tau}(x) & \text{if $x> \tau $}\\
+    a + \sigma_{\tau}(x) & \text{otherwise}
   \end{cases}
 \end{equation}
 being $\sigma_{\tau}$ the usual step function.
-This property is extensively used in several proofs of the universal approximator property of neural networks.
+This property is extensively used in several proofs of the universal approximator property of neural networks. Roughly speaking we can say that \textit{squashing} functions act as step functions
+at the limit; please note that this property has a practical use since inputs of activation functions are the weighted sum of some neurons output,
+so activation function inputs can be arbitrarily big or small.
 \end{remark}
 
 
@@ -48,7 +50,7 @@ to the gradient.
  tanh(x)&=\frac{e^x-e^{-x}}{e^x+e^{-x}} \\
  tanh'(x)&= 1 - tanh^2(x)  
 \end{align}
-As we can see from figure \ref{tanh_plot} tanh (and it's derivative) have a behaviour similar to the sigmoid one; Again we have two saturation region towards
+As we can see from figure \ref{tanh_plot} tanh (and it's derivative) have a behavior similar to the sigmoid one; Again we have two saturation region towards
 infinity: that's typical of all squashing functions.
 
 
@@ -76,9 +78,9 @@ infinity: that's typical of all squashing functions.
   \end{cases}
 \end{align}
 ReLU is a bit different from other activation function seen so far: the main difference is that's it's not a squashing function.
-As we can see from figure \ref{relu_plot}, ReLU's derivative is the step function; it has only one \textit{saturation} region $(-\infty, 0]$ and a region in which is always takes value one, $(0,+\infty]$
+As we can see from figure \ref{relu_plot}, ReLU's derivative is the step function; it has only one \textit{saturation} region $(-\infty, 0]$ and a region in which is always takes value 1, $(0,+\infty]$
 This leads to the fact that we cannot learn to \textit{turn on} a switched off neuron ($x<0$), but we have no \textit{saturation} region toward infinity.
-The consteness of the derivative in the \textit{active} region is another distinctive property of ReLU and plays an important role in the \textit{vanishing gradient} problem, as it's exaplained in the relative
+The constancy of the derivative in the \textit{active} region is a distinctive property of ReLU which plays an important role in the \textit{vanishing gradient} problem too, as it's explained in the relative
 section.
 
 \begin{figure}[ht]

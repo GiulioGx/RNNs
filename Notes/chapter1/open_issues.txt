@@ -1,0 +1,4 @@
+Relu ffnn and universal approximator
+on expressiveness mettere paragrafo su differenze?
+
+BOUND (units ) per FFNNs
