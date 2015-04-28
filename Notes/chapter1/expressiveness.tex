@@ -31,8 +31,7 @@ This results implies that FNN are \textit{universal approximators}, this is a st
 It's important to notice, however, that the theorem holds if we have \textit{sufficiently many} units. In practice the number of units will bounded
 by the machine capabilities and by computational time, of course greater the number of units greater will be the learning time. This will limit
 the expressiveness of the network to a subset of all measurable functions. 
-
-BOUNDS?
+%BOUNDS?
 \\\\Let's now turn our attention to RNNs and see how the architectural changes, namely the addition of backward links, affect the expressive power of the model.
 It suffice to say that RNNs are as powerfull as turing machine. Siegelman and Sontag \cite{Siegelmann91turingcomputability} proved the existence 
 of a finite neural network, with sigmoid activation function, which simulates a universal Turing machine. Hy{\"o}tyniemi \cite{Hyotyniemi96turingmachines} proved, equivalently,
@@ -52,7 +51,7 @@ recall that for FFNN we had to suppose infinitely many units to obtain the unive
 Of course there is a pitfall: we can simulate any turing machine but we have to allow sufficiently many time steps and choose a termination criterion.
 This is of course impractical, and we don't use RNNs in this way. Usually the number of time steps is choose to be equal to the input sequence length. This of course restrict the class of algorithm
 we can learn with RNNs. A particular class of algorithms suited to be learned by such models is that of algorithms consisting in one loop, inside which some invariants are enforced. The output, step by step,
-depends on cycle invariants.
+depends on the loop invariants.
 
 
 

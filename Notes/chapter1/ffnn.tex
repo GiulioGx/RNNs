@@ -31,8 +31,8 @@ Given a $\net{FFNN}$ and an input vector $\vec{x} \in \mathbb{R}^{p(1)}$ the out
 
 \begin{align}
 &\vec{y}=F(\vec{a}^{U}) &\\
-&\vec{\phi}^{i} \defeq \sigma(\vec{a}_{i}), & i=1,...,U\\
-&\vec{a}^{i} \defeq W^{i-1} \cdot \vec{\phi}^{i-1} +\vec{b}^i  & i=1,...,U\\
+&\vec{\phi}^{i} \defeq \sigma(\vec{a}_{i}), & i=2,...,U\\
+&\vec{a}^{i} \defeq W^{i-1} \cdot \vec{\phi}^{i-1} +\vec{b}^i  & i=2,...,U\\
 &\vec{\phi}^{1} \defeq \vec{x} &
 \end{align}
 \end{defn}

@@ -107,17 +107,17 @@ The derivatives with respect to biases are compute in the same way:
 
 In layered notation we can rewrite the previous equations as:
 \begin{equation}
- \frac{\partial a^U}{\partial \mat{W}^i} = \frac{\partial a^U}{\partial a^{i+1}} \cdot \frac{\partial a^{i+1}}{\partial \mat{W}^i}
+ \frac{\partial a^U}{\partial \mat{W}^i} = \frac{\partial a^U}{\partial a^{i+1}} \cdot \frac{\partial^{+} a^{i+1}}{\partial \mat{W}^i}
 \end{equation}
 
 
 \begin{equation}
-\frac{\partial a^{i+1}}{\partial \mat{W}_j^i} =
+\frac{\partial^{+} a^{i+1}}{\partial \mat{W}_j^i} =
  \begin{bmatrix}
-   \phi_1^{i}    & 0                & \cdots      & \cdots       & 0  \\
-   0               & \phi_2^{i}     & \cdots      & \cdots       & 0  \\
+   \phi_j^{i}    & 0                & \cdots      & \cdots       & 0  \\
+   0               & \phi_j^{i}     & \cdots      & \cdots       & 0  \\
    \vdots          & \vdots           & \ddots      & \vdots       &\vdots\\
-   0               & \cdots           & \cdots      & \cdots       & \phi^{i}_{p(i)}
+   0               & \cdots           & \cdots      & \cdots       & \phi^{i}_{j}
 \end{bmatrix}
 \end{equation}
 

@@ -1,35 +1,34 @@
 The training of recurrent neural networks is afflicted by the so called \textit{exploding} and \textit{vanishing} gradient problem.
-Such problem is directly linked to the notion of memory. When we talk about memory what are we really talking about is the dependecy of neuron output at a given time $t$ from previous time steps,
-that is how $\phi^t$ depends on $\phi^{k}$ with $t>k$. This dependecy is captured by the expression $\frac{\partial \vec{a}^t}{\partial \vec{a}^k}$.
-Obiuvsly when such expression equals zero it means neuron output at time $t$ is not affected by output at time $k$.
+Such problem is directly linked to the notion of memory. When we talk about memory what are we really talking about is the dependency of neurons output at a given time $t$ from previous time steps,
+that is how $\phi^t$ depends on $\phi^{k}$ with $t>k$. This dependency is captured by the expression $\frac{\partial \vec{a}^t}{\partial \vec{a}^k}$.
+Obviously when such expression equals zero it means neuron output at time $t$ is not affected by output at time $k$.
 The terms $\frac{\partial \vec{a}^t}{\partial \vec{a}^k}$ are usually referred as \textit{long term} contribution when $k<<t$ or \textit{short term} contributions
 otherwise.
 We talk of \textit{exploding} gradient problem when \textit{long term} components grow exponentially, on the contrary of \textit{short term} ones, causing
 the overall norm of the gradient to explode.
-We refer to \textit{vanishing} gradient problem when, vice versa, \textit{long terms} diminish exponentially.
-
+We refer to \textit{vanishing} gradient problem when, vice versa, \textit{long term} components diminish exponentially.
+\\\\
 \textit{Vanishing} gradient means long term components approach zero value, this in turn leads to the fact that the output of the net won't depend on inputs of distant temporal steps, i.e the output
-sequence is determined only using recent temporal input: we say that the network doesn't have memory. Evidently this can have catastrofic effects on the classification error. Imagine we would like
-to classiy an input sequence as positive wheter or not it contains a zero character. It would seem a rather easy task, a task other classification models wouldn't have difficulties with. If the neural network
-we are trainign has \textit{vanishing} gradient issue, it means it perform classification only using the most recent temporal input. What if the zero character was at the beginning of the sequence? Of course
-the predicition would be wrong.
-
+sequence is determined only by recent temporal input: we say that the network doesn't have memory. Evidently this can have catastrophic effects on the classification error. Imagine we would like
+to classify an input sequence as positive whether or not it contains a given character. It would seem a rather easy task, however, if the neural network
+we are training suffers from the \textit{vanishing} gradient issue, it could perform the classification using only the most recent temporal inputs. What if the character was at the beginning of the sequence? Of course
+the prediction would be wrong.
+\\\\
 \textit{Exploding} gradient seems to be a different kind of a problem, it does not affect the ability of the network to use information from distant temporal step, on the contrary we have very strong
-information about where to go. One could argue that some components, namely, the long term ones, have gradient norm exponentially bigger than short term ones. I fail to see why this could be a problem:
-of course output of the first time stepes influences all successive steps, so changing the output of a long term neuron do imply big changes in the output of more distant in time neurons.
-The only reason i see for considering this a problem is that big gradient norm, in general, is a problem if we are using algortithms like gradient descent with constant step.
-If we are to compute a step in the gradient direction with a fixed step and gradient has too big norm we may make a too big step.
-
+information about where to go using the gradient direction. One could argue that some components, namely, the long term ones, have gradient norm exponentially bigger than short term ones. I fail to see why this could be a problem:
+the output of the first time steps influences all successive steps, so changing the output of a long term neuron do imply big changes in the output of more distant in time neurons.
+The only situation in which \textit{exploding} gradient can be a problem is  when using learning algorithms like gradient descent with constant step:
+if we are to compute a step in the gradient direction with a fixed step and gradient has too big norm we may make a too big step.
+\\\\
 Let's now return to the nature of the problem and try to explaining the mechanics of it.
-
 We have seen in the previous section that
 \begin{equation}
 \frac{\partial \vec{a}^t}{\partial \vec{a}^k} = \prod_{i=t-1}^{k}  diag(\sigma'(\vec{a}^i)) \cdot \mat{W}^{rec}
 \label{memory_eq}
 \end{equation}
-Intuitively we can understand why such problems arises, more evidently in \textit{long term} components, just by looking at equation \ref{memory_eq};
-We can notice each temporal contribution is the product of $l=t-k-1$ jacobian matrix, so in \textit{long term} components $l$ is large and depening on
-eigenvalues of the matrixes in the product we can go exponentially fast towards 0 or infinty.
+Intuitively we can understand why such problems arises, more evidently in \textit{long term} components, just by looking at equation \ref{memory_eq}.
+We can notice each temporal contribution is the product of $l=t-k-1$ jacobian matrix, so in \textit{long term} components $l$ is large and depending on
+the values of the matrices in the product we can go exponentially fast towards 0 or infinity.
 
 \paragraph{Hochreiter Analysis: Weak upper bound}
 In this paragraph we report some useful consideration made by Hochreiter, please see \cite{Hochreiter95longshort-term} for more details.
@@ -39,26 +38,26 @@ $$\norm{\mat{A}}_{max}\triangleq \underset{i,j}{\text{max}}|a_{ij}| $$
 $$\sigma'_{max} \triangleq \underset{i=k,...,t-1}{\text{max  }} \{\norm{diag(\sigma'(a^i))}_{max}\}$$
 Since
 \begin{align}
-\norm{\mat{A}\cdot\mat{B}}_{max} &<= p \cdot \norm{\mat{A}}\cdot \norm{\mat{B}}_{max} & \forall \mat{A},\mat{B} \in \mathbb{R}_{p\times p} 
+\norm{\mat{A}\cdot\mat{B}}_{max} &<= r \cdot \norm{\mat{A}}\cdot \norm{\mat{B}}_{max} & \forall \mat{A},\mat{B} \in \mathbb{R}_{r\times r} 
 \end{align}
 it holds:
 \begin{align}
 \norm{\frac{\partial \vec{a}^t}{\partial \vec{a}^k}}_{max} &= \norm{ \prod_{i=t-1}^{k}  diag(\sigma'(\vec{a}^i)) \cdot \mat{W}^{rec} }_{max}\\
-&\leq \prod_{i=t-1}^{k} p \cdot \norm{diag(\sigma'(\vec{a}^i))}_{max} \cdot \norm{\mat{W}^{rec}}_{max}\\
-&\leq \big(p \cdot \sigma'_{max} \cdot \norm{\mat{W}^{rec}}_{max}\big)^{t-k-1} \\
+&\leq \prod_{i=t-1}^{k} r \cdot \norm{diag(\sigma'(\vec{a}^i))}_{max} \cdot \norm{\mat{W}^{rec}}_{max}\\
+&\leq \big(r \cdot \sigma'_{max} \cdot \norm{\mat{W}^{rec}}_{max}\big)^{t-k-1} \\
 &= \tau^{t-k-1}
 \end{align}
-where $$\tau \triangleq p \cdot \sigma'_{max} \cdot \norm{\mat{W}^{rec}}_{max}$$
+where $$\tau \triangleq r \cdot \sigma'_{max} \cdot \norm{\mat{W}^{rec}}_{max}$$
 
-So we have exponential decay if $\tau<1$; We can match this condition if $\norm{\mat{W}^{rec}}_{max} \leq \frac{1}{p\cdot \sigma'_{max}}$
-As pointed out by Hochreiter in his work we can match this condition, in the case of sigmoid activation function by choosing $\norm{\mat{W}^{rec}}_{max} < \frac{4}{p}$.
+So we have exponential decay if $\tau<1$. We can match this condition if $\norm{\mat{W}^{rec}}_{max} \leq \frac{1}{r\cdot \sigma'_{max}}$.
+As pointed out by Hochreiter in his work we can match this condition, in the case of sigmoid activation function by choosing $\norm{\mat{W}^{rec}}_{max} < \frac{1}{0.25 \cdot r}$.
 
-Let's note that we would actually reach this upper bound for some $i,j$ only if all the path cost have the same sign and the activations function take maximal
+Let's note that we would actually reach this upper bound for some $i,j$ only if all the path cost have the same sign and the activation function takes always maximal
 value.
 
 
-\paragraph{Explaining the problem using network's graph}
-Let's now dig a bit deeper and rewrite equation \ref{memory_eq} with respect to a couple of neurons $i$ and $j$
+\paragraph{Explaining the problem using the network's graph}
+Let's now dig a bit deeper and rewrite equation \ref{memory_eq} with respect to a couple of neurons $i$ and $j$.
 
 \begin{equation} 
 \frac{\partial \vec{a}_i^t}{\partial \vec{a}_j^k} = \sum_{q\in P(j)} \sum_{l \in P(q)} \hdots \sum_{h : i \in P(h)} w_{qj} \hdots w_{jh} \cdot \sigma'(a_j^k)\sigma'(a_q^{k+1}) \hdots \sigma'(a_i^{t-1})
@@ -166,7 +165,7 @@ the weight of each arc we walk through and the cost of each neuron we cross, as 
 \end{figure}
 
 
-We can further characterize each path cost noticing that we can separate two components, one that depends only on the weights $w_{qj} \hdots w_{jh}$ and the other that depends both on the weights and the inputs
+We can further characterise each path cost noticing that we can separate two components, one that depends only on the weights $w_{qj} \hdots w_{jh}$ and the other that depends both on the weights and the inputs
 $\sigma'(a_j^k)\sigma'(a_q^{k}) \hdots \sigma'(a_i^{t-1})$.
 
 
@@ -174,7 +173,7 @@ $\sigma'(a_j^k)\sigma'(a_q^{k}) \hdots \sigma'(a_i^{t-1})$.
 ReLU case is a bit special, because of it's derivative.
 ReLU's derivative is a step function, it can assume only two values: $1$ when the neuron is active, $0$ otherwise.
 Returning to the path graph we introduced earlier we can say that a path is \textit{enabled} if each neuron in that path is active. In fact if we
-encounter a path wich cross a non active neuron it's path cost will be 0; on the contrary for an \textit{enabled} path thw cost will be simply the product
+encounter a path which cross a non active neuron it's path cost will be 0; on the contrary for an \textit{enabled} path the cost will be simply the product
 of weight of the arcs we went through, as we can see in figure \ref{gradient_path_cost_relu}
 
 
@@ -275,17 +274,18 @@ of weight of the arcs we went through, as we can see in figure \ref{gradient_pat
 
 So $\vert (\frac{\partial \vec{a}^t}{\partial \vec{a}^k})_{ij}\vert$ ranges from 0, when no path is enabled to, $\vert ((\mat{W}^{rec})^{t-k-1})_{ij} \vert$ when all
 paths are enabled and all path cost have the same sign, which is consistent with what we found in Hochreiter analysis.
-\\\\
-COLLEGARE MELIO
-Let's pretend we have found, with some learning tecnique, an assigment for all the weights which causes the gradient to have zero norm. We could be happy with
+We can argue then that ReLU has an advantage over sigmoidal activation functions, for instance, because gradient depends only on the $\mat{W}^rec$ matrix:
+ReLU function \textit{only} enables or disables the paths but doesn't change their costs as sigmoids do
+\paragraph{Poor solutions}
+Let's pretend we have found, with some learning technique, an assignment for all the weights which causes the gradient to have zero norm. We could be happy with
 it and claim to have 'solved' the problem. However, by chance, we discover that $\frac{\partial \vec{a}^T}{\partial \vec{a}^k}$ has zero norm for all
 time steps $k<\tau$. So, the output of the network doesn't depend on the inputs of the sequence for those time steps.
-In other words we have found a possibly optimal solution for the truncated sequence ${x}_{k=\tau:T}$. The solution we have found is an optimal candidate to
+In other words we have found a possibly optimal solution for the truncated sequence ${x}_{[\tau:T]}$. The solution we have found is an optimal candidate to
 be a bad local minimum.
 
-As a final observation on this matter it's worth noticing how a bad initiliazation of $\mat{W^{rec}}$ can lead to poor solutions or extremely large convergence time
-just because such initialization imply $\frac{\partial \vec{a}^t}{\partial \vec{a}^k}$ approaching zero norm for $t>>k$. Moreover, even if we somehow provide
-an initialization matrix wich is unafflicted by this curse, it's certainy possible that we reach such a bad matrix during learning phase.
+As a final observation on this matter it's worth noticing how a bad initialisation of $\mat{W^{rec}}$ can lead to poor solutions or extremely large convergence time
+just because such initialisation imply $\frac{\partial \vec{a}^t}{\partial \vec{a}^k}$ approaching zero norm for $t>>k$. Moreover, even if we somehow provide
+an initialisation matrix which is unaffected by this curse, it's certainly possible that we reach such a bad matrix during learning phase.
 Several techniques have been proposed to overcome this problem, they will be the topic of later chapters.
 
 

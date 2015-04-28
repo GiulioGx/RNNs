@@ -3,31 +3,6 @@ Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
 The top-level auxiliary file: thesis.aux
 The style file: plain.bst
 Database file #1: biblio.bib
-I was expecting a `{' or a `('---line 5 of file biblio.bib
- : 
- : BACKPROPAGATION
-(Error may have been on previous line)
-I'm skipping whatever remains of this entry
-I was expecting a `{' or a `('---line 33 of file biblio.bib
- : 
- : ON EXPRESSIVENESS
-(Error may have been on previous line)
-I'm skipping whatever remains of this entry
-I was expecting a `{' or a `('---line 36 of file biblio.bib
- : 
- : @article{Hornik89,
-(Error may have been on previous line)
-I'm skipping whatever remains of this entry
-I was expecting a `{' or a `('---line 79 of file biblio.bib
- : 
- : @MISC{Hyotyniemi96turingmachines,
-(Error may have been on previous line)
-I'm skipping whatever remains of this entry
-I was expecting a `{' or a `('---line 95 of file biblio.bib
- : 
- : ON LEARNING
-(Error may have been on previous line)
-I'm skipping whatever remains of this entry
 Warning--empty booktitle in Rumelhart86
 You've used 7 entries,
             2118 wiz_defined-function locations,
@@ -70,4 +45,4 @@ warning$ -- 1
 while$ -- 25
 width$ -- 8
 write$ -- 74
-(There were 5 error messages)
+(There was 1 warning)

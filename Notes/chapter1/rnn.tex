@@ -118,7 +118,8 @@ Given a $\net{RNN}$ and an input sequences $\{\vec{x}\}_{t=1,...,T}, \vec{x}_t \
 \begin{align}
 &\vec{y}_t \defeq F(W^{out}\cdot\vec{a}_t + \vec{b}^{out})\\
 &\vec{a}_t \defeq W^{rec}\cdot\vec{\phi}_{t-1}+W^{in}\cdot\vec{x}_t+\vec{b}^{rec}\\
-&\vec{\phi}_t \defeq  \sigma(\vec{a}_t)
+&\vec{\phi}_t \defeq  \sigma(\vec{a}^t) \\
+&\vec{\phi}_0 \defeq \overrightarrow{0}
 \end{align}
 \end{defn}
 
@@ -228,10 +229,8 @@ The definition takes into account the output for each temporal step, depending o
 outputs; that's not a limitation, in fact we could define a loss which is computed only on the last output vector, at time $T$, and adds 0 for each
 other time step.
 
-
 \subsection{Gradient}
 \input{chapter1/rnn_gradient}
-
 \subsection{The vanishing and exploding gradient problem}
 \input{chapter1/vanishing_grad}
 
