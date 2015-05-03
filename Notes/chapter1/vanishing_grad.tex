@@ -56,6 +56,25 @@ Let's note that we would actually reach this upper bound for some $i,j$ only if 
 value.
 
 
+\paragraph{Upper bound using singular values}
+Lets decompose $\mat{W}^{rec}$ using the singular value decomposition. We can write
+\begin{equation}
+ \mat{W}^{rec} =  \mat{S}\cdot\mat{D}\cdot\mat{V}^T
+\end{equation}
+where $\mat{S},\mat{V}^T$ are squared orthogonal matrices and $\mat{D}\defeq diag(\mu_1, \mu_2,...,\mu_r)$ is the diagonal matrix containing the singular values of $\mat{W}^{rec}$.
+Rewriting equation \ref{memory_eq} using this decomposition leads to
+\begin{equation}
+\frac{\partial \vec{a}^t}{\partial \vec{a}^k} = \prod_{i=t-1}^{k}  diag(\sigma'(\vec{a}^i)) \cdot \mat{S}\cdot \mat{D} \cdot \mat{V}^t
+\label{memory_eq}
+\end{equation}
+Recalling that $\norm{U\cdot \vec{x}}=\norm{\vec{x}}$ for any orthogonal matrix $\mat{U}$ we get
+\begin{align}
+\norm{\frac{\partial \vec{a}^t}{\partial \vec{a}^k} \cdot \vec{e}_i} &= \norm{ (\prod_{i=t-1}^{k} diag(\sigma'(\vec{a}^i)) \cdot \mat{S}\cdot \mat{D} \cdot \mat{V}^t) \cdot \vec{e}_i}\\
+&\leq (\sigma'_{max} \cdot \mu_{max})^{t-k-1}
+\end{align}
+The previous equation provide us a sufficient condition, $\sigma'_{max} \cdot \mu_{max} <1 $, as in Hochreiter's analysis, for exponential decay of long term components. In this case however the bound depends on the singular value
+of the recurrent weights rather than on the maximal weight of the matrix itself. 
+
 \paragraph{Explaining the problem using the network's graph}
 Let's now dig a bit deeper and rewrite equation \ref{memory_eq} with respect to a couple of neurons $i$ and $j$.
 
@@ -165,7 +184,7 @@ the weight of each arc we walk through and the cost of each neuron we cross, as 
 \end{figure}
 
 
-We can further characterise each path cost noticing that we can separate two components, one that depends only on the weights $w_{qj} \hdots w_{jh}$ and the other that depends both on the weights and the inputs
+We can further characterize each path cost noticing that we can separate two components, one that depends only on the weights $w_{qj} \hdots w_{jh}$ and the other that depends both on the weights and the inputs
 $\sigma'(a_j^k)\sigma'(a_q^{k}) \hdots \sigma'(a_i^{t-1})$.
 
 
@@ -276,6 +295,8 @@ So $\vert (\frac{\partial \vec{a}^t}{\partial \vec{a}^k})_{ij}\vert$ ranges from
 paths are enabled and all path cost have the same sign, which is consistent with what we found in Hochreiter analysis.
 We can argue then that ReLU has an advantage over sigmoidal activation functions, for instance, because gradient depends only on the $\mat{W}^rec$ matrix:
 ReLU function \textit{only} enables or disables the paths but doesn't change their costs as sigmoids do
+
+
 \paragraph{Poor solutions}
 Let's pretend we have found, with some learning technique, an assignment for all the weights which causes the gradient to have zero norm. We could be happy with
 it and claim to have 'solved' the problem. However, by chance, we discover that $\frac{\partial \vec{a}^T}{\partial \vec{a}^k}$ has zero norm for all
@@ -283,9 +304,9 @@ time steps $k<\tau$. So, the output of the network doesn't depend on the inputs 
 In other words we have found a possibly optimal solution for the truncated sequence ${x}_{[\tau:T]}$. The solution we have found is an optimal candidate to
 be a bad local minimum.
 
-As a final observation on this matter it's worth noticing how a bad initialisation of $\mat{W^{rec}}$ can lead to poor solutions or extremely large convergence time
-just because such initialisation imply $\frac{\partial \vec{a}^t}{\partial \vec{a}^k}$ approaching zero norm for $t>>k$. Moreover, even if we somehow provide
-an initialisation matrix which is unaffected by this curse, it's certainly possible that we reach such a bad matrix during learning phase.
+As a final observation on this matter it's worth noticing how a bad initialization of $\mat{W^{rec}}$ can lead to poor solutions or extremely large convergence time
+just because such initialization imply $\frac{\partial \vec{a}^t}{\partial \vec{a}^k}$ approaching zero norm for $t>>k$. Moreover, even if we somehow provide
+an initialization matrix which is unaffected by this curse, it's certainly possible that we reach such a bad matrix during learning phase.
 Several techniques have been proposed to overcome this problem, they will be the topic of later chapters.
 
 
