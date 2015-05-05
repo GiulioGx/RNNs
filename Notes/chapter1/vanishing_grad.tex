@@ -56,7 +56,7 @@ Let's note that we would actually reach this upper bound for some $i,j$ only if 
 value.
 
 
-\paragraph{Upper bound using singular values}
+\paragraph{An upper bound with singular values}
 Lets decompose $\mat{W}^{rec}$ using the singular value decomposition. We can write
 \begin{equation}
  \mat{W}^{rec} =  \mat{S}\cdot\mat{D}\cdot\mat{V}^T
@@ -64,12 +64,13 @@ Lets decompose $\mat{W}^{rec}$ using the singular value decomposition. We can wr
 where $\mat{S},\mat{V}^T$ are squared orthogonal matrices and $\mat{D}\defeq diag(\mu_1, \mu_2,...,\mu_r)$ is the diagonal matrix containing the singular values of $\mat{W}^{rec}$.
 Rewriting equation \ref{memory_eq} using this decomposition leads to
 \begin{equation}
-\frac{\partial \vec{a}^t}{\partial \vec{a}^k} = \prod_{i=t-1}^{k}  diag(\sigma'(\vec{a}^i)) \cdot \mat{S}\cdot \mat{D} \cdot \mat{V}^t
+\frac{\partial \vec{a}^t}{\partial \vec{a}^k} = \prod_{i=t-1}^{k}  diag(\sigma'(\vec{a}^i)) \cdot \mat{S}\cdot \mat{D} \cdot \mat{V}^T
 \label{memory_eq}
 \end{equation}
-Recalling that $\norm{U\cdot \vec{x}}=\norm{\vec{x}}$ for any orthogonal matrix $\mat{U}$ we get
+Recalling that for any orthogonal matrix $\mat{U}$ it holds $$\norm{\mat{U}\vec{x}}_2=\norm{\vec{x}}_2$$  and using 
+$$\norm{diag(\lambda_1, \lambda_2,...,\lambda_r)\cdot \vec{x}}_2 \leq \lambda_{max} \norm{\vec{x}}_2$$ we get
 \begin{align}
-\norm{\frac{\partial \vec{a}^t}{\partial \vec{a}^k} \cdot \vec{e}_i} &= \norm{ (\prod_{i=t-1}^{k} diag(\sigma'(\vec{a}^i)) \cdot \mat{S}\cdot \mat{D} \cdot \mat{V}^t) \cdot \vec{e}_i}\\
+\norm{\frac{\partial \vec{a}^t}{\partial \vec{a}^k} \cdot \vec{e}_i}_2 &= \norm{ (\prod_{i=t-1}^{k} diag(\sigma'(\vec{a}^i)) \cdot \mat{S}\cdot \mat{D} \cdot \mat{V}^T) \cdot \vec{e}_i}_2\\
 &\leq (\sigma'_{max} \cdot \mu_{max})^{t-k-1}
 \end{align}
 The previous equation provide us a sufficient condition, $\sigma'_{max} \cdot \mu_{max} <1 $, as in Hochreiter's analysis, for exponential decay of long term components. In this case however the bound depends on the singular value
