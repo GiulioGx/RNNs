@@ -29,13 +29,14 @@ the gate units.
     \node[neuron]	(mem)	[right of=s_mem,node distance=1.5cm]	{$m$};
     \node[layer] 	(h)	[right of=mem,	node distance=1.5cm] 	{$h$};
     \node[neuron]	(c2)	[right of =h,	node distance=1.5cm]	{$\times$};
-    \node[label]  	(out)	[right of=c2,	node distance=1.5cm]	{$\phi_j$};
+    \node[label]  	(out)	[right of=c2,	node distance=2.2cm]	{$\phi_j$};
     
     \path[->] (c1) 	edge []   (s_mem)
 	      (s_mem) 	edge []   (mem)
 	      (mem) 	edge []   (h)
 	      (h) 	edge []   (c2)
 	      (c2) 	edge []   (out);
+	     
     
     %loop	     
     \path[->] (mem) edge [loop, in=90,out=120, distance=0.8cm, anchor=south ] node [align=center, pos=0.7] 
@@ -83,12 +84,18 @@ the gate units.
 	      (go1)		edge []						   (s_gate_out) 
       	      (go3)		edge []						   (s_gate_out);
 
+    %enclosing rectangle
+    \node[rectangle,dashed,fill=none,draw,minimum height=3.2cm,minimum width=8.1cm] at (3.4, 0.5) (memoryCell)	{};
+    \node[label]  (memoryLabel)	at(3.5,2.1)	{Memory cell};
+
+
+      	      
 \end{tikzpicture}
 \caption{Memory cell and gate units of LSTM network}
 \label{lstm_neuron}
 \end{figure}
 
-The memory cell and the gate units behave accordingly to the following formulae:
+The memory cell and the gate units behave accordingly to the following:
 
 \begin{equation}
 \phi_{gateIn_j}(t)\defeq \sigma(\sum_u w_{gateIn_j,u}\cdot\phi_u(t-1))
@@ -117,6 +124,16 @@ Memory cells, guarded by gate units can be employed in networks with different t
 input, output and hidden units. Another way to look at this kind of architecture is to think of memory cells as units 
 able to store one bit of information, even for long periods of time, hence able to learn distant time correlations 
 between inputs.
+
+As we have seen these network units are specifically designed to store information, through the use of gates; these 
+gates however are no different from other units, apart from the fact they are multiplicative units, hence without 
+further precautions, the networks would incur in the same vanishing problem it aimed to resolve. In fact LSTM comes with 
+a proper learning algorithm: essentially errors arriving at memory cells inputs are not propagated back in time, only 
+the error within the memory cell gets propagated; in other words gradients are truncated taking into account only the 
+self-connection of the memory cells and not it's other input connections, hence providing constant error flow.
+
+DOVREI SCAVARE NELLE FORMULE DEI GRADIENTI?//
+DISCORSI SU EFFICACIA e RILEVANZA?
 
 
 
