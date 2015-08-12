@@ -26,7 +26,7 @@ the gate units.
     %horizontal line
     \node[neuron]	(c1)       					{$\times$};
     \node[layer] 	(s_mem)	[right of=c1,	node distance=1.5cm] 	{$\Sigma$};
-    \node[neuron]	(mem)	[right of=s_mem,node distance=1.5cm]	{$m$};
+    \node[neuron]	(mem)	[right of=s_mem,node distance=1.5cm]	{$m_j$};
     \node[layer] 	(h)	[right of=mem,	node distance=1.5cm] 	{$h$};
     \node[neuron]	(c2)	[right of =h,	node distance=1.5cm]	{$\times$};
     \node[label]  	(out)	[right of=c2,	node distance=2.2cm]	{$\phi_j$};
@@ -45,42 +45,42 @@ the gate units.
     
     %above inputs
     \node[layer] 	(g)	[above of=c1,	node distance=1.5cm] 	{$g$};
-    \node[layer] 	(s_in)	[above of=g,	node distance=1.5cm] 	{$\Sigma$};
+    \node[layer] 	(s_in)	[above of=g,	node distance=1.2cm] 	{$\Sigma$};
     \node[missing]	(i2)	[above of=s_in, node distance=1.2cm]	{$\hdots$};
     \node[neuron]	(i3)	[right of=i2, 	node distance=1cm]	{};
     \node[neuron]	(i1)	[left of=i2, 	node distance=1cm]	{};
 
     
-    \path[->] (s_in) 	edge [anchor=west]	node[]{$a_{in}$}	(g)
-	      (g) 	edge [anchor=west]   	node[]{$\phi_{in}$}	(c1)
+    \path[->] (s_in) 	edge [anchor=west]	node[]{}	(g)
+	      (g) 	edge [anchor=west]   	node[]{$a_j$}	(c1)
 	      (i1)	edge []   					(s_in) 
       	      (i3)	edge []   					(s_in);
       	      
       	      
     %below gate input unit
     \node[layer] 	(sig_in)	[below of=c1,		node distance=1.5cm] 	{$\sigma$};
-    \node[layer] 	(s_gate_in)	[below of=sig_in,	node distance=1.5cm] 	{$\Sigma$};
+    \node[layer] 	(s_gate_in)	[below of=sig_in,	node distance=1cm] 	{$\Sigma$};
     \node[missing]	(gi2)		[below of=s_gate_in, 	node distance=1.2cm]	{$\hdots$};
     \node[neuron]	(gi3)		[right of=gi2, 		node distance=1cm]	{};
     \node[neuron]	(gi1)		[left of=gi2, 		node distance=1cm]	{};
 
     
-    \path[->] (s_gate_in) 	edge [anchor=west]	node[]{$a_{gateIn}$}	(sig_in)
-	      (sig_in) 		edge [anchor=west]	node[]{$\phi_{gateIn}$} 	(c1)
+    \path[->] (s_gate_in) 	edge [anchor=west]	node[]{}	(sig_in)
+	      (sig_in) 		edge [anchor=west]	node[]{$u_j$} 	(c1)
 	      (gi1)		edge []   (s_gate_in) 
       	      (gi3)		edge []   (s_gate_in);
       	      
       	      
     %below gate output unit
     \node[layer] 	(sig_out)	[below of=c2,		node distance=1.5cm] 	{$\sigma$};
-    \node[layer] 	(s_gate_out)	[below of=sig_out,	node distance=1.5cm] 	{$\Sigma$};
+    \node[layer] 	(s_gate_out)	[below of=sig_out,	node distance=1cm] 	{$\Sigma$};
     \node[missing]	(go2)		[below of=s_gate_out, 	node distance=1.2cm]	{$\hdots$};
     \node[neuron]	(go3)		[right of=go2, 		node distance=1cm]	{};
     \node[neuron]	(go1)		[left of=go2, 		node distance=1cm]	{};
 
     
-    \path[->] (s_gate_out) 	edge [anchor=west]	node[]{$a_{gateOut}$}	   (sig_out)
-	      (sig_out) 	edge [anchor=west]	node[]{$\phi_{gateOut}$}   (c2)
+    \path[->] (s_gate_out) 	edge [anchor=west]	node[]{}	   (sig_out)
+	      (sig_out) 	edge [anchor=west]	node[]{$o_j$}   (c2)
 	      (go1)		edge []						   (s_gate_out) 
       	      (go3)		edge []						   (s_gate_out);
 
@@ -98,24 +98,25 @@ the gate units.
 The memory cell and the gate units behave accordingly to the following:
 
 \begin{equation}
-\phi_{gateIn_j}(t)\defeq \sigma(\sum_u w_{gateIn_j,u}\cdot\phi_u(t-1))
+u^t_j\defeq \sigma(\sum_i w_{ui}\cdot u^{t-1}_j)
 \end{equation}
 \begin{equation}
-\phi_{gateOut_j}(t)\defeq \sigma(\sum_u w_{gateOut_j,u}\cdot\phi_u(t-1))
+o^t_j\defeq \sigma(\sum_i w_{oi}\cdot o^{t-1}_j)
 \end{equation}
 \begin{equation}
-\phi_{In_j}(t)\defeq g(\sum_u w_{In_j,u}\cdot\phi_u(t-1))
+a^t_j\defeq g(\sum_i w_{ij}\cdot \phi_i^t)
 \end{equation}
 \begin{equation}
- m(t)\defeq \phi_{In_j}\cdot\phi_{gateIn_j}+1\cdot m(t-1)
+ m^t\defeq a_j\cdot u_j^t + (1 \cdot m^{t-1})
 \label{mem_update}
 \end{equation}
 \begin{equation}
- \phi_j\defeq h(m(t))\cdot \phi_{gateOut_j}
+ \phi_j\defeq h(m^t)\cdot o^t_j
 \end{equation}
 
 As we can see from equation \ref{mem_update}, the value of the memory cell $m(t)$ remains constant as long as the input 
-gate doesn't ``open'' causing a ``write'' operation. Similarly the output of the memory cell, which is connected with 
+gate $u$ doesn't ``open'' causing a ``write'' operation. Similarly the output $o$ of the memory cell, which is 
+connected with 
 the other neurons of the network, is controlled by an output gate: the memory will have a non zero output only if the 
 output gate opens, which we could call a  a ``read'' operation. As for constant error flow it is ensured because the 
 memory cell has only a self-loop with unitary weight.
@@ -132,8 +133,10 @@ a proper learning algorithm: essentially errors arriving at memory cells inputs 
 the error within the memory cell gets propagated; in other words gradients are truncated taking into account only the 
 self-connection of the memory cells and not it's other input connections, hence providing constant error flow.
 
-DOVREI SCAVARE NELLE FORMULE DEI GRADIENTI?//
-DISCORSI SU EFFICACIA e RILEVANZA?
+LSTM units have proven to be very successful in various tasks and even at present times (2015), they continue to be 
+employed. In recent implementations however, alongside small modifications, as the introduction of other gates, LSTM 
+architecture is often used without the original learning algorithm which is often replaced by a standard stochastic 
+gradient descend as done in \cite{lstmGraves}.
 
 
 
