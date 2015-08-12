@@ -1,3 +1,42 @@
  
-\section{Gated recurrent units}
+\subsection{Gated recurrent units}
 
+Gated recurrent units (GRU) were introduced by Cho et al. in 2014 \cite{gru} as units similar to LTSM with same purpose 
+but claimed to simpler to compute and implement. A GRU unit $j$ make use of two gate units, $z$, the 
+\textit{update} gate, and $r$, the \textit{reset} gate, which are standard neurons.
+
+\begin{equation}
+ z_j^t = [\sigma(\mat{W_z}\vec{x_t} + \mat{U}_z\vec{\phi}_{t-1})]_j
+\end{equation}
+
+\begin{equation}
+ r_j^t = [\sigma(\mat{W_r}\vec{x_t} + \mat{U}_r\vec{\phi}_{t-1})]_j
+\end{equation}
+
+As in LSTM units, the gates are used to managed the access to memory cell, but in GRU they are used a little bit 
+differently. The update gate is used to decide how to update the memory cell: the activation value of the cell 
+$\phi_j^{t}$ is a linear interpolation between the previous activation $\phi_j^{t-1}$ and the candidate activation 
+$\tilde{\phi}_j^t$.
+
+\begin{equation}
+ \phi_j^t \defeq (1-z_j^t)\phi_j^{t-1} + z_j^t\tilde{\phi^t_j}
+\end{equation}
+
+\begin{equation}
+ \tilde{\phi}_j^t = [\sigma(\mat{W}\vec{x_t} + \mat{U}(\vec{r}_t \odot \vec{\phi}_{t-1})]_j
+ \label{candidateEq}
+\end{equation}
+
+As we can see from equation \ref{candidateEq}, when the reset gate $r_j^t$ is close to zero, the units acts as if 
+reading the first symbol of the input sequence \textit{forgetting} the previous state.
+
+
+LSTM and GRU present very similarities, the most relevant one being the additive mechanism of update which helps the 
+networks to store information during several time step. One difference between the two architectures is, instead, the 
+lacking of an output gate in GRU, which hence expose the content of the memory cell without any supervision. In 
+\cite{gru_lstm_empirical} Cho et al. compare the two architectures showing how a gated architecture improves the 
+performance of a network composed of traditional units; The comparison results obtained were however mixed, and in the 
+end they could not demonstrate the superiority of one of the two approaches.
+
+
+IMMAGINE???

@@ -1,1 +1,16 @@
-distinction between architectural and non architectural solutions, historical review 
+
+Hochreiter\cite{lstm} in 1991, Bengio et al.\cite{learningIsDifficult} in 1994, and others, observed that gradient in 
+deep neural networks tends to either vanish or explode. From then onward several methods have been proposed to 
+overcome what is now know as the \textit{exploding/vanishing gradient} problem. We can roughly partition such methods in 
+two broad categories.
+The approaches of the first kind, the architectural based ones, act on the network topology, modifying the way the 
+neural units operates, the connections between them or the relationship between layers; the idea of such methods is to 
+build networks architectures in which gradient are less likely to vanish, or in other words whose units are able to 
+store information for several time steps.
+
+The second approach, which we'll call \textit{learning based}, instead, focus on the learning algorithm, leaving the 
+network architecture untouched.
+\\DESCRIZIONE MELIORE
+
+
+In the rest of the chapter we will review the most relevant methods in both the approaches.

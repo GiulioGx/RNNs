@@ -1,4 +1,5 @@
-\section{Long short-term memory} 
+
+\subsection{Long short-term memory} 
 
 \textit{Long short-term memory} (LSTM) were proposed (1997) by Hochreiter and Schmidhuber\cite{lstm} as a novel network 
 structure to address the vanishing gradient problem, which was first studied by Hochreiter (1991) in his diploma 
@@ -98,21 +99,43 @@ the gate units.
 The memory cell and the gate units behave accordingly to the following:
 
 \begin{equation}
-u^t_j\defeq \sigma(\sum_i w_{ui}\cdot u^{t-1}_j)
+ u_j^t = \sigma[\mat{W_u}\cdot\vec{x_t} + \mat{U}_u\cdot\vec{\phi}_{t-1}]_j
+\end{equation}
+
+\begin{equation}
+ o_j^t = \sigma[\mat{W_o}\cdot\vec{x_t} + \mat{U}_o\cdot\vec{\phi}_{t-1}]_j
+\end{equation}
+
+\begin{equation}
+a^t_j\defeq g[\mat{W}\cdot\vec{x_t} + \mat{U}\cdot\phi_i^t]_j
 \end{equation}
 \begin{equation}
-o^t_j\defeq \sigma(\sum_i w_{oi}\cdot o^{t-1}_j)
-\end{equation}
-\begin{equation}
-a^t_j\defeq g(\sum_i w_{ij}\cdot \phi_i^t)
-\end{equation}
-\begin{equation}
- m^t\defeq a_j\cdot u_j^t + (1 \cdot m^{t-1})
+ m_j^t\defeq a_j\cdot u_j^t + (1 \cdot m_j^{t-1})
 \label{mem_update}
 \end{equation}
 \begin{equation}
- \phi_j\defeq h(m^t)\cdot o^t_j
+ \phi_j\defeq h(m_j^t)\cdot o^t_j
 \end{equation}
+
+
+% \begin{equation}
+% u^t_j\defeq \sigma(\sum_i w_{ui}\cdot u^{t-1}_j)
+% \end{equation}
+% \begin{equation}
+% o^t_j\defeq \sigma(\sum_i w_{oi}\cdot o^{t-1}_j)
+% \end{equation}
+% 
+% 
+% \begin{equation}
+% a^t_j\defeq g(\sum_i w_{ij}\cdot \phi_i^t)
+% \end{equation}
+% \begin{equation}
+%  m_j^t\defeq a_j\cdot u_j^t + (1 \cdot m_j^{t-1})
+% \label{mem_update}
+% \end{equation}
+% \begin{equation}
+%  \phi_j\defeq h(m_j^t)\cdot o^t_j
+% \end{equation}
 
 As we can see from equation \ref{mem_update}, the value of the memory cell $m(t)$ remains constant as long as the input 
 gate $u$ doesn't ``open'' causing a ``write'' operation. Similarly the output $o$ of the memory cell, which is 
