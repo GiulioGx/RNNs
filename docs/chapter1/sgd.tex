@@ -1,0 +1,73 @@
+In this section we will describe a framework based on gradient descent optimization method which can be used to train 
+neural network of any kind. Such framework constitutes the core of many learning methods used in today's applications. 
+Suppose we have a training set of pairs $D=\{\pair{\vec{x}^{(i)}}{\vec{y}^{(i)}}\}$ and a loss function $L(\theta)$ 
+where $\theta$ represents all the parameters of the network.
+
+A standard gradient descend would update $\theta$ at each iteration using the gradient computed on the whole training 
+set, as shown below.
+\begin{equation}
+ \theta = \theta - \alpha \nabla_\theta L(\theta)
+\end{equation}
+
+This can be very slow or even impractical if the training set is too huge to fit in memory. Stochastic gradient descent 
+overcome this problem taking into account only a part of the training set for each iteration, i.e the gradient is 
+computed only on a subset $I$ of training examples. 
+
+\begin{equation}
+ \theta = \theta - \alpha \nabla_\theta L(\theta; \pair{\vec{x}^{(i)}}{\vec{y}^{(i)}}, i\in I)
+\end{equation}
+
+The subset of training examples used for the update is called \textit{minibatch}. The number of examples for each 
+minibatch is an important hyper-parameter because it affects both the speed of convergence in terms of number of 
+iteration and the time needed for each iteration. At each iteration new exampled are chosen among the training set 
+examples, so it could, and it always does in real applications, happen that all training set exampled have been used.
+This is not a problem, since we can use the same examples over and over again. Each time we go over the entire training 
+set we say we completed and \textit{epoch}. It's not unusual to iterate the learning algorithm for several epochs 
+before converging.
+
+The method is summarized in algorithm \ref{algo:sgd}.
+
+\begin{algorithm}[]
+ \KwData{\\
+ \Indp
+  $D=\{\pair{\vec{x}^{(i)}}{\vec{y}^{(i)}}\}$: training set\\
+  $\theta_0$: initial solution \\
+  $m$: size of each minibatch\\
+  }
+  
+ \KwResult{\\
+ \Indp $\theta$: solution
+ }
+ \BlankLine
+ 
+ $\theta \gets \theta_0$\\
+ \While{stop criterion}{
+ 
+ $I$ $\gets$ select $m$ training example $\in D$  \\
+ $\alpha \gets$ compute learning rate \\
+ $\theta \gets \theta - \alpha \nabla_\theta L(\theta; \pair{\vec{x}^{(i)}}{\vec{y}^{(i)}}, i\in I)$\\
+ }
+\caption{Stochastic gradient descent}
+\label{algo:sgd}
+\end{algorithm}
+
+In the following subsection we will analyze in more detail each step of the method, presenting different alternatives 
+that can be used.
+
+\subsection{The stop criterion}
+
+Usually a gradient based method adopts a stop criterion which allows the procedure when close enough to a (local) 
+minimum, i.e $\nabla_\theta L(\theta)=0$.  This could easily lead to overfitting, so is common practice to use a 
+cross-validation technique. The most simple approach to cross-validation is to split the training set in two parts...
+
+DISEGNO CON LE DUE CURVE
+
+
+\subsection{How to choose batches}
+\subsection{Learning rate}
+\paragraph{Momentum}
+\subsection{Regularization}
+\paragraph{weight decay}
+\paragraph{drop out}
+
+

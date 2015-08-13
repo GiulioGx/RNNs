@@ -1,7 +1,7 @@
+
 \documentclass{book}
 
 %%Packages:
-
 \usepackage[utf8]{inputenc}
 \usepackage[UKenglish]{babel}
 \usepackage{graphicx}
@@ -15,8 +15,9 @@
 \usepackage{epstopdf}
 \usepackage{pgf}
 \usepackage{tikz}
-\usepackage{algorithm}
+% \usepackage{algorithm}
 \usepackage[noend]{algpseudocode}
+\usepackage[ruled,noline,linesnumbered]{algorithm2e}
 \usetikzlibrary{automata,arrows,decorations.pathreplacing}
 \usetikzlibrary{positioning}
 
@@ -24,7 +25,7 @@
 \usepackage[section]{placeins}
 
 %margins
-\usepackage{layout}
+% \usepackage{layout}
 % \usepackage[inner=4cm,outer=2cm]{geometry}
 
 %%Notation:
@@ -41,6 +42,8 @@
 \newcommand{\defeq}{\triangleq}
 %%
 \newcommand{\net}[1]{\mathrm{#1}}
+%% pair<x,y>
+\newcommand{\pair}[2]{\langle#1,#2\rangle}
 
 
 %%Envirorments:
@@ -54,7 +57,6 @@
 \newtheorem{thm}{Theorem}
 
 %Paths:
-
 \graphicspath{ {./images/} }
 
 \title{On recurrent neural networks}
@@ -74,14 +76,19 @@
   \input{chapter1/rnn}
   \section{Activation functions and gradient}
   \input{chapter1/activation_funs}
+  \section{Stochastic gradient descent: a common framework}
+  \input{chapter1/sgd}
+  \section{The vanishing and exploding gradient problem}
+    \label{vanishing_sec}
+    \input{chapter1/vanishing_grad}
   \section{On expressiveness}
   \input{chapter1/expressiveness}
 \chapter{An historical review of proposed solutions}
   \input{chapter2/intro}
   \section{Architectural based methods}
   \input{chapter2/lstm}
-  \section{Learning based methods}
   \input{chapter2/gru}
+  \section{Learning based methods}
 
 % \chapter{Some results}
 %   \section{Vanishing gradient solutions}
