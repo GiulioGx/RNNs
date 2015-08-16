@@ -52,10 +52,10 @@ The method is summarized in algorithm \ref{algo:sgd}.
 \label{algo:sgd}
 \end{algorithm}
 
-In the following subsection we will analyze in more detail each step of the method, presenting different alternatives 
+In the following paragraphs we will analyze in more detail each step of the method, surveying the different alternatives 
 that can be used.
 
-\subsection{The stop criterion}
+\paragraph{The stop criterion}
 
 Usually a gradient based method adopts a stop criterion which allows the procedure to stop when close enough to a (local) 
 minimum, i.e $\nabla_\theta L(\theta)=0$.  This could easily lead to over-fitting, so is common practice to use a 
@@ -73,34 +73,38 @@ Since training examples are sampled from the training set, the error on the trai
 DISEGNO CON LE DUE CURVE
 
 
-\subsection{How to choose batches}
 
-Beside the actual number of examples for each batch, which plays an important role in speed of convergence, it's often important how the examples are sampled.
-The idea is that some examples can be more difficult than other, and so the order in which they are fed to the network matter. Of course it's not well defined what the difficulty of an example is; how can when decide if an example is more difficult than another?  We cannot possibly know, a priory, if an example will be well classified before we actually run it through the network. However we can guess the difficulty on the example by some of it's properties, for instance, if we are dealing with sequences, we can judge it's difficulty by it's length.
+\paragraph{Learning rate}
 
-TODO leggere meglio curriculum learning
+The parameter $\alpha$ in equation \ref{eq:updateRule}, know as \textit{step} in the optimization field, is called in AI \textit{learning rate}. Of course the strategy employed to compute such learning rate is an important ingredient in the learning method.
+The most easy, and often preferred, strategy is that of \textbf{constant learning rate}; Learning rate $\alpha$ becomes another hyper-parameter of the network that can be tuned, but it remains equal, usually a very small value, across all iterations.
 
-
-\subsection{Learning rate}
-
-The parameter $\alpha$ in equation \ref{eq:updateRule}, know as \textit{step} in the optimization field, is called in AI \textit{learning rate}. Of course the strategy employed to compute such learning rate is an important ingredient in the learning method. 
-
-
-\paragraph{Constant learning rate}
-The most easy, and often preferred, strategy is that of \textit{constant learning rate}; Learning rate $\alpha$ becomes another hyper-parameter of the network that can be tuned, but it remains equal, usually a very small value, across all iteration.
-
-\paragraph{Momentum}
-Another popular strategy is that of \textit{momentum} which, in the optimization field is know as the \textit{Heavy Ball} method.
+Another popular strategy is that of \textbf{momentum} which, in the optimization field is know as the \textit{Heavy Ball} method.
+The main idea behind momentum is to accelerate progress along dimensions
+in which gradient consistently point in the same direction
+and to slow progress along dimensions where the sign
+of the gradient continues to change. This is done by keeping
+track of past parameter updates with an exponential decay as shown in equation \ref{eq:momentum}
 
 \begin{align}
 v &= \gamma v+ \alpha \nabla_\theta L(\theta; \pair{\vec{x}^{(i)}}{\vec{y}^{(i)}}, i\in I)\\
 \theta &= \theta - v
+\label{eq:momentum}
 \end{align}
 
-\paragraph{Annealing}
-\paragraph{Line search}
-\subsection{Regularization}
-\paragraph{weight decay}
-\paragraph{drop out}
+Another way of choosing the learning rate is to fix an initial value and \textbf{annealing} it, at each iteration (or epoch), according to a policy, for instance \textit{exponential} or \textit{linear} decay; the idea behind it being that, initially, when far from a minimum having a larger learning rate causes greater speed and after some iterations when approaching a minimum a smaller learning rate allows a finer refinement.
 
+\textbf{Adaptive} methods instead choose the learning rate monitoring the objective function, hence learning rate can be reduced
+or increased depending on the need, being a little more versatile than annealing methods. Of course different strategies for detection when to reduce or increase the learning rate have been devised.
+
+Finally \textbf{line search} can be used; usually line search is used when working with (non stochastic) gradient descend or when dealing with large batches; for stochastic gradient with small batches other strategies are usually preferred.
+
+\paragraph{Regularization}
+% \paragraph{weight decay}
+% \paragraph{drop out}
+TODO
+
+\paragraph{How to choose batches}
+
+Empirical evidence has been provided that choosing a ``meaningful'' order in which examples are presented to the network can both speed the convergence and yield better solutions. Generally speaking, the network can learn faster if trained first with easier examples and then with examples with gradually increasing difficulty, as humans or animals would do. The idea was introduced by Bengio et al.\cite{curriculumLearning} in 2009, as \textit{curriculum} learning. Experiments on different curriculum strategies can be found in \cite{learningToExecute}.
 
