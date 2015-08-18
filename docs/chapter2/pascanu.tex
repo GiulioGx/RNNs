@@ -1,0 +1,29 @@
+\subsection{Preserve norm by regularization and gradient clipping} 
+
+In 2013 Pascanu \cite{pascanu} proposed a regularization term $\Omega$ for the loss function $L(\theta)$ which should address the vanishing gradient problem.
+The objective function hence become:
+\begin{equation}
+ \tilde{L}(\theta) \defeq L(\theta) + \lambda\Omega(\theta)
+\end{equation}
+
+Such term represents a preference for solutions such that back-propagated gradients preserves norm in time.
+\begin{equation}
+\Omega = \sum_t \left( \frac{\norm{ \frac{\partial L}{\partial \vec{h}_{t+1}} \cdot \frac{\partial \vec{h}_{t+1}}{\partial \vec{h}_t} }}{\norm{\frac{\partial L}{\partial \vec{h}_{t+1}}}} -1  \right)^2 
+\label{eq:pascanuReg}
+\end{equation}
+
+As we can see from equation \ref{eq:pascanuReg} the regularization term forces $\frac{\partial \vec{h}_{t+1}}{\partial \vec{h}_t}$ to preserve norm in the relevant direction of the error $\frac{\partial L}{\partial \vec{h}_{t+1}}$.
+
+The intuition behind this technique is that $\frac{\partial \vec{h}_{t}}{\partial \vec{h}_k}$ measure the dependence of outputs at time $t$ on the previous time steps $t-1,...k$. In \cite{pascanu} is argued that even though some precedent inputs $k<t$ will be irrelevant for the prediction of time time $t$, the network cannot learn to ignore them unless there is an error signal; hence it's a good idea to force the network to increase $\frac{\partial \vec{h}_{t}}{\partial \vec{h}_k}$, even at the expense of greater error of the loss function $L(\theta)$, and then wait for it to learn to ignore these inputs.
+
+As for the exploding vanishing gradient, in \cite{pascanu} is argued that a simple method called \textit{gradient clipping} can be effective against exploding gradient. The method, shown in algorithm \ref{algo:gradClipping}, simply consists in rescale the gradient norm when it goes over a threshold.
+
+\begin{algorithm}[]
+$\vec{g} \gets \nabla_{\theta} L$\\
+\If{$\norm{\vec{g}} \geq threshold $}{$\vec{g} \gets \frac{threshold}{\norm{\vec{g}}} \vec{g}$}
+\caption{Gradient clipping}
+\label{algo:gradClipping}
+\end{algorithm}
+
+A drawback of such an approach is the introduction of another hyper-parameter, the threshold, however in \cite{pascanu} is said that a good heuristic
+is to choose a value from half to ten time the average gradient norm over a sufficiently large number of updates.
