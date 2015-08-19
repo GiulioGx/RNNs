@@ -1,6 +1,6 @@
 \subsection{Hessian-free optimization}
 
-During 2010-2014 Martens and Sutskever\cite{hessianFree} proposed an developed an hessian-free method for recurrent neural network training.
+During 2010-2011 Martens and Sutskever\cite{hessianFree} proposed an developed an hessian-free method for recurrent neural network training.
 The proposal consists in using hessian-free optimization with some crucial modifications which make the approach suitable for recurrent neural networks.
 
 As in  the classical Newton's method the idea is to iteratively compute the updates to parameter $\theta$ by minimizing a local quadratic approximation $M_{k}(\delta)$ of the objective function $f(\theta_k +\delta)$, which in the case of RNNs is the loss function $L(\theta)$, as shown in equation \ref{eq:quadraticApprox}.
@@ -16,9 +16,20 @@ The update of the parameter $\delta$ is given by:
 where $\delta_k^*$ is the minimum $M_k(\delta)$ and $\alpha_k\in[0,1]$ is chosen typically via line-search. 
 
 The use of the hessian is however impractical for several reason: first of all if not positive definite $M(\delta_k)$ will not be bounded below; moreover even if positive definite, computing $\delta_k^* = \delta_k - B_{k-1}^{-1}\nabla f(\delta_{k-1})$, as in standard Newton, can be too much computationally expensive.
-The proposal of \cite{hessianFree} for indefiniteness is to use the generalized Gauss-Newton matrix $G$ proposed by Schraudolph\cite{gaussNewtonMatrix} as an approximation of the hessian. As for the computational cost of the matrix inversion it is addressed, as in Truncated-Newton methods, by partially minimizing the quadratic function $M_{k}(\delta)$ using the conjugate gradient algorithm.
 
-QUALCOSA IN PIU SU GAUSS-NEWTON?
+\paragraph{Gauss-Newton curvature matrix}
+The proposal of \cite{hessianFree} for indefiniteness is to use the generalized Gauss-Newton matrix (GGN) proposed by Schraudolph\cite{gaussNewtonMatrix} as an approximation of the hessian. As for the computational cost of the matrix inversion it is addressed, as in Truncated-Newton methods, by partially minimizing the quadratic function $M_{k}(\delta)$ using the conjugate gradient algorithm.
+
+Let decompose the objective function $f(\theta)$ in $L(F(\theta))$ using the usual loss function $L(\cdot)$ and the output  vectorial valued function of the network $F(\theta)$. Is required that $L(\cdot)$ is convex. The GNN can be derived as follows:
+\begin{align}
+ \nabla f(\theta) &= J^T\nabla L \\
+ \nabla^2f(\theta) &= J^T\nabla^2L + \sum_{i=1}^m[\nabla L]_i \cdot [\nabla^2 F_i]
+\end{align}
+The GNN is defined as:
+\begin{equation}
+ GNN \defeq J^T\nabla^2L
+\end{equation}
+GNN is convex, provided $L(\cdot)$ is, and it easy to see that GNN is the hessian of $f(\theta)$ if $F(\theta)$ is replaced by it's first order approximation.
 
 \paragraph{Damping}
 
@@ -58,6 +69,9 @@ where $D(\cdot,\cdot)$ is a distance (or loss) function which measure the variat
 
 Since minimization of $\tilde{M}_k(\delta)$ is done by conjugate gradient and such function is not not quadratic, in practice, a Taylor series approximation, along with the use of the Gauss-Newton matrix, is used in place of $D(h(\theta_{k+1}, \theta_{k}))$ .
 
-RIMANE FUORI: stopping criterion of CG, line searching, minibatching
+\paragraph{Minibatching}
+As last note regarding the proposed method it's important to notice that the method can work in a stochastic fashion, i.e using a small subset (minibatch) of the training examples, like stochatsic gradient descend (SGD), for istance. This is a very important feature since dataset are getting bigger and bigger, hence computing gradients on the whole training set is becoming computationally impractical. However, unlike SGD, where minibatch can be arbitrary small, the proposed method, and all second order method in general, deteriorate it's performance with too small batches, but that's seems to but not much of a problem.
+
+RIMANE FUORI: stopping criterion of CG, line searching
 
 
