@@ -30,7 +30,7 @@ the gate units.
     \node[neuron]	(mem)	[right of=s_mem,node distance=1.5cm]	{$m_j$};
     \node[layer] 	(h)	[right of=mem,	node distance=1.5cm] 	{$h$};
     \node[neuron]	(c2)	[right of =h,	node distance=1.5cm]	{$\times$};
-    \node[label]  	(out)	[right of=c2,	node distance=2.2cm]	{$\phi_j$};
+    \node[label]  	(out)	[right of=c2,	node distance=2.2cm]	{$h_j$};
     
     \path[->] (c1) 	edge []   (s_mem)
 	      (s_mem) 	edge []   (mem)
@@ -99,22 +99,22 @@ the gate units.
 The memory cell and the gate units behave accordingly to the following:
 
 \begin{equation}
- u_j^t = \sigma[\mat{W_u}\cdot\vec{x_t} + \mat{U}_u\cdot\vec{\phi}_{t-1}]_j
+ u_j^t = \sigma[\mat{W_u}\cdot\vec{x_t} + \mat{U}_u\cdot\vec{h}_{t-1}]_j
 \end{equation}
 
 \begin{equation}
- o_j^t = \sigma[\mat{W_o}\cdot\vec{x_t} + \mat{U}_o\cdot\vec{\phi}_{t-1}]_j
+ o_j^t = \sigma[\mat{W_o}\cdot\vec{x_t} + \mat{U}_o\cdot\vec{h}_{t-1}]_j
 \end{equation}
 
 \begin{equation}
-a^t_j\defeq g[\mat{W}\cdot\vec{x_t} + \mat{U}\cdot\phi_i^t]_j
+a^t_j\defeq g[\mat{W}\cdot\vec{x_t} + \mat{U}\cdot h_i^t]_j
 \end{equation}
 \begin{equation}
  m_j^t\defeq a_j\cdot u_j^t + (1 \cdot m_j^{t-1})
 \label{mem_update}
 \end{equation}
 \begin{equation}
- \phi_j\defeq h(m_j^t)\cdot o^t_j
+ h_j\defeq h(m_j^t)\cdot o^t_j
 \end{equation}
 
 

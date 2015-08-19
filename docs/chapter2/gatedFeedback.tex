@@ -17,7 +17,8 @@ The idea behind this architecture is to encourage each recurrent layer to work a
   gate/.style={circle,fill=white!50,draw,node distance = 1cm,font=\sffamily\small\bfseries},
   missing/.style={rectangle,fill=white!50,node distance =1cm,draw=none,minimum size=0.7cm,font=\sffamily\Huge\bfseries},
   label/.style={node distance=1.2cm,rectangle,fill=white!50,draw=none,minimum size=0.7cm,font=\sffamily\normalsize},
-  layer/.style={rectangle,fill=white!50,draw,minimum width=4cm,minimum height=0.5cm, font=\sffamily\normalsize},]
+  layer/.style={rectangle,fill=white!50,draw,minimum width=4cm,minimum height=0.5cm, font=\sffamily\normalsize},
+  gateEdge/.style={dotted},]
 \begin{figure}
  \centering
 \begin{tikzpicture}[rnn_style]
@@ -37,25 +38,28 @@ The idea behind this architecture is to encourage each recurrent layer to work a
 	    (x) edge[]			(l1)
 	    (l4) edge[]			(y);
   
-  \node[gate] (g44)[left of=l4, node distance =4cm]{$g_{44}$};
-  \node[gate] (g43)[left of=l3, node distance =4cm]{$g_{43}$};
-  \node[gate] (g41)[left of=l1, node distance =4cm]{$g_{41}$};
-  \node[gate] (g33)[right of=l3, node distance =4cm]{$g_{33}$};
-  \node[gate] (g31)[right of=l1, node distance =4cm]{$g_{31}$};
+  \node[gate] (g44)[left of=l4, node distance =3cm]{$g_{44}$};
+  \node[gate] (g43)[left of=l3, node distance =3cm]{$g_{43}$};
+  \node[gate] (g41)[left of=l1, node distance =3cm]{$g_{41}$};
+  \node[gate] (g33)[right of=l3, node distance =3cm]{$g_{33}$};
+  \node[gate] (g31)[right of=l1, node distance =3cm]{$g_{31}$};
+  \node[gate] (g11)[below of=g31, node distance =1.3cm]{$g_{11}$};
   
-      \path[->] (g44) edge[]   		(l4)
-		(l4.north)  edge[bend right=50] (g44.north)
-		(l4.north)  edge[bend right=90,distance=2.8cm] (g43.west)
-		(g43) edge[]		(l3)
-		(l4.north)  edge[bend right=110, distance =5cm] (g41.west)
-		(g41) edge[]		(l1)
-		(l3.east)  edge[bend left=50, anchor=east]	(g33)
-		(g33) edge[]		(l3)
-		(l3.east)  edge[bend left]	(g31.north)
-		(g31) edge[]		(l1);
+      \path[->] (g44) edge[gateEdge]   		(l4)
+		(l4.north)  edge[gateEdge,bend right=50] (g44.north)
+		(l4.north)  edge[gateEdge,bend right=90,distance=2.8cm] (g43.west)
+		(g43) edge[gateEdge]		(l3)
+		(l4.north)  edge[gateEdge,bend right=100, distance =4.5cm] (g41.west)
+		(g41) edge[gateEdge]		(l1)
+		(l3.east)  edge[gateEdge,bend left=50, anchor=east]	(g33)
+		(g33) edge[gateEdge]		(l3)
+		(l3.east)  edge[gateEdge,bend left]	(g31.north)
+		(g31) edge[gateEdge]		(l1)
+		(l1.east) edge[gateEdge, bend left]		(g11.north)
+		(g11) edge[gateEdge, bend left]		(l1);
 
 \end{tikzpicture}
-\caption{Gated feedback architecture; only connections between layers trough gates are shown}
+\caption{Gated feedback architecture; only connections between layers are shown, dotted whene trough gates}
 \label{fig:gated}
 \end{figure}
 
