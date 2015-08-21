@@ -1,0 +1,23 @@
+\subsection{Natural Neural Networks}
+
+
+The solution of the minimization problem:
+
+\begin{equation}
+ \underset{\vec{d}: \langle\vec{d},\vec{d}\rangle = 1} {\text{min  }} \langle \vec{d}, \nabla f(x_k)\rangle
+ \label{eq:minDirection}
+\end{equation}
+
+which expanding the dot product as FISHER... become:
+
+\begin{equation}
+ \underset{\vec{d}: \vec{d}F\vec{d} = 1} {\text{min  }} \vec{d}F\nabla f(x_k)
+\end{equation}
+
+The solution of problem \ref{eq:minDirection} is 
+\begin{equation}
+\vec{d} = -\frac{\nabla f(x_k)F^{-1}}{\nabla f(x_k)\nabla f(x_k) F^{-1}} = \frac{\nabla f(x_k)F^{-1}}{\langle\vec{\nabla f(x_k)},\vec{\nabla f(x_k)}\rangle}
+\end{equation}
+
+Hence, $-\nabla f(x_k)F^{-1}$ is the steepest descend direction using $\langle u,v \rangle_{\theta}$
+

@@ -51,14 +51,14 @@ $L(\vec{x},\vec{y}):\mathbb{R}^{p(U)} \rightarrow \mathbb{R}$ is an arbitrary lo
 networks, so it depends on $(\set{W},\set{B})$
 
 
-The problem is then to find a $\net{FFNN}$ which minimise $L_D$. As we have seen feed forward neural networks allow for large customisation: the only variables in the optimisation problem are the weights
+The problem is then to find a $\net{FFNN}$ which minimize $L_D$. As we have seen feed forward neural networks allow for large customization: the only variables in the optimization problem are the weights
 and the biases, the other
 parameters are said \textit{hyper-parameters} and are determined \textit{a priori}. Usually the output function is chosen depending on the output, for instance for multi-way classification
 is generally used the \textit{softmax} function, for regression a simple identity function.
 For what concerns the number of layers and the number of units per layers they are chosen relying on experience or performing some kind of hyper-parameter tuning, which usually consists on training nets
 with some different configurations of such parameters and choosing the 'best one'.
 
-Once we have selected the values for all hyper-parameters the optimisation problem becomes:
+Once we have selected the values for all hyper-parameters the optimization problem becomes:
 
 \begin{equation}
 \underset{\set{W},\set{B}}{\text{min  }} L_D(\set{W},\set{B}) \\
