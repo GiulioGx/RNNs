@@ -16,7 +16,7 @@ As we can see from equation \ref{eq:pascanuReg} the regularization term forces $
 
 The intuition behind this technique is that $\frac{\partial \vec{h}_{t}}{\partial \vec{h}_k}$ measure the dependence of outputs at time $t$ on the previous time steps $t-1,...k$. In \cite{pascanu} is argued that even though some precedent inputs $k<t$ will be irrelevant for the prediction of time time $t$, the network cannot learn to ignore them unless there is an error signal; hence it's a good idea to force the network to increase $\frac{\partial \vec{h}_{t}}{\partial \vec{h}_k}$, even at the expense of greater error of the loss function $L(\theta)$, and then wait for it to learn to ignore these inputs.
 
-As for the exploding vanishing gradient, in \cite{pascanu} is argued that a simple method called \textit{gradient clipping}, first used by Milov\cite{clippingMikolov}, can be effective against exploding gradient. The method, shown in algorithm \ref{algo:gradClipping}, simply consists in rescale the gradient norm when it goes over a threshold.
+As for the exploding vanishing gradient, in \cite{pascanu} is argued that a simple method called \textit{gradient clipping}, first used by Mikolov\cite{clippingMikolov}, can be effective against exploding gradient. The method, shown in algorithm \ref{algo:gradClipping}, simply consists in rescale the gradient norm when it goes over a threshold.
 
 \begin{algorithm}[]
 $\vec{g} \gets \nabla_{\theta} L$\\
@@ -27,3 +27,4 @@ $\vec{g} \gets \nabla_{\theta} L$\\
 
 A drawback of such an approach is the introduction of another hyper-parameter, the threshold, however in \cite{pascanu} is said that a good heuristic
 is to choose a value from half to ten time the average gradient norm over a sufficiently large number of updates.
+The algorithm can be described also in term of adjusting the learning rate monitoring the gradient. Our understanding is that such escamotage is not necessary at all when, for instance, using a line search algorithm for setting the learning rate.

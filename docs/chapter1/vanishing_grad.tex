@@ -76,6 +76,8 @@ $$\norm{diag(\lambda_1, \lambda_2,...,\lambda_r)\cdot \vec{x}}_2 \leq \lambda_{m
 The previous equation provide us a sufficient condition, $\sigma'_{max} \cdot \mu_{max} <1 $, as in Hochreiter's analysis, for exponential decay of long term components. In this case however the bound depends on the singular value
 of the recurrent weights rather than on the maximal weight of the matrix itself. 
 
+A similar result is obtained in \cite{pascanu}, where $\mat{W}^{rec}$ is supposed to be diagonalizable; the founding is that a sufficient condition for the gradient to vanish is $\lambda_{max} <  \frac{1}{\sigma'_{max}}$ where $\lambda_{max}$ is the largest eigen value. Please note that in case $\mat{W}^{rec}$ is diagonalizable $\lambda_{max}=\mu_{max}$, hence our results is more general.
+
 \paragraph{Explaining the problem using the network's graph}
 Let's now dig a bit deeper and rewrite equation \ref{memory_eq} with respect to a couple of neurons $i$ and $j$.
 

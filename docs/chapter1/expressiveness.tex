@@ -33,12 +33,12 @@ by the machine capabilities and by computational time, of course greater the num
 the expressiveness of the network to a subset of all measurable functions. 
 %BOUNDS?
 \\\\Let's now turn our attention to RNNs and see how the architectural changes, namely the addition of backward links, affect the expressive power of the model.
-It suffice to say that RNNs are as powerfull as turing machine. Siegelman and Sontag \cite{Siegelmann91turingcomputability} proved the existence 
+It suffice to say that RNNs are as powerful as turing machine. Siegelman and Sontag \cite{Siegelmann91turingcomputability} proved the existence 
 of a finite neural network, with sigmoid activation function, which simulates a universal Turing machine. Hy{\"o}tyniemi \cite{Hyotyniemi96turingmachines} proved, equivalently,
 that turing machine are recurrent neural network showing how to build a network, using instead ReLU activation function, that performs step by step 
 all the instruction of a computer program.
 Hy{\"o}tyniemi work is particularly interesting because it shows how to construct a network that simulate an algorithm written a simple language equivalent to a turing machine.
-For each instruction type (increment,decrement,conditional branch,...) a particular setting of weights and neuron is devised allowing the net so simulate step by step the behaviour of the program. 
+For each instruction type (increment,decrement,conditional branch,...) a particular setting of weights and neuron is devised allowing the net to simulate step by step the behaviour of the program. 
 In the program equivalent network there are a unit for each program variable and one or two, depending on the instruction type, units for each program instruction.
 This is very interesting from an expressiveness point of view since it bounds the number of units we ought to use with the length of the algorithm we are trying to reproduce.
 
@@ -49,9 +49,8 @@ representation, where FNNs use space to define a somehow explicit mapping from i
 This seems extremely good news, since we could simulate turing machines, hence all algorithms we can think of, using a recurrent neural network with a relatively small number of units; 
 recall that for FFNN we had to suppose infinitely many units to obtain the universal approximator property.
 Of course there is a pitfall: we can simulate any turing machine but we have to allow sufficiently many time steps and choose a termination criterion.
-This is of course impractical, and we don't use RNNs in this way. Usually the number of time steps is choose to be equal to the input sequence length. This of course restrict the class of algorithm
-we can learn with RNNs. A particular class of algorithms suited to be learned by such models is that of algorithms consisting in one loop, inside which some invariants are enforced. The output, step by step,
-depends on the loop invariants.
+This is of course impractical, and we don't use RNNs in this way. Usually the number of time steps is choose to be equal to the input sequence length. This of course restrict the class of algorithm we can learn with RNNs. 
+In particular the class of algorithms suited to be learned by such models is that of algorithms consisting in at most one loop, i.e $\mathcal{O}(n)$ time, and constant memory. For example we can imagine to learn algorithms which, scanning the input sequences, detect particular patterns, \textit{store} them, and step by step, produce an output based on the patterns detected so far.
 
 
 
