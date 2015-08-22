@@ -70,8 +70,14 @@ where $D(\cdot,\cdot)$ is a distance (or loss) function which measure the variat
 Since minimization of $\tilde{M}_k(\delta)$ is done by conjugate gradient and such function is not not quadratic, in practice, a Taylor series approximation, along with the use of the Gauss-Newton matrix, is used in place of $D(h(\theta_{k+1}, \theta_{k}))$ .
 
 \paragraph{Minibatching}
-As last note regarding the proposed method it's important to notice that the method can work in a stochastic fashion, i.e using a small subset (minibatch) of the training examples, like stochatsic gradient descend (SGD), for istance. This is a very important feature since dataset are getting bigger and bigger, hence computing gradients on the whole training set is becoming computationally impractical. However, unlike SGD, where minibatch can be arbitrary small, the proposed method, and all second order method in general, deteriorate it's performance with too small batches, but that's seems to but not much of a problem.
-
-RIMANE FUORI: stopping criterion of CG, line searching
-
-
+As last note regarding the proposed method it's important to notice that the method can work in a stochastic fashion, 
+i.e using a small subset (minibatch) of the training examples, like stochatsic gradient descend (SGD), for istance. This 
+is a very important feature since dataset are getting bigger and bigger, hence computing gradients on the whole training 
+set is becoming computationally impractical. However, unlike SGD, where minibatch can be arbitrary small, the proposed 
+method, and all second order method in general, deteriorate it's performance with too small batches, but that's seems to 
+but not much of a problem.
+\\\\
+As shown in \cite{hessianFree} the proposed Hessian-free optimization method outperforms the previously 
+state-of-art LSTM\cite{lstm} approach, proving to be able to well managing long-term dependencies. A more detailed 
+theoretical analysis of why such method works is, however, still missing. A possible intuitive explanation can be found 
+in \cite{advancesInOptimizingRnns,pascanu}. 
