@@ -1,0 +1,87 @@
+\subsection{Structurally constrained recurrent network}
+
+In 2015 Mikolov proposed a novel network architecture to deal with vanishing gradients \cite{scrn} called 
+\textit{Structurally constrained recurrent network} (SCRN). The idea is to introduce a hidden layer specifically 
+designed to capture long-term dependencies alongside the traditional one as shown in figure \ref{fig:scrn}.
+
+
+\tikzstyle{rnn_style}=[->,shorten >=1pt,auto,node distance=1.5cm,
+  thick,
+  neuron/.style={circle,fill=white!50,draw,node distance = 1cm, minimum size=0.7cm,font=\sffamily\Large\bfseries},
+  gate/.style={circle,fill=white!50,draw,node distance = 1cm,font=\sffamily\small\bfseries},
+  missing/.style={rectangle,fill=white!50,node distance =1cm,draw=none,minimum size=0.7cm,font=\sffamily\Huge\bfseries},
+  label/.style={node distance=1.2cm,rectangle,fill=white!50,draw=none,minimum size=0.7cm,font=\sffamily\normalsize},
+  layer/.style={rectangle,fill=white!50,draw,minimum width=3.5cm,minimum height=0.5cm, font=\sffamily\normalsize},]
+\begin{figure}[!h]
+ \centering
+\begin{tikzpicture}[rnn_style]
+  
+  \node[layer] (x)[] {input layer};
+  \node[layer] (h)[above left =1.2cm and -1.5cm of x] {hidden layer};
+  \node[layer] (s)[above right =1.2cm and -1.5cm of x] {context layer};
+  \node[layer] (y)[above right = 1.2cm and -1.5cm of h,] {output layer};
+  
+  \node[label] (xLabel) [below of=x, node distance=1.2cm]{$\vec{x}$};
+  \node[label] (yLabel) [above of=y, node distance=1.2cm]{$\vec{y}$};
+
+  
+    \path[->] (x) edge 	[] node[]{}   	(h)
+	    (x) edge 	[]   		(s)
+	    (h) edge	[]		(s)
+	    (h) edge[]			(y)
+	    (s) edge[]			(y)
+	    (xLabel)edge[]		(x)
+	    (y)edge[]		(yLabel)
+	    (h.north)edge[bend right=120, distance = 3.5cm]	(h.south)
+	    (s.north)edge[bend left=120, distance = 3.5cm]	(s.south);
+	    
+
+
+\end{tikzpicture}
+\caption{SCRN architecture}
+\label{fig:scrn}
+\end{figure}
+
+
+As observed in \cite{scrn}, and explained in section \ref{sec:vanishing}, gradient can vanish either because of the 
+non linearities being all close to 0 or because of the multiplication of the weight matrix at each time step. The new 
+layer, called \textit{context layer}, address these problem by completely removing the non linearity and forcing the 
+recurrent matrix to be close to the identity. Formally the context layer  $\vec{s}$ is given by:
+
+\begin{equation}
+ \vec{s}_t = (1-\alpha)\mat{B}\vec{x}_t + \alpha\vec{s}_{t-1}
+\end{equation}
+
+The rest of the network is like a traditional one, hence, adding the context layer beside the traditional one results 
+in:
+\begin{equation}
+ \vec{h}_t = \sigma(\mat{P}\vec{s}_t + \mat{A}\vec{x}_t + \mat{R}\vec{h}_{t-1})
+\end{equation}
+\begin{equation}
+ \vec{y}_t = f(\mat{U}\vec{h}_t + \mat{V}\vec{s}_t)
+\end{equation}
+Notice the similarity with leaky integrator units \cite{leakyIntegratorUnits}.
+
+If treat context and traditional layers as one, i.e we don't distinguish between context and traditional units, we can 
+see the model as a traditional model whose recurrent matrix $\mat{W}$ is constrained (from this the name of the 
+method), to be of the form:
+\begin{equation}
+ \mat{W} =  \begin{bmatrix}
+R & P \\
+0 & \alpha I
+\end{bmatrix}
+\end{equation}
+Matrix $\mat{W}$ is a traditional recurrent matrix constrained to have a diagonal block to be equal to a weighted 
+identity. 
+
+Observing that fixing $\alpha$ to be constant makes the context units to work on the same time scale, Mikolov propose 
+to have a different value for each unit, hence allowing to capture context from different time delay.
+\begin{equation}
+  \vec{s}_t = (\mat{I}-\mat{Q})\mat{B}\vec{x}_t + \mat{Q}\vec{s}_{t-1}
+\end{equation}
+where $\mat{Q}\defeq diag(\sigma(\vec{\beta}))$; the vector $\vec{\beta}$ is learned.
+
+
+In \cite{scrn} SCRNs are shown to be roughly equivalent to the much more complex, LSTMs.
+
+
