@@ -79,7 +79,8 @@ DISEGNO CON LE DUE CURVE
 The parameter $\alpha$ in equation \ref{eq:updateRule}, know as \textit{step} in the optimization field, is called in AI \textit{learning rate}. Of course the strategy employed to compute such learning rate is an important ingredient in the learning method.
 The most easy, and often preferred, strategy is that of \textbf{constant learning rate}; Learning rate $\alpha$ becomes another hyper-parameter of the network that can be tuned, but it remains equal, usually a very small value, across all iterations.
 
-Another popular strategy is that of \textbf{momentum} which, in the optimization field is know as the \textit{Heavy Ball} method.
+Another popular strategy is that of \textbf{momentum} which, in the optimization field is know as the \textit{Heavy 
+Ball} method \cite{momentum}.
 The main idea behind momentum is to accelerate progress along dimensions
 in which gradient consistently point in the same direction
 and to slow progress along dimensions where the sign
@@ -88,7 +89,7 @@ track of past parameter updates with an exponential decay as shown in equation \
 
 \begin{align}
 v &= \gamma v+ \alpha \nabla_\theta L(\theta; \pair{\vec{x}^{(i)}}{\vec{y}^{(i)}}, i\in I)\\
-\theta &= \theta - v
+\theta &= \theta + v
 \label{eq:momentum}
 \end{align}
 
@@ -97,12 +98,9 @@ Another way of choosing the learning rate is to fix an initial value and \textbf
 \textbf{Adaptive} methods instead choose the learning rate monitoring the objective function, hence learning rate can be reduced
 or increased depending on the need, being a little more versatile than annealing methods. Of course different strategies for detection when to reduce or increase the learning rate have been devised.
 
-Finally \textbf{line search} can be used; usually line search is used when working with (non stochastic) gradient descend or when dealing with large batches; for stochastic gradient with small batches other strategies are usually preferred.
-
-\paragraph{Regularization}
-% \paragraph{weight decay}
-% \paragraph{drop out}
-TODO
+Finally \textbf{line search} can be used; usually line search is used when working with (non stochastic) gradient 
+descend or when dealing with large batches; for stochastic gradient with small batches other strategies are usually 
+preferred.
 
 \paragraph{How to choose batches}
 

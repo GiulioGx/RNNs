@@ -1,0 +1,44 @@
+\subsection{Nesterov's accelerated gradient and proper initialization} 
+
+
+In 2013 \cite{nesterovAndInitialization} showed how two key elements, namely a proper initialization of the weight 
+matrices and a momentum method for the update rule, could help stochastic gradient descent algorithm to reach 
+performances close the one of state-of-art hessian-free optimization of Martens\cite{hessianFree}.
+
+Classical momentum \cite{momentum} consist in the following update rule:
+\begin{align}
+v_{t+1} &= \gamma v_t+ \alpha \nabla_\theta f(\theta_t)\\
+\theta_{t+1} &= \theta_t + v_{t+1}
+\label{eq:classicMomentum}
+\end{align}
+
+In \cite{nesterovAndInitialization} is shown how \textit{Nesterov's accelerated gradient} NAG \cite{nesterov} can be 
+see as a modification of the former:
+\begin{align}
+v_{t+1} &= \gamma v_t+ \alpha \nabla_\theta f(\theta_t+ \gamma v_t)\\
+\theta_{t+1} &= \theta_t + v_{t+1}
+\label{eq:nesterovMomentum}
+\end{align}
+
+The difference is that Nesterov's momentum compute the gradient in an partial updated version of the current solution 
+$\theta_t+\gamma v_t$. \cite{nesterovAndInitialization} found that this allows NAG to change $v$ in a more responsive 
+way, hence gaining more stability with respect to classical momentum.
+
+It's worth noticing that NAG is typically used in batch gradient descend, i.e not in a stochastic context, and, for 
+this reason it's use has been often discouraged, however \cite{nesterovAndInitialization} found it to be beneficial, 
+especially in the early stages of training,  when far from convergence.
+
+
+The second important factor, without which momentum is ineffective, is a proper initialization of the recurrent weight 
+matrix. In \cite{nesterovAndInitialization} an Echo-State-Network inspired technique is used (see section 
+\ref{sec:reservoir}).  The idea is that the spectral radius of the weight matrix plays an important role in the 
+dynamics of the network especially regarding memory: a too large value causes instability, where a too small one 
+results in short memory. The founding of \cite{nesterovAndInitialization} is that the value of $1.1$ is often effective.
+
+
+In \cite{nesterovAndInitialization} is argued that, the way Martens's hessian-free initialize conjugate gradient (CG) 
+, i.e using the solution found at the previous call of CG, for the quadratic minimization is a sort of hybrid NAG.
+
+
+
+
