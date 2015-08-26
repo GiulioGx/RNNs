@@ -1,8 +1,7 @@
  
 An artificial neural network is a network of connected units called neurons or perceptrons, as can be seen in figure \ref{fully_connected}; the link which connects neurons $i$ and $j$, is associated with a weight $w_{ji}$. Perceptrons share the same
-structure for all models, what really distinguish a particular model in the family of artificial neural networks is how the perceptron units are arranged and connected together, for example whether there are cycles
+structure for all models, what really distinguish a particular model, in the family of artificial neural networks, is how the perceptron units are arranged and connected together, for example whether there are cycles
 or not, and how data inputs are \textit{fed} to the network. 
-
 
 \tikzstyle{nn_style}=[->,shorten >=1pt,auto,node distance=1.5cm,
   thick,
@@ -61,7 +60,6 @@ or not, and how data inputs are \textit{fed} to the network.
 \caption{Artificial neural network example}
 \label{fully_connected}
 \end{figure}
-
 
 As you can see in figure \ref{neuron_model} each neuron is \textit{fed} with a set of inputs which are the weighted outputs of other neurons and/or other external inputs.
 Formally the output of a perceptron $\phi_j$
@@ -127,8 +125,7 @@ It's worth noticing that in this formulation the input $\phi_l$ can be the outpu
 
 So, given a set of inputs $\{x\}_i$ which are \textit{fed} to some of the units of the net which we call \textit{input units} the output of the network $\{y\}_i$ is given by the
 some of units of the network, the 'upper' ones which we call \textit{output units}. All remaining units, i.e the ones which are neither input nor output units
-are called \textit{hidden units} because their value is not \textit{observed} from the outside. The mapping from input to output is captured by equations \ref{def_perceptron_1} and 
-\ref{def_perceptron_2}. 
+are called \textit{hidden units} because their value is not \textit{observed} from the outside. The mapping from input to output is captured by equations \ref{def_perceptron_1} and \ref{def_perceptron_2}. 
 
 \paragraph{The activation function}
 The $\sigma$ function is called \textit{activation} function and should determine whether a perceptron unit is \textit{active} or not. When artificial neural networks where first conceived,
@@ -157,7 +154,7 @@ Another function which is becoming a very popular choice is the \textit{rectifie
     0 & \text{otherwise}.
   \end{cases}
 \end{equation}
-ReLU activation function is rather different from previous activation functions, some of these difference, in particular with respect to gradients will be analysed in later sections.
+ReLU activation function is rather different from previous activation functions, some of these difference, in particular with respect to gradients will be analyzed in later sections.
 
 It's worth noticing that the activation function it's the only component which make artificial neuron networks a non linear model. Were we to choose a \textit{linear} function as activation function we will
 end up with a simple linear model since the outputs of the network would be ultimately composed only of sums of products.
@@ -200,9 +197,6 @@ In this notation $\mat{W^k}_{ij}$ is the weight of the link connecting neuron $j
   \node[label]    (u1)[below of=x1]   {$x_1$};
   \node[label]    (u2)[below of=x2]   {$x_2$};
   \node[label]    (un)[below of=xn]   {$x_p$};
-  
-  
-
     
   \node[layer] (hl)[above of=x2,node distance=1.5cm] {First hidden layer};
   \node[missing] (hls)[above of=hl,node distance=1.2cm]{$\hdots$};
@@ -211,26 +205,20 @@ In this notation $\mat{W^k}_{ij}$ is the weight of the link connecting neuron $j
   \draw[decorate,decoration={brace,raise=6pt,amplitude=8pt}, thick,-]
    (ol.north east)--(hl.south east);
 
-
-
-  
   \node[neuron] (o1) at (0,5.5) {};
   \node[neuron] (o2)[right of=o1] {};
   \node[neuron] (o3)[right of=o2] {};
   \node[missing](o4)[right of=o3] {$\hdots$};
   \node[neuron] (on)[right of=o4] {};
   
-  
   \node[label]    (y0)[above of=o1]   {$y_0$};
   \node[label]    (y1)[above of=o2]   {$y_1$};
   \node[label]    (y2)[above of=o3]   {$y_2$};
   \node[label]    (yn)[above of=on]   {$y_q$};
   
-     
   \node[label]    (hls_label)[right of=hls,node distance=3.7cm]   {hidden layers};
   \node[label]    (input_label)[right of=xn,node distance=1.6cm]   {input layer};
   \node[label]    (output_label)[right of=on,node distance=1.6cm]   {output layer};
-  
   
   \path[->] (x0) edge [] node[]{}   (hl)
 	    (x2) edge []   (hl)
@@ -250,7 +238,6 @@ In this notation $\mat{W^k}_{ij}$ is the weight of the link connecting neuron $j
 	    (on) edge []   (yn)
 	    (hl) edge []  node[]{} (hls)
 	    (hls) edge []  node[]{} (ol);
-
 
 \end{tikzpicture}
 \caption{Layered structure of an artificial neural network}
