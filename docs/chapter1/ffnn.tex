@@ -31,15 +31,15 @@ Given a $\net{FFNN}$ and an input vector $\vec{x} \in \mathbb{R}^{p(1)}$ the out
 
 \begin{align}
 &\vec{y}=F(\vec{a}^{U}) &\\
-&\vec{\phi}^{i} \defeq \sigma(\vec{a}_{i}), & i=2,...,U\\
+&\vec{\phi}^{i} \defeq \sigma(\vec{a}^{i}), & i=2,...,U\\
 &\vec{a}^{i} \defeq W^{i-1} \cdot \vec{\phi}^{i-1} +\vec{b}^i  & i=2,...,U\\
 &\vec{\phi}^{1} \defeq \vec{x} &
 \end{align}
 \end{defn}
 
 \subsection{Learning with FFNNs}
-A widespread application of neural networks is that of machine learning. In the following we will model an optimisation problem which rely on $\net{FFNNs}$.
-To model an optimisation problem we first need to define a data-set $D$ as 
+A widespread application of neural networks is that of machine learning. In the following we will model an optimization problem which rely on $\net{FFNNs}$.
+To model an optimization problem we first need to define a data-set $D$ as 
 \begin{equation}
 D\defeq\{\overline{\vec{x}}^{(i)} \in \mathbb{R}^p, \overline{\vec{y}}^{(i)} \in \mathbb{R}^q,  i=1,...,N\}
 \end{equation}
