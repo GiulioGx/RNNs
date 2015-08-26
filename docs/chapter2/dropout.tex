@@ -1,15 +1,11 @@
 \subsection{Dropout} 
 
-
 \textit{Dropout} was introduced in 2013 by Srivastava et al. \cite{dropout} as a regularization technique for FFNNs. It does not address the vanishing/exploding gradient problem directly and we don't of any work which analyze the effect of dropout on memory; we report this technique nonetheless because of it's beneficial effect against over-fitting.
-
 
 The idea of dropout is essentially to use ensemble learning, i.e combining the prediction of several models to produce a prediction. In the case of FFNNs however training different models, with different data or different parameter is too computationally expensive both during training and test phases.
 The proposed technique is a way of approximately combining exponentially many different neural network architectures efficiently. In this context \textit{different architectures} as to be understood as architectures with different connections between their units. This is achieved by \textit{dropping} a unit, i.e temporarily removing it from the network along with it's connection, with a given probability $p$. Applying dropout to a network results in a ``thinned'' version of the former. From fully connected network with $n$ units can be derived $2^n$ differently thinned down networks.
 
 At training time dropout consists in, for each example in the training batch, randomly generating a thinned down version of the original fully connected one, dropping some units, and then back-propagating the gradient to compute the update value. Note that the the update rule updates the weights of the original fully connected network; of course weights belonging to dropped-out units are not updated. Formally:
-
-
 \begin{align}
 &\vec{r} \sim Bernoulli(p)&\\
 &\vec{a}^{i} \defeq W^{i-1} \cdot \vec{h}^{i-1} +\vec{b}^i  & i=2,...,U\\
@@ -18,10 +14,7 @@ At training time dropout consists in, for each example in the training batch, ra
 &\vec{h}^{1} \defeq \vec{x} &\\
 &\vec{y}=F(\vec{a}^{U}) &
 \end{align}
-
-
 At test time the original fully connected network is used, but it's weight scaled down as $W^{i} = pW^{i}$. The prediction can be viewed as a sort of average of the prediction of all the thinned down versions of the original network. The parameter $p$ control the amount of ``noise'' that is added to network, and can be tuned using a validation set.
-
 
 Tough dropout has been shown \cite{dropout} to improve the performance of FFNNs in several challenging tasks, it does not, as argued in \cite{dropoutBayer}, at least in the standard version, work well with RNNs because the recurrence amplifies too much the noise introduced by dropout. This is in accord with the view of an RNN as a turing machine, as discussed in section \ref{sec:expressiveness}; dropping units can be thought of as corrupting the variables of the program which implements the algorithm.
 A recent work by Zaremba et al., however, shows that dropout can be efficient even, with RNNs, if applied only to the non recurrent connections\cite{dropoutRNNs}.
