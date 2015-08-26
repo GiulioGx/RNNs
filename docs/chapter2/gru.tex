@@ -1,7 +1,7 @@
  
 \subsection{Gated recurrent units}
 
-Gated recurrent units (GRU) were introduced by Cho et al. in 2014 \cite{gru} as units similar to LTSM with same purpose 
+Gated recurrent units (GRU) were introduced by Cho et al. in 2014 \cite{gru} as units similar to LTSM, with same purpose, 
 but claimed to simpler to compute and implement. A GRU unit $j$ make use of two gate units, $z$, the 
 \textit{update} gate, and $r$, the \textit{reset} gate, which are standard neurons.
 
@@ -13,7 +13,7 @@ but claimed to simpler to compute and implement. A GRU unit $j$ make use of two 
  r_j^t = [\sigma(\mat{W_r}\vec{x_t} + \mat{U}_r\vec{h}_{t-1})]_j
 \end{equation}
 
-As in LSTM units, the gates are used to managed the access to memory cell, but in GRU they are used a little bit 
+As in LSTM units, the gates are used to manage the access to memory cell, but in GRU they are used a little bit 
 differently. The update gate is used to decide how to update the memory cell: the activation value of the cell 
 $h_j^{t}$ is a linear interpolation between the previous activation $h_j^{t-1}$ and the candidate activation 
 $\tilde{h}_j^t$.

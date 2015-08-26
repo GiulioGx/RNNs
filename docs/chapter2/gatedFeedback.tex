@@ -8,7 +8,7 @@ g^{i\rightarrow j} \defeq \sigma(\vec{w}_g^{i\rightarrow j} \cdot \vec{h_t}^{j-1
 \end{equation}
 where $\vec{w}_g^{i\rightarrow j}$ and $\vec{u}_g^{i\rightarrow j}$ are the weights of the links between the gate and the input and the hidden states of all layers at time-step $t-1$ respectively; for $j=1$,  $\vec{h}_t^{j-1}=\vec{x}_t $  and $\vec{h^*_{t-1}}$ represents all the hidden states at time $t-1$.
 
-The idea behind this architecture is to encourage each recurrent layer to work at different timescales, hence capturing both long-term and short-term dependencies. In addition, the units composing the layers, can be traditional sigmoidal units but also LSTM or GRU, hence benefiting from both the strength of these kind of units and the global gated mechanism. In \cite{gatedFeedback}, the architecture is evaluated against traditional and stacked RNNs with both LSTM and GRU units; gated feedback networks are shown to offer better performance and accuracy in several challenging tasks.
+The idea behind this architecture is to encourage each recurrent layer to work at different timescales, hence capturing both long-term and short-term dependencies. In addition, the units composing the layers, can be traditional sigmoidal units but also LSTM or GRU, hence benefiting from both the strength of these kind of units and the global gate mechanism. In \cite{gatedFeedback} the architecture is evaluated against traditional and stacked RNNs with both LSTM and GRU units: gated feedback networks are shown to offer better performance and accuracy in several challenging tasks.
 
 
 \tikzstyle{rnn_style}=[->,shorten >=1pt,auto,node distance=1.5cm,
@@ -59,7 +59,7 @@ The idea behind this architecture is to encourage each recurrent layer to work a
 		(g11) edge[gateEdge, bend left]		(l1);
 
 \end{tikzpicture}
-\caption{Gated feedback architecture; only connections between layers are shown, dotted whene trough gates}
+\caption{Gated feedback architecture; only connections between layers are shown, dotted when trough gates}
 \label{fig:gated}
 \end{figure}
 

@@ -20,7 +20,7 @@ The several methods which falls into this category differ in they way they gener
 of \textit{readout} mapping they make use of. \textit{Readout} functions can be simple linear functions, maybe preceded 
 by a kernel expansion of the neuron output sequence, a multi-layered FFNN, etc. and they are learned in the usual way.
 As for the reservoir there are several ``recipes'' for producing ``good'' ones: from fully unaware of the training set 
-methods, which randomly generate the RNN aiming to provide rich dynamics, to methods which choose a RNN depending on 
+methods, which randomly generate the RNN, aiming to provide rich dynamics, to methods which choose a RNN depending on 
 the behavior of such network on the training set.
 For a more detailed summary of the field please see \cite{reservoirSummary}.
 
@@ -34,11 +34,9 @@ The ESN recipe for generating the \textit{reservoir} is to generate a \textit{bi
 \textit{randomly} connected RNN. The aim of this design is to provide to the readout function signals which are 
 different and loosely coupled.
 
-The fundamental element for the ESN architecture to work is that it has to have the \textit{echo state property} that 
-states that the effect of a previous (hidden) state and input on the future state should vanish gradually as time 
-passes.
+The fundamental element for the ESN architecture to work is that it has to have the \textit{echo state property}: the effect of a previous (hidden) state and input on the future state should vanish gradually as time passes.
 This is usually accomplished by controlling the spectral radius of the recurrent weight matrix $\rho(\mat{W})$.
-The rule of thumb, given by ESNs inventor Jaeger is to use $\rho(W)$ close to $1$ when dealing with tasks requiring 
+The rule of thumb, given by ESNs inventor Jaeger, is to use $\rho(W)$ close to $1$ when dealing with tasks requiring 
 long memory and $\rho(W)<1$ when dealing with tasks where memory is less important.
 This reminds a lot of the 
 Hochreiter's conditions for vanishing/exploding gradient (section \ref{sec:vanishing}).
