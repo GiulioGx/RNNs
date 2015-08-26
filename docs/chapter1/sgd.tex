@@ -70,10 +70,6 @@ Being $D=\{\pair{\vec{x}^{(i)}}{\vec{y}^{(i)}}, i\in(1,M)\}$ a generic subset of
 Since training examples are sampled from the training set, the error on the training set will always\footnote{This is not actually true; it would in a standard gradient descent, but since we are using stochastic gradient the error could be non monotonic decreasing; however the matter here is that error mainly follow a decreasing path} be decreasing across iterations. The idea behind cross-validation is to compute, and \textit{monitor} the error on the validation set, since it's not guaranteed at all that the error would be decreasing. On the contrary, tough error will generally decrease during the first part of training, it will reach a point when it will become to increase. This is the point when we need to stop training since we are starting to over-fitting. Of course this is an ideal situation, in real applications the validation error could have a more irregular trend, but the idea holds.
 
 
-DISEGNO CON LE DUE CURVE
-
-
-
 \paragraph{Learning rate}
 
 The parameter $\alpha$ in equation \ref{eq:updateRule}, know as \textit{step} in the optimization field, is called in AI \textit{learning rate}. Of course the strategy employed to compute such learning rate is an important ingredient in the learning method.
