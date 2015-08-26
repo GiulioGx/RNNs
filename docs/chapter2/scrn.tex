@@ -54,15 +54,13 @@ recurrent matrix to be close to the identity. Formally the context layer  $\vec{
 
 The rest of the network is like a traditional one, hence, adding the context layer beside the traditional one results 
 in:
-\begin{equation}
- \vec{h}_t = \sigma(\mat{P}\vec{s}_t + \mat{A}\vec{x}_t + \mat{R}\vec{h}_{t-1})
-\end{equation}
-\begin{equation}
- \vec{y}_t = f(\mat{U}\vec{h}_t + \mat{V}\vec{s}_t)
-\end{equation}
+\begin{align}
+ &\vec{h}_t = \sigma(\mat{P}\vec{s}_t + \mat{A}\vec{x}_t + \mat{R}\vec{h}_{t-1})\\
+ &\vec{y}_t = f(\mat{U}\vec{h}_t + \mat{V}\vec{s}_t)
+\end{align}
 Notice the similarity with leaky integrator units \cite{leakyIntegratorUnits}.
 
-If treat context and traditional layers as one, i.e we don't distinguish between context and traditional units, we can 
+If we treat context and traditional layers as one, i.e we don't distinguish between context and traditional units, we can 
 see the model as a traditional model whose recurrent matrix $\mat{W}$ is constrained (from this the name of the 
 method), to be of the form:
 \begin{equation}
@@ -80,7 +78,6 @@ to have a different value for each unit, hence allowing to capture context from 
   \vec{s}_t = (\mat{I}-\mat{Q})\mat{B}\vec{x}_t + \mat{Q}\vec{s}_{t-1}
 \end{equation}
 where $\mat{Q}\defeq diag(\sigma(\vec{\beta}))$; the vector $\vec{\beta}$ is learned.
-
 
 In \cite{scrn} SCRNs are shown to be roughly equivalent to the much more complex, LSTMs.
 
