@@ -1,38 +1,26 @@
-The training of recurrent neural networks is afflicted by the so called \textit{exploding} and \textit{vanishing} gradient problem.
-Such problem is directly linked to the notion of memory. When we talk about memory what are we really talking about is the dependency of neurons output at a given time $t$ from previous time steps,
-that is how $\phi^t$ depends on $\phi^{k}$ with $t>k$. This dependency is captured by the expression $\frac{\partial \vec{a}^t}{\partial \vec{a}^k}$.
-Obviously when such expression equals zero it means neuron output at time $t$ is not affected by output at time $k$.
-The terms $\frac{\partial \vec{a}^t}{\partial \vec{a}^k}$ are usually referred as \textit{long term} contribution when $k<<t$ or \textit{short term} contributions
-otherwise.
-We talk of \textit{exploding} gradient problem when \textit{long term} components grow exponentially, on the contrary of \textit{short term} ones, causing
-the overall norm of the gradient to explode.
-We refer to \textit{vanishing} gradient problem when, vice versa, \textit{long term} components diminish exponentially.
-\\\\
-\textit{Vanishing} gradient means long term components approach zero value, this in turn leads to the fact that the output of the net won't depend on inputs of distant temporal steps, i.e the output
+As noted in Bengio et al.\cite{learningIsDifficult} and Hochreiter \cite{lstm}
+the training of recurrent neural networks is afflicted by the \textit{exploding} and \textit{vanishing} gradient problem, namely gradient norm in recurrent neural network tends either to vanish or explode.
+As we have seen gradient is composed by terms of the form:
+\begin{equation}
+\frac{\partial \vec{a}^t}{\partial \vec{a}^k} = \prod_{i=t-1}^{k}  diag(\sigma'(\vec{a}^i)) \cdot \mat{W}^{rec}
+\label{eq:temporalComponent}
+\end{equation}
+The terms $\frac{\partial \vec{a}^t}{\partial \vec{a}^k}$ capture the "dependecy" of neurons at time step $t$ from neurons at time $k$.
+Such term are usually distinguished between \textit{long term} contributions when $k\ll t$ and \textit{short term} contributions otherwise. We can notice each temporal contribution is the product of $l=t-k-1$ matrices, so in \textit{long term} components, where $l$ can be very large, we can intuitively understand that their product can go exponentially fast towards 0 or infinity depending on the spectral radius of such matrices.
+
+We talk of \textit{vanishing} gradient, when the gradient norm, especially for long term components, diminish exponentially fast. The \textit{vanishing} gradient problem is directly link to the notion of memory; when the term $\frac{\partial \vec{a}^t}{\partial \vec{a}^k}$ approach zero value changes int the output of the neurons at time $k$ have little impact on the output at time $t$.This in turn leads to the fact that the output of the net won't depend on inputs of distant temporal steps, i.e the output
 sequence is determined only by recent temporal input: we say that the network doesn't have memory. Evidently this can have catastrophic effects on the classification error. Imagine we would like
 to classify an input sequence as positive whether or not it contains a given character. It would seem a rather easy task, however, if the neural network
 we are training suffers from the \textit{vanishing} gradient issue, it could perform the classification using only the most recent temporal inputs. What if the character was at the beginning of the sequence? Of course
 the prediction would be wrong.
-\\\\
-\textit{Exploding} gradient seems to be a different kind of a problem, it does not affect the ability of the network to use information from distant temporal step, on the contrary we have very strong
-information about where to go using the gradient direction. One could argue that some components, namely, the long term ones, have gradient norm exponentially bigger than short term ones. I fail to see why this could be a problem:
-the output of the first time steps influences all successive steps, so changing the output of a long term neuron do imply big changes in the output of more distant in time neurons.
-The only situation in which \textit{exploding} gradient can be a problem is  when using learning algorithms like gradient descent with constant step:
-if we are to compute a step in the gradient direction with a fixed step and gradient has too big norm we may make a too big step.
+
+\textit{Exploding} gradient seems to be a rather different kind of a problem, it does not affect the ability of the network to use information from distant temporal step, on the contrary we have very strong information about where to go using the gradient direction. 
+\textit{Exploding} gradient can be a problem when using learning algorithms like gradient descent with constant step: if we are to compute a step in the gradient direction with a fixed step and the gradient has too big norm we may make a too big step.
 \\\\
 Let's now return to the nature of the problem and try to explaining the mechanics of it.
-We have seen in the previous section that
-\begin{equation}
-\frac{\partial \vec{a}^t}{\partial \vec{a}^k} = \prod_{i=t-1}^{k}  diag(\sigma'(\vec{a}^i)) \cdot \mat{W}^{rec}
-\label{memory_eq}
-\end{equation}
-Intuitively we can understand why such problems arises, more evidently in \textit{long term} components, just by looking at equation \ref{memory_eq}.
-We can notice each temporal contribution is the product of $l=t-k-1$ jacobian matrix, so in \textit{long term} components $l$ is large and depending on
-the values of the matrices in the product we can go exponentially fast towards 0 or infinity.
 
-\paragraph{Hochreiter Analysis: Weak upper bound}
-In this paragraph we report some useful consideration made by Hochreiter, please see \cite{lstm} for more details.
-
+\paragraph{Hochreiter Analysis: A weak upper bound}
+In this paragraph we report some useful considerations made by Hochreiter, please see \cite{lstm} for more details.
 Let's put:
 $$\norm{\mat{A}}_{max}\triangleq \underset{i,j}{\text{max}}|a_{ij}| $$
 $$\sigma'_{max} \triangleq \underset{i=k,...,t-1}{\text{max  }} \{\norm{diag(\sigma'(a^i))}_{max}\}$$
@@ -50,7 +38,7 @@ it holds:
 where $$\tau \triangleq r \cdot \sigma'_{max} \cdot \norm{\mat{W}^{rec}}_{max}$$
 
 So we have exponential decay if $\tau<1$. We can match this condition if $\norm{\mat{W}^{rec}}_{max} \leq \frac{1}{r\cdot \sigma'_{max}}$.
-As pointed out by Hochreiter in his work we can match this condition, in the case of sigmoid activation function by choosing $\norm{\mat{W}^{rec}}_{max} < \frac{1}{0.25 \cdot r}$.
+As pointed out by Hochreiter in his work, in the case of sigmoid activation function, we have $\norm{\mat{W}^{rec}}_{max} < \frac{1}{0.25 \cdot r}$.
 
 Let's note that we would actually reach this upper bound for some $i,j$ only if all the path cost have the same sign and the activation function takes always maximal
 value.
@@ -73,7 +61,7 @@ $$\norm{diag(\lambda_1, \lambda_2,...,\lambda_r)\cdot \vec{x}}_2 \leq \lambda_{m
 \norm{\frac{\partial \vec{a}^t}{\partial \vec{a}^k} \cdot \vec{e}_i}_2 &= \norm{ (\prod_{i=t-1}^{k} diag(\sigma'(\vec{a}^i)) \cdot \mat{S}\cdot \mat{D} \cdot \mat{V}^T) \cdot \vec{e}_i}_2\\
 &\leq (\sigma'_{max} \cdot \mu_{max})^{t-k-1}
 \end{align}
-The previous equation provide us a sufficient condition, $\sigma'_{max} \cdot \mu_{max} <1 $, as in Hochreiter's analysis, for exponential decay of long term components. In this case however the bound depends on the singular value
+The previous equation provide a sufficient condition, $\sigma'_{max} \cdot \mu_{max} <1 $, as in Hochreiter's analysis, for exponential decay of long term components. In this case however the bound depends on the singular value
 of the recurrent weights rather than on the maximal weight of the matrix itself. 
 
 A similar result is obtained in \cite{pascanu}, where $\mat{W}^{rec}$ is supposed to be diagonalizable; the founding is that a sufficient condition for the gradient to vanish is $\lambda_{max} <  \frac{1}{\sigma'_{max}}$ where $\lambda_{max}$ is the largest eigen value. Please note that in case $\mat{W}^{rec}$ is diagonalizable $\lambda_{max}=\mu_{max}$, hence our results is more general.
@@ -296,7 +284,7 @@ of weight of the arcs we went through, as we can see in figure \ref{gradient_pat
 
 So $\vert (\frac{\partial \vec{a}^t}{\partial \vec{a}^k})_{ij}\vert$ ranges from 0, when no path is enabled to, $\vert ((\mat{W}^{rec})^{t-k-1})_{ij} \vert$ when all
 paths are enabled and all path cost have the same sign, which is consistent with what we found in Hochreiter analysis.
-We can argue then that ReLU has an advantage over sigmoidal activation functions, for instance, because gradient depends only on the $\mat{W}^rec$ matrix:
+We can argue then that ReLU has an advantage over sigmoidal activation functions, for instance, because gradient depends only on the $\mat{W}^{rec}$ matrix:
 ReLU function \textit{only} enables or disables the paths but doesn't change their costs as sigmoids do
 
 
@@ -307,8 +295,8 @@ time steps $k<\tau$. So, the output of the network doesn't depend on the inputs 
 In other words we have found a possibly optimal solution for the truncated sequence ${x}_{[\tau:T]}$. The solution we have found is an optimal candidate to
 be a bad local minimum.
 
-As a final observation on this matter it's worth noticing how a bad initialization of $\mat{W^{rec}}$ can lead to poor solutions or extremely large convergence time
-just because such initialization imply $\frac{\partial \vec{a}^t}{\partial \vec{a}^k}$ approaching zero norm for $t>>k$. Moreover, even if we somehow provide
+As a final observation on this topic it's worth noticing how a bad initialization of $\mat{W^{rec}}$ can lead to poor solutions or extremely large convergence time
+just because such initialization imply $\frac{\partial \vec{a}^t}{\partial \vec{a}^k}$ approaching zero norm for $t\gg k$. Moreover, even if we somehow provide
 an initialization matrix which is unaffected by this curse, it's certainly possible that we reach such a bad matrix during learning phase.
 Several techniques have been proposed to overcome this problem, they will be the topic of later chapters.
 
