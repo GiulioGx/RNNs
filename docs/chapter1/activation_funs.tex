@@ -1,6 +1,7 @@
-Activation functions play a central role in the artificial neural networks model, they are responsible for the non linearity of the model.
-In the history of neural networks several activation functions have been proposed and used, in the following some of them are taken into consideration
+Activation functions play a central role in artificial neural networks as they are responsible for the non linearity of the model.
+In the history of neural networks several activation functions have been proposed and used; in the following some of them are taken into consideration,
 underling the difference between them, with a special focus on their derivative expression.
+
 A special class of activation function, is that of \textit{squashing} functions.
 
 \begin{defn}
@@ -32,7 +33,7 @@ so activation function inputs can be arbitrarily big or small.
 
 \begin{align}
 sigmoid(x)&= \frac{1}{1+e^{-x}}  \\ 
-sigmoid'(x)&= sigmoid(x) \cdot (1-sigmoid(x))
+\frac{d}{dx}sigmoid(x)&= sigmoid(x) \cdot (1-sigmoid(x))
 \end{align}
 As we can see from figure \ref{sigmoid_plot}, the sigmoid derivative has only one maximum in 0 where it assume value 0.25. Receding from 0, in both direction leads to regions where
 the the derivative take zero value, such regions are called \textit{saturation} regions. If we happen to be in such regions, for a given neuron, we cannot learn anything since that neuron doesn't contribute
@@ -48,9 +49,9 @@ to the gradient.
 \paragraph{Tanh}
 \begin{align}
  tanh(x)&=\frac{e^x-e^{-x}}{e^x+e^{-x}} \\
- tanh'(x)&= 1 - tanh^2(x)  
+ \frac{d}{dx}tanh(x)&= 1 - tanh^2(x)  
 \end{align}
-As we can see from figure \ref{tanh_plot} tanh (and it's derivative) have a behavior similar to the sigmoid one; Again we have two saturation region towards
+As we can see from figure \ref{tanh_plot} $tanh$ (and it's derivative) have a behavior similar to the sigmoid one; again we have two saturation region towards
 infinity: that's typical of all squashing functions.
 
 
@@ -72,16 +73,14 @@ infinity: that's typical of all squashing functions.
     x & \text{if $x>0$}.\\
     0 & \text{otherwise}.
   \end{cases} \\ 
-   ReLU'(x)&=\begin{cases}
+   \frac{d}{dx}ReLU(x)&=\begin{cases}
     1 & \text{if $x>0$}.\\
     0 & \text{otherwise}.
   \end{cases}
 \end{align}
-ReLU is a bit different from other activation function seen so far: the main difference is that's it's not a squashing function.
+ReLU is a bit different from the activation function seen so far: the main difference is that's it's not a squashing function.
 As we can see from figure \ref{relu_plot}, ReLU's derivative is the step function; it has only one \textit{saturation} region $(-\infty, 0]$ and a region in which is always takes value 1, $(0,+\infty]$
-This leads to the fact that we cannot learn to \textit{turn on} a switched off neuron ($x<0$), but we have no \textit{saturation} region toward infinity.
-The constancy of the derivative in the \textit{active} region is a distinctive property of ReLU which plays an important role in the \textit{vanishing gradient} problem too, as it's explained in the relative
-section.
+This implies that we cannot learn to \textit{turn on} a switched off neuron ($x<0$), but we have no \textit{saturation} region toward infinity.
 
 \begin{figure}[ht]
   \centering

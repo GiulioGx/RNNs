@@ -20,8 +20,7 @@ computed only on a subset $I$ of training examples.
 
 The subset of training examples used for the update is called \textit{minibatch}. The number of examples for each 
 minibatch is an important hyper-parameter because it affects both the speed of convergence in terms of number of 
-iteration and the time needed for each iteration. At each iteration new exampled are chosen among the training set 
-examples, so it could, and it always does in real applications, happen that all training set exampled have been used.
+iterations and time needed for each iteration. At each iteration new examples are chosen among the training set, so it could, and it always does if we have a finite data-set, happen, that all training set examples get used.
 This is not a problem, since we can use the same examples over and over again. Each time we go over the entire training 
 set we say we completed and \textit{epoch}. It's not unusual to iterate the learning algorithm for several epochs 
 before converging.
@@ -59,40 +58,38 @@ that can be used.
 
 Usually a gradient based method adopts a stop criterion which allows the procedure to stop when close enough to a (local) 
 minimum, i.e $\nabla_\theta L(\theta)=0$.  This could easily lead to over-fitting, so is common practice to use a 
-cross-validation technique. The most simple approach to cross-validation is to split the training set in two parts, one actually used as a pool of training examples, which will be called training set, and the other, called \textit{validation} set, used to decide when to stop.
+cross-validation technique. The most simple approach to cross-validation is to split the training set in two parts, one actually used as a pool of training examples, which will be called training set, and the other, called \textit{validation-set}, used to decide when to stop.
 
-Being $D=\{\pair{\vec{x}^{(i)}}{\vec{y}^{(i)}}, i\in(1,M)\}$ a generic subset of the dataset, we can define the \textit{error} on such set in a straightforward manner as 
+Being $D=\{\pair{\vec{x}^{(i)}}{\vec{y}^{(i)}}, i\in(1,M)\}$ a generic subset of the data-set, we can define the \textit{error} on such set in a straightforward manner as 
 
 \begin{equation}
  E_D = \frac{1}{M} \sum_{i=1}^M  L(\vec{x}^{(i)},\vec{y}^{(i)})
 \end{equation}
 
-Since training examples are sampled from the training set, the error on the training set will always\footnote{This is not actually true; it would in a standard gradient descent, but since we are using stochastic gradient the error could be non monotonic decreasing; however the matter here is that error mainly follow a decreasing path} be decreasing across iterations. The idea behind cross-validation is to compute, and \textit{monitor} the error on the validation set, since it's not guaranteed at all that the error would be decreasing. On the contrary, tough error will generally decrease during the first part of training, it will reach a point when it will become to increase. This is the point when we need to stop training since we are starting to over-fitting. Of course this is an ideal situation, in real applications the validation error could have a more irregular trend, but the idea holds.
+Since training examples are sampled from the training-set, the error on the training-set will always\footnote{This is not actually true; it would in a standard gradient descent, but since we are using stochastic gradient the error could be non monotonic decreasing; however the matter here is that error mainly follow a decreasing path} be decreasing across iterations. The idea behind cross-validation is to compute, and \textit{monitor} the error on the validation set, since it's not guaranteed at all that the error would be decreasing. On the contrary, tough error will generally decrease during the first part of training, it will reach a point when it will start to increase. This is the point when we need to stop training since we are starting to over-fitting. Of course this is an ideal situation, in real applications the validation error could have a more irregular trend, but the idea holds.
 
 
 \paragraph{Learning rate}
 
-The parameter $\alpha$ in equation \ref{eq:updateRule}, know as \textit{step} in the optimization field, is called in AI \textit{learning rate}. Of course the strategy employed to compute such learning rate is an important ingredient in the learning method.
-The most easy, and often preferred, strategy is that of \textbf{constant learning rate}; Learning rate $\alpha$ becomes another hyper-parameter of the network that can be tuned, but it remains equal, usually a very small value, across all iterations.
+The parameter $\alpha$ in equation \ref{eq:updateRule} is usually referred to as \textit{learning rate}. Of course the strategy employed to compute such learning rate is an important ingredient in the learning method.
+The most easy, and often preferred, strategy is that of \textbf{constant learning rate}; learning rate $\alpha$ becomes another hyper-parameter of the network that can be tuned, but it remains constant, usually a very small value, across all iterations.
 
 Another popular strategy is that of \textbf{momentum} which, in the optimization field is know as the \textit{Heavy 
 Ball} method \cite{momentum}.
 The main idea behind momentum is to accelerate progress along dimensions
-in which gradient consistently point in the same direction
-and to slow progress along dimensions where the sign
-of the gradient continues to change. This is done by keeping
-track of past parameter updates with an exponential decay as shown in equation \ref{eq:momentum}
+in which gradient consistently point to and to slow down progress along dimensions where the sign of the gradient continues to change. This is done by keeping
+track of past parameter updates with an exponential decay as shown in equation \ref{eq:momentum}.
 
 \begin{align}
+\label{eq:momentum}
 v &= \gamma v+ \alpha \nabla_\theta L(\theta; \pair{\vec{x}^{(i)}}{\vec{y}^{(i)}}, i\in I)\\
 \theta &= \theta + v
-\label{eq:momentum}
 \end{align}
 
 Another way of choosing the learning rate is to fix an initial value and \textbf{annealing} it, at each iteration (or epoch), according to a policy, for instance \textit{exponential} or \textit{linear} decay; the idea behind it being that, initially, when far from a minimum having a larger learning rate causes greater speed and after some iterations when approaching a minimum a smaller learning rate allows a finer refinement.
 
 \textbf{Adaptive} methods instead choose the learning rate monitoring the objective function, hence learning rate can be reduced
-or increased depending on the need, being a little more versatile than annealing methods. Of course different strategies for detection when to reduce or increase the learning rate have been devised.
+or increased depending on the need, proving to be a little more versatile than annealing methods. Of course different strategies for detecting when to reduce or increase the learning rate have been devised.
 
 Finally \textbf{line search} can be used; usually line search is used when working with (non stochastic) gradient 
 descend or when dealing with large batches; for stochastic gradient with small batches other strategies are usually 

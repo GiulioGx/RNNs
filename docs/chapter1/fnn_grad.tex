@@ -7,23 +7,24 @@ g(\set{W},\set{B}) \defeq L(F(a^U( \overline{\vec{x}}^{(i)} (\set{W},\set{B}))),
 Equation $\ref{loss_over_x_i}$, tough it seems rather scary, express a very simple thing: we consider a single input example 
 $\overline{\vec{x}}^{(i)}$, we run it through the network and we confront it's output $F(a^U( \overline{\vec{x}}^{(i)}) $ with it's label
 $\overline{\vec{y}}^{(i)}$ using the loss function $L$; the function $g(\set{W},\set{B})$ it's simply the loss function computed on the $i^{th}$ example
-which of course depends only on the weights and biases of network since the examples are constant.
-
-
+which of course depends only on the weights and biases of network since the examples are constant. In the following we will derive an expression for gradient with respect to a weight matrix $\mat{W}^{i}$ and a bias vector $\vec{b}^i$. Before reading further consider taking a look at the notation appendix.
 \begin{align}
-\frac{\partial g}{\partial \mat{W}^i} &= \nabla L \cdot J(F) \cdot \frac{\partial \vec{a}^U}{\partial \mat{W}^i}\\
+\label{eq:ffnnGradientJacobian}
+\frac{\partial g}{\partial \mat{W}^i} &= \nabla L^T \cdot J(F) \cdot \frac{\partial \vec{a}^U}{\partial \mat{W}^i}\\
 &= \frac{\partial g}{\partial \vec{a}^U} \cdot \frac{\partial \vec{a}^U}{\partial \mat{W^i}}
 \end{align}
 
+To help clarify the notation we provide just for equation \ref{eq:ffnnGradientJacobian} the dimensions of the matrices involved in the product:
+$$[1\times p(i+1)\cdot p(i)] = [p(U)\times 1] \cdot [p(U)\times p(U)] \cdot [p(U)\times p(i+1)\cdot p(i)]$$ 
 
-We can easily compute $\frac{\partial g}{\partial \vec{a^U}}$ once we define $F(\cdot)$ and $L(\cdot)$, note that the weights are not involved in such computation.
+We can easily compute the gradient of $L$, $\nabla L$, and the jacobian of $F$, $J(F)$, once we define $F(\cdot)$ and $L(\cdot)$; note that the weights are not involved in such computation.
 Let's derive an expression for $\frac{\partial \vec{a}^U}{\partial \mat{W}^i}$.
 We will start deriving such derivative using global notation. Let's consider a single output unit $u$ and a weight $w_{lj}$ linking neuron $j$ to neuron $l$.
 
 
 \begin{align}
 \frac{\partial a_u}{\partial w_{lj}} &= \frac{\partial a_u}{\partial a_l} \cdot \frac{\partial a_l}{\partial w_{lj}}\\
-&=\delta_{ul} \cdot \phi_j
+&=\delta_{ul} \cdot h_j
 \end{align}
 
 where we put $$\delta_{ul} \defeq \frac{\partial a_u}{\partial a_l}$$.
@@ -114,10 +115,10 @@ In layered notation we can rewrite the previous equations as:
 \begin{equation}
 \frac{\partial^{+} a^{i+1}}{\partial \mat{W}_j^i} =
  \begin{bmatrix}
-   \phi_j^{i}    & 0                & \cdots      & \cdots       & 0  \\
-   0               & \phi_j^{i}     & \cdots      & \cdots       & 0  \\
+   h_j^{i}    & 0                & \cdots      & \cdots       & 0  \\
+   0               & h_j^{i}     & \cdots      & \cdots       & 0  \\
    \vdots          & \vdots           & \ddots      & \vdots       &\vdots\\
-   0               & \cdots           & \cdots      & \cdots       & \phi^{i}_{j}
+   0               & \cdots           & \cdots      & \cdots       & h^{i}_{j}
 \end{bmatrix}
 \end{equation}
 
@@ -150,10 +151,10 @@ diag(\sigma'(\vec{a}^{i})) =
 
 \paragraph{Backpropagation}
 
-Previous equations are the core of the famous \textit{backpropagation} algorithm which was first introduced by Rumelhart et al. \cite{Rumelhart86}.
+Previous equations are the core of the famous \textit{back-propagation} algorithm which was first introduced by Rumelhart et al. \cite{Rumelhart86}.
 The algorithm consists in two \textit{passes}, a \textit{forward pass} and a \textit{backward pass} which give the name to the algorithm.
 The \textit{forward pass} start from the first layer, compute the hidden units values and the proceed to upper layers using the value of the hidden units 
-$\vec{a^i}$ of previous layers which have already been computed. The \textit{backward pass} instead, start from the upmost layer and computes $\Delta^{i}$
+$\vec{a^i}$ of previous layers which have already been computed. The \textit{backward pass} instead, start from the topmost layer and computes $\Delta^{i}$
 which can be computed, as we can see from equation \ref{fnn_delta} , once it's known $\Delta^{i+1}$, which has been computed in the previous step, and $\vec{a^i}$ which
 has been computed in the \textit{forward pass}.
 

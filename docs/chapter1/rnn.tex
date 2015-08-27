@@ -1,6 +1,6 @@
 Recurrent neural networks differ from feed forward neural networks because of the presence of recurrent connections: at least one perceptron output at a given layer $i$ is \textit{fed} to another perceptron
 at a level $j<i$, as can be seen in figure \ref{rnn_model}. 
-This is a key difference, as we will see in later sections, because it introduces \textit{memory} in the network changing, somehow, the expressiveness
+This is a key difference, as we will see in later sections, because it introduces \textit{memory} in the network, changing, somehow, the expressiveness
 of the model.
 
 
@@ -25,7 +25,6 @@ of the model.
   \node[label]    (u1)[below of=x1]   {$u_1[t]$};
   \node[label]    (u2)[below of=x2]   {$u_2[t]$};
   \node[label]    (un)[below of=xn]   {$u_n[t]$};
-  
   
   
   \node[layer] (hl)[above of=x2,node distance=2cm] {Hidden layer};
@@ -67,18 +66,16 @@ of the model.
 	    (b)  edge [bend left,dotted,anchor=west, in= -160]  node[]{$b_{out}$} (ol)
 	    (hl) edge [loop ,in=-160,out=160, distance=3cm,anchor=east ]      node [align=center]  {$W_{rec} $} (hl);
 
-
 \end{tikzpicture}
 \caption{$\net{RNN}$ model}
 \label{rnn_model}
 \end{figure}
 
 
-
-This difference in topology reflects also on the network's input and output domain, where, in feed froward neural networks, inputs and outputs were real valued vectors, recursive neural networks deal with
-sequences of vectors; in other words, now, time is also considered. One may argue that, taking time (and sequences) into consideration, is some sort of limitation, because it restricts our model to deal only
-with temporal inputs; that's not true, in fact we can apply RNNs to non temporal data by considering space as the temporal dimension, or we can feed the network with the same input for all time steps, or just
-providing no input at all after the first time step.
+This difference in topology reflects also on the network's input and output domain: where, in feed froward neural networks, inputs and outputs were real valued vectors, recurrent neural networks deal with
+sequences of vectors; in other words time is also considered. One may argue that, taking time (and sequences) into consideration, is some sort of limitation, because it restricts our model to deal only
+with temporal inputs; however that's not the case, in fact we can apply RNNs to non temporal data by considering space as the temporal dimension, for example imagine feeding the network with the pixels of an image one column at a time; or we can feed the network with the same input for all time steps or simply
+providing no input at all after the first step.
 
 \begin{defn}[Recurrent neural network]
 \label{def_rnn}
@@ -116,10 +113,10 @@ Given a $\net{RNN}$
 \label{def_rnn_output}
 Given a $\net{RNN}$ and an input sequences $\{\vec{x}\}_{t=1,...,T}, \vec{x}_t \in \mathbb{R}^p$ the output sequence $\{\vec{y}\}_{t=1,...,T}, \vec{y}_t \in \mathbb{R}^o$ of the net is defined by the following:
 \begin{align}
-&\vec{y}_t \defeq F(W^{out}\cdot\vec{a}_t + \vec{b}^{out})\\
-&\vec{a}_t \defeq W^{rec}\cdot\vec{\phi}_{t-1}+W^{in}\cdot\vec{x}_t+\vec{b}^{rec}\\
-&\vec{\phi}_t \defeq  \sigma(\vec{a}^t) \\
-&\vec{\phi}_0 \defeq \overrightarrow{0}
+&\vec{y}^t \defeq F(W^{out}\cdot\vec{a}^t + \vec{b}^{out})\\
+&\vec{a}^t \defeq W^{rec}\cdot\vec{h}^{t-1}+W^{in}\cdot\vec{x}^t+\vec{b}^{rec}\\
+&\vec{h}^t \defeq  \sigma(\vec{a}^t) \\
+&\vec{h}^0 \defeq \overrightarrow{0}
 \end{align}
 \end{defn}
 
@@ -213,9 +210,8 @@ important unlikeness is of course the presence of additional timed inputs for ea
 
 
 \subsection{Learning with RNNs}
-We can model an optimisation problem in the same way we did for feed forward neural networks, the main difference is, again, that we now deal with temporal sequences so we need a slightly different
-loss function.
-Given a data-set $D$:
+We can model an optimization problem in the same way we did for feed forward neural networks, the main difference is, again, that we now deal with temporal sequences, so we need a slightly different loss function.
+Given a dataset $D$:
 \begin{equation}
 D\defeq\{\{\overline{\vec{x}}\}_{t=1,...,T}, \overline{\vec{x}}_t \in \mathbb{R}^p, \{\overline{\vec{y}}\}_{t=1,...,T}, \overline{\vec{y}}_t \in \mathbb{R}^o;  i=1,...,N\}
 \end{equation}
