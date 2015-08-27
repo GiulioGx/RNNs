@@ -6,11 +6,8 @@ or not, and how data inputs are \textit{fed} to the network.
 \tikzstyle{nn_style}=[->,shorten >=1pt,auto,node distance=1.5cm,
   thick,
   neuron/.style={circle,fill=white!50,node distance=2cm,draw,minimum size=0.7cm,font=\sffamily\normalsize},
-  missing/.style={circle,font=\sffamily\Large,node distance=0.95cm},
   label/.style={node distance=1.2cm,rectangle,fill=white!50,draw=none,minimum size=0.7cm,font=\sffamily\normalsize},
   layer/.style={rectangle,fill=white!50,draw,minimum width=1.5cm,font=\sffamily\Large},
-  loopStyle/.style={in=120,out=60, distance=2.5cm},
-  weight/.style = {above,sloped,pos=0.3},
   thin_edge/.style={line width=0.5pt}]
 \begin{figure}[h]
  \centering
@@ -71,7 +68,7 @@ is defined as:
 \end{align}
 
 where $w_{jl}$ is the weight of the connection between neuron $l$ and neuron $j$, $\sigma(\cdot)$ is a non linear function and $b_j \in \mathbb{R}$ is a bias term.
-It's worth noticing that in this formulation the input $\phi_l$ can be the outputs of other neurons or provided external inputs.
+It's worth noticing that in this formulation the inputs $\phi_l$ can be the outputs of other neurons or provided external inputs.
 
 
 \tikzstyle{nn_style}=[->,shorten >=1pt,auto,node distance=1.5cm,
@@ -125,11 +122,11 @@ It's worth noticing that in this formulation the input $\phi_l$ can be the outpu
 
 So, given a set of inputs $\{x\}_i$ which are \textit{fed} to some of the units of the net which we call \textit{input units} the output of the network $\{y\}_i$ is given by the
 some of units of the network, the 'upper' ones which we call \textit{output units}. All remaining units, i.e the ones which are neither input nor output units
-are called \textit{hidden units} because their value is not \textit{observed} from the outside. The mapping from input to output is captured by equations \ref{def_perceptron_1} and \ref{def_perceptron_2}. 
+are called \textit{hidden units} because their value is not \textit{observed} from the outside.
 
 \paragraph{The activation function}
 The $\sigma$ function is called \textit{activation} function and should determine whether a perceptron unit is \textit{active} or not. When artificial neural networks where first conceived,
-trying to mimic the brain structure, such function was a simple threshold function, trying to reproduce the behaviour of brain neurons: a neuron is \textit{active}, i.e it's output $\phi_j$ is $1$, if
+trying to mimic the brain structure, such function was a simple threshold function, trying to reproduce the behavior of brain neurons: a neuron is \textit{active}, i.e it's output $\phi_j$ is $1$, if
 the sum of input stimuli $\sum_l w_{jl}\phi_l +b_j$ is greater than a given threshold $\tau$.
 
 \begin{equation}
@@ -166,14 +163,14 @@ we obtain that neuron $j$ is active if $a_j>\tau-b_j$. So the effect of the bias
 the ability to change the activation threshold for each neuron; that's particularly important considering that we can learn such bias terms.
 We can do these same considerations in an analogous way for all the other activation functions.
 \paragraph{Layered view of the net}
-It's often useful to think of a neural network as series of layers, one on top of each other, as depicted in figure \ref{layered_nnet}. The first layer is called the input layer and its units are \textit{fed}
-with external inputs, the upper layers are called \textit{hidden layers} because theirs outputs are not observed from outside except the last one which is called \textit{output layer} because it's output 
+It's often useful to think of a neural network as series of layers, one on top of each other, as depicted in figure \ref{layered_nnet}. The first layer is called the \textit{input layer} and its units are \textit{fed}
+with external inputs, the upper layers are called \textit{hidden layers} because theirs outputs are not observed from outside except the last one, which is called \textit{output layer}, because it's output 
 is the output of the net.
 
 When we describe a network in this way is also useful to adopt a different notation: we describe the weights of the net with a set of matrices $\mat{W^k}$ one for each layer, and neurons are no more
 globally indexed, instead with refer to a neuron with a relative index with respect to the layer; this allows to write easier equations in matrix notation
 \footnote{In the rest of the book we will refer to the latter notation as \textsl{layer notation} and to the previous one as \textsl{global notation}}.
-In this notation $\mat{W^k}_{ij}$ is the weight of the link connecting neuron $j$ of layer $k-1$ to neuron $i$ of level $k$
+In this notation $\mat{W^k}_{ij}$ is the weight of the link connecting neuron $j$ of layer $k$ to neuron $i$ of level $k+1$
 
 
 \tikzstyle{rnn_style}=[->,shorten >=1pt,auto,node distance=1.5cm,
