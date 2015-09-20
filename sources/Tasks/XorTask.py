@@ -1,5 +1,6 @@
 import numpy
-from Tasks.Batch import Batch
+from Tasks.MarkerBasedTask import MarkerBasedTask
+from configs import Configs
 
 __author__ = 'giulio'
 
@@ -11,32 +12,36 @@ class XorTask:
         self.__n_out = 1
         self.__rng = numpy.random.RandomState(seed)
 
+        self.__marker_based_task = MarkerBasedTask(self.input_fnc, XorTask.output_fnc, self.n_in, self.n_out, min_length, seed)
+
+    def input_fnc(self, batch_size: int, length: int):
+        # random binary inputs (channel 1)
+        return self.__rng.random_integers(0, 1, size=(batch_size, length)).astype(Configs.floatType)
+
+    def output_fnc(data, outputs, p0: int, p1: int):
+        m = data.shape[1]
+        n = data.shape[0]
+
+        a = data[numpy.arange(n), p0, numpy.ones((n,), dtype='int32')].astype('int32')
+        b = data[numpy.arange(n), p1, numpy.ones((n,), dtype='int32')].astype('int32')
+
+        outputs[:, m-1, 0] = numpy.bitwise_xor(a, b)
+
     def get_batch(self, batch_size: int):
-        length = self.__rng.randint(int(self.__min_length * .1)) + self.__min_length
+        return self.__marker_based_task.get_batch(batch_size)
 
-        # XXX float32
-        inputs = numpy.zeros((batch_size, length, self.__n_in), dtype='float32')
-        outputs = numpy.zeros((batch_size, length, self.__n_out), dtype='float32')
+    @property
+    def n_in(self):
+        return self.__n_in
 
-        print(int(length * .1))
-        print(int(length * .4))
-        p0 = self.__rng.randint(int(length * .1), size=(batch_size,))
-        p1 = self.__rng.randint(int(length * .4), size=(batch_size,)) + int(length * .1)
-
-        # markers
-        inputs[numpy.arange(batch_size), p0, numpy.zeros((batch_size,),
-                                                         dtype='int32')] = 1
-        inputs[numpy.arange(batch_size), p1, numpy.zeros((batch_size,),
-                                                         dtype='int32')] = 1
-        # binary inputs
-        inputs[:, :, 1] = self.__rng.random_integers(0, 1, size=(batch_size, length)).astype('float32')
-
-        return Batch(inputs, outputs)
+    @property
+    def n_out(self):
+        return self.__n_out
 
 
 if __name__ == '__main__':
-    seed = 8
+    seed = 13
     print('Testing XOR task ...')
-    task = XorTask(15, seed)
-    batch = task.get_batch(3)
+    task = XorTask(22, seed)
+    batch = task.get_batch(20)
     print(str(batch))

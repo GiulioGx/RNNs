@@ -1,70 +1,47 @@
+import numpy
+from Tasks.MarkerBasedTask import MarkerBasedTask
+from configs import Configs
 __author__ = 'giulio'
 
 
-# Copyright (c) 2012-2013, Razvan Pascanu
-# All rights reserved.
-#
-# Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions are met:
-#
-# 1. Redistributions of source code must retain the above copyright notice, this
-#    list of conditions and the following disclaimer.
-# 2. Redistributions in binary form must reproduce the above copyright notice,
-#    this list of conditions and the following disclaimer in the documentation
-#    and/or other materials provided with the distribution.
-#
-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-# ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-# WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
-# ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-# (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-# LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-# ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-# SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-import numpy
+class AdditionTask:
 
-class AddTask(object):
-    def __init__(self, rng, floatX):
-        self.rng = rng
-        self.floatX = floatX
-        self.nin = 2
-        self.nout = 1
-        self.classifType='lastLinear'
+    def __init__(self, min_length: int, seed: int):
+        self.__min_length = min_length
+        self.__n_in = 2
+        self.__n_out = 1
+        self.__rng = numpy.random.RandomState(seed)
 
-    def generate(self, batchsize, length):
-        l = self.rng.randint(int(length*.1))+length
-        p0 = self.rng.randint(int(l*.1), size=(batchsize,))
-        p1 = self.rng.randint(int(l*.4), size=(batchsize,)) + int(l*.1)
-        data = self.rng.uniform(size=(l, batchsize, 2)).astype(self.floatX)
-        data[:,:,0] = 0.
-        data[p0, numpy.arange(batchsize), numpy.zeros((batchsize,),
-                                                      dtype='int32')] = 1.
-        data[p1, numpy.arange(batchsize), numpy.zeros((batchsize,),
-                                                      dtype='int32')] = 1.
+        self.__marker_based_task = MarkerBasedTask(self.input_fnc, AdditionTask.output_fnc, self.n_in, self.n_out, min_length, seed)
 
-        targs = (data[p0, numpy.arange(batchsize),
-                     numpy.ones((batchsize,), dtype='int32')] + \
-                 data[p1, numpy.arange(batchsize),
-                      numpy.ones((batchsize,), dtype='int32')])/2.
-        return data, targs.reshape((-1,1)).astype(self.floatX)
+    def input_fnc(self, batch_size: int, length: int):
+        # random binary inputs (channel 1)
+        return self.__rng.uniform(size=(batch_size, length)).astype(Configs.floatType)
+
+    def output_fnc(data, outputs, p0: int, p1: int):
+        m = data.shape[1]
+        n = data.shape[0]
+
+        a = data[numpy.arange(n), p0, numpy.ones((n,), dtype='int32')]
+        b = data[numpy.arange(n), p1, numpy.ones((n,), dtype='int32')]
+
+        outputs[:, m-1, 0] = numpy.add(a, b)/2
+
+    def get_batch(self, batch_size: int):
+        return self.__marker_based_task.get_batch(batch_size)
+
+    @property
+    def n_in(self):
+        return self.__n_in
+
+    @property
+    def n_out(self):
+        return self.__n_out
 
 
 if __name__ == '__main__':
-    print ('Testing add task generator ..')
-    addtask = AddTask(numpy.random.RandomState(123), 'float32')
-    seq, targ = addtask.generate(3, 25)
-    assert seq.dtype == 'float32'
-    assert targ.dtype == 'float32'
-    print ('Seq_0')
-    print (seq[:,0,:])
-    print ('Targ0', targ[0])
-    print ()
-    print ('Seq_1')
-    print (seq[:,1,:])
-    print ('Targ1', targ[1])
-    print ()
-    print ('Seq_2')
-    print (seq[:,2,:])
-    print ('Targ2', targ[2])
+    seed = 13
+    print('Testing Addition task ...')
+    task = AdditionTask(13, seed)
+    batch = task.get_batch(3)
+    print(str(batch))
