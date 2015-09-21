@@ -219,7 +219,7 @@ L_D(\set{W},\set{B})\defeq\frac{1}{N}\sum_{i=1}^N \sum_{t=1}^T L_t(\overline{\ve
 \end{equation}
 where $L_t$ is an arbitrary loss function at time step $t$.
 
-The definition takes into account the output for each temporal step, depending on the task at hand, it could be relevant or not to consider intermediate
+The definition takes into account the output for each temporal step, and, depending on the task at hand, it could be relevant or not to consider intermediate
 outputs; that is not a limitation, in fact we could define a loss which is computed only on the last output vector, at time $T$, and adds 0 for each
 other time step.
 
