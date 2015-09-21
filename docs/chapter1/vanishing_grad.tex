@@ -2,13 +2,13 @@ As noted in Bengio et al.\cite{learningIsDifficult} and Hochreiter \cite{lstm}
 the training of recurrent neural networks is afflicted by the \textit{exploding} and \textit{vanishing} gradient problem, namely gradient norm in recurrent neural network tends either to vanish or explode.
 As we have seen gradient is composed by terms of the form:
 \begin{equation}
-\frac{\partial \vec{a}^t}{\partial \vec{a}^k} = \prod_{i=t-1}^{k}  diag(\sigma'(\vec{a}^i)) \cdot \mat{W}^{rec}
+\frac{\partial \vec{a}^t}{\partial \vec{a}^k} = \prod_{i=t-1}^{k}  diag(\sigma'(\vec{a}^i)) \cdot \mat{W}^{rec}.
 \label{eq:temporalComponent}
 \end{equation}
 The terms $\frac{\partial \vec{a}^t}{\partial \vec{a}^k}$ capture the "dependecy" of neurons at time step $t$ from neurons at time $k$.
 Such term are usually distinguished between \textit{long term} contributions when $k\ll t$ and \textit{short term} contributions otherwise. We can notice each temporal contribution is the product of $l=t-k-1$ matrices, so in \textit{long term} components, where $l$ can be very large, we can intuitively understand that their product can go exponentially fast towards 0 or infinity depending on the spectral radius of such matrices.
 
-We talk of \textit{vanishing} gradient, when the gradient norm, especially for long term components, diminish exponentially fast. The \textit{vanishing} gradient problem is directly link to the notion of memory; when the term $\frac{\partial \vec{a}^t}{\partial \vec{a}^k}$ approach zero value changes int the output of the neurons at time $k$ have little impact on the output at time $t$.This in turn leads to the fact that the output of the net won't depend on inputs of distant temporal steps, i.e the output
+We talk of \textit{vanishing} gradient, when the gradient norm, especially for long term components, diminish exponentially fast. The \textit{vanishing} gradient problem is directly link to the notion of memory; when the term $\frac{\partial \vec{a}^t}{\partial \vec{a}^k}$ approaches zero value changes in the output of the neurons at time $k$ have little impact on the output at time $t$.This in turn leads to the fact that the output of the net won't depend on inputs of distant temporal steps, i.e the output
 sequence is determined only by recent temporal input: we say that the network doesn't have memory. Evidently this can have catastrophic effects on the classification error. Imagine we would like
 to classify an input sequence as positive whether or not it contains a given character. It would seem a rather easy task, however, if the neural network
 we are training suffers from the \textit{vanishing} gradient issue, it could perform the classification using only the most recent temporal inputs. What if the character was at the beginning of the sequence? Of course
@@ -23,7 +23,7 @@ Let's now return to the nature of the problem and try to explaining the mechanic
 In this paragraph we report some useful considerations made by Hochreiter, please see \cite{lstm} for more details.
 Let's put:
 $$\norm{\mat{A}}_{max}\triangleq \underset{i,j}{\text{max}}|a_{ij}| $$
-$$\sigma'_{max} \triangleq \underset{i=k,...,t-1}{\text{max  }} \{\norm{diag(\sigma'(a^i))}_{max}\}$$
+$$\sigma'_{max} \triangleq \underset{i=k,...,t-1}{\text{max  }} \{\norm{diag(\sigma'(a^i))}_{max}\}.$$
 Since
 \begin{align}
 \norm{\mat{A}\cdot\mat{B}}_{max} &<= r \cdot \norm{\mat{A}}\cdot \norm{\mat{B}}_{max} & \forall \mat{A},\mat{B} \in \mathbb{R}_{r\times r} 
@@ -35,7 +35,7 @@ it holds:
 &\leq \big(r \cdot \sigma'_{max} \cdot \norm{\mat{W}^{rec}}_{max}\big)^{t-k-1} \\
 &= \tau^{t-k-1}
 \end{align}
-where $$\tau \triangleq r \cdot \sigma'_{max} \cdot \norm{\mat{W}^{rec}}_{max}$$
+where $$\tau \triangleq r \cdot \sigma'_{max} \cdot \norm{\mat{W}^{rec}}_{max}$$.
 
 So we have exponential decay if $\tau<1$. We can match this condition if $\norm{\mat{W}^{rec}}_{max} \leq \frac{1}{r\cdot \sigma'_{max}}$.
 As pointed out by Hochreiter in his work, in the case of sigmoid activation function, we have $\norm{\mat{W}^{rec}}_{max} < \frac{1}{0.25 \cdot r}$.
@@ -50,10 +50,9 @@ Lets decompose $\mat{W}^{rec}$ using the singular value decomposition. We can wr
  \mat{W}^{rec} =  \mat{S}\cdot\mat{D}\cdot\mat{V}^T
 \end{equation}
 where $\mat{S},\mat{V}^T$ are squared orthogonal matrices and $\mat{D}\defeq diag(\mu_1, \mu_2,...,\mu_r)$ is the diagonal matrix containing the singular values of $\mat{W}^{rec}$.
-Rewriting equation \ref{memory_eq} using this decomposition leads to
+Rewriting equation \ref{eq:temporalComponent} using this decomposition leads to
 \begin{equation}
 \frac{\partial \vec{a}^t}{\partial \vec{a}^k} = \prod_{i=t-1}^{k}  diag(\sigma'(\vec{a}^i)) \cdot \mat{S}\cdot \mat{D} \cdot \mat{V}^T
-\label{memory_eq}
 \end{equation}
 Recalling that for any orthogonal matrix $\mat{U}$ it holds $$\norm{\mat{U}\vec{x}}_2=\norm{\vec{x}}_2$$  and using 
 $$\norm{diag(\lambda_1, \lambda_2,...,\lambda_r)\cdot \vec{x}}_2 \leq \lambda_{max} \norm{\vec{x}}_2$$ we get
@@ -64,10 +63,10 @@ $$\norm{diag(\lambda_1, \lambda_2,...,\lambda_r)\cdot \vec{x}}_2 \leq \lambda_{m
 The previous equation provide a sufficient condition, $\sigma'_{max} \cdot \mu_{max} <1 $, as in Hochreiter's analysis, for exponential decay of long term components. In this case however the bound depends on the singular value
 of the recurrent weights rather than on the maximal weight of the matrix itself. 
 
-A similar result is obtained in \cite{pascanu}, where $\mat{W}^{rec}$ is supposed to be diagonalizable; the founding is that a sufficient condition for the gradient to vanish is $\lambda_{max} <  \frac{1}{\sigma'_{max}}$ where $\lambda_{max}$ is the largest eigen value. Please note that in case $\mat{W}^{rec}$ is diagonalizable $\lambda_{max}=\mu_{max}$, hence our results is more general.
+A similar result is obtained in \cite{pascanu}, where $\mat{W}^{rec}$ is supposed to be diagonalizable; the founding is that a sufficient condition for the gradient to vanish is $\lambda_{max} <  \frac{1}{\sigma'_{max}}$ where $\lambda_{max}$ is the largest eigen value. Please note that in case $\mat{W}^{rec}$ is diagonalizable $\lambda_{max}=\mu_{max}$, hence our results are more general.
 
 \paragraph{Explaining the problem using the network's graph}
-Let's now dig a bit deeper and rewrite equation \ref{memory_eq} with respect to a couple of neurons $i$ and $j$.
+Let's now dig a bit deeper and rewrite equation \ref{eq:temporalComponent} with respect to a couple of neurons $i$ and $j$.
 
 \begin{equation} 
 \frac{\partial \vec{a}_i^t}{\partial \vec{a}_j^k} = \sum_{q\in P(j)} \sum_{l \in P(q)} \hdots \sum_{h : i \in P(h)} w_{qj} \hdots w_{jh} \cdot \sigma'(a_j^k)\sigma'(a_q^{k+1}) \hdots \sigma'(a_i^{t-1})
@@ -170,13 +169,13 @@ the weight of each arc we walk through and the cost of each neuron we cross, as 
 
 
 \end{tikzpicture}
-\caption{The cost for a path from neuron $2$ at time $k$ to neuron $1$ at time $t$ is $w_{12}w_{31}w_{13}\hdots w_{11}\cdot \sigma_2^k \sigma_1^{k+1}\sigma_3^{k+2} \hdots \sigma_1^{t-1} $ }
+\caption{The cost for a path from neuron $2$ at time $k$ to neuron $1$ at time $t$ is $w_{12}w_{31}w_{13}\hdots w_{11}\cdot \sigma_2^k \sigma_1^{k+1}\sigma_3^{k+2} \hdots \sigma_1^{t-1}$. }
 \label{gradient_path_cost}
 \end{figure}
 
 
 We can further characterize each path cost noticing that we can separate two components, one that depends only on the weights $w_{qj} \hdots w_{jh}$ and the other that depends both on the weights and the inputs
-$\sigma'(a_j^k)\sigma'(a_q^{k}) \hdots \sigma'(a_i^{t-1})$.
+$\sigma'(a_j^k)\sigma'(a_q^{k+1}) \hdots \sigma'(a_i^{t-1})$.
 
 
 \paragraph{The ReLU case}
@@ -278,7 +277,7 @@ of weight of the arcs we went through, as we can see in figure \ref{gradient_pat
 
 
 \end{tikzpicture}
-\caption{The cost for an enabled path from neuron $2$ at time $k$ to neuron $1$ at time $t$ is $w_{12}w_{31}w_{13}\hdots w_{11}$ }
+\caption{The cost for an enabled path from neuron $2$ at time $k$ to neuron $1$ at time $t$ is $w_{12}w_{31}w_{13}\hdots w_{11}$. }
 \label{gradient_path_cost_relu}
 \end{figure}
 

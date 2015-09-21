@@ -2,7 +2,7 @@
 
 In 2015 Mikolov proposed a novel network architecture to deal with vanishing gradients \cite{scrn} called 
 \textit{Structurally constrained recurrent network} (SCRN). The idea is to introduce a hidden layer specifically 
-designed to capture long-term dependencies alongside the traditional one as shown in figure \ref{fig:scrn}.
+designed to capture long-term dependencies alongside the traditional one as shown in Figure \ref{fig:scrn}.
 
 
 \tikzstyle{rnn_style}=[->,shorten >=1pt,auto,node distance=1.5cm,
@@ -38,7 +38,7 @@ designed to capture long-term dependencies alongside the traditional one as show
 
 
 \end{tikzpicture}
-\caption{SCRN architecture}
+\caption{SCRN architecture.}
 \label{fig:scrn}
 \end{figure}
 
@@ -49,14 +49,14 @@ layer, called \textit{context layer}, address these problem by completely removi
 recurrent matrix to be close to the identity. Formally the context layer  $\vec{s}$ is given by:
 
 \begin{equation}
- \vec{s}_t = (1-\alpha)\mat{B}\vec{x}_t + \alpha\vec{s}_{t-1}
+ \vec{s}_t = (1-\alpha)\mat{B}\vec{x}_t + \alpha\vec{s}_{t-1}.
 \end{equation}
 
 The rest of the network is like a traditional one, hence, adding the context layer beside the traditional one results 
 in:
 \begin{align}
  &\vec{h}_t = \sigma(\mat{P}\vec{s}_t + \mat{A}\vec{x}_t + \mat{R}\vec{h}_{t-1})\\
- &\vec{y}_t = f(\mat{U}\vec{h}_t + \mat{V}\vec{s}_t)
+ &\vec{y}_t = f(\mat{U}\vec{h}_t + \mat{V}\vec{s}_t).
 \end{align}
 Notice the similarity with leaky integrator units \cite{leakyIntegratorUnits}.
 

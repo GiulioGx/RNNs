@@ -6,7 +6,7 @@ but claimed to simpler to compute and implement. A GRU unit $j$ make use of two 
 \textit{update} gate, and $r$, the \textit{reset} gate, which are standard neurons.
 \begin{align}
  &z_j^t = [\sigma(\mat{W_z}\vec{x_t} + \mat{U}_z\vec{h}_{t-1})]_j\\
- &r_j^t = [\sigma(\mat{W_r}\vec{x_t} + \mat{U}_r\vec{h}_{t-1})]_j\\
+ &r_j^t = [\sigma(\mat{W_r}\vec{x_t} + \mat{U}_r\vec{h}_{t-1})]_j.\\
 \end{align}
 As in LSTM units, the gates are used to manage the access to memory cell, but in GRU they are used a little bit 
 differently. The update gate is used to decide how to update the memory cell: the activation value of the cell 
@@ -17,6 +17,8 @@ $\tilde{h}_j^t$.
   \label{candidateEq}
  &\tilde{h}_j^t = [\sigma(\mat{W}\vec{x_t} + \mat{U}(\vec{r}_t \odot \vec{h}_{t-1})]_j
 \end{align}
+where $\odot$ symbolize the element-wise product.
+
 As we can see from equation \ref{candidateEq}, when the reset gate $r_j^t$ is close to zero, the units acts as if 
 reading the first symbol of the input sequence \textit{forgetting} the previous state.
 

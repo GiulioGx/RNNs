@@ -1,5 +1,5 @@
 Recurrent neural networks differ from feed forward neural networks because of the presence of recurrent connections: at least one perceptron output at a given layer $i$ is \textit{fed} to another perceptron
-at a level $j<i$, as can be seen in figure \ref{rnn_model}. 
+at a level $j<i$, as can be seen in Figure \ref{rnn_model}. 
 This is a key difference, as we will see in later sections, because it introduces \textit{memory} in the network, changing, somehow, the expressiveness
 of the model.
 
@@ -67,20 +67,20 @@ of the model.
 	    (hl) edge [loop ,in=-160,out=160, distance=3cm,anchor=east ]      node [align=center]  {$W_{rec} $} (hl);
 
 \end{tikzpicture}
-\caption{$\net{RNN}$ model}
+\caption{$\net{RNN}$ model.}
 \label{rnn_model}
 \end{figure}
 
 
-This difference in topology reflects also on the network's input and output domain: where, in feed froward neural networks, inputs and outputs were real valued vectors, recurrent neural networks deal with
-sequences of vectors; in other words time is also considered. One may argue that, taking time (and sequences) into consideration, is some sort of limitation, because it restricts our model to deal only
+This difference in topology reflects also on the network's input and output domain: where, in feed forward neural networks, inputs and outputs were real valued vectors, recurrent neural networks deal with
+sequences of vectors; in other words time is also considered. One may argue that, taking time (and sequences) into consideration, is some sort of a limitation, because it restricts our model to deal only
 with temporal inputs; however that's not the case, in fact we can apply RNNs to non temporal data by considering space as the temporal dimension, for example imagine feeding the network with the pixels of an image one column at a time; or we can feed the network with the same input for all time steps or simply
 providing no input at all after the first step.
 
 \begin{defn}[Recurrent neural network]
 \label{def_rnn}
 A recurrent  neural network is tuple
-$$\net{RNN}\defeq< \set{W},\set{B} ,\sigma(\cdot),F(\cdot)>$$
+$$\net{RNN}\defeq\langle \set{W},\set{B} ,\sigma(\cdot),F(\cdot)\rangle$$
 \begin{itemize}
  \item $\set{W} \defeq \{\mat{W}^{in},\mat{W^{rec},\mat{W^{out}}}\}$ where
  \begin{itemize}
@@ -94,16 +94,16 @@ $$\net{RNN}\defeq< \set{W},\set{B} ,\sigma(\cdot),F(\cdot)>$$
    \item $\vec{b}^{out} \in \mathbb{R}^{o}$ is the bias vector for the output layer
  \end{itemize}
  \item $\sigma(\cdot): \mathbb{R}\rightarrow \mathbb{R}$ is the activation function
- \item $F(\cdot): \mathbb{R}^{o}\rightarrow \mathbb{R}^{o}$ is the output function
+ \item $F(\cdot): \mathbb{R}^{o}\rightarrow \mathbb{R}^{o}$ is the output function.
 \end{itemize}
 \end{defn}
 
 \begin{remark}{}
 Given a $\net{RNN}$
 \begin{itemize}
- \item The total number of weights si given by $\mathcal{N}(W) \defeq rp+r^2+ro$
- \item The number of biases by $\mathcal{N}(b) \defeq r+o $
- \item $p$ is the size of input vectors, 
+ \item the total number of weights is given by $\mathcal{N}(W) \defeq rp+r^2+ro$
+ \item the number of biases by $\mathcal{N}(b) \defeq r+o $
+ \item $p$ is the size of input vectors
  \item$r$ is the number of hidden units
  \item $o$ is the size of output vectors. 
 \end{itemize}
@@ -111,19 +111,17 @@ Given a $\net{RNN}$
 
 \begin{defn}[Output of a $\net{RNN}$]
 \label{def_rnn_output}
-Given a $\net{RNN}$ and an input sequences $\{\vec{x}\}_{t=1,...,T}, \vec{x}_t \in \mathbb{R}^p$ the output sequence $\{\vec{y}\}_{t=1,...,T}, \vec{y}_t \in \mathbb{R}^o$ of the net is defined by the following:
+Given a $\net{RNN}$ and an input sequences $\{\vec{x}\}_{t=1,...,T}$, with $ \vec{x}_t \in \mathbb{R}^p$, the output sequence of the net $\{\vec{y}\}_{t=1,...,T}$, with $\vec{y}_t \in \mathbb{R}^o$,  is defined by the following:
 \begin{align}
 &\vec{y}^t \defeq F(W^{out}\cdot\vec{a}^t + \vec{b}^{out})\\
 &\vec{a}^t \defeq W^{rec}\cdot\vec{h}^{t-1}+W^{in}\cdot\vec{x}^t+\vec{b}^{rec}\\
 &\vec{h}^t \defeq  \sigma(\vec{a}^t) \\
-&\vec{h}^0 \defeq \overrightarrow{0}
+&\vec{h}^0 \defeq \overrightarrow{0}.
 \end{align}
 \end{defn}
-
-
 As we can understand from definition \ref{def_rnn_output}, there is only one recurrent layer, whose weights are the same for each time step, so one could asks where does the deepness of the network come from.
 The answer lies in the temporal unfolding of the network, in fact if we unfold the network step by step we obtain a structure similar to that of a feed forward neural network. As we can observe
-in figure \ref{rnn_unfolding}, the unfolding of the network through time consist of putting identical version of the same recurrent layer one on top of each other and linking the inputs of one layer to the
+in Figure \ref{rnn_unfolding}, the unfolding of the network through time consist of putting identical version of the same recurrent layer one on top of each other and linking the inputs of one layer to the
 next one. The key difference from feed forward neural networks is, as we have already observed, that the weights in each layer are identical; another
 important unlikeness is of course the presence of additional timed inputs for each unfolded layer.
 
@@ -213,16 +211,16 @@ important unlikeness is of course the presence of additional timed inputs for ea
 We can model an optimization problem in the same way we did for feed forward neural networks, the main difference is, again, that we now deal with temporal sequences, so we need a slightly different loss function.
 Given a dataset $D$:
 \begin{equation}
-D\defeq\{\{\overline{\vec{x}}\}_{t=1,...,T}, \overline{\vec{x}}_t \in \mathbb{R}^p, \{\overline{\vec{y}}\}_{t=1,...,T}, \overline{\vec{y}}_t \in \mathbb{R}^o;  i=1,...,N\}
+D\defeq\{\{\overline{\vec{x}}^{(i)}\}_{t=1,...,T}, \overline{\vec{x}}^{(i)}_t \in \mathbb{R}^p, \{\overline{\vec{y}}^{(i)}\}_{t=1,...,T}, \overline{\vec{y}}^{(i)}_t \in \mathbb{R}^o;  i=1,...,N\}
 \end{equation}
 we define a loss function $L_D:\mathbb{R}^{\mathcal{N}(W)+\mathcal{N}(b)} \rightarrow \mathbb{R}_{\geq 0}$ over $D$  as
 \begin{equation}
 L_D(\set{W},\set{B})\defeq\frac{1}{N}\sum_{i=1}^N \sum_{t=1}^T L_t(\overline{\vec{x}}_t^{(i)},\vec{y}_t^{(i)}) 
 \end{equation}
-$L_t$ is an arbitrary loss function at time step $t$.
+where $L_t$ is an arbitrary loss function at time step $t$.
 
 The definition takes into account the output for each temporal step, depending on the task at hand, it could be relevant or not to consider intermediate
-outputs; that's not a limitation, in fact we could define a loss which is computed only on the last output vector, at time $T$, and adds 0 for each
+outputs; that is not a limitation, in fact we could define a loss which is computed only on the last output vector, at time $T$, and adds 0 for each
 other time step.
 
 \subsection{Gradient}

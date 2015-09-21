@@ -1,5 +1,5 @@
  
-An artificial neural network is a network of connected units called neurons or perceptrons, as can be seen in figure \ref{fully_connected}; the link which connects neurons $i$ and $j$, is associated with a weight $w_{ji}$. Perceptrons share the same
+An artificial neural network is a network of connected units called neurons or perceptrons, as can be seen in Figure \ref{fully_connected}; the link which connects neurons $i$ and $j$, is associated with a weight $w_{ji}$. Perceptrons share the same
 structure for all models, what really distinguish a particular model, in the family of artificial neural networks, is how the perceptron units are arranged and connected together, for example whether there are cycles
 or not, and how data inputs are \textit{fed} to the network. 
 
@@ -54,11 +54,11 @@ or not, and how data inputs are \textit{fed} to the network.
             
 
 \end{tikzpicture}
-\caption{Artificial neural network example}
+\caption{Artificial neural network example.}
 \label{fully_connected}
 \end{figure}
 
-As you can see in figure \ref{neuron_model} each neuron is \textit{fed} with a set of inputs which are the weighted outputs of other neurons and/or other external inputs.
+As you can see in Figure \ref{neuron_model} each neuron is \textit{fed} with a set of inputs which are the weighted outputs of other neurons and/or other external inputs.
 Formally the output of a perceptron $\phi_j$
 is defined as:
  
@@ -66,7 +66,6 @@ is defined as:
 &\phi_j \defeq \sigma(a_j)\label{def_perceptron_1}\\
 &a_j \defeq \sum_l w_{jl}\phi_l +b_j \label{def_perceptron_2}
 \end{align}
-
 where $w_{jl}$ is the weight of the connection between neuron $l$ and neuron $j$, $\sigma(\cdot)$ is a non linear function and $b_j \in \mathbb{R}$ is a bias term.
 It's worth noticing that in this formulation the inputs $\phi_l$ can be the outputs of other neurons or provided external inputs.
 
@@ -116,12 +115,12 @@ It's worth noticing that in this formulation the inputs $\phi_l$ can be the outp
 	    (ol) edge []   (phi);
 
 \end{tikzpicture}
-\caption{Neuron model}
+\caption{Neuron model.}
 \label{neuron_model}
 \end{figure}
 
 So, given a set of inputs $\{x\}_i$ which are \textit{fed} to some of the units of the net which we call \textit{input units} the output of the network $\{y\}_i$ is given by the
-some of units of the network, the 'upper' ones which we call \textit{output units}. All remaining units, i.e the ones which are neither input nor output units
+some of units of the network, the "upper" ones which we call \textit{output units}. All remaining units, i.e the ones which are neither input nor output units
 are called \textit{hidden units} because their value is not \textit{observed} from the outside.
 
 \paragraph{The activation function}
@@ -131,29 +130,29 @@ the sum of input stimuli $\sum_l w_{jl}\phi_l +b_j$ is greater than a given thre
 
 \begin{equation}
   \sigma_{\tau}(x)=\begin{cases}
-    1 & \text{if $x>\tau$}.\\
+    1 & \text{if $x>\tau$},\\
     0 & \text{otherwise}.
   \end{cases}
 \end{equation}
-Such function, however, is problematic when we are to compute gradients because it's not continuous, so one of the following function is usually chosen:
+Such function, however, is problematic when we are to compute gradients because it is not continuous, so one of the following function is usually chosen:
 
 \begin{equation}
- sigmoid(x)=\frac{1}{1+e^{-x}}
+ sigmoid(x)=\frac{1}{1+e^{-x}},
 \end{equation}
 \begin{equation}
- tanh(x)=\frac{e^x-e^{-x}}{e^x+e^{-x}}
+ tanh(x)=\frac{e^x-e^{-x}}{e^x+e^{-x}}.
 \end{equation}
 These functions behave similarly to the threshold function, but, because of their \textit{smoothness}, present no problems in computing gradients.
 Another function which is becoming a very popular choice is the \textit{rectified linear unit}:
 \begin{equation}
   ReLU(x)=\begin{cases}
-    x & \text{if $x>0$}.\\
+    x & \text{if $x>0$},\\
     0 & \text{otherwise}.
   \end{cases}
 \end{equation}
 ReLU activation function is rather different from previous activation functions, some of these difference, in particular with respect to gradients will be analyzed in later sections.
 
-It's worth noticing that the activation function it's the only component which make artificial neuron networks a non linear model. Were we to choose a \textit{linear} function as activation function we will
+It is worth noticing that the activation function it is the only component which make artificial neuron networks a non linear model. Were we to choose a \textit{linear} function as activation function we will
 end up with a simple linear model since the outputs of the network would be ultimately composed only of sums of products.
 
 \paragraph{The bias term}
@@ -163,13 +162,13 @@ we obtain that neuron $j$ is active if $a_j>\tau-b_j$. So the effect of the bias
 the ability to change the activation threshold for each neuron; that's particularly important considering that we can learn such bias terms.
 We can do these same considerations in an analogous way for all the other activation functions.
 \paragraph{Layered view of the net}
-It's often useful to think of a neural network as series of layers, one on top of each other, as depicted in figure \ref{layered_nnet}. The first layer is called the \textit{input layer} and its units are \textit{fed}
+It is often useful to think of a neural network as series of layers, one on top of each other, as depicted in Figure \ref{layered_nnet}. The first layer is called the \textit{input layer} and its units are \textit{fed}
 with external inputs, the upper layers are called \textit{hidden layers} because theirs outputs are not observed from outside except the last one, which is called \textit{output layer}, because it's output 
 is the output of the net.
 
 When we describe a network in this way is also useful to adopt a different notation: we describe the weights of the net with a set of matrices $\mat{W^k}$ one for each layer, and neurons are no more
 globally indexed, instead with refer to a neuron with a relative index with respect to the layer; this allows to write easier equations in matrix notation
-\footnote{In the rest of the book we will refer to the latter notation as \textsl{layer notation} and to the previous one as \textsl{global notation}}.
+\footnote{In the rest of the book we will refer to the latter notation as \textsl{layer notation} and to the previous one as \textsl{global notation}.}.
 In this notation $\mat{W^k}_{ij}$ is the weight of the link connecting neuron $j$ of layer $k$ to neuron $i$ of level $k+1$
 
 
@@ -237,6 +236,6 @@ In this notation $\mat{W^k}_{ij}$ is the weight of the link connecting neuron $j
 	    (hls) edge []  node[]{} (ol);
 
 \end{tikzpicture}
-\caption{Layered structure of an artificial neural network}
+\caption{Layered structure of an artificial neural network.}
 \label{layered_nnet}
 \end{figure}

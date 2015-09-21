@@ -1,4 +1,4 @@
-Consider a $\net{RNN}=<\set{W},\set{B},\sigma(\cdot),F(\cdot)>$. Let $L:\mathbb{R}^o \rightarrow \mathbb{R}$ a loss function:
+Consider a $\net{RNN}=\langle\set{W},\set{B},\sigma(\cdot),F(\cdot)\rangle$. Let $L:\mathbb{R}^o \rightarrow \mathbb{R}$ a loss function:
 
 $$L(\set{W},\set{B})\triangleq\frac{1}{N}\sum_{i=1}^N \sum_{t=1}^T L_t(\overline{\vec{x}}_t^{(i)},\vec{y}_t^{(i)}) $$
 
@@ -24,10 +24,10 @@ Let's consider a single output unit $u$, and a weight $w_{lj}$, we have
 \end{align}
 where
 \begin{equation}
-\delta_{lu}^{tk} \triangleq \frac{\partial a_u^t}{\partial a^k_l}
+\delta_{lu}^{tk} \triangleq \frac{\partial a_u^t}{\partial a^k_l}.
 \end{equation}
 
-Let's observe a first difference from ffnn case: since the weights are shared in each unfolded layer, in equation \ref{sum_over_time} we have to sum over time.
+Let's observe a first difference from FFNN case: since the weights are shared in each unfolded layer, in equation \ref{sum_over_time} we have to sum over time.
 
 Let $P(l)$ be the set of parents of neuron $l$, defined as the set of parents in the unfolded network.
 
@@ -35,7 +35,7 @@ Let $P(l)$ be the set of parents of neuron $l$, defined as the set of parents in
  \delta_{lu}^{tk} = \sum_{h\in P(l)} \delta_{hu}^{tk} \cdot \sigma'(a_h^{t-1})\cdot w_{hl}
 \end{equation}
 
-In figure \ref{deriv_arcs_rnn} we can see the arcs wich are involved in the derivatives in the unfolded network.
+In Figure \ref{deriv_arcs_rnn} we can see the arcs which are involved in the derivatives in the unfolded network.
 
 \tikzstyle{rnn_style}=[->,shorten >=1pt,auto,node distance=1.5cm,
   thick,
@@ -126,7 +126,7 @@ In figure \ref{deriv_arcs_rnn} we can see the arcs wich are involved in the deri
 
 
 \end{tikzpicture}
-\caption{Nodes involved in $\frac{\partial a^t_u }{\partial a^k_l}$}
+\caption{Nodes involved in $\frac{\partial a^t_u }{\partial a^k_l}$.}
 \label{deriv_arcs_rnn}
 \end{figure}
 
@@ -154,18 +154,18 @@ In matrix notation we have:
 \begin{align}
 \mat{\Delta}^{tk} &= \mat{\Delta}^{t(k+1)} \cdot diag(\sigma'(\vec{a}^k)) \cdot \mat{W}^{rec} \\
 &= \prod_{i=t-1}^{k} diag(\sigma'(\vec{a}^i)) \cdot \mat{W}^{rec}
-\label{rnn_delta}
+\label{rnn_delta}.
 \end{align}
 
 The derivatives with respect to $\mat{W}^{in}$ and $\vec{b}^{rec}$ have the same structure.
 The derivatives with respect to $W^{out}, b^{out}$ are straightforward:
 
 \begin{equation}
-\frac{\partial \vec{g}}{\partial \mat{W}^{out}} = \sum_{t=1}^T \frac{\partial g_t}{\partial \vec{y}^t} \cdot J(F) \cdot \frac{\partial \vec{y}^t}{\partial \mat{W}^{out}} 
+\frac{\partial \vec{g}}{\partial \mat{W}^{out}} = \sum_{t=1}^T \frac{\partial g_t}{\partial \vec{y}^t} \cdot J(F) \cdot \frac{\partial \vec{y}^t}{\partial \mat{W}^{out}}
 \end{equation}
 
 \begin{equation}
-\frac{\partial \vec{g}}{\partial \vec{b}^{out}} = \sum_{t=1}^T \frac{\partial g_t}{\partial \vec{y}^t} \cdot J(F) \cdot \frac{\partial \vec{y}^t}{\partial \vec{b}^{out}} 
+\frac{\partial \vec{g}}{\partial \vec{b}^{out}} = \sum_{t=1}^T \frac{\partial g_t}{\partial \vec{y}^t} \cdot J(F) \cdot \frac{\partial \vec{y}^t}{\partial \vec{b}^{out}}.
 \end{equation}
 
 \paragraph{Back-propagation through time (BPTT)}

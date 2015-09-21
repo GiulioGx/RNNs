@@ -24,16 +24,16 @@ Hornik result is contained in theorem \ref{universal_approx}.
 
 Theorem \ref{universal_approx} extends also to Borel measurable functions, please see \cite{Hornik89} for more details.
 
-A survey of other approaches, some of which constructive, which achieve similar results can be found in \cite{Scarselli98}
+A survey of other approaches, some of which constructive, in the sense that they actually show how to build the networks , which achieve similar results can be found in \cite{Scarselli98}.
 We don't know of any results concerning ReLU activation function.
 
 This results implies that FNN are \textit{universal approximators}, this is a strong argument for using such models in machine learning.
-It's important to notice, however, that the theorem holds if we have \textit{sufficiently many} units. In practice the number of units will bounded
+It's important to notice, however, that the theorem holds if we have \textit{sufficiently many} units. In practice the number of units will be bounded
 by the machine capabilities and by computational time, of course greater the number of units greater will be the learning time. This will limit
 the expressiveness of the network to a subset of all measurable functions. 
 %BOUNDS?
 \\\\Let's now turn our attention to RNNs and see how the architectural changes, namely the addition of backward links, affect the expressive power of the model.
-It suffice to say that RNNs are as powerful as turing machine. Siegelman and Sontag \cite{Siegelmann91turingcomputability} proved the existence 
+It suffice to say that RNNs are as powerful as Turing machine. Siegelman and Sontag \cite{Siegelmann91turingcomputability} proved the existence 
 of a finite neural network, with sigmoid activation function, which simulates a universal Turing machine. Hy{\"o}tyniemi \cite{Hyotyniemi96turingmachines} proved, equivalently,
 that turing machine are recurrent neural network showing how to build a network, using instead ReLU activation function, that performs step by step 
 all the instruction of a computer program.
@@ -49,7 +49,7 @@ representation, where FNNs use space to define a somehow explicit mapping from i
 This seems extremely good news, since we could simulate turing machines, hence all algorithms we can think of, using a recurrent neural network with a relatively small number of units; 
 recall that for FFNN we had to suppose infinitely many units to obtain the universal approximator property.
 Of course there is a pitfall: we can simulate any turing machine but we have to allow sufficiently many time steps and choose a termination criterion.
-This is of course impractical, and we don't use RNNs in this way. Usually the number of time steps is choose to be equal to the input sequence length. This of course restrict the class of algorithm we can learn with RNNs. 
+This is of course impractical, and we don't use RNNs in this way. Usually the number of time steps is chosen to be equal to the input sequence length. This of course restrict the class of algorithm we can learn with RNNs. 
 In particular the class of algorithms suited to be learned by such models is that of algorithms consisting in at most one loop, i.e $\mathcal{O}(n)$ time, and constant memory. For example we can imagine to learn algorithms which, scanning the input sequences, detect particular patterns, \textit{store} them, and step by step, produce an output based on the patterns detected so far.
 
 

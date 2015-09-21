@@ -6,7 +6,7 @@ where $\theta$ represents all the parameters of the network.
 A standard gradient descend would update $\theta$ at each iteration using the gradient computed on the whole training 
 set, as shown below.
 \begin{equation}
- \theta = \theta - \alpha \nabla_\theta L(\theta)
+ \theta = \theta - \alpha \nabla_\theta L(\theta).
 \end{equation}
 
 This can be very slow or even impractical if the training set is too huge to fit in memory. Stochastic gradient descent (SGD)
@@ -15,7 +15,7 @@ computed only on a subset $I$ of training examples.
 
 \begin{equation}
  \theta = \theta - \alpha \nabla_\theta L(\theta; \pair{\vec{x}^{(i)}}{\vec{y}^{(i)}}, i\in I)
- \label{eq:updateRule}
+ \label{eq:updateRule}.
 \end{equation}
 
 The subset of training examples used for the update is called \textit{minibatch}. The number of examples for each 
@@ -31,7 +31,7 @@ The method is summarized in algorithm \ref{algo:sgd}.
  \KwData{\\
  \Indp
   $D=\{\pair{\vec{x}^{(i)}}{\vec{y}^{(i)}}\}$: training set\\
-  $\theta_0$: initial solution \\
+  $\theta_0$: candidate solution \\
   $m$: size of each minibatch\\
   }
   

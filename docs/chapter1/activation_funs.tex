@@ -8,7 +8,7 @@ A special class of activation function, is that of \textit{squashing} functions.
 A function $f(\cdot):\mathbb{R}\rightarrow[a,b]$ with $a,b \in \mathbb{R}$ is said to be a \textit{squashing} function if it is not decreasing and 
 \begin{align}
 &\lim_{x \to +\infty} f(x) = b \\
-&\lim_{x \to -\infty} f(x) = a 
+&\lim_{x \to -\infty} f(x) = a.
 \end{align}
 \end{defn}
 Step function, ramp function and all sigmoidal functions are all examples of squashing functions.
@@ -18,8 +18,8 @@ An important property of a \textit{squashing} function $\sigma(\cdot)$ is that
 \begin{equation}
  \lim_{\alpha \to +\infty} \sigma(\alpha\cdot (x-\tau))= 
  \begin{cases}
-    b \cdot \sigma_{\tau}(x) & \text{if $x> \tau $}\\
-    a + \sigma_{\tau}(x) & \text{otherwise}
+    b \cdot \sigma_{\tau}(x) & \text{if $x> \tau $},\\
+    a + \sigma_{\tau}(x) & \text{otherwise},
   \end{cases}
 \end{equation}
 being $\sigma_{\tau}$ the usual step function.
@@ -32,10 +32,10 @@ so activation function inputs can be arbitrarily big or small.
 \paragraph{Sigmoid}
 
 \begin{align}
-sigmoid(x)&= \frac{1}{1+e^{-x}}  \\ 
-\frac{d}{dx}sigmoid(x)&= sigmoid(x) \cdot (1-sigmoid(x))
+sigmoid(x)&= \frac{1}{1+e^{-x}},  \\ 
+\frac{d}{dx}sigmoid(x)&= sigmoid(x) \cdot (1-sigmoid(x)).
 \end{align}
-As we can see from figure \ref{sigmoid_plot}, the sigmoid derivative has only one maximum in 0 where it assume value 0.25. Receding from 0, in both direction leads to regions where
+As we can see from Figure \ref{sigmoid_plot}, the sigmoid derivative has only one maximum in 0 where it assume value 0.25. Receding from 0, in both direction leads to regions where
 the the derivative take zero value, such regions are called \textit{saturation} regions. If we happen to be in such regions, for a given neuron, we cannot learn anything since that neuron doesn't contribute
 to the gradient.
 
@@ -48,10 +48,10 @@ to the gradient.
 
 \paragraph{Tanh}
 \begin{align}
- tanh(x)&=\frac{e^x-e^{-x}}{e^x+e^{-x}} \\
- \frac{d}{dx}tanh(x)&= 1 - tanh^2(x)  
+ tanh(x)&=\frac{e^x-e^{-x}}{e^x+e^{-x}}, \\
+ \frac{d}{dx}tanh(x)&= 1 - tanh^2(x).  
 \end{align}
-As we can see from figure \ref{tanh_plot} $tanh$ (and it's derivative) have a behavior similar to the sigmoid one; again we have two saturation region towards
+As we can see from Figure \ref{tanh_plot} $tanh$ (and it's derivative) have a behavior similar to the sigmoid one; again we have two saturation region towards
 infinity: that's typical of all squashing functions.
 
 
@@ -79,7 +79,7 @@ infinity: that's typical of all squashing functions.
   \end{cases}
 \end{align}
 ReLU is a bit different from the activation function seen so far: the main difference is that's it's not a squashing function.
-As we can see from figure \ref{relu_plot}, ReLU's derivative is the step function; it has only one \textit{saturation} region $(-\infty, 0]$ and a region in which is always takes value 1, $(0,+\infty]$
+As we can see from Figure \ref{relu_plot}, ReLU's derivative is the step function; it has only one \textit{saturation} region $(-\infty, 0]$ and a region in which is always takes value 1, $(0,+\infty]$.
 This implies that we cannot learn to \textit{turn on} a switched off neuron ($x<0$), but we have no \textit{saturation} region toward infinity.
 
 \begin{figure}[ht]

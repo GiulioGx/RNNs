@@ -7,15 +7,15 @@ g(\set{W},\set{B}) \defeq L(F(a^U( \overline{\vec{x}}^{(i)} (\set{W},\set{B}))),
 Equation $\ref{loss_over_x_i}$, tough it seems rather scary, express a very simple thing: we consider a single input example 
 $\overline{\vec{x}}^{(i)}$, we run it through the network and we confront it's output $F(a^U( \overline{\vec{x}}^{(i)}) $ with it's label
 $\overline{\vec{y}}^{(i)}$ using the loss function $L$; the function $g(\set{W},\set{B})$ it's simply the loss function computed on the $i^{th}$ example
-which of course depends only on the weights and biases of network since the examples are constant. In the following we will derive an expression for gradient with respect to a weight matrix $\mat{W}^{i}$ and a bias vector $\vec{b}^i$. Before reading further consider taking a look at the notation appendix.
+which of course depends only on the weights and biases of network since the training examples are fixed within the dataset. In the following we will derive an expression for gradient with respect to a weight matrix $\mat{W}^{i}$ and a bias vector $\vec{b}^i$. Before reading further consider taking a look at the notation appendix.
 \begin{align}
 \label{eq:ffnnGradientJacobian}
 \frac{\partial g}{\partial \mat{W}^i} &= \nabla L^T \cdot J(F) \cdot \frac{\partial \vec{a}^U}{\partial \mat{W}^i}\\
-&= \frac{\partial g}{\partial \vec{a}^U} \cdot \frac{\partial \vec{a}^U}{\partial \mat{W^i}}
+&= \frac{\partial g}{\partial \vec{a}^U} \cdot \frac{\partial \vec{a}^U}{\partial \mat{W^i}}.
 \end{align}
 
 To help clarify the notation we provide just for equation \ref{eq:ffnnGradientJacobian} the dimensions of the matrices involved in the product:
-$$[1\times p(i+1)\cdot p(i)] = [p(U)\times 1] \cdot [p(U)\times p(U)] \cdot [p(U)\times p(i+1)\cdot p(i)]$$ 
+$$[1\times p(i+1)\cdot p(i)] = [p(U)\times 1] \cdot [p(U)\times p(U)] \cdot [p(U)\times p(i+1)\cdot p(i)].$$ 
 
 We can easily compute the gradient of $L$, $\nabla L$, and the jacobian of $F$, $J(F)$, once we define $F(\cdot)$ and $L(\cdot)$; note that the weights are not involved in such computation.
 Let's derive an expression for $\frac{\partial \vec{a}^U}{\partial \mat{W}^i}$.
@@ -27,15 +27,15 @@ We will start deriving such derivative using global notation. Let's consider a s
 &=\delta_{ul} \cdot h_j
 \end{align}
 
-where we put $$\delta_{ul} \defeq \frac{\partial a_u}{\partial a_l}$$.
+where we put $$\delta_{ul} \defeq \frac{\partial a_u}{\partial a_l}.$$
 
 Let $P(l)$ be the set of parents of neuron $l$, formally:
 \begin{equation} 
-P(l) = \{ k: \exists \text{ a link between $l$ and $k$ with weight } w_{lk} \}
+P(l) = \{ k: \exists \text{ a link between $l$ and $k$ with weight } w_{lk} \}.
 \end{equation}
-We can compute $\delta_{ul}$ simply applying the chain rule, if we write it down in bottom-up style, as can be seen in figure \ref{deriv_arcs}, we obtain:
+We can compute $\delta_{ul}$ simply applying the chain rule, if we write it down in bottom-up style, as can be seen in Figure \ref{deriv_arcs}, we obtain:
 \begin{equation}
-\delta_{ul} = \sum_{k\in P(l)} \delta_{uk} \cdot \sigma'(a_k)\cdot w_kl
+\delta_{ul} = \sum_{k\in P(l)} \delta_{uk} \cdot \sigma'(a_k)\cdot w_{kl}.
 \end{equation}
 
 \tikzstyle{rnn_style}=[->,shorten >=1pt,auto,node distance=1.5cm,
@@ -93,7 +93,7 @@ We can compute $\delta_{ul}$ simply applying the chain rule, if we write it down
 
 
 \end{tikzpicture}
-\caption{Nodes and edges involved in $\frac{\partial a_u }{\partial a_l}$}
+\caption{Nodes and edges involved in $\frac{\partial a_u }{\partial a_l}$.}
 \label{deriv_arcs}
 \end{figure}
 
@@ -101,7 +101,7 @@ The derivatives with respect to biases are compute in the same way:
 
 \begin{align}
 \frac{\partial a_u}{\partial b_{l}} &= \frac{\partial a_u}{\partial a_l} \cdot \frac{\partial a_l}{\partial b_{l}}\\
-&=\delta_{ul} \cdot 1
+&=\delta_{ul} \cdot 1.
 \end{align}
 
 
@@ -125,8 +125,8 @@ In layered notation we can rewrite the previous equations as:
 \begin{equation}
 \frac{\partial a^U}{\partial a^{i}} \defeq \Delta^{i} = 
 \begin{cases}
-      \Delta^{i+1} \cdot diag(\sigma'(\vec{a}^{i+1})) \cdot W^{i}  & \text{if } i<U\\
-      Id & \text{if } i==U\\
+      \Delta^{i+1} \cdot diag(\sigma'(\vec{a}^{i+1})) \cdot W^{i}  & \text{if } i<U,\\
+      Id & \text{if } i==U,\\
     0 & \text{otherwise}.
 \end{cases}
 \label{fnn_delta}
@@ -145,7 +145,7 @@ diag(\sigma'(\vec{a}^{i})) =
 
 \begin{align}
 \frac{\partial a^U}{\partial b^i} &= \frac{\partial a^U}{\partial a^i} \cdot \frac{\partial a^i}{\partial b^i}\\
-&= \Delta^{i} \cdot Id
+&= \Delta^{i} \cdot Id.
 \end{align}
 
 

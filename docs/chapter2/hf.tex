@@ -58,24 +58,23 @@ The Levenberg-Marquardt  heuristic is given by
 \end{equation}
 The idea behind this strategy is that when $\rho$ is smaller than $1$ the quadratic model overestimate the amount of reduction and so $\lambda$ should be increased, conversely when $\rho$ is close to $1$ the quadratic approximation is accurate and hence we can afford a smaller value of $\lambda$.
 
-However in \cite{hessianFree} is argued that Tikhonov damping can perform very poorly when applied to RNNs, the reason being that $\norm{\cdot}$ is not a reasonable way to measure change in $\theta$; as pointed out in \cite{hessianFree} $\norm{\cdot}$ works well when the parameters $\theta$ operate\footnote{changing two different weights by the same amount in an RNN can produce very little to none changes in the output function or, conversely, the changes can be substantial} at roughly the same scale, and that's not certainly the case of RNNs, which, by the way, is also the motives that urged Martens to try second order methods, and it's linked to the vanishing gradient problem. 
+However in \cite{hessianFree} is argued that Tikhonov damping can perform very poorly when applied to RNNs, the reason being that $\norm{\cdot}$ is not a reasonable way to measure change in $\theta$; as pointed out in \cite{hessianFree} $\norm{\cdot}$ works well when the parameters $\theta$ operate\footnote{changing two different weights by the same amount in an RNN can produce very little to none changes in the output function or, conversely, the changes can be substantial} at roughly the same scale, and that's not certainly the case of RNNs, which, by the way, is also the motivation that urged Martens to try second order methods, and it's linked to the vanishing gradient problem. 
 
 To overcame this problem, in \cite{hessianFree}, a novel damping scheme, called \textit{structural damping}, is proposed.
 Structural damping consists, as in Tikhonov, in a regularization term which  penalizes the directions of change in the parameter space which lead to large changes in the hidden state sequence, which corresponds to highly inaccurate quadratic approximations.
 \begin{equation}
  \tilde{M}_k(\delta) \defeq  M_k(\delta) + \frac{\lambda}{2} \norm{\delta}^2 + \mu D(h(\theta_{k+1}, \theta_{k}))
 \end{equation}
-where $D(\cdot,\cdot)$ is a distance (or loss) function which measure the variation in the hidden states due to the update of $\theta$.
+where $D(\cdot)$ is a distance (or loss) function which measure the variation in the hidden states due to the update of $\theta$.
 
 Since minimization of $\tilde{M}_k(\delta)$ is done by conjugate gradient and such function is not not quadratic, in practice, a Taylor series approximation, along with the use of the Gauss-Newton matrix, is used in place of $D(h(\theta_{k+1}, \theta_{k}))$ .
 
 \paragraph{Minibatching}
-As a last note regarding the proposed method it's important to notice that the method can work in a stochastic fashion, 
+As a last note regarding the proposed method it is important to notice that the method can work in a stochastic fashion, 
 i.e using a small subset (minibatch) of the training examples, like stochastic gradient descend (SGD), for instance. This 
 is a very important feature since datasets are getting bigger and bigger, hence computing gradients on the whole training 
 set is becoming computationally impractical. However, unlike SGD, where minibatch can be arbitrary small, the proposed 
-method, and all second order method in general, deteriorate it's performance with too small batches, but that's seems to 
-but not much of a problem.
+method, and all second order methods in general, deteriorate it's performance with too small batches, but that seems to be not much of a problem.
 \\\\
 As shown in \cite{hessianFree} the proposed Hessian-free optimization method outperforms the previously 
 state-of-art LSTM\cite{lstm} approach, proving to be able to well managing long-term dependencies. A more detailed 

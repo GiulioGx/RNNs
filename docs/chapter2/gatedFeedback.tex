@@ -1,7 +1,7 @@
 \subsection{Gated feedback recurrent neural networks}
 
 \textit{Gated feedback recurrent neural networks} were proposed in 2015 by  Chung et al. \cite{gatedFeedback} as a novel recurrent network architecture.
-Unlike LSTM or GRU were the novelty of the proposal was a new kind of unit, designed to better capture long-term dependencies between inputs, the novelty of this approach is the way the units are arranged. For starters multiple recurrent layer are used, like in a \textit{Stacked RNN}, i.e the network is composed of several layers, each one of which is connected to all the others; in other words the layers are fully connected. Moreover unlike traditional stacked RNNs, the feedback connection between different layers is gated by a \textit{global reset gate} which is essentially a logistic unit computed on the current inputs and the previous states of hidden layers. This global reset gates is reminiscent of the gates of LSTM and GRU but it controls the connection between layers not between units: the hidden state values of layer $i$ at time $t-1$ are fed to a lower layer $j$ multiplied by $g^{i\rightarrow j}$.
+Unlike LSTM or GRU where the novelty of the proposal was a new kind of unit, designed to better capture long-term dependencies between inputs, the novelty of this approach is the way the units are arranged. For starters multiple recurrent layer are used, like in a \textit{Stacked RNN}, i.e. the network is composed of several layers, each one of which is connected to all the others; in other words the layers are fully connected. Moreover unlike traditional stacked RNNs, the feedback connection between different layers is gated by a \textit{global reset gate} which is essentially a logistic unit computed on the current inputs and the previous states of hidden layers. This global reset gates is reminiscent of the gates of LSTM and GRU but it controls the connection between layers not between units: the hidden state values of layer $i$ at time $t-1$ are fed to a lower layer $j$ multiplied by $g^{i\rightarrow j}$.
 The gate between layers $i$ and $j$ is computed as:
 \begin{equation}
 g^{i\rightarrow j} \defeq \sigma(\vec{w}_g^{i\rightarrow j} \cdot \vec{h_t}^{j-1} + \vec{u}_g^{i\rightarrow j} \cdot \vec{h}^*_{t-1})
@@ -59,7 +59,7 @@ The idea behind this architecture is to encourage each recurrent layer to work a
 		(g11) edge[gateEdge, bend left]		(l1);
 
 \end{tikzpicture}
-\caption{Gated feedback architecture; only connections between layers are shown, dotted when trough gates}
+\caption{Gated feedback architecture; only connections between layers are shown, dotted when trough gates.}
 \label{fig:gated}
 \end{figure}
 

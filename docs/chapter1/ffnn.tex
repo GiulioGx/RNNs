@@ -6,13 +6,13 @@ next one and connections to earlier layers are not possible.
 \begin{defn}[Feed forward neural network]
 \label{def_ffnn}
 A feed forward neural network is tuple:
-$$\net{FFNN}\defeq<\vec{p},\set{W},\set{B},\sigma(\cdot),F(\cdot)>$$
+$$\net{FFNN}\defeq \langle\vec{p},\set{W},\set{B},\sigma(\cdot),F(\cdot)\rangle$$
 \begin{itemize}
  \item $\vec{p} \in \mathbb{N}^U$ is the vector whose elements $p(k)$ are the number of neurons of layer $k$; $U$ is the number of layers
  \item $\set{W} \defeq \{W^k_{p(k+1) \times p(k)}, k=1,...,U-1 \}$ is the set of weight matrices of each layer
  \item $\set{B} \defeq \{\vec{b}^k \in \mathbb{R}^{p(k)}, k=1,...,U \} $ is the set of bias vectors
  \item $\sigma(\cdot): \mathbb{R}\rightarrow \mathbb{R}$ is the activation function
- \item $F(\cdot): \mathbb{R}^{p(U)}\rightarrow \mathbb{R}^{p(U)}$ is the output function
+ \item $F(\cdot): \mathbb{R}^{p(U)}\rightarrow \mathbb{R}^{p(U)}$ is the output function.
 \end{itemize}
 \end{defn}
 
@@ -22,7 +22,7 @@ Given a $\net{FFNN}$:
  \item The number of output units is $p(U)$
  \item The number of input units is $p(1)$
  \item The total number of weights is $\mathcal{N}(\set{W}) \defeq \sum_{k=1}^{U-1} p(k+1)p(k)$
- \item The total number of biases is $\mathcal{N}(\set{B}) \defeq \sum_{k=2}^{U} p(k)$
+ \item The total number of biases is $\mathcal{N}(\set{B}) \defeq \sum_{k=2}^{U} p(k)$.
 \end{itemize}
 \end{remark}
 
@@ -33,7 +33,7 @@ Given a $\net{FFNN}$ and an input vector $\vec{x} \in \mathbb{R}^{p(1)}$ the out
 &\vec{y}=F(\vec{a}^{U}) &\\
 &\vec{h}^{i} \defeq \sigma(\vec{a}^{i}), & i=2,...,U\\
 &\vec{a}^{i} \defeq W^{i-1} \cdot \vec{h}^{i-1} +\vec{b}^i  & i=2,...,U\\
-&\vec{h}^{1} \defeq \vec{x} &
+&\vec{h}^{1} \defeq \vec{x}.u &
 \end{align}
 \end{defn}
 
@@ -55,8 +55,10 @@ network, so it depends on $\set{W}$ and $\set{B}$.
 
 The problem is then to find a $\net{FFNN}$ which minimize $L_D$. As we have seen feed forward neural networks allow for large customization: the only variables in the optimization problem are the weights
 and the biases, the other
-parameters are called \textit{hyper-parameters} and are determined \textit{a priori}. Usually the output function is chosen depending on what we are trying to learn, for instance for multi-way classification
-is generally used the \textit{softmax} function, for regression a simple identity function.
+parameters are called \textit{hyper-parameters} and are determined \textit{a priori}. Usually the output function is chosen depending on what we are trying to learn, for instance for k-way classification
+is generally used the \textit{softmax} function \begin{equation}
+softmax(x)_i\defeq \frac{e^{\vec{x}_i}}{\sum_{j=1}^k e^{\vec{x}_j} },
+\end{equation} for regression a simple identity function.
 For what concerns the number of layers and the number of units per layers they are chosen relying on experience or performing some kind of hyper-parameter tuning, which usually consists on training nets
 with some different configurations of such parameters and choosing the 'best one'.
 
