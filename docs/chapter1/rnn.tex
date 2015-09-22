@@ -213,13 +213,13 @@ Given a dataset $D$:
 \begin{equation}
 D\defeq\{\{\overline{\vec{x}}^{(i)}\}_{t=1,...,T}, \overline{\vec{x}}^{(i)}_t \in \mathbb{R}^p, \{\overline{\vec{y}}^{(i)}\}_{t=1,...,T}, \overline{\vec{y}}^{(i)}_t \in \mathbb{R}^o;  i=1,...,N\}
 \end{equation}
-we define a loss function $L_D:\mathbb{R}^{\mathcal{N}(W)+\mathcal{N}(b)} \rightarrow \mathbb{R}_{\geq 0}$ over $D$  as
+we define a loss function $L_D:\mathbb{R}^{\mathcal{N}(W)+\mathcal{N}(B)} \rightarrow \mathbb{R}_{\geq 0}$ over $D$  as
 \begin{equation}
-L_D(\set{W},\set{B})\defeq\frac{1}{N}\sum_{i=1}^N \sum_{t=1}^T L_t(\overline{\vec{x}}_t^{(i)},\vec{y}_t^{(i)}) 
+L_D(\set{W},\set{B})\defeq\frac{1}{N}\sum_{i=1}^N \sum_{t=1}^T L_t(\overline{\vec{y}}_t^{(i)},\vec{y}_t^{(i)}(\set{W},\set{B})) 
 \end{equation}
 where $L_t$ is an arbitrary loss function at time step $t$.
 
-The definition takes into account the output for each temporal step, and, depending on the task at hand, it could be relevant or not to consider intermediate
+The definition takes into account the output for each temporal step, but, depending on the task at hand, it could be relevant or not to consider intermediate
 outputs; that is not a limitation, in fact we could define a loss which is computed only on the last output vector, at time $T$, and adds 0 for each
 other time step.
 

@@ -1,9 +1,5 @@
-Consider a $\net{RNN}=\langle\set{W},\set{B},\sigma(\cdot),F(\cdot)\rangle$. Let $L:\mathbb{R}^o \rightarrow \mathbb{R}$ a loss function:
-
-$$L(\set{W},\set{B})\triangleq\frac{1}{N}\sum_{i=1}^N \sum_{t=1}^T L_t(\overline{\vec{x}}_t^{(i)},\vec{y}_t^{(i)}) $$
-
-Let $g_t(\cdot):\mathbb{R}^{\mathcal{N}(\set{W})+\mathcal{N}(\set{B})} \rightarrow \mathbb{R}$ be the function defined by
-$$g_t(\set{W},\set{B}) \triangleq L(F(\vec{y}^t(\set{W},\set{B})))$$
+Consider a $\net{RNN}=\langle\set{W},\set{B},\sigma(\cdot),F(\cdot)\rangle$. Let $L_t:\mathbb{R}^o \times \mathbb{R}^o \rightarrow \mathbb{R}$ a loss function and  $g_t(\cdot):\mathbb{R}^{\mathcal{N}(\set{W})+\mathcal{N}(\set{B})} \rightarrow \mathbb{R}$ be the function defined by
+$$g_t(\set{W},\set{B}) \triangleq L_t(F(\vec{y}^t(\set{W},\set{B})))$$
 and $$g(\set{W},\set{B}) \triangleq \sum_{t=1}^T g_t(\set{W},\set{B})$$
 
 

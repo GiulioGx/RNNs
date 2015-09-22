@@ -1,16 +1,16 @@
-Consider a $\net{FFNN}=<\vec{p},\set{W},\set{B},\sigma(\cdot),F(\cdot)>$, let $L:\mathbb{R}^{p(U)} \rightarrow \mathbb{R}$ a loss function and 
+Consider a $\net{FFNN}=<\vec{p},\set{W},\set{B},\sigma(\cdot),F(\cdot)>$, let $L:\mathbb{R}^{p(U)} \times \mathbb{R}^{p(U)} \rightarrow \mathbb{R}$ a loss function and 
 $g(\cdot):\mathbb{R}^{\mathcal{N}(\set{W})+\mathcal{N}(\set{B})} \rightarrow \mathbb{R}$ be the function defined by
 \begin{equation}
-g(\set{W},\set{B}) \defeq L(F(a^U( \overline{\vec{x}}^{(i)} (\set{W},\set{B}))),\overline{\vec{y}}^{(i)} )
-\label{loss_over_x_i}
+g(\set{W},\set{B}) \defeq L(F(a^U( \overline{\vec{y}}^{(i)} )),\vec{y}^{(i)}(\set{W},\set{B}) )
+\label{loss_over_y_i}
 \end{equation}
-Equation $\ref{loss_over_x_i}$, tough it seems rather scary, express a very simple thing: we consider a single input example 
+Equation $\ref{loss_over_y_i}$, tough it seems rather scary, express a very simple thing: we consider a single input example 
 $\overline{\vec{x}}^{(i)}$, we run it through the network and we confront it's output $F(a^U( \overline{\vec{x}}^{(i)}) $ with it's label
 $\overline{\vec{y}}^{(i)}$ using the loss function $L$; the function $g(\set{W},\set{B})$ it's simply the loss function computed on the $i^{th}$ example
 which of course depends only on the weights and biases of network since the training examples are fixed within the dataset. In the following we will derive an expression for gradient with respect to a weight matrix $\mat{W}^{i}$ and a bias vector $\vec{b}^i$. Before reading further consider taking a look at the notation appendix.
 \begin{align}
 \label{eq:ffnnGradientJacobian}
-\frac{\partial g}{\partial \mat{W}^i} &= \nabla L^T \cdot J(F) \cdot \frac{\partial \vec{a}^U}{\partial \mat{W}^i}\\
+\frac{\partial g}{\partial \mat{W}^i} &= \nabla L^T \cdot J(F) \cdot  \frac{\partial \vec{y}}{\partial \vec{a}^U} \cdot \frac{\partial \vec{a}^U}{\partial \mat{W}^i}\\
 &= \frac{\partial g}{\partial \vec{a}^U} \cdot \frac{\partial \vec{a}^U}{\partial \mat{W^i}}.
 \end{align}
 

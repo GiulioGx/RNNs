@@ -47,10 +47,10 @@ The dataset $D$ is composed of $N$ training examples $\overline{\vec{x}}^{(i)}$,
 
 Then we need a loss function $L_D:\mathbb{R}^{\mathcal{N}(\set{W})+\mathcal{N}(\set{B})} \rightarrow \mathbb{R}_{\geq 0}$ over $D$ defined as
 \begin{equation}
-L_D(\set{W},\set{B})\defeq\frac{1}{N}\sum_{i=1}^N L(\overline{\vec{x}}^{(i)},\vec{y}^{(i)}) 
+L_D(\set{W},\set{B})\defeq\frac{1}{N}\sum_{i=1}^N L(\overline{\vec{y}}^{(i)},\vec{y}^{(i)}(\set{W},\set{B})) 
 \end{equation}
-$L(\vec{x},\vec{y}):\mathbb{R}^{p(U)} \rightarrow \mathbb{R}$ is an arbitrary loss function computed on the $i^{th}$ example. Note that $\vec{y}$ is the output of the
-network, so it depends on $\set{W}$ and $\set{B}$.
+$L(\overline{\vec{y}},\vec{y}):\mathbb{R}^{p(U)} \times \mathbb{R}^{p(U)} \rightarrow \mathbb{R}$ is an arbitrary loss function computed on the $i^{th}$ example. Note that $\vec{y}$ is the output of the
+network, so it depends on $\set{W}$ and $\set{B}$ whether $\overline{\vec{y}}$ is fixed within the dataset.
 
 
 The problem is then to find a $\net{FFNN}$ which minimize $L_D$. As we have seen feed forward neural networks allow for large customization: the only variables in the optimization problem are the weights
