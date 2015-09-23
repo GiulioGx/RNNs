@@ -26,7 +26,7 @@ class RNN:
         # random generator
         self.__rng = numpy.random.RandomState(seed)
 
-        # init weight matrices
+        # init weight matrices TODO
         W_in = numpy.asarray(
             self.__rng.normal(size=(self.__n_hidden, self.__n_in), scale=.01, loc=.0), dtype=Configs.floatType)
         W_rec = numpy.asarray(
@@ -43,8 +43,6 @@ class RNN:
         self.__W_out = T.shared(W_out, 'W_out')
         self.__b_rec = T.shared(b_rec, 'b_rec')
         self.__b_out = T.shared(b_out, 'b_out')
-
-        print(W_in.shape)
 
         # define net output fnc
         u = TT.tensor3()
