@@ -41,13 +41,13 @@ class RNN:
         self.__W_in = T.shared(W_in, 'W_in')
         self.__W_rec = T.shared(W_rec, 'W_rec')
         self.__W_out = T.shared(W_out, 'W_out')
-        self.__b_rec = T.shared(b_rec, 'b_rec')
-        self.__b_out = T.shared(b_out, 'b_out')
+        self.__b_rec = T.shared(b_rec, 'b_rec', broadcastable=(False, True))
+        self.__b_out = T.shared(b_out, 'b_out', broadcastable=(False, True))
 
         # define net output fnc
         u = TT.tensor3()
         n_sequences = u.shape[2]
-        h_m1 = TT.alloc(numpy.array(0, dtype=Configs.floatType), self.__n_hidden, n_sequences)
+        h_m1 = TT.alloc(numpy.array(0., dtype=Configs.floatType), self.__n_hidden, n_sequences)
         h = self.__h(h_m1, u)
         y = self.__y(h)
         self.__net_output = T.function([u], [y])

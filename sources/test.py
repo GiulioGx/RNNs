@@ -23,6 +23,6 @@ activation_fnc = RNN.sigmoid
 output_fnc = RNN.last_linear_fnc
 net = RNN(task, activation_fnc, output_fnc, n_hidden, seed)
 
-sequence = task.get_batch(1).inputs
+sequence = task.get_batch(5).inputs
 output_sequence = net.net_output(sequence)
 print(output_sequence)
