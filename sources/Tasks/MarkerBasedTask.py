@@ -21,20 +21,18 @@ class MarkerBasedTask:
         length = self.__rng.randint(int(self.__min_length * .1)) + self.__min_length
 
         # data init
-        inputs = numpy.zeros((batch_size, length, self.__n_in), dtype=Configs.floatType)
-        outputs = numpy.zeros((batch_size, length, self.__n_out), dtype=Configs.floatType)
+        inputs = numpy.zeros((length, self.__n_in, batch_size), dtype=Configs.floatType)
+        outputs = numpy.zeros((length, self.__n_out, batch_size), dtype=Configs.floatType)
 
         # marker positions
         p0 = self.__rng.randint(int(length * .1), size=(batch_size,))
         p1 = self.__rng.randint(int(length * .4), size=(batch_size,)) + int(length * .1)
 
         # markers value (channel 0)
-        inputs[numpy.arange(batch_size), p0, numpy.zeros((batch_size,),
-                                                         dtype='int32')] = 1
-        inputs[numpy.arange(batch_size), p1, numpy.zeros((batch_size,),
-                                                         dtype='int32')] = 1
+        inputs[p0, numpy.zeros((batch_size,), dtype='int32'), numpy.arange(batch_size)] = 1
+        inputs[p1, numpy.zeros((batch_size,), dtype='int32'), numpy.arange(batch_size)] = 1
         # random inputs (channel 1)
-        inputs[:, :, 1] = self.__input_fnc(batch_size, length)
+        inputs[:, 1, :] = self.__input_fnc(batch_size, length)
 
         # outputs
         self.__output_fnc(inputs, outputs, p0, p1)

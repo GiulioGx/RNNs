@@ -16,16 +16,16 @@ class AdditionTask:
 
     def input_fnc(self, batch_size: int, length: int):
         # random binary inputs (channel 1)
-        return self.__rng.uniform(size=(batch_size, length)).astype(Configs.floatType)
+        return self.__rng.uniform(size=(length, batch_size)).astype(Configs.floatType)
 
     def output_fnc(data, outputs, p0: int, p1: int):
-        m = data.shape[1]
-        n = data.shape[0]
+        m = data.shape[0]
+        n = data.shape[2]
 
-        a = data[numpy.arange(n), p0, numpy.ones((n,), dtype='int32')]
-        b = data[numpy.arange(n), p1, numpy.ones((n,), dtype='int32')]
+        a = data[p0, numpy.ones((n,), dtype='int32'), numpy.arange(n)]
+        b = data[p1, numpy.ones((n,), dtype='int32'), numpy.arange(n)]
 
-        outputs[:, m-1, 0] = numpy.add(a, b)/2
+        outputs[m-1, 0, :] = numpy.add(a, b)/2
 
     def get_batch(self, batch_size: int):
         return self.__marker_based_task.get_batch(batch_size)

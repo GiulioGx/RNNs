@@ -16,16 +16,16 @@ class XorTask:
 
     def input_fnc(self, batch_size: int, length: int):
         # random binary inputs (channel 1)
-        return self.__rng.random_integers(0, 1, size=(batch_size, length)).astype(Configs.floatType)
+        return self.__rng.random_integers(0, 1, size=(length, batch_size)).astype(Configs.floatType)
 
     def output_fnc(data, outputs, p0: int, p1: int):
-        m = data.shape[1]
-        n = data.shape[0]
+        m = data.shape[0]
+        n = data.shape[2]
 
-        a = data[numpy.arange(n), p0, numpy.ones((n,), dtype='int32')].astype('int32')
-        b = data[numpy.arange(n), p1, numpy.ones((n,), dtype='int32')].astype('int32')
+        a = data[p0, numpy.ones((n,), dtype='int32'), numpy.arange(n)].astype('int32')
+        b = data[p1, numpy.ones((n,), dtype='int32'), numpy.arange(n)].astype('int32')
 
-        outputs[:, m-1, 0] = numpy.bitwise_xor(a, b)
+        outputs[m-1, 0, :] = numpy.bitwise_xor(a, b)
 
     def get_batch(self, batch_size: int):
         return self.__marker_based_task.get_batch(batch_size)
@@ -43,5 +43,5 @@ if __name__ == '__main__':
     seed = 13
     print('Testing XOR task ...')
     task = XorTask(22, seed)
-    batch = task.get_batch(20)
+    batch = task.get_batch(3)
     print(str(batch))
