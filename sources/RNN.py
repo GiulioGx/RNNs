@@ -1,6 +1,7 @@
 import theano as T
 import theano.tensor as TT
 import numpy
+import time
 from configs import Configs
 
 __author__ = 'giulio'
@@ -117,8 +118,9 @@ class RNN:
 
         # TODO move somewhere else
         lr = 0.01
-        batch_size = 50
+        batch_size = 100
 
+        start_time = time.time()
         for i in range(0, 1000):
 
             print('iteration num {}'.format(i))
@@ -136,6 +138,10 @@ class RNN:
 
             rho =numpy.max(abs(numpy.linalg.eigvals(self.__W_rec.get_value())))
             print("\t rho = {}".format(rho))
+
+        end_time = time.time()
+        print('Elapsed time: {:2.2f}'.format(end_time-start_time))
+
 
 
 

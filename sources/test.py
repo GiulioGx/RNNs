@@ -17,8 +17,8 @@ print('floatType: ' + floatX)
 print(separator)
 
 seed = 13
-task = AdditionTask(13, seed)
-n_hidden = 30
+task = AdditionTask(100, seed)
+n_hidden = 100
 activation_fnc = RNN.sigmoid
 output_fnc = RNN.last_linear_fnc
 loss_fnc = RNN.squared_error
