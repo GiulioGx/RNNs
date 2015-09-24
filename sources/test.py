@@ -13,7 +13,7 @@ device = theano.config.device
 print(separator)
 print('THEANO CONFIG')
 print('device: ' + device)
-print('floatX: ' + floatX)
+print('floatType: ' + floatX)
 print(separator)
 
 seed = 13
@@ -24,5 +24,7 @@ output_fnc = RNN.last_linear_fnc
 net = RNN(task, activation_fnc, output_fnc, n_hidden, seed)
 
 sequence = task.get_batch(5).inputs
+print('input sequence shape = {}'.format(sequence.shape))
 output_sequence = net.net_output(sequence)
+print('output sequence shape = {}'.format(output_sequence.shape))
 print(output_sequence)

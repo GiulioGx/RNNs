@@ -53,7 +53,7 @@ class RNN:
         self.__net_output = T.function([u], [y])
 
     def net_output(self, sequence):
-        return self.__net_output(sequence)
+        return self.__net_output(sequence)[0]
 
     def __h(self, h_m1, u):
 

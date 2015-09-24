@@ -43,27 +43,46 @@ As pointed out by Hochreiter in his work, in the case of sigmoid activation func
 Let's note that we would actually reach this upper bound for some $i,j$ only if all the path cost have the same sign and the activation function takes always maximal
 value.
 
-
 \paragraph{An upper bound with singular values}
 Lets decompose $\mat{W}^{rec}$ using the singular value decomposition. We can write
 \begin{equation}
- \mat{W}^{rec} =  \mat{S}\cdot\mat{D}\cdot\mat{V}^T
+	\mat{W}^{rec} =  \mat{S}\cdot\mat{D}\cdot\mat{V}^T
 \end{equation}
 where $\mat{S},\mat{V}^T$ are squared orthogonal matrices and $\mat{D}\defeq diag(\mu_1, \mu_2,...,\mu_r)$ is the diagonal matrix containing the singular values of $\mat{W}^{rec}$.
 Rewriting equation \ref{eq:temporalComponent} using this decomposition leads to
 \begin{equation}
-\frac{\partial \vec{a}^t}{\partial \vec{a}^k} = \prod_{i=t-1}^{k}  diag(\sigma'(\vec{a}^i)) \cdot \mat{S}\cdot \mat{D} \cdot \mat{V}^T
+	\frac{\partial \vec{a}^t}{\partial \vec{a}^k} = \prod_{i=t-1}^{k}  diag(\sigma'(\vec{a}^i)) \cdot \mat{S}\cdot \mat{D} \cdot \mat{V}^T
 \end{equation}
-Recalling that for any orthogonal matrix $\mat{U}$ it holds $$\norm{\mat{U}\vec{x}}_2=\norm{\vec{x}}_2$$  and using 
-$$\norm{diag(\lambda_1, \lambda_2,...,\lambda_r)\cdot \vec{x}}_2 \leq \lambda_{max} \norm{\vec{x}}_2$$ we get
+Since $\mat{U}$ and $\mat{V}$ are orthogonal matrix, hence $$\norm{\mat{U}}_2=\norm{\mat{V}^T}_2 = 1,$$ and $$\norm{diag(\lambda_1, \lambda_2,...,\lambda_r)}_2 \leq \lambda_{max},$$ we get
 \begin{align}
-\norm{\frac{\partial \vec{a}^t}{\partial \vec{a}^k} \cdot \vec{e}_i}_2 &= \norm{ (\prod_{i=t-1}^{k} diag(\sigma'(\vec{a}^i)) \cdot \mat{S}\cdot \mat{D} \cdot \mat{V}^T) \cdot \vec{e}_i}_2\\
-&\leq (\sigma'_{max} \cdot \mu_{max})^{t-k-1}
+	\norm{\frac{\partial \vec{a}^t}{\partial \vec{a}^k}}_2 &= \norm{ (\prod_{i=t-1}^{k} diag(\sigma'(\vec{a}^i)) \cdot \mat{S}\cdot \mat{D} \cdot \mat{V}^T)}_2\\
+	&\leq (\sigma'_{max} \cdot \mu_{max})^{t-k-1}
 \end{align}
 The previous equation provide a sufficient condition, $\sigma'_{max} \cdot \mu_{max} <1 $, as in Hochreiter's analysis, for exponential decay of long term components. In this case however the bound depends on the singular value
 of the recurrent weights rather than on the maximal weight of the matrix itself. 
 
 A similar result is obtained in \cite{pascanu}, where $\mat{W}^{rec}$ is supposed to be diagonalizable; the founding is that a sufficient condition for the gradient to vanish is $\lambda_{max} <  \frac{1}{\sigma'_{max}}$ where $\lambda_{max}$ is the largest eigen value. Please note that in case $\mat{W}^{rec}$ is diagonalizable $\lambda_{max}=\mu_{max}$, hence our results are more general.
+
+%\paragraph{An upper bound with singular values}
+%Lets decompose $\mat{W}^{rec}$ using the singular value decomposition. We can write
+%\begin{equation}
+% \mat{W}^{rec} =  \mat{S}\cdot\mat{D}\cdot\mat{V}^T
+%\end{equation}
+%where $\mat{S},\mat{V}^T$ are squared orthogonal matrices and $\mat{D}\defeq diag(\mu_1, \mu_2,...,\mu_r)$ is the diagonal matrix containing the singular values of $\mat{W}^{rec}$.
+%Rewriting equation \ref{eq:temporalComponent} using this decomposition leads to
+%\begin{equation}
+%\frac{\partial \vec{a}^t}{\partial \vec{a}^k} = \prod_{i=t-1}^{k}  diag(\sigma'(\vec{a}^i)) \cdot \mat{S}\cdot \mat{D} \cdot \mat{V}^T
+%\end{equation}
+%Recalling that for any orthogonal matrix $\mat{U}$ it holds $$\norm{\mat{U}\vec{x}}_2=\norm{\vec{x}}_2$$  and using 
+%$$\norm{diag(\lambda_1, \lambda_2,...,\lambda_r)\cdot \vec{x}}_2 \leq \lambda_{max} \norm{\vec{x}}_2$$ we get
+%\begin{align}
+%\norm{\frac{\partial \vec{a}^t}{\partial \vec{a}^k} \cdot \vec{e}_i}_2 &= \norm{ (\prod_{i=t-1}^{k} diag(\sigma'(\vec{a}^i)) \cdot \mat{S}\cdot \mat{D} \cdot \mat{V}^T) \cdot \vec{e}_i}_2\\
+%&\leq (\sigma'_{max} \cdot \mu_{max})^{t-k-1}
+%\end{align}
+%The previous equation provide a sufficient condition, $\sigma'_{max} \cdot \mu_{max} <1 $, as in Hochreiter's analysis, for exponential decay of long term components. In this case however the bound depends on the singular value
+%of the recurrent weights rather than on the maximal weight of the matrix itself. 
+%
+%A similar result is obtained in \cite{pascanu}, where $\mat{W}^{rec}$ is supposed to be diagonalizable; the founding is that a sufficient condition for the gradient to vanish is $\lambda_{max} <  \frac{1}{\sigma'_{max}}$ where $\lambda_{max}$ is the largest eigen value. Please note that in case $\mat{W}^{rec}$ is diagonalizable $\lambda_{max}=\mu_{max}$, hence our results are more general.
 
 \paragraph{Explaining the problem using the network's graph}
 Let's now dig a bit deeper and rewrite equation \ref{eq:temporalComponent} with respect to a couple of neurons $i$ and $j$.
