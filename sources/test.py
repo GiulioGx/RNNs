@@ -21,10 +21,18 @@ task = AdditionTask(13, seed)
 n_hidden = 30
 activation_fnc = RNN.sigmoid
 output_fnc = RNN.last_linear_fnc
-net = RNN(task, activation_fnc, output_fnc, n_hidden, seed)
+loss_fnc = RNN.squared_error
+net = RNN(task, activation_fnc, output_fnc, loss_fnc, n_hidden, seed)
 
-sequence = task.get_batch(5).inputs
+batch = task.get_batch(5)
+sequence = batch.inputs
+targets = batch.outputs
 print('input sequence shape = {}'.format(sequence.shape))
 output_sequence = net.net_output(sequence)
 print('output sequence shape = {}'.format(output_sequence.shape))
 print(output_sequence)
+loss_error = loss_fnc(output_sequence, targets)
+print('loss error = {}'.format(loss_error))
+
+
+net.train()
