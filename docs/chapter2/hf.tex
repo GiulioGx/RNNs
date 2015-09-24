@@ -1,42 +1,42 @@
 \subsection{Hessian-free optimization}
 
 During 2010-2011 Martens and Sutskever\cite{hessianFree} proposed an developed an hessian-free method for recurrent neural network training.
-The proposal consists in using hessian-free optimization with some crucial modifications which make the approach suitable for recurrent neural networks.
+The proposal consists in using Hessian-free optimization with some crucial modifications which make the approach suitable for recurrent neural networks.
 
 As in  the classical Newton's method the idea is to iteratively compute the updates to parameter $\theta$ by minimizing a local quadratic approximation $M_{k}(\delta)$ of the objective function $f(\theta_k +\delta)$, which in the case of RNNs is the loss function $L(\theta)$, as shown in equation \ref{eq:quadraticApprox}.
 \begin{equation}
  M_{k}(\delta) = f(\delta_{k})+\nabla f(\delta_{k})^T \delta +\frac{1}{2}\delta^T B_{k}\delta
  \label{eq:quadraticApprox}
 \end{equation}
-where $B_k$ is the curvature matrix, which in the standard Newton matrix would the hessian $\nabla^2f(x_k)$.
+where $B_k$ is the curvature matrix, which in the standard Newton matrix would the Hessian $\nabla^2f(x_k)$.
 The update of the parameter $\delta$ is given by:
 \begin{equation}
  \theta_{k+1} = \alpha_k\delta_k^* 
 \end{equation}
 where $\delta_k^*$ is the minimum $M_k(\delta)$ and $\alpha_k\in[0,1]$ is chosen typically via line-search. 
 
-The use of the hessian is however impractical for several reason: first of all if not positive definite $M(\delta_k)$ will not be bounded below; moreover even if positive definite, computing $\delta_k^* = \delta_k - B_{k-1}^{-1}\nabla f(\delta_{k-1})$, as in standard Newton, can be too much computationally expensive.
+The use of the Hessian is however impractical for several reason: first of all if not positive definite $M(\delta_k)$ will not be bounded below; moreover even if positive definite, computing $\delta_k^* = \delta_k - B_{k-1}^{-1}\nabla f(\delta_{k-1})$, as in standard Newton, can be too much computationally expensive.
 
 \paragraph{Gauss-Newton curvature matrix}
-The proposal of \cite{hessianFree} for indefiniteness is to use the generalized Gauss-Newton matrix (GGN) proposed by Schraudolph\cite{gaussNewtonMatrix} as an approximation of the hessian. As for the computational cost of the matrix inversion it is addressed, as in Truncated-Newton methods, by partially minimizing the quadratic function $M_{k}(\delta)$ using the conjugate gradient algorithm. CG is usually stopped early, before convergence, and it is ``hot started'': the method is initialized with the (approximate) solution of the previous quadratic approximation.
+The proposal of \cite{hessianFree} for indefiniteness is to use the generalized Gauss-Newton matrix (GGN) proposed by Schraudolph\cite{gaussNewtonMatrix} as an approximation of the Hessian. As for the computational cost of the matrix inversion it is addressed, as in Truncated-Newton methods, by partially minimizing the quadratic function $M_{k}(\delta)$ using the conjugate gradient algorithm. CG is usually stopped early, before convergence, and it is ``hot started'': the method is initialized with the (approximate) solution of the previous quadratic approximation.
 
 Let decompose the objective function $f(\theta)$ in $L(F(\theta))$ using the usual loss function $L(\cdot)$ and the output  vectorial valued function of the network $F(\theta)$. Is required that $L(\cdot)$ is convex. The GNN can be derived as follows:
 \begin{align}
- \nabla f(\theta) &= J^T\nabla L \\
- \nabla^2f(\theta) &= J^T\nabla^2L + \sum_{i=1}^m[\nabla L]_i \cdot [\nabla^2 F_i]
+ \nabla f(\theta) &= J(F)^T\nabla L \\
+ \nabla^2f(\theta) &= J(F)^T\nabla^2L J(F) + \sum_{i=1}^m[\nabla L]_i \cdot [\nabla^2 F_i]
 \end{align}
 The GNN is defined as:
 \begin{equation}
- GNN \defeq J^T\nabla^2L
+ GNN \defeq J(F)^T\nabla^2L J(F).
 \end{equation}
-GNN is convex, provided $L(\cdot)$ is, and it easy to see that GNN is the hessian of $f(\theta)$ if $F(\theta)$ is replaced by it's first order approximation.
+GNN is positive definite, provided $L(\cdot)$ is convex, and it easy to see that GNN is the Hessian of $f(\theta)$ if $F(\theta)$ is replaced by it's first order approximation.
 
 \paragraph{Damping}
 
 As observed in \cite{hessianFree}, Newton's method is guaranteed to converge to a local minimum only if initialized sufficiently close to it.
 In fact, the minimum of the quadratic approximation $M_k(\delta)$, can be far beyond the region where $M_k(\delta)$ is  a ``reliable'' approximation of $f(\theta_k+\delta)$.
 For this reason applying the previously described method to highly non linear objective function, as in the case of RNNs, can lead to very poor results.
-A solution to overcome this problem can be using a first order method as stochastic gradient descend, to reach a point close enough to a minimum and the switch to hessian-free optimization for finer convergence. In \cite{hessianFree} however is argued that making use of the curvature can be beneficial in constructing the updates from the beginning.
+A solution to overcome this problem can be using a first order method as stochastic gradient descend, to reach a point close enough to a minimum and the switch to Hessian-free optimization for finer convergence. In \cite{hessianFree} however is argued that making use of the curvature can be beneficial in constructing the updates from the beginning.
 
 \textit{Damping} is a strategy to make use of curvature information as in Newton's like methods, in a more conservative way, so that updates lie in a region where $M_k(\delta)$ remains a reasonable approximation of $f(\theta_k+\delta)$. 
 A classic damping strategy is Tikhonov damping; it consists in adding a regularization term to the quadratic approximation:
@@ -58,14 +58,14 @@ The Levenberg-Marquardt  heuristic is given by
 \end{equation}
 The idea behind this strategy is that when $\rho$ is smaller than $1$ the quadratic model overestimate the amount of reduction and so $\lambda$ should be increased, conversely when $\rho$ is close to $1$ the quadratic approximation is accurate and hence we can afford a smaller value of $\lambda$.
 
-However in \cite{hessianFree} is argued that Tikhonov damping can perform very poorly when applied to RNNs, the reason being that $\norm{\cdot}$ is not a reasonable way to measure change in $\theta$; as pointed out in \cite{hessianFree} $\norm{\cdot}$ works well when the parameters $\theta$ operate\footnote{changing two different weights by the same amount in an RNN can produce very little to none changes in the output function or, conversely, the changes can be substantial} at roughly the same scale, and that's not certainly the case of RNNs, which, by the way, is also the motivation that urged Martens to try second order methods, and it's linked to the vanishing gradient problem. 
+However in \cite{hessianFree} is argued that Tikhonov damping can perform very poorly when applied to RNNs, the reason being that $\norm{\cdot}$ is not a reasonable way to measure change in $\theta$; as pointed out in \cite{hessianFree} $\norm{\cdot}$ works well when the parameters $\theta$ operate\footnote{changing a weight in an RNN can have a very little effect in the output function or, conversely, the changes can be substantial, depending on what weight is modified} at roughly the same scale, and that's not certainly the case of RNNs, which, by the way, is also the motivation that urged Martens to try second order methods, and it's linked to the vanishing gradient problem. 
 
 To overcame this problem, in \cite{hessianFree}, a novel damping scheme, called \textit{structural damping}, is proposed.
 Structural damping consists, as in Tikhonov, in a regularization term which  penalizes the directions of change in the parameter space which lead to large changes in the hidden state sequence, which corresponds to highly inaccurate quadratic approximations.
 \begin{equation}
  \tilde{M}_k(\delta) \defeq  M_k(\delta) + \frac{\lambda}{2} \norm{\delta}^2 + \mu D(h(\theta_{k+1}, \theta_{k}))
 \end{equation}
-where $D(\cdot)$ is a distance (or loss) function which measure the variation in the hidden states due to the update of $\theta$.
+where $D(\cdot)$ is a distance (or loss) function which measure the variation in the hidden states due to the update of $\theta$ as, for example the squared distance.
 
 Since minimization of $\tilde{M}_k(\delta)$ is done by conjugate gradient and such function is not not quadratic, in practice, a Taylor series approximation, along with the use of the Gauss-Newton matrix, is used in place of $D(h(\theta_{k+1}, \theta_{k}))$ .
 
