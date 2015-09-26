@@ -1,0 +1,91 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+\usepackage{graphicx}
+\usepackage{cite}
+\usepackage[hidelinks]{hyperref}
+\usepackage{listings}
+\usepackage{latexsym}
+\usepackage{amsmath}
+\usepackage{proof}
+\usepackage{stmaryrd}
+\usepackage{amssymb}
+\usepackage{epstopdf}
+\usepackage{pgf}
+\usepackage{tikz}
+\usepackage[noend]{algpseudocode}
+\usepackage[ruled,noline,linesnumbered]{algorithm2e}
+\usetikzlibrary{automata,arrows}
+\let\emptyset\varnothing
+
+\graphicspath{ {./images/} }
+
+\newcommand{\norm}[1]{\left\Vert #1 \right\Vert}
+
+\title{On consensum}
+\author{Giulio Galvan}
+
+\begin{document}
+	\maketitle
+
+Algorithm \ref{algo:gaussSeidel} shows a Gauss-Seidel like decomposition method which optimizes a function $f(\cdot)$ w.r.t a block of variables $i$ in a iteratively fashion. It can be shown that the algorithm converges if $\mathcal{L}_0$ is compact.
+
+\begin{algorithm}[]
+	\KwData{\\
+		$x^0\in \mathbb{R}^m$: candidate solution\\
+		$\lambda_i>0,\quad i=1,\ldots,m$
+	}
+	$k \gets 0$\\
+	\While{stop criterion}{
+		\For{$i=1,...,m$}{
+			$d_i^k \gets -\nabla_i f(x^k)$\\
+			compute $\alpha_i^k$ with line search\\
+			$x_i^{k+1}=x_i^k+\alpha_i^k d_i^k$\\
+		}
+	$k\gets k+1$\\
+	}
+	\caption{Gauss-Seidel like decomposition method}
+	\label{algo:gaussSeidel}
+\end{algorithm}
+
+In the case fo RNNs we would, ideally, in a consesum inspired way, solve
+\begin{equation*}
+\begin{aligned}
+& \underset{W,W^i}{\text{min}}
+& & f(W,W^i, i=1\ldots,T) \\
+& \text{subject to}
+& & W_i = W,\quad i=1,\ldots,T
+\end{aligned},
+\end{equation*}
+considering only $W^{rec}$ for easiness. 
+The Lagrangian can then be written as:
+\begin{equation}
+	\underset{\tilde{W},W^i}{\text{min}} g(\cdot) = f(\tilde{W}, W^i, i=1\ldots,T) + \lambda (W^i-\tilde{W})\\
+\end{equation}
+
+The blocks of variables are, hence,  $W^i, i=1,...,T$ where $T$ is the length of the sequence, and $\tilde{W}$. However we cannot have $T$ of such matrix in memory so we have to devise a modification of the algorithm like I tried to do in Algorithm~\ref{algo:gaussSeidelRevised} 
+
+
+\begin{algorithm}[]
+	\KwData{\\
+		$W^0\in \mathbb{R}^m$: candidate solution\\
+		$\lambda_i>0,\quad i=1,\ldots,m$
+	}
+	$k \gets 0$\\
+	\While{stop criterion}{
+		\For{$i=1,...,m$}{
+			$d_i^k \gets -\nabla_i g(x^k)$\\
+			compute $\alpha_i^k$ with line search\\
+			$\tilde{W}=W_i^k+\alpha_i^k d_i^k$\\
+			$W_j^{k+1}=\tilde{W}, \quad j=1,\ldots,i$\\ \label{algo:gassuRev:updateLine}
+		}
+		$k\gets k+1$\\
+	}
+	\caption{Gauss-Seidel (proximal point)}
+	\label{algo:gaussSeidelRevised}
+\end{algorithm}
+
+The idea is not to store all the matrices, computing gradients for each block separately but using an iteratively update rule, like is done at line \ref{algo:gassuRev:updateLine}.
+	
+	
+\end{document}      

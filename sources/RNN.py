@@ -117,13 +117,12 @@ class RNN:
     def train(self):
 
         # TODO move somewhere else
-        lr = 0.01
+        lr = 0.001
         batch_size = 100
 
         start_time = time.time()
-        for i in range(0, 1000):
+        for i in range(0, 5000):
 
-            print('iteration num {}'.format(i))
 
             batch = self.__task.get_batch(batch_size)
             loss = self.__loss_fnc(self.net_output(batch.inputs), batch.outputs)
@@ -132,19 +131,18 @@ class RNN:
             gW_rec, gW_in, gW_out, \
             gb_rec, gb_out = self.__gradient(batch.inputs, batch.outputs)
             norm = self.__train_step(gW_rec, gW_in, gW_out, gb_rec, gb_out, lr)
-            print('\tnorm = {}, loss = {}'.format(norm, loss))
             new_loss = self.__loss_fnc(self.net_output(batch.inputs), batch.outputs)
-            print('\tloss after update = {}'.format(new_loss))
 
             rho =numpy.max(abs(numpy.linalg.eigvals(self.__W_rec.get_value())))
-            print("\t rho = {}".format(rho))
+
+            if i % 100 == 0:
+                print('iteration num {}'.format(i))
+                print('\tnorm = {}, loss = {}'.format(norm, loss))
+                print('\tloss after update = {}'.format(new_loss))
+                print("\t rho = {}".format(rho))
 
         end_time = time.time()
         print('Elapsed time: {:2.2f}'.format(end_time-start_time))
-
-
-
-
 
     # predefined activation functions
     def relu(x):
