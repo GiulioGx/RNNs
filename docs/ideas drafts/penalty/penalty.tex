@@ -1,0 +1,69 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+\usepackage{graphicx}
+\usepackage{cite}
+\usepackage[hidelinks]{hyperref}
+\usepackage{listings}
+\usepackage{latexsym}
+\usepackage{amsmath}
+\usepackage{proof}
+\usepackage{stmaryrd}
+\usepackage{amssymb}
+\usepackage{epstopdf}
+\usepackage{pgf}
+\usepackage{tikz}
+\usepackage[noend]{algpseudocode}
+\usepackage[ruled,noline,linesnumbered]{algorithm2e}
+\usetikzlibrary{automata,arrows}
+\let\emptyset\varnothing
+
+\graphicspath{ {./images/} }
+
+%%Notation:
+
+%%vectors
+\renewcommand{\vec}[1]{\boldsymbol{#1}}
+%%sets
+\newcommand{\set}[1]{\mathcal{#1}}
+%%matrixes
+\newcommand{\mat}[1]{#1}
+%%norm
+\newcommand{\norm}[1]{\left\Vert #1 \right\Vert}
+%%defeq
+\newcommand{\defeq}{\triangleq}
+%%
+\newcommand{\net}[1]{\mathrm{#1}}
+%% pair<x,y>
+\newcommand{\pair}[2]{\langle#1,#2\rangle}
+
+\title{On penalty terms}
+\author{Giulio Galvan}
+
+\begin{document}
+	\maketitle
+
+We have seen that:
+\begin{equation}
+	\frac{\partial g}{\partial \mat{W}^{rec}}= \sum_{t=1}^T\frac{\partial g_t}{\partial \vec{a}^t} \cdot \sum_{k=1}^t \frac{\partial \vec{a}^t}{\partial \vec{a}^k} \cdot \frac{\partial \vec{a}^k}{\partial \mat{W}^{rec}},
+\end{equation}
+where 
+\begin{equation}
+	\frac{\partial \vec{a}^t}{\partial \vec{a}^k} = \prod_{i=t-1}^{k}  diag(\sigma'(\vec{a}^i)) \cdot \mat{W}^{rec}.
+	\label{eq:temporalComponent}
+\end{equation}
+tends to vanish.
+
+The idea is to develop a penalty term which express a preference for solutions where the components $\frac{\partial \vec{a}^t}{\partial \vec{a}^k}$ are far from zero, hence, learning a model which exhibit long memory.
+
+A first attempt could be:
+\begin{equation}
+\Gamma \defeq \sum_{t=1}^T\sum_{k=1}^t \frac{1}{\norm{\frac{\partial \vec{a}^t}{\partial \vec{a}^k}}^2}.
+\end{equation}
+$\Gamma$ treats all temporal steps equally: we could assign more importance to distant temporal steps, which are the most critical, modifying $Gamma$ as follows:
+\begin{equation}
+\Gamma \defeq \sum_{t=1}^T\sum_{k=1}^t \frac{\sigma(t-k)}{\norm{\frac{\partial \vec{a}^t}{\partial \vec{a}^k}}^2},
+\end{equation}
+where $\sigma(\cdot)$ assign different weights depending on the temporal distance $t-k$, for example $\sigma(h)=exp\{h\}$
+	
+\end{document}      

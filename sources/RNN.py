@@ -77,13 +77,15 @@ class RNN:
                              (gb_rec ** 2).sum() +
                              (gb_out ** 2).sum())
 
+        lr_norm = lr / norm_theta
+
         self.__train_step = T.function([gW_rec, gW_in, gW_out, gb_rec, gb_out, lr], [norm_theta],
                                        on_unused_input='warn',
-                                       updates=[(self.__W_rec, self.__W_rec - lr * gW_rec),
-                                                (self.__W_in, self.__W_in - lr * gW_in),
-                                                (self.__W_out, self.__W_out - lr * gW_out),
-                                                (self.__b_rec, self.__b_rec - lr * gb_rec),
-                                                (self.__b_out, self.__b_out - lr * gb_out)])
+                                       updates=[(self.__W_rec, self.__W_rec - lr_norm * gW_rec),
+                                                (self.__W_in, self.__W_in - lr_norm * gW_in),
+                                                (self.__W_out, self.__W_out - lr_norm * gW_out),
+                                                (self.__b_rec, self.__b_rec - lr_norm * gb_rec),
+                                                (self.__b_out, self.__b_out - lr_norm * gb_out)])
 
     def net_output(self, sequence):
         return self.__net_output(sequence)[0]
@@ -117,29 +119,28 @@ class RNN:
     def train(self):
 
         # TODO move somewhere else
-        lr = 0.001
+        lr = 1
         batch_size = 100
+        validation_set_size = 5000
+        validation_set = self.__task.get_batch(validation_set_size)
 
         start_time = time.time()
-        for i in range(0, 5000):
+        for i in range(0, 500000):
 
 
             batch = self.__task.get_batch(batch_size)
-            loss = self.__loss_fnc(self.net_output(batch.inputs), batch.outputs)
-
-
+            batch=validation_set
             gW_rec, gW_in, gW_out, \
             gb_rec, gb_out = self.__gradient(batch.inputs, batch.outputs)
             norm = self.__train_step(gW_rec, gW_in, gW_out, gb_rec, gb_out, lr)
-            new_loss = self.__loss_fnc(self.net_output(batch.inputs), batch.outputs)
 
-            rho =numpy.max(abs(numpy.linalg.eigvals(self.__W_rec.get_value())))
 
             if i % 100 == 0:
-                print('iteration num {}'.format(i))
-                print('\tnorm = {}, loss = {}'.format(norm, loss))
-                print('\tloss after update = {}'.format(new_loss))
-                print("\t rho = {}".format(rho))
+
+                loss = self.__loss_fnc(self.net_output(validation_set.inputs), validation_set.outputs)
+                rho = numpy.max(abs(numpy.linalg.eigvals(self.__W_rec.get_value())))
+
+                print('iteration num {}\tnorm = {}, loss = {}\t rho = {}'.format(i, norm, loss, rho))
 
         end_time = time.time()
         print('Elapsed time: {:2.2f}'.format(end_time-start_time))
