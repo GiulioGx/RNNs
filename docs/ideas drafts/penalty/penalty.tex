@@ -65,5 +65,20 @@ $\Gamma$ treats all temporal steps equally: we could assign more importance to d
 \Gamma \defeq \sum_{t=1}^T\sum_{k=1}^t \frac{\sigma(t-k)}{\norm{\frac{\partial \vec{a}^t}{\partial \vec{a}^k}}^2},
 \end{equation}
 where $\sigma(\cdot)$ assign different weights depending on the temporal distance $t-k$, for example $\sigma(h)=exp\{h\}$
-	
+
+We can compute the derivative of $\Gamma$ w.r.t. $\mat{W}^{rec}$ as follows.
+Let $A\defeq\frac{\partial \vec{a}^t}{\partial \vec{a}^k}$	, for ease of notation and $\norm{A}_F$ it's Frobenius norm.
+
+\begin{align}
+	\frac{\partial \norm{A}^2_F}{\partial \mat{W}_{ij}^{rec}}&=- \frac{1}{\norm{A}^2_F}\cdot \frac{\partial}{\partial w_{ij}} \sum_{xy} A_{xy}^2(w_ij)\\
+	&=- \frac{1}{\norm{A}^2_F}\cdot 2\sum_{xy} A_{xy}\cdot \frac{\partial A_{xy}}{\partial w_{ij}},
+\end{align}
+
+where \begin{equation} 
+A_{xy}=\frac{\partial \vec{a}_x^t}{\partial \vec{a}_y^k} = \sum_{q\in P(y)} \sum_{l \in P(q)} \hdots \sum_{h : x \in P(h)} w_{qy} \hdots w_{yh} \cdot \sigma'(a_y^k)\sigma'(a_q^{k+1}) \hdots \sigma'(a_x^{t-1})
+\label{expanded_mem}
+\end{equation}
+
+For efficiency purposes and because 2nd derivatives are not always available, for example when using ReLU units, $\sigma'(a_i^k)$ can be considered constant w.r.t to $\mat{W^{rec}}$.
+
 \end{document}      

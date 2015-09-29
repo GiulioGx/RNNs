@@ -53,7 +53,7 @@ class RNN:
         h_m1 = TT.alloc(numpy.array(0., dtype=Configs.floatType), self.__n_hidden, n_sequences)
         h = self.__h(h_m1, u)
         y = self.__y(h)
-        self.__net_output = T.function([u], [y])
+        self.__net_output = T.function([u], y)
 
         # define gradient function
         t = TT.tensor3()
@@ -77,9 +77,9 @@ class RNN:
                              (gb_rec ** 2).sum() +
                              (gb_out ** 2).sum())
 
-        lr_norm = lr / norm_theta
+        lr_norm = lr
 
-        self.__train_step = T.function([gW_rec, gW_in, gW_out, gb_rec, gb_out, lr], [norm_theta],
+        self.__train_step = T.function([gW_rec, gW_in, gW_out, gb_rec, gb_out, lr], norm_theta,
                                        on_unused_input='warn',
                                        updates=[(self.__W_rec, self.__W_rec - lr_norm * gW_rec),
                                                 (self.__W_in, self.__W_in - lr_norm * gW_in),
@@ -88,9 +88,10 @@ class RNN:
                                                 (self.__b_out, self.__b_out - lr_norm * gb_out)])
 
     def net_output(self, sequence):
-        return self.__net_output(sequence)[0]
+        return self.__net_output(sequence)
 
     def __h(self, h_m1, u):
+
         def h_t(u_t, h_tm1):
             return self.__activation_fnc(TT.dot(self.__W_rec, h_tm1) + TT.dot(self.__W_in, u_t) + self.__b_rec)
 
@@ -119,28 +120,33 @@ class RNN:
     def train(self):
 
         # TODO move somewhere else
-        lr = 1
+        max_it = 500000
+        lr = 0.01
         batch_size = 100
-        validation_set_size = 5000
+        validation_set_size = 10000
+
+        print('Generating validation set...')
         validation_set = self.__task.get_batch(validation_set_size)
 
+        print('Training...')
         start_time = time.time()
-        for i in range(0, 500000):
-
+        for i in range(0, max_it):
 
             batch = self.__task.get_batch(batch_size)
-            batch=validation_set
             gW_rec, gW_in, gW_out, \
-            gb_rec, gb_out = self.__gradient(batch.inputs, batch.outputs)
+                gb_rec, gb_out = self.__gradient(batch.inputs, batch.outputs)
+
             norm = self.__train_step(gW_rec, gW_in, gW_out, gb_rec, gb_out, lr)
 
+            if i % 50 == 0:
 
-            if i % 100 == 0:
-
-                loss = self.__loss_fnc(self.net_output(validation_set.inputs), validation_set.outputs)
+                y_net = self.net_output(validation_set.inputs)
+                valid_error = self.__task.error_fnc(y_net, validation_set.outputs)
+                loss = self.__loss_fnc(y_net, validation_set.outputs)
                 rho = numpy.max(abs(numpy.linalg.eigvals(self.__W_rec.get_value())))
 
-                print('iteration num {}\tnorm = {}, loss = {}\t rho = {}'.format(i, norm, loss, rho))
+                print('iteration num {}\tnorm = {}, loss = {:07.3f}\tvalidation error = {} rho = {}'\
+                      .format(i, norm, loss, valid_error, rho))
 
         end_time = time.time()
         print('Elapsed time: {:2.2f}'.format(end_time-start_time))
@@ -161,4 +167,4 @@ class RNN:
 
     # predefined loss functions
     def squared_error(y, t):
-        return ((t[-1:, :, :] - y[-1:, :, :]) ** 2).mean(axis=1).sum()
+        return ((t[-1:, :, :] - y[-1:, :, :]) ** 2).sum(axis=0).mean()
