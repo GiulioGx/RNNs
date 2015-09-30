@@ -33,20 +33,20 @@ In a \textit{consesum} inspired way, we can rewrite the RNNs training problem as
 \begin{equation}
 	\begin{aligned}
 		& \underset{W,W_i}{\text{min}}
-		& & f(W_1,W_2, \ldots, W_T) \\
+		& & f(W_1,W_2, \ldots, W_L) \\
 		& \text{subject to}
-		& & W_i = W,\quad i=1,\ldots,T
+		& & W_i = W,\quad i=1,\ldots,L
 	\end{aligned},
 	\label{eq:consensumProb}
 \end{equation}
 considering only $W^{rec}$ for easiness. 
-The Lagrangian can then be written as:
+Lhe Lagrangian can then be written as:
 \begin{equation}
-\mathcal{L}(W,W_1,\ldots, W_T, \lambda_1,\ldots, \lambda_T) = f(W_1,W_2,\ldots,W_T) + \sum_{i=1}^{T}\lambda_i (W-W_i).
+\mathcal{L}(W,W_1,\ldots, W_L, \lambda_1,\ldots, \lambda_L) = f(W_1,W_2,\ldots,W_L) + \sum_{i=1}^{L}\lambda_i^T (W-W_i).
 \end{equation}
 So problem \ref{eq:consensumProb} is equivalent to:
 \begin{equation}
-\underset{W,W_i,\lambda_i}{\text{min}}\mathcal{L}(W,W_1,\ldots, W_T, \lambda_1,\ldots, \lambda_T).
+\underset{W,W_i,\lambda_i}{\text{min}}\mathcal{L}(W,W_1,\ldots, W_L, \lambda_1,\ldots, \lambda_L).
 \label{eq:lagrangianConsensum}
 \end{equation}
 Algorithm \ref{algo:gaussSeidel} shows a Gauss-Seidel like decomposition method which optimizes a function $f(\cdot)$ w.r.t a block of variables $i$ in a iteratively fashion. It can be shown that the algorithm converges if $\mathcal{L}_0$ is compact.
@@ -71,8 +71,8 @@ Algorithm \ref{algo:gaussSeidel} shows a Gauss-Seidel like decomposition method 
 	\label{algo:gaussSeidel}
 \end{algorithm}
 
-We could apply algorithm \ref{algo:gaussSeidel} to problem \ref{eq:lagrangianConsensum}, using as blocks of variables $W^i, i=1,...,T$ where $T$ is the length of the sequence (together with the lambdas), and the master variable $W$.
-However we cannot have $T$ of such matrix in memory so we have to devise a modification of the algorithm like I tried to do in Algorithm~\ref{algo:gaussSeidelRevised}. Note that, because of the peculiar structure of the network, we can compute $\nabla_i f(z)$ even without storing $z$ which is what we cannot do, if we loop in a bottom-up style and the upper matrices share the same value. (it is easy to see, I will write something about it). So the only real problem remain line \ref{algo:gassuSeidel:updateLine}: essentially we must ensure that at the end of one inner loop (the $i$ one) all the matrices share the same value as the master variable.
+We could apply algorithm \ref{algo:gaussSeidel} to problem \ref{eq:lagrangianConsensum}, using as blocks of variables $W^i, i=1,...,L$ where $L$ is the length of the sequence (together with the lambdas), and the master variable $W$.
+However we cannot have $L$ of such matrix in memory so we have to devise a modification of the algorithm like I tried to do in Algorithm~\ref{algo:gaussSeidelRevised}. Note that, because of the peculiar structure of the network, we can compute $\nabla_i f(z)$ even without storing $z$ which is what we cannot do, if we loop in a bottom-up style and the upper matrices share the same value. (it is easy to see, I will write something about it). So the only real problem remain line \ref{algo:gassuSeidel:updateLine}: essentially we must ensure that at the end of one inner loop (the $i$ one) all the matrices share the same value as the master variable.
 
 
 \begin{algorithm}[!h]
@@ -81,15 +81,15 @@ However we cannot have $T$ of such matrix in memory so we have to devise a modif
 	}
 	$k \gets 0$\\
 	\While{stop criterion}{
-		$z \gets (W^k, W^k_1, W^k_2,\ldots W^k_T)$ (virtual assignment)\\
-		$l\gets(\lambda_1^k, \lambda_2^k,\ldots, \lambda_T^k)$\\
-		\For{$i=1,...,T$}{
+		$z \gets (W^k, W^k_1, W^k_2,\ldots W^k_L)$ (virtual assignment)\\
+		$l\gets(\lambda_1^k, \lambda_2^k,\ldots, \lambda_L^k)$ (virtual assignment)\\
+		\For{$i=1,...,L$}{
 			$d_i^k \gets -\nabla_i \mathcal{L}(z,l))$\\
 			compute $\alpha_i^k$ with line search\\
 			$W^{k+1}_i,\lambda_i^{k+1}=W_i^k, \lambda_i^k+\alpha_i^k d_i^k$\\
 			$z_i$ = $W^{k+1}_i$ (virtual assignment)\\
-			$l_i=\lambda_i^{k+1}$\\
-			 update $W$, "reset" $l$, and store information used to compute $\nabla_{i+1} \mathcal{L}(z,l)$
+			$l_i=\lambda_i^{k+1}$ (virtual assignment)\\
+			 update $W$ and $l$, and store information used to compute $\nabla_{i+1} \mathcal{L}(z,l)$
 			 \label{algo:gassuRev:updateLine}
 		}
 		$k\gets k+1$\\
@@ -100,11 +100,11 @@ However we cannot have $T$ of such matrix in memory so we have to devise a modif
 
 Now, of course, we have to specify a meaningful way to update the master variable, one simple example could be averaging, somehow similarly to what done in ADMM, over $W_i$:
 \begin{equation}
-W=\frac{1}{T}\sum_{i=1}^{T}W_i,
+W=\frac{1}{L}\sum_{i=1}^{L}W_i,
 \end{equation}
-or, maybe, using lambdas as weights (because higher lambdas mean...):
+or, maybe, using lambdas as weights (because higher lambdas means...):
 \begin{equation}
-W=\frac{\sum_{i=i}^{T} \lambda_i}{T}\sum_{i=1}^{T}W_i\cdot \frac{1}{\lambda_i}.
+W=\frac{1}{L\sum_{i=i}^{L} \frac{1}{\norm{\lambda_i}}}\sum_{i=1}^{L}W_i\cdot \frac{1}{\norm{\lambda_i}}.
 \end{equation}
 \end{document}      
 
