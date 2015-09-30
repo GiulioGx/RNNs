@@ -30,12 +30,14 @@ class RNN:
         self.__rng = numpy.random.RandomState(seed)
 
         # init weight matrices TODO
+        scale = .11
+        loc = 0
         W_in = numpy.asarray(
-            self.__rng.normal(size=(self.__n_hidden, self.__n_in), scale=.01, loc=.0), dtype=Configs.floatType)
+            self.__rng.normal(size=(self.__n_hidden, self.__n_in), scale=scale, loc=loc), dtype=Configs.floatType)
         W_rec = numpy.asarray(
-            self.__rng.normal(size=(self.__n_hidden, self.__n_hidden), scale=.01, loc=.0), dtype=Configs.floatType)
+            self.__rng.normal(size=(self.__n_hidden, self.__n_hidden), scale=scale, loc=loc), dtype=Configs.floatType)
         W_out = numpy.asarray(
-            self.__rng.normal(size=(self.__n_out, self.__n_hidden), scale=.01, loc=0.0), dtype=Configs.floatType)
+            self.__rng.normal(size=(self.__n_out, self.__n_hidden), scale=scale, loc=loc), dtype=Configs.floatType)
 
         # init biases
         b_rec = numpy.zeros((self.__n_hidden, 1), Configs.floatType)
@@ -77,7 +79,19 @@ class RNN:
                              (gb_rec ** 2).sum() +
                              (gb_out ** 2).sum())
 
-        lr_norm = lr
+        # # TODO inventare un framework
+        # lr_norm  = pylearn2.optimization.scalar_search_wolfe2(phi,
+        #                  derphi,
+        #                  phi0=None,
+        #                  old_phi0=None,
+        #                  derphi0=None,
+        #                  n_iters=20,
+        #                  c1=1e-4,
+        #                  c2=0.9,
+        #                 profile=False):
+
+        # fixed step
+        lr_norm = lr / norm_theta
 
         self.__train_step = T.function([gW_rec, gW_in, gW_out, gb_rec, gb_out, lr], norm_theta,
                                        on_unused_input='warn',
@@ -121,7 +135,7 @@ class RNN:
 
         # TODO move somewhere else
         max_it = 500000
-        lr = 0.01
+        lr = 0.1
         batch_size = 100
         validation_set_size = 10000
 
@@ -134,22 +148,21 @@ class RNN:
 
             batch = self.__task.get_batch(batch_size)
             gW_rec, gW_in, gW_out, \
-                gb_rec, gb_out = self.__gradient(batch.inputs, batch.outputs)
+            gb_rec, gb_out = self.__gradient(batch.inputs, batch.outputs)
 
             norm = self.__train_step(gW_rec, gW_in, gW_out, gb_rec, gb_out, lr)
 
             if i % 50 == 0:
-
                 y_net = self.net_output(validation_set.inputs)
                 valid_error = self.__task.error_fnc(y_net, validation_set.outputs)
                 loss = self.__loss_fnc(y_net, validation_set.outputs)
                 rho = numpy.max(abs(numpy.linalg.eigvals(self.__W_rec.get_value())))
-
-                print('iteration num {}\tnorm = {}, loss = {:07.3f}\tvalidation error = {} rho = {}'\
-                      .format(i, norm, loss, valid_error, rho))
+                print('iteration {:07d}: grad norm = {:07.3f}, valid loss = {:07.3f},'
+                      ' valid error = {:.2%}, rho = {:5.2f}'
+                      .format(i, norm.item(), loss, valid_error, rho))
 
         end_time = time.time()
-        print('Elapsed time: {:2.2f}'.format(end_time-start_time))
+        print('Elapsed time: {:2.2f}'.format(end_time - start_time))
 
     # predefined activation functions
     def relu(x):
