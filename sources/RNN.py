@@ -80,15 +80,7 @@ class RNN:
                              (gb_out ** 2).sum())
 
         # # TODO inventare un framework
-        # lr_norm  = pylearn2.optimization.scalar_search_wolfe2(phi,
-        #                  derphi,
-        #                  phi0=None,
-        #                  old_phi0=None,
-        #                  derphi0=None,
-        #                  n_iters=20,
-        #                  c1=1e-4,
-        #                  c2=0.9,
-        #                 profile=False):
+
 
         # fixed step
         lr_norm = lr / norm_theta
@@ -163,6 +155,15 @@ class RNN:
 
         end_time = time.time()
         print('Elapsed time: {:2.2f}'.format(end_time - start_time))
+
+    # line search
+
+    def getLearningRate(self):
+
+
+
+    # scalar_armijo_search(phi, phi0, derphi0, c1=constant(1e-4),
+    # n_iters=10, profile=0)
 
     # predefined activation functions
     def relu(x):

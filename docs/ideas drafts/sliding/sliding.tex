@@ -28,7 +28,7 @@
 \begin{document}
 	\maketitle
 
-\noindent	
+\paragraph{Step bound for generic descent directions.}	
 From Lipschitz continuity we get:
 \begin{equation}
 	f(y) \leq f(x) + \nabla f(x)^T(y-x) + \frac{L}{2}\norm{x-y}^2,
@@ -67,7 +67,7 @@ which in turn, being $\nabla f(x_k)^Td_k<0$ since $d_k$ is a descent direction, 
 \end{align}
 If we impose
 \begin{equation}
-s\geq-\gamma\frac{\nabla f(x_k)^Td_k}{\norm{d_k}^2}
+\delta\geq-\gamma\frac{\nabla f(x_k)^Td_k}{\norm{d_k}^2}
 \label{eq:initialStepBound}
 \end{equation}
 where $\gamma$ is some positive constant, we can use \ref{eq:lowerBound} and \ref{eq:initialStepBound} in \ref{eq:sufficientDecreaseCond} and get:
@@ -77,22 +77,23 @@ f(x_k) - f(x_{k+1}) >\alpha\cdot \text{min}\left(\gamma,\frac{2(1-\alpha)\beta}{
 Summing over k, if $f$ is bounded below, say by $f^*$, and $\theta_k$ bounded away from 90 degrees we get:
 \begin{equation}
 	f(x_0)-f^* \geq \sum_{k=0}^N f(x_k) - f(x_{k+1})  = f(x_0)-f(x_N) > C\sum_{k=0}^N\norm{\nabla f(x_k)}^2.
+	\label{eq:gradientNormInequality}
 \end{equation}
 Hence we have convergence at the same rate as gradient descent.\\\\
 We have made the following assumptions along the way:
 \begin{itemize}
 	\item $f(\cdot)$ is bounded below
 	\item $d_k$ is a descent direction bounded away from 90 degrees w.r.t $\nabla f(x_k)$
-	\item the initial guess of the backtracking algorithm $s\geq- \gamma \frac{\nabla f(x_k)^Td_k}{\norm{d_k}^2}$ for some positive constant $\gamma$
+	\item the initial guess of the backtracking algorithm $\delta\geq- \gamma \frac{\nabla f(x_k)^Td_k}{\norm{d_k}^2}$ for some positive constant $\gamma$
 \end{itemize}
 
 
 \begin{algorithm}[!h]
 	\KwData{\\
-		$s>0$ initial step guess\\
+		$\delta>0$ initial step guess\\
 		$\alpha,\beta \in (0,1)$
 	}
-	$t_k\gets s$\\
+	$t_k\gets \delta$\\
 	\While{$f(x_k) - f(x_{k+1}) < -\alpha t_k \nabla f(x_k)^Td_k$}{
 		$t_k\gets t_k\beta$
 	}
@@ -100,6 +101,17 @@ We have made the following assumptions along the way:
 	\caption{Backtracking algorithm.}
 	\label{algo:backtracking}
 \end{algorithm}
+
+\paragraph{Convergence rate.}
+From inequality (\ref{eq:gradientNormInequality}) we can immediately derive:
+\begin{equation}
+	C(N+1)\min_{k\in(0,N)} \norm{\nabla f(x_k)}^2  < f(x_0)-f^*,
+\end{equation}
+hence
+\begin{equation}
+\min_{k\in(0,N)} \norm{\nabla f(x_k)} < \frac{1}{\sqrt{(N+1)}}\left(\frac{f(x_0)-f^*}{C}\right)^{\frac{1}{2}},
+\end{equation}
+which proves that using descent directions different from the gradient still yields the same convergence rate of the gradient descent method $\mathcal{O}(\frac{1}{\sqrt{N}})$. 
  
 
 \end{document}      
