@@ -48,30 +48,31 @@ cos\theta_k=\frac{\nabla f(x_k)^Td_k}{\norm{\nabla f(x_k)}\norm{d_k}}
 \end{equation}
 In a backtracking setting, as defined in algorithm \ref{algo:backtracking}, we search for a value of $t_k$ such that:
 \begin{equation}
-	f(x_k) - f(x_{k+1})\geq \alpha t_k \nabla f(x_k)^Td_k.
+	f(x_k) - f(x_{k+1})\geq -\alpha t_k \nabla f(x_k)^Td_k.
 	\label{eq:sufficientDecreaseCond}
 \end{equation}
 When backtracking we have two possibilities: either $t_k=s$ satisfy inequality (\ref{eq:sufficientDecreaseCond}) or not. In the latter case it must hold:
 \begin{equation}
-		f(x_k)-f(x_{k}+\frac{t_k}{\beta}d_k) < \alpha \frac{t_k}{\beta} \nabla f(x_k)^Td_k
+		f(x_k)-f(x_{k}+\frac{t_k}{\beta}d_k) < -\alpha \frac{t_k}{\beta} \nabla f(x_k)^Td_k
 \label{eq:sufficientDecreaseViolated}
 \end{equation}
 Combining the latter with inequality \ref{eq:lipschitzReworked} written for $t_k=\frac{t_k}{\beta}$ yields:
 \begin{equation}
-\alpha \frac{t_k}{\beta} \nabla f(x_k)^Td_k > - \frac{t_k}{\beta}\nabla f(x_k)^Td_k\cdot \left(1+\frac{t_k}{\beta}\frac{L}{2}\frac{\nabla f(x_k)^Td_k}{\norm{\nabla f(x_k)}^2 cos^2\theta_k}\right),
+-\alpha \frac{t_k}{\beta} \nabla f(x_k)^Td_k > - \frac{t_k}{\beta}\nabla f(x_k)^Td_k\cdot \left(1+\frac{t_k}{\beta}\frac{L}{2}\frac{\nabla f(x_k)^Td_k}{\norm{\nabla f(x_k)}^2 cos^2\theta_k}\right),
 \end{equation}
 which in turn, being $\nabla f(x_k)^Td_k<0$ since $d_k$ is a descent direction, and $t_k,\beta>0$, leads to:
 \begin{align}
-	t_k &> \frac{2(\alpha+1)\beta}{L} \frac{\norm{\nabla f(x_k)}^2 cos^2\theta_k}{\nabla f(x_k)^Td_k} 	\label{eq:lowerBound}\\
-	&=\frac{2(\alpha+1)\beta}{L}\frac{\nabla f(x_k)^Td_k}{\norm{d_k}^2}
+	t_k &> \frac{2(\alpha-1)\beta}{L} \frac{\norm{\nabla f(x_k)}^2 cos^2\theta_k}{\nabla f(x_k)^Td_k} 	\label{eq:lowerBound}\\
+	&=\frac{2(\alpha-1)\beta}{L}\frac{\nabla f(x_k)^Td_k}{\norm{d_k}^2}
 \end{align}
 If we impose
 \begin{equation}
-s\geq\gamma\frac{\nabla f(x_k)^Td_k}{\norm{d_k}^2}
+s\geq-\gamma\frac{\nabla f(x_k)^Td_k}{\norm{d_k}^2}
+\label{eq:initialStepBound}
 \end{equation}
-where $\gamma$ is some positive constant, we can use \ref{eq:lowerBound} in \ref{eq:sufficientDecreaseCond} and get:
+where $\gamma$ is some positive constant, we can use \ref{eq:lowerBound} and \ref{eq:initialStepBound} in \ref{eq:sufficientDecreaseCond} and get:
 \begin{equation}
-f(x_k) - f(x_{k+1}) >\alpha\cdot \text{ min}\left(\gamma,\frac{2(\alpha+1)\beta}{L}\right ) \norm{\nabla f(x_k)}^2 cos^2\theta_k.
+f(x_k) - f(x_{k+1}) >\alpha\cdot \text{min}\left(\gamma,\frac{2(1-\alpha)\beta}{L}\right ) \norm{\nabla f(x_k)}^2 cos^2\theta_k.
 \end{equation}
 Summing over k, if $f$ is bounded below, say by $f^*$, and $\theta_k$ bounded away from 90 degrees we get:
 \begin{equation}
@@ -82,7 +83,7 @@ We have made the following assumptions along the way:
 \begin{itemize}
 	\item $f(\cdot)$ is bounded below
 	\item $d_k$ is a descent direction bounded away from 90 degrees w.r.t $\nabla f(x_k)$
-	\item the initial guess of the backtracking algorithm $s\geq \gamma \frac{\nabla f(x_k)^Td_k}{\norm{d_k}^2}$ for some positive constant $\gamma$
+	\item the initial guess of the backtracking algorithm $s\geq- \gamma \frac{\nabla f(x_k)^Td_k}{\norm{d_k}^2}$ for some positive constant $\gamma$
 \end{itemize}
 
 
@@ -92,7 +93,7 @@ We have made the following assumptions along the way:
 		$\alpha,\beta \in (0,1)$
 	}
 	$t_k\gets s$\\
-	\While{$f(x_k) - f(x_{k+1}) < \alpha t_k \nabla f(x_k)^Td_k$}{
+	\While{$f(x_k) - f(x_{k+1}) < -\alpha t_k \nabla f(x_k)^Td_k$}{
 		$t_k\gets t_k\beta$
 	}
 	\KwRet{$t_k$}
