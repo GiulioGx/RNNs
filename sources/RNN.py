@@ -55,7 +55,12 @@ class RNN:
         h_m1 = TT.alloc(numpy.array(0., dtype=Configs.floatType), self.__n_hidden, n_sequences)
         h = self.__h(h_m1, u)
         y = self.__y(h)
-        self.__net_output = T.function([u], y)
+        W_in_T = TT.matrix()
+        W_rec_T = TT.matrix()
+        W_out_T = TT.matrix()
+        b_rec_T = TT.tensor()
+        b_out_T = TT.tensor()
+        self.__net_output = T.function([u, W_in_T, W_rec_T, W_out_T, b_rec_T, b_out_T], y)
 
         # define gradient function
         t = TT.tensor3()
@@ -79,9 +84,6 @@ class RNN:
                              (gb_rec ** 2).sum() +
                              (gb_out ** 2).sum())
 
-        # # TODO inventare un framework
-
-
         # fixed step
         lr_norm = lr / norm_theta
 
@@ -94,7 +96,7 @@ class RNN:
                                                 (self.__b_out, self.__b_out - lr_norm * gb_out)])
 
     def net_output(self, sequence):
-        return self.__net_output(sequence)
+        return self.__net_output(sequence, self.__W_rec, self.__W_in, self.__W_out, self.__b_rec, self.__b_out)
 
     def __h(self, h_m1, u):
 
@@ -157,13 +159,16 @@ class RNN:
         print('Elapsed time: {:2.2f}'.format(end_time - start_time))
 
     # line search
+    # def getLearningRate(self, gradient):
+    #
+    #     # TODO move somewhere else
+    #     alpha = 0.5
+    #     beta = 0.5
+    #     delta = 1
+    #
+    #
+    #     while
 
-    def getLearningRate(self):
-
-
-
-    # scalar_armijo_search(phi, phi0, derphi0, c1=constant(1e-4),
-    # n_iters=10, profile=0)
 
     # predefined activation functions
     def relu(x):
