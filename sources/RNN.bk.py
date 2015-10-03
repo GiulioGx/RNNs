@@ -44,38 +44,31 @@ class RNN:
         b_rec = numpy.zeros((self.__n_hidden, 1), Configs.floatType)
         b_out = numpy.zeros((self.__n_out, 1), Configs.floatType)
 
-        # define shared variables
         self.__W_in = T.shared(W_in, 'W_in')
         self.__W_rec = T.shared(W_rec, 'W_rec')
         self.__W_out = T.shared(W_out, 'W_out')
         self.__b_rec = T.shared(b_rec, 'b_rec', broadcastable=(False, True))
         self.__b_out = T.shared(b_out, 'b_out', broadcastable=(False, True))
 
-        # define symbols
-        W_in = TT.matrix()
-        W_rec = TT.matrix()
-        W_out = TT.matrix()
-        b_rec = TT.tensor(dtype=Configs.floatType, broadcastable=(False, True))
-        b_out = TT.tensor(dtype=Configs.floatType, broadcastable=(False, True))
+        # define net output fnc
+        u = TT.tensor3()
+        n_sequences = u.shape[2]
+        h_m1 = TT.alloc(numpy.array(0., dtype=Configs.floatType), self.__n_hidden, n_sequences)
+        h = self.__h(h_m1, u)
+        y = self.__y(h)
+        self.__net_output = T.function([u], y)
 
-        u = TT.tensor3()  # labels
-
-        y = self.__net_output(W_rec, W_in, W_out, b_rec, b_out, u)
-        y_shared = T.clone(y, replace=[(W_rec, self.__W_rec), (W_in, self.__W_in), (W_out, self.__W_out),
-                                       (b_rec, self.__b_rec), (b_out, self.__b_out)])
-        self.net_output = T.function([u], y_shared)
-
-        # define (shared) gradient function
+        # define gradient function
         t = TT.tensor3()
-        loss_shared = self.__loss_fnc(y_shared, t)
+        loss = self.__loss_fnc(y, t)
         gW_rec, gW_in, gW_out, \
-        gb_rec, gb_out = TT.grad(loss_shared, [self.__W_rec, self.__W_in, self.__W_out, self.__b_rec, self.__b_out])
+        gb_rec, gb_out = TT.grad(loss, [self.__W_rec, self.__W_in, self.__W_out, self.__b_rec, self.__b_out])
         grad_norm = TT.sqrt((gW_rec ** 2).sum() +
                             (gW_in ** 2).sum() +
                             (gW_out ** 2).sum() +
                             (gb_rec ** 2).sum() +
                             (gb_out ** 2).sum())
-        # self.__gradient = T.function([u, t], [gW_rec, gW_in, gW_out, gb_rec, gb_out, grad_norm])
+        self.__gradient = T.function([u, t], [gW_rec, gW_in, gW_out, gb_rec, gb_out, grad_norm])
 
         # descent direction (anti-gradient for now)
         W_rec_dir = -gW_rec
@@ -98,20 +91,21 @@ class RNN:
         direction = TT.concatenate(
             [W_rec_dir.flatten(), W_in_dir.flatten(), W_out_dir.flatten(), b_rec_dir.flatten(),
              b_out_dir.flatten()]).flatten()
-        grad_dir_dot_product = TT.dot(gradient, direction)
+        dot_product = TT.dot(gradient, direction)
 
         def armijo_step(step, beta, alpha, W_rec_dir, W_in_dir, W_out_dir, b_rec_dir, b_out_dir, gW_rec, gW_in, gW_out,
                         gb_rec,
-                        gb_out, f_0, u, t, grad_dir_dot_product):
+                        gb_out, f_0, u, t, dot_product):
             W_rec_k = self.__W_rec + step * W_rec_dir
             W_in_k = self.__W_in + step * W_in_dir
             W_out_k = self.__W_out + step * W_out_dir
             b_rec_k = self.__b_rec + step * b_rec_dir
             b_out_k = self.__b_out + step * b_out_dir
 
-            f_1 = self.__loss(W_rec_k, W_in_k, W_out_k, b_rec_k, b_out_k, u, t)
+            f_1 = T.clone(loss, share_inputs='true', replace=[(self.__W_rec, W_rec_k), (self.__W_in, W_in_k), (self.__W_out, W_out_k),
+                                         (self.__b_rec, b_rec_k), (self.__b_out, b_out_k)])
 
-            condition = f_0 - f_1 >= -alpha * step * grad_dir_dot_product  # sufficient decrease condition
+            condition = f_0 - f_1 >= -alpha * step * dot_product  # sufficient decrease condition
 
             return step * beta, [], T.scan_module.until(
                 condition)
@@ -125,7 +119,7 @@ class RNN:
                                  non_sequences=[beta, alpha, W_rec_dir, W_in_dir, W_out_dir, b_rec_dir, b_out_dir,
                                                 gW_rec, gW_in, gW_out,
                                                 gb_rec,
-                                                gb_out, loss_shared, u, t, grad_dir_dot_product], n_steps=max_steps)
+                                                gb_out, loss, u, t, dot_product], n_steps=max_steps)
 
         lr = values[-1] / beta
         n_steps = values.size
@@ -140,23 +134,16 @@ class RNN:
                                                 (self.__b_rec, self.__b_rec + lr * b_rec_dir),
                                                 (self.__b_out, self.__b_out + lr * b_out_dir)])
 
-    def __net_output(self, W_rec, W_in, W_out, b_rec, b_out, u):
-        n_sequences = u.shape[2]
-        h_m1 = TT.alloc(numpy.array(0., dtype=Configs.floatType), self.__n_hidden, n_sequences)
-        h = self.__h(h_m1, u, W_rec, W_in, b_rec)
-        return self.__y(h, W_out, b_out)
+    def net_output(self, sequence):
+        return self.__net_output(sequence)
 
-    def __loss(self, W_rec, W_in, W_out, b_rec, b_out, u, t):
-        y = self.__net_output(W_rec, W_in, W_out, b_rec, b_out, u)
-        return self.__loss_fnc(y, t)
-
-    def __h(self, h_m1, u, W_rec, W_in, b_rec):
-        def h_t(u_t, h_tm1, W_rec, W_in, b_rec):
-            return self.__activation_fnc(TT.dot(W_rec, h_tm1) + TT.dot(W_in, u_t) + b_rec)
+    def __h(self, h_m1, u):
+        def h_t(u_t, h_tm1):
+            return self.__activation_fnc(TT.dot(self.__W_rec, h_tm1) + TT.dot(self.__W_in, u_t) + self.__b_rec)
 
         h, _ = T.scan(h_t, sequences=u,
                       outputs_info=[h_m1],
-                      non_sequences=[W_rec, W_in, b_rec],
+                      non_sequences=[],
                       name='h_t',
                       mode=T.Mode(linker='cvm'))
         return h
@@ -165,13 +152,13 @@ class RNN:
     # def __y(self, h):
     #     return self.__output_fnc(TT.dot(self.__W_out, h[-1]) + self.__b_out)
 
-    def __y(self, h, W_out, b_out):
-        def y_t(h_t, W_out, b_out):
-            return self.__output_fnc(TT.dot(W_out, h_t) + b_out)
+    def __y(self, h):
+        def y_t(h_t):
+            return self.__output_fnc(TT.dot(self.__W_out, h_t) + self.__b_out)
 
         y, _ = T.scan(y_t, sequences=h,
                       outputs_info=[None],
-                      non_sequences=[W_out, b_out],
+                      non_sequences=[],
                       name='y_t',
                       mode=T.Mode(linker='cvm'))
         return y
