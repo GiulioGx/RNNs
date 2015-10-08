@@ -70,8 +70,8 @@ We can compute the derivative of $\Gamma$ w.r.t. $\mat{W}^{rec}$ as follows.
 Let $A\defeq\frac{\partial \vec{a}^t}{\partial \vec{a}^k}$	, for ease of notation and $\norm{A}_F$ it's Frobenius norm.
 
 \begin{align}
-	\frac{\partial \norm{A}^2_F}{\partial \mat{W}_{ij}^{rec}}&=- \frac{1}{\norm{A}^2_F}\cdot \frac{\partial}{\partial w_{ij}} \sum_{xy} A_{xy}^2(w_ij)\\
-	&=- \frac{1}{\norm{A}^2_F}\cdot 2\sum_{xy} A_{xy}\cdot \frac{\partial A_{xy}}{\partial w_{ij}},
+	\frac{\partial \norm{A}^2_F}{\partial \mat{W}_{ij}^{rec}}&=- \frac{1}{\norm{A}^4_F}\cdot \frac{\partial}{\partial w_{ij}} \sum_{xy} A_{xy}^2(w_ij)\\
+	&=- \frac{1}{\norm{A}^4_F}\cdot 2\sum_{xy} A_{xy}\cdot \frac{\partial A_{xy}}{\partial w_{ij}},
 \end{align}
 
 where \begin{equation} 

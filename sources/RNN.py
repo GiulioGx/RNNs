@@ -1,15 +1,16 @@
-from DistUpgrade.utils import on_battery
 import theano as T
 import theano.tensor as TT
 import numpy
 import time
 from configs import Configs
+from penalties import FullPenalty, MeanPenalty
 
 __author__ = 'giulio'
 
 
 class RNN:
     def __init__(self, task, activation_fnc, output_fnc, loss_fnc, n_hidden, seed):
+
         # topology
         self.__n_hidden = n_hidden
         self.__n_in = task.n_in
@@ -24,6 +25,11 @@ class RNN:
         # loss function
         self.__loss_fnc = loss_fnc
 
+        # penalty function
+        #self.__penalty_expr = FullPenalty(self)
+        self.__penalty_expr = MeanPenalty(self)
+
+
         # task
         self.__task = task
 
@@ -31,7 +37,7 @@ class RNN:
         self.__rng = numpy.random.RandomState(seed)
 
         # init weight matrices TODO
-        scale = .11
+        scale = .1
         loc = 0
         W_in = numpy.asarray(
             self.__rng.normal(size=(self.__n_hidden, self.__n_in), scale=scale, loc=loc), dtype=Configs.floatType)
@@ -60,10 +66,11 @@ class RNN:
 
         u = TT.tensor3()  # labels
 
-        y = self.__net_output(W_rec, W_in, W_out, b_rec, b_out, u)
-        y_shared = T.clone(y, replace=[(W_rec, self.__W_rec), (W_in, self.__W_in), (W_out, self.__W_out),
+        y, deriv_a = self.__net_output(W_rec, W_in, W_out, b_rec, b_out, u)
+        y_shared, deriv_a_shared = T.clone([y, deriv_a], replace=[(W_rec, self.__W_rec), (W_in, self.__W_in), (W_out, self.__W_out),
                                        (b_rec, self.__b_rec), (b_out, self.__b_out)])
         self.net_output = T.function([u], y_shared)
+
 
         # define (shared) gradient function
         t = TT.tensor3()
@@ -84,9 +91,19 @@ class RNN:
         b_rec_dir = -gb_rec
         b_out_dir = -gb_out
 
+        # add penalty term
+
+        penalty_value, penalty_grad = self.__penalty_expr.penalty_term(deriv_a_shared, self.__W_rec)
+        penalty_norm = TT.sqrt((penalty_grad ** 2).sum())
+
+        penalty_grad = TT.cast(penalty_grad, dtype=Configs.floatType)
+        penalty_norm = TT.cast(penalty_norm, dtype=Configs.floatType)
+        W_rec_dir -= (TT.alloc(numpy.array(0.001, dtype=Configs.floatType)) * penalty_grad/penalty_norm)
+
+
         # TODO move somewhere else
         # normalized constant step
-        lr = TT.alloc(numpy.array(0.1, dtype=Configs.floatType))
+        lr = TT.alloc(numpy.array(0.01, dtype=Configs.floatType))
         lr = lr / grad_norm
         n_steps = TT.alloc(numpy.array(0, dtype=int))
 
@@ -127,11 +144,11 @@ class RNN:
                                                 gb_rec,
                                                 gb_out, loss_shared, u, t, grad_dir_dot_product], n_steps=max_steps)
 
-        lr = values[-1] / beta
-        n_steps = values.size
+        #lr = values[-1] / beta
+        #n_steps = values.size
 
         # define train step
-        self.__train_step = T.function([u, t], [grad_norm, lr, n_steps],
+        self.__train_step = T.function([u, t], [grad_norm, lr, n_steps, penalty_norm],
                                        allow_input_downcast='true',
                                        on_unused_input='warn',
                                        updates=[(self.__W_rec, self.__W_rec + lr * W_rec_dir),
@@ -140,26 +157,43 @@ class RNN:
                                                 (self.__b_rec, self.__b_rec + lr * b_rec_dir),
                                                 (self.__b_out, self.__b_out + lr * b_out_dir)])
 
+    @property
+    def n_hidden(self):
+            return self.__n_hidden
+
+    @property
+    def n_in(self):
+            return self.__n_in
+
+    @property
+    def n_out(self):
+            return self.__n_out
+
     def __net_output(self, W_rec, W_in, W_out, b_rec, b_out, u):
-        n_sequences = u.shape[2]
-        h_m1 = TT.alloc(numpy.array(0., dtype=Configs.floatType), self.__n_hidden, n_sequences)
-        h = self.__h(h_m1, u, W_rec, W_in, b_rec)
-        return self.__y(h, W_out, b_out)
+        h, deriv_a = self.__h(u, W_rec, W_in, b_rec)
+        return self.__y(h, W_out, b_out), deriv_a
 
     def __loss(self, W_rec, W_in, W_out, b_rec, b_out, u, t):
-        y = self.__net_output(W_rec, W_in, W_out, b_rec, b_out, u)
+        y, _ = self.__net_output(W_rec, W_in, W_out, b_rec, b_out, u)
         return self.__loss_fnc(y, t)
 
-    def __h(self, h_m1, u, W_rec, W_in, b_rec):
+    def __h(self, u, W_rec, W_in, b_rec):
         def h_t(u_t, h_tm1, W_rec, W_in, b_rec):
-            return self.__activation_fnc(TT.dot(W_rec, h_tm1) + TT.dot(W_in, u_t) + b_rec)
+            a_t = TT.dot(W_rec, h_tm1) + TT.dot(W_in, u_t) + b_rec
+            deriv_a = 1 - (self.__activation_fnc(a_t) ** 2)  # TODO
+            return self.__activation_fnc(a_t), deriv_a
 
-        h, _ = T.scan(h_t, sequences=u,
-                      outputs_info=[h_m1],
-                      non_sequences=[W_rec, W_in, b_rec],
-                      name='h_t',
-                      mode=T.Mode(linker='cvm'))
-        return h
+        n_sequences = u.shape[2]
+        h_m1 = TT.alloc(numpy.array(0., dtype=Configs.floatType), self.__n_hidden, n_sequences)
+
+        values, _ = T.scan(h_t, sequences=u,
+                           outputs_info=[h_m1, None],
+                           non_sequences=[W_rec, W_in, b_rec],
+                           name='h_t',
+                           mode=T.Mode(linker='cvm'))
+        a = values[1]
+        h = values[0]
+        return h, a
 
     # single output mode
     # def __y(self, h):
@@ -191,7 +225,7 @@ class RNN:
         for i in range(0, max_it):
 
             batch = self.__task.get_batch(batch_size)
-            norm, lr, n_steps = self.__train_step(batch.inputs, batch.outputs)
+            norm, lr, n_steps, penalty_grad_norm = self.__train_step(batch.inputs, batch.outputs)
 
             if i % 50 == 0:
                 y_net = self.net_output(validation_set.inputs)
@@ -199,9 +233,11 @@ class RNN:
                 loss = self.__loss_fnc(y_net, validation_set.outputs)
                 rho = numpy.max(abs(numpy.linalg.eigvals(self.__W_rec.get_value())))
                 batch_end_time = time.time()
+
                 print('iteration {:07d}: grad norm = {:07.3f}, valid loss = {:07.3f},'
-                      ' valid error = {:.2%}, rho = {:5.2f}, lr = {:02.4f}, n_steps = {:02d} time  ={:2.2f}'
-                      .format(i, norm.item(), loss, valid_error, rho, lr.item(), n_steps.item(),
+                      ' valid error = {:.2%}, rho = {:5.2f}, penalty = {:07.3f},'
+                      ' lr = {:02.4f}, n_steps = {:02d} time  ={:2.2f}'
+                      .format(i, norm.item(), loss, valid_error, rho, penalty_grad_norm.item(), lr.item(), n_steps.item(),
                               batch_end_time - batch_start_time))
                 batch_start_time = time.time()
 
