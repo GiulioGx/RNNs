@@ -2,6 +2,7 @@ import theano as T
 import theano.tensor as TT
 import numpy
 import time
+import os
 from configs import Configs
 from penalties import FullPenalty, MeanPenalty
 
@@ -26,7 +27,7 @@ class RNN:
         self.__loss_fnc = loss_fnc
 
         # penalty function
-        #self.__penalty_expr = FullPenalty(self)
+        # self.__penalty_expr = FullPenalty(self)
         self.__penalty_expr = MeanPenalty(self)
 
 
@@ -67,8 +68,9 @@ class RNN:
         u = TT.tensor3()  # labels
 
         y, deriv_a = self.__net_output(W_rec, W_in, W_out, b_rec, b_out, u)
-        y_shared, deriv_a_shared = T.clone([y, deriv_a], replace=[(W_rec, self.__W_rec), (W_in, self.__W_in), (W_out, self.__W_out),
-                                       (b_rec, self.__b_rec), (b_out, self.__b_out)])
+        y_shared, deriv_a_shared = T.clone([y, deriv_a],
+                                           replace=[(W_rec, self.__W_rec), (W_in, self.__W_in), (W_out, self.__W_out),
+                                                    (b_rec, self.__b_rec), (b_out, self.__b_out)])
         self.net_output = T.function([u], y_shared)
 
 
@@ -98,7 +100,7 @@ class RNN:
 
         penalty_grad = TT.cast(penalty_grad, dtype=Configs.floatType)
         penalty_norm = TT.cast(penalty_norm, dtype=Configs.floatType)
-        W_rec_dir -= (TT.alloc(numpy.array(0.001, dtype=Configs.floatType)) * penalty_grad/penalty_norm)
+        W_rec_dir -= (TT.alloc(numpy.array(0.001, dtype=Configs.floatType)) * penalty_grad / penalty_norm)
 
 
         # TODO move somewhere else
@@ -144,8 +146,8 @@ class RNN:
                                                 gb_rec,
                                                 gb_out, loss_shared, u, t, grad_dir_dot_product], n_steps=max_steps)
 
-        #lr = values[-1] / beta
-        #n_steps = values.size
+        # lr = values[-1] / beta
+        # n_steps = values.size
 
         # define train step
         self.__train_step = T.function([u, t], [grad_norm, lr, n_steps, penalty_norm],
@@ -159,15 +161,15 @@ class RNN:
 
     @property
     def n_hidden(self):
-            return self.__n_hidden
+        return self.__n_hidden
 
     @property
     def n_in(self):
-            return self.__n_in
+        return self.__n_in
 
     @property
     def n_out(self):
-            return self.__n_out
+        return self.__n_out
 
     def __net_output(self, W_rec, W_in, W_out, b_rec, b_out, u):
         h, deriv_a = self.__h(u, W_rec, W_in, b_rec)
@@ -200,6 +202,7 @@ class RNN:
     #     return self.__output_fnc(TT.dot(self.__W_out, h[-1]) + self.__b_out)
 
     def __y(self, h, W_out, b_out):
+
         def y_t(h_t, W_out, b_out):
             return self.__output_fnc(TT.dot(W_out, h_t) + b_out)
 
@@ -210,11 +213,34 @@ class RNN:
                       mode=T.Mode(linker='cvm'))
         return y
 
+    def save_model(self, path, filename, stats):
+        """saves the model with statistics to file"""
+
+        os.makedirs(path, exist_ok=True)
+
+        numpy.savez(path + '/' + filename + '.npz',
+                    valid_error=stats.valid_error,
+                    gradient_norm=stats.grad_norm,
+                    rho=stats.rho,
+                    penalty=stats.penalty_norm,
+                    W_rec=self.__W_rec.get_value(),
+                    W_in=self.__W_in.get_value(),
+                    W_out=self.__W_out.get_value(),
+                    b_rec=self.__b_rec.get_value(),
+                    b_out=self.__b_out.get_value())
+
     def train(self):
         # TODO move somewhere else
         max_it = 500000
         batch_size = 100
         validation_set_size = 10000
+        stop_error_thresh = 0.01
+        check_freq = 50
+        model_path = '/home/giulio/RNNs/models'
+        model_name = 'model'
+
+        # training statistics
+        stats = Statistics(max_it, check_freq)
 
         print('Generating validation set...')
         validation_set = self.__task.get_batch(validation_set_size)
@@ -222,24 +248,37 @@ class RNN:
         print('Training...')
         start_time = time.time()
         batch_start_time = time.time()
-        for i in range(0, max_it):
+
+        i = 0
+        best_error = 100
+        while i < max_it and best_error > stop_error_thresh:
 
             batch = self.__task.get_batch(batch_size)
             norm, lr, n_steps, penalty_grad_norm = self.__train_step(batch.inputs, batch.outputs)
 
-            if i % 50 == 0:
+            if i % check_freq == 0:
                 y_net = self.net_output(validation_set.inputs)
                 valid_error = self.__task.error_fnc(y_net, validation_set.outputs)
                 loss = self.__loss_fnc(y_net, validation_set.outputs)
                 rho = numpy.max(abs(numpy.linalg.eigvals(self.__W_rec.get_value())))
+
+                stats.update(rho, norm, penalty_grad_norm, valid_error, i)
+                self.save_model(model_path, model_name, stats)
+
+                if valid_error < best_error:
+                    best_error = valid_error
+
                 batch_end_time = time.time()
 
                 print('iteration {:07d}: grad norm = {:07.3f}, valid loss = {:07.3f},'
-                      ' valid error = {:.2%}, rho = {:5.2f}, penalty = {:07.3f},'
+                      ' valid error = {:.2%} (best: {:.2%}), rho = {:5.2f}, penalty = {:07.3f},'
                       ' lr = {:02.4f}, n_steps = {:02d} time  ={:2.2f}'
-                      .format(i, norm.item(), loss, valid_error, rho, penalty_grad_norm.item(), lr.item(), n_steps.item(),
+                      .format(i, norm.item(), loss, valid_error, best_error, rho, penalty_grad_norm.item(), lr.item(),
+                              n_steps.item(),
                               batch_end_time - batch_start_time))
                 batch_start_time = time.time()
+            i += 1
+
 
         end_time = time.time()
         print('Elapsed time: {:2.2f}'.format(end_time - start_time))
@@ -261,3 +300,42 @@ class RNN:
     # predefined loss functions
     def squared_error(y, t):
         return ((t[-1:, :, :] - y[-1:, :, :]) ** 2).sum(axis=0).mean()
+
+
+class Statistics:
+
+    def __init__(self, max_it, check_freq):
+        self.__check_freq = check_freq
+        self.__current_it = 0
+        self.__actual_length = 0
+
+        m = numpy.ceil(max_it / check_freq) - 1
+        self.__rho_values = numpy.zeros((m,), dtype='float32')
+        self.__grad_norm_values = numpy.zeros((m,), dtype='float32')
+        self.__penalty_norm_values = numpy.zeros((m,), dtype='float32')
+        self.__valid_error_values = numpy.zeros((m,), dtype='float32')
+
+    def update(self, rho, grad_norm, penalty_grad_norm, valid_error, it):
+        j = it / self.__check_freq
+        self.__current_it = it
+        self.__actual_length += 1
+        self.__rho_values[j] = rho
+        self.__grad_norm_values[j] = grad_norm
+        self.__penalty_norm_values[j] = penalty_grad_norm
+        self.__valid_error_values[j] = valid_error
+
+    @property
+    def rho(self):
+        return self.__rho_values[0:self.__actual_length]
+
+    @property
+    def grad_norm(self):
+        return self.__grad_norm_values[0:self.__actual_length]
+
+    @property
+    def valid_error(self):
+        return self.__valid_error_values[0:self.__actual_length]
+
+    @property
+    def penalty_norm(self):
+        return self.__penalty_norm_values[0:self.__actual_length]
