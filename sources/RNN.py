@@ -4,13 +4,13 @@ import numpy
 import time
 import os
 from configs import Configs
-from penalties import FullPenalty, MeanPenalty
+from penalties import NullPenalty
 
 __author__ = 'giulio'
 
 
-class RNN:
-    def __init__(self, task, activation_fnc, output_fnc, loss_fnc, n_hidden, seed):
+class RNN(object):
+    def __init__(self, task, activation_fnc, output_fnc, loss_fnc, n_hidden, penalty=NullPenalty(), seed=13):
 
         # topology
         self.__n_hidden = n_hidden
@@ -27,9 +27,7 @@ class RNN:
         self.__loss_fnc = loss_fnc
 
         # penalty function
-        # self.__penalty_expr = FullPenalty(self)
-        self.__penalty_expr = MeanPenalty(self)
-
+        self.__penalty_expr = penalty
 
         # task
         self.__task = task
@@ -73,7 +71,6 @@ class RNN:
                                                     (b_rec, self.__b_rec), (b_out, self.__b_out)])
         self.net_output = T.function([u], y_shared)
 
-
         # define (shared) gradient function
         t = TT.tensor3()
         loss_shared = self.__loss_fnc(y_shared, t)
@@ -94,14 +91,12 @@ class RNN:
         b_out_dir = -gb_out
 
         # add penalty term
-
         penalty_value, penalty_grad = self.__penalty_expr.penalty_term(deriv_a_shared, self.__W_rec)
         penalty_norm = TT.sqrt((penalty_grad ** 2).sum())
-
         penalty_grad = TT.cast(penalty_grad, dtype=Configs.floatType)
         penalty_norm = TT.cast(penalty_norm, dtype=Configs.floatType)
-        W_rec_dir -= (TT.alloc(numpy.array(0.001, dtype=Configs.floatType)) * penalty_grad / penalty_norm)
-
+        W_rec_dir = TT.switch(penalty_norm > 0, W_rec_dir - (
+            TT.alloc(numpy.array(0.001, dtype=Configs.floatType)) * penalty_grad / penalty_norm), W_rec_dir)
 
         # TODO move somewhere else
         # normalized constant step
@@ -182,7 +177,9 @@ class RNN:
     def __h(self, u, W_rec, W_in, b_rec):
         def h_t(u_t, h_tm1, W_rec, W_in, b_rec):
             a_t = TT.dot(W_rec, h_tm1) + TT.dot(W_in, u_t) + b_rec
-            deriv_a = 1 - (self.__activation_fnc(a_t) ** 2)  # TODO
+            # deriv_a = 1 - (self.__activation_fnc(a_t) ** 2)  # tanh FIXME
+            deriv_a = TT.switch(a_t > 0, TT.alloc(numpy.array(1., dtype=Configs.floatType)),
+                                TT.alloc(numpy.array(0., dtype=Configs.floatType)))  # relu FIXME
             return self.__activation_fnc(a_t), deriv_a
 
         n_sequences = u.shape[2]
@@ -279,7 +276,6 @@ class RNN:
                 batch_start_time = time.time()
             i += 1
 
-
         end_time = time.time()
         print('Elapsed time: {:2.2f}'.format(end_time - start_time))
 
@@ -302,8 +298,7 @@ class RNN:
         return ((t[-1:, :, :] - y[-1:, :, :]) ** 2).sum(axis=0).mean()
 
 
-class Statistics:
-
+class Statistics(object):
     def __init__(self, max_it, check_freq):
         self.__check_freq = check_freq
         self.__current_it = 0
