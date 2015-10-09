@@ -4,7 +4,7 @@ import numpy
 import time
 import os
 from configs import Configs
-from penalties import NullPenalty
+from Penalty import NullPenalty
 
 __author__ = 'giulio'
 
@@ -96,7 +96,10 @@ class RNN(object):
         penalty_grad = TT.cast(penalty_grad, dtype=Configs.floatType)
         penalty_norm = TT.cast(penalty_norm, dtype=Configs.floatType)
         W_rec_dir = TT.switch(penalty_norm > 0, W_rec_dir - (
-            TT.alloc(numpy.array(0.001, dtype=Configs.floatType)) * penalty_grad / penalty_norm), W_rec_dir)
+            TT.alloc(numpy.array(0.003, dtype=Configs.floatType)) * penalty_grad / penalty_norm), W_rec_dir)
+
+        self._penalty_debug = T.function([u], [deriv_a_shared, penalty_value, penalty_norm])  # FIXME debug
+
 
         # TODO move somewhere else
         # normalized constant step
@@ -154,6 +157,11 @@ class RNN(object):
                                                 (self.__b_rec, self.__b_rec + lr * b_rec_dir),
                                                 (self.__b_out, self.__b_out + lr * b_out_dir)])
 
+    # FIXME debug
+    @property
+    def W_rec(self):
+        return self.__W_rec.get_value()
+
     @property
     def n_hidden(self):
         return self.__n_hidden
@@ -177,10 +185,8 @@ class RNN(object):
     def __h(self, u, W_rec, W_in, b_rec):
         def h_t(u_t, h_tm1, W_rec, W_in, b_rec):
             a_t = TT.dot(W_rec, h_tm1) + TT.dot(W_in, u_t) + b_rec
-            # deriv_a = 1 - (self.__activation_fnc(a_t) ** 2)  # tanh FIXME
-            deriv_a = TT.switch(a_t > 0, TT.alloc(numpy.array(1., dtype=Configs.floatType)),
-                                TT.alloc(numpy.array(0., dtype=Configs.floatType)))  # relu FIXME
-            return self.__activation_fnc(a_t), deriv_a
+            deriv_a = self.__activation_fnc.grad_f(a_t)
+            return self.__activation_fnc.f(a_t), deriv_a
 
         n_sequences = u.shape[2]
         h_m1 = TT.alloc(numpy.array(0., dtype=Configs.floatType), self.__n_hidden, n_sequences)
@@ -231,7 +237,7 @@ class RNN(object):
         max_it = 500000
         batch_size = 100
         validation_set_size = 10000
-        stop_error_thresh = 0.01
+        stop_error_thresh = 0.001
         check_freq = 50
         model_path = '/home/giulio/RNNs/models'
         model_name = 'model'
@@ -241,6 +247,9 @@ class RNN(object):
 
         print('Generating validation set...')
         validation_set = self.__task.get_batch(validation_set_size)
+
+        rho = numpy.max(abs(numpy.linalg.eigvals(self.__W_rec.get_value())))
+        print('Initial rho: {:5.2f}'.format(rho))
 
         print('Training...')
         start_time = time.time()
@@ -277,17 +286,7 @@ class RNN(object):
             i += 1
 
         end_time = time.time()
-        print('Elapsed time: {:2.2f}'.format(end_time - start_time))
-
-    # predefined activation functions
-    def relu(x):
-        return TT.switch(x < 0, 0, x)
-
-    def sigmoid(x):
-        return TT.nnet.sigmoid(x)
-
-    def tanh(x):
-        return TT.tanh(x)
+        print('Elapsed time: {:2.2f}min'.format((end_time - start_time) / 60))
 
     # predefined output functions
     def last_linear_fnc(y):

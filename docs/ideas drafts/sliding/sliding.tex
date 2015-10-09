@@ -20,7 +20,22 @@
 
 \graphicspath{ {./images/} }
 
+%%Notation:
+
+%%vectors
+\renewcommand{\vec}[1]{\boldsymbol{#1}}
+%%sets
+\newcommand{\set}[1]{\mathcal{#1}}
+%%matrixes
+\newcommand{\mat}[1]{#1}
+%%norm
 \newcommand{\norm}[1]{\left\Vert #1 \right\Vert}
+%%defeq
+\newcommand{\defeq}{\triangleq}
+%%
+\newcommand{\net}[1]{\mathrm{#1}}
+%% pair<x,y>
+\newcommand{\pair}[2]{\langle#1,#2\rangle}
 
 \title{On sliding gradient}
 \author{Giulio Galvan}
@@ -28,6 +43,7 @@
 \begin{document}
 	\maketitle
 
+\section{WCC analysis}
 \paragraph{Step bound for generic descent directions.}	
 From Lipschitz continuity we get:
 \begin{equation}
@@ -113,6 +129,27 @@ hence
 \end{equation}
 which proves that using descent directions different from the gradient still yields the same convergence rate of the gradient descent method $\mathcal{O}(\frac{1}{\sqrt{N}})$. 
  
+\section{Sliding gradient framework}
+
+\begin{algorithm}[!h]
+	\KwData{\\
+		$\vec{x}_0$ candidate solution\\
+	}
+	\While{stop criterion}{
+		$i \gets 0$\\
+		\While{$i < T$ and gradient is degenerate}{
+			$\vec{d}_{k,i} \gets -\nabla f(x_{k-1})$ (or something smarter)\\
+			$\vec{x}_{k,i} \gets \vec{x}_{k,i} + \alpha_{k,i}\vec{d}_{k,i} $\\
+			}
+			
+			$d_k\gets -\nabla f(x_{k})$ \\
+			$\vec{x_k} \gets \vec{x}_k + \alpha_k \vec{d}_k$
+	}
+	\KwRet{$t_k$}
+	\caption{Backtracking algorithm.}
+	\label{algo:slidingFramework}
+\end{algorithm}
+
 
 \end{document}      
 

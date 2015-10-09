@@ -6,9 +6,11 @@ from configs import Configs
 __author__ = 'giulio'
 
 
-x = TT.matrix()
+x = TT.tensor3()
 
 b = TT.switch(x < 0, 0, x)
+
+d = TT.grad()
 
 deriv = TT.switch(x > 0, TT.alloc(numpy.array(1., dtype=Configs.floatType)),
                                 TT.alloc(numpy.array(0., dtype=Configs.floatType)))

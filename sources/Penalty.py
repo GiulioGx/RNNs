@@ -22,7 +22,6 @@ class NullPenalty(Penalty):
         super().__init__()
 
     def penalty_term(self, deriv__a, W_rec):
-        print('null penalty called')
 
         penalty = TT.alloc(numpy.array(0., dtype=Configs.floatType))
         penalty_grad = TT.zeros_like(W_rec, dtype=Configs.floatType)
