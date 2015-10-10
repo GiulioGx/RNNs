@@ -222,10 +222,16 @@ class RNN(object):
         os.makedirs(path, exist_ok=True)
 
         numpy.savez(path + '/' + filename + '.npz',
+                    n_hidden=self.__n_hidden,
+                    n_in=self.__n_in,
+                    n_out=self.__n_out,
+                    task=str(self.__task),
+                    activation_fnc=str(self.__activation_fnc),
                     valid_error=stats.valid_error,
                     gradient_norm=stats.grad_norm,
                     rho=stats.rho,
                     penalty=stats.penalty_norm,
+                    elapsed_time=stats.elapsed_time,
                     W_rec=self.__W_rec.get_value(),
                     W_in=self.__W_in.get_value(),
                     W_out=self.__W_out.get_value(),
@@ -233,12 +239,14 @@ class RNN(object):
                     b_out=self.__b_out.get_value())
 
     def train(self):
-        # TODO move somewhere else
+        # TODO move somewhere else and add them to npz saved file
         max_it = 500000
         batch_size = 100
         validation_set_size = 10000
-        stop_error_thresh = 0.001
+        #stop_error_thresh = 0.001
+        stop_error_thresh = 0.36
         check_freq = 50
+
         model_path = '/home/giulio/RNNs/models'
         model_name = 'model'
 
@@ -268,13 +276,14 @@ class RNN(object):
                 loss = self.__loss_fnc(y_net, validation_set.outputs)
                 rho = numpy.max(abs(numpy.linalg.eigvals(self.__W_rec.get_value())))
 
-                stats.update(rho, norm, penalty_grad_norm, valid_error, i)
                 self.save_model(model_path, model_name, stats)
 
                 if valid_error < best_error:
                     best_error = valid_error
 
                 batch_end_time = time.time()
+                total_elapsed_time = batch_end_time-start_time
+                stats.update(rho, norm, penalty_grad_norm, valid_error, i, total_elapsed_time )
 
                 print('iteration {:07d}: grad norm = {:07.3f}, valid loss = {:07.3f},'
                       ' valid error = {:.2%} (best: {:.2%}), rho = {:5.2f}, penalty = {:07.3f},'
@@ -283,10 +292,11 @@ class RNN(object):
                               n_steps.item(),
                               batch_end_time - batch_start_time))
                 batch_start_time = time.time()
+
             i += 1
 
         end_time = time.time()
-        print('Elapsed time: {:2.2f}min'.format((end_time - start_time) / 60))
+        print('Elapsed time: {:2.2f} min'.format((end_time - start_time) / 60))
 
     # predefined output functions
     def last_linear_fnc(y):
@@ -308,8 +318,9 @@ class Statistics(object):
         self.__grad_norm_values = numpy.zeros((m,), dtype='float32')
         self.__penalty_norm_values = numpy.zeros((m,), dtype='float32')
         self.__valid_error_values = numpy.zeros((m,), dtype='float32')
+        self.__elapsed_time = 0
 
-    def update(self, rho, grad_norm, penalty_grad_norm, valid_error, it):
+    def update(self, rho, grad_norm, penalty_grad_norm, valid_error, it, elapsed_time):
         j = it / self.__check_freq
         self.__current_it = it
         self.__actual_length += 1
@@ -317,6 +328,7 @@ class Statistics(object):
         self.__grad_norm_values[j] = grad_norm
         self.__penalty_norm_values[j] = penalty_grad_norm
         self.__valid_error_values[j] = valid_error
+        self.__elapsed_time = elapsed_time
 
     @property
     def rho(self):
@@ -333,3 +345,7 @@ class Statistics(object):
     @property
     def penalty_norm(self):
         return self.__penalty_norm_values[0:self.__actual_length]
+
+    @property
+    def elapsed_time(self):
+        return self.__elapsed_time

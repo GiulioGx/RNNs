@@ -1,11 +1,13 @@
 import numpy
 from Tasks.MarkerBasedTask import MarkerBasedTask
+from Tasks.Task import Task
 from configs import Configs
 
 __author__ = 'giulio'
 
 
-class XorTask:
+# TODO error fnc
+class XorTask(Task):
     def __init__(self, min_length: int, seed: int):
         self.__min_length = min_length
         self.__n_in = 2
@@ -29,6 +31,9 @@ class XorTask:
 
     def get_batch(self, batch_size: int):
         return self.__marker_based_task.get_batch(batch_size)
+
+    def __str__(self):
+        return 'xor task (min_length:{:d})'.format(self.__min_length)
 
     @property
     def n_in(self):

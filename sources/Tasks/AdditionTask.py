@@ -1,10 +1,11 @@
 import numpy
 from Tasks.MarkerBasedTask import MarkerBasedTask
+from Tasks.Task import Task
 from configs import Configs
 __author__ = 'giulio'
 
 
-class AdditionTask:
+class AdditionTask(Task):
 
     def __init__(self, min_length: int, seed: int):
         self.__min_length = min_length
@@ -32,6 +33,9 @@ class AdditionTask:
 
     def error_fnc(self, t, y):
         return (((t[-1:, :, :] - y[-1:, :, :]) ** 2).sum(axis=0) > .04).mean()
+
+    def __str__(self):
+        return 'addition task (min_length:{:d})'.format(self.__min_length)
 
     @property
     def n_in(self):

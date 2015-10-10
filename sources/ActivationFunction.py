@@ -18,6 +18,9 @@ class ActivationFunction(object):
         """applies f'() to a theano symbol x"""
         return
 
+    def __str__(self):
+        return 'unkwown'
+
 
 # predefined activation functions
 class Relu(ActivationFunction):
@@ -28,6 +31,8 @@ class Relu(ActivationFunction):
     def grad_f(self, x):
         return TT.switch(x > 0, TT.alloc(numpy.array(1., dtype=Configs.floatType)),
                          TT.alloc(numpy.array(0., dtype=Configs.floatType)))
+    def __str__(self):
+        return 'Relu'
 
 
 class Tanh(ActivationFunction):
@@ -37,5 +42,8 @@ class Tanh(ActivationFunction):
 
     def grad_f(self, x):
         return 1 - (TT.tanh(x) ** 2)
+
+    def __str__(self):
+        return 'tanh'
 
 # TODO sigmoid
