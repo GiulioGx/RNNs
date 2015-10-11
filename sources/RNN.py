@@ -3,7 +3,7 @@ import theano.tensor as TT
 import numpy
 import time
 import os
-from configs import Configs
+from Configs import Configs
 from Penalty import NullPenalty
 
 __author__ = 'giulio'
@@ -36,7 +36,7 @@ class RNN(object):
         self.__rng = numpy.random.RandomState(seed)
 
         # init weight matrices TODO
-        scale = .1
+        scale = .12
         loc = 0
         W_in = numpy.asarray(
             self.__rng.normal(size=(self.__n_hidden, self.__n_in), scale=scale, loc=loc), dtype=Configs.floatType)
@@ -100,11 +100,16 @@ class RNN(object):
 
         self._penalty_debug = T.function([u], [deriv_a_shared, penalty_value, penalty_norm])  # FIXME debug
 
+        descend_dir_norm = TT.sqrt((W_rec_dir ** 2).sum() +
+                                   (W_in_dir ** 2).sum() +
+                                   (W_out_dir ** 2).sum() +
+                                   (b_rec_dir ** 2).sum() +
+                                   (b_out_dir ** 2).sum())
 
         # TODO move somewhere else
         # normalized constant step
         lr = TT.alloc(numpy.array(0.01, dtype=Configs.floatType))
-        lr = lr / grad_norm
+        lr = lr / descend_dir_norm
         n_steps = TT.alloc(numpy.array(0, dtype=int))
 
         max_steps = 10
@@ -116,6 +121,9 @@ class RNN(object):
             [W_rec_dir.flatten(), W_in_dir.flatten(), W_out_dir.flatten(), b_rec_dir.flatten(),
              b_out_dir.flatten()]).flatten()
         grad_dir_dot_product = TT.dot(gradient, direction)
+
+        cosine = TT.dot(penalty_grad.flatten(), gW_rec.flatten()) / (
+            penalty_norm * TT.sqrt((gW_rec ** 2).sum()))
 
         def armijo_step(step, beta, alpha, W_rec_dir, W_in_dir, W_out_dir, b_rec_dir, b_out_dir, gW_rec, gW_in, gW_out,
                         gb_rec,
@@ -148,7 +156,7 @@ class RNN(object):
         # n_steps = values.size
 
         # define train step
-        self.__train_step = T.function([u, t], [grad_norm, lr, n_steps, penalty_norm],
+        self.__train_step = T.function([u, t], [grad_norm, lr, n_steps, penalty_norm, cosine],
                                        allow_input_downcast='true',
                                        on_unused_input='warn',
                                        updates=[(self.__W_rec, self.__W_rec + lr * W_rec_dir),
@@ -239,12 +247,12 @@ class RNN(object):
                     b_out=self.__b_out.get_value())
 
     def train(self):
+
         # TODO move somewhere else and add them to npz saved file
         max_it = 500000
         batch_size = 100
         validation_set_size = 10000
-        #stop_error_thresh = 0.001
-        stop_error_thresh = 0.36
+        stop_error_thresh = 0.001
         check_freq = 50
 
         model_path = '/home/giulio/RNNs/models'
@@ -268,7 +276,7 @@ class RNN(object):
         while i < max_it and best_error > stop_error_thresh:
 
             batch = self.__task.get_batch(batch_size)
-            norm, lr, n_steps, penalty_grad_norm = self.__train_step(batch.inputs, batch.outputs)
+            norm, lr, n_steps, penalty_grad_norm, cosine = self.__train_step(batch.inputs, batch.outputs)
 
             if i % check_freq == 0:
                 y_net = self.net_output(validation_set.inputs)
@@ -282,14 +290,14 @@ class RNN(object):
                     best_error = valid_error
 
                 batch_end_time = time.time()
-                total_elapsed_time = batch_end_time-start_time
-                stats.update(rho, norm, penalty_grad_norm, valid_error, i, total_elapsed_time )
+                total_elapsed_time = batch_end_time - start_time
+                stats.update(rho, norm, penalty_grad_norm, valid_error, i, total_elapsed_time)
 
                 print('iteration {:07d}: grad norm = {:07.3f}, valid loss = {:07.3f},'
                       ' valid error = {:.2%} (best: {:.2%}), rho = {:5.2f}, penalty = {:07.3f},'
-                      ' lr = {:02.4f}, n_steps = {:02d} time  ={:2.2f}'
-                      .format(i, norm.item(), loss, valid_error, best_error, rho, penalty_grad_norm.item(), lr.item(),
-                              n_steps.item(),
+                      ' cos: {:1.2f}, lr = {:02.4f}, n_steps = {:02d} time  ={:2.2f}'
+                      .format(i, norm.item(), loss, valid_error, best_error, rho, penalty_grad_norm.item(),
+                              cosine.item(), lr.item(), n_steps.item(),
                               batch_end_time - batch_start_time))
                 batch_start_time = time.time()
 

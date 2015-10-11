@@ -1,4 +1,4 @@
-from configs import Configs
+from Configs import Configs
 import theano.tensor as TT
 import numpy
 import abc

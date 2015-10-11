@@ -11,7 +11,8 @@ penalty = npz['penalty']
 grad_norm = npz['gradient_norm']
 
 check_freq = 50  # FIXME
-x_values = numpy.arange(len(valid_error)) * check_freq
+length = len(valid_error)
+x_values = numpy.arange(length) * check_freq
 
 fig, axarr = plt.subplots(3, sharex=True)
 
@@ -20,13 +21,11 @@ axarr[0].legend(['validation error'], shadow=True, fancybox=True)
 
 axarr[1].plot(x_values, penalty, 'c')
 axarr[1].legend(['penalty grad norm'], shadow=True, fancybox=True)
-
-# cut off too big values to have a nicer graphical representation
-mean_penalty = penalty.mean()
-axarr[1].set_ylim([0, mean_penalty * 3 / 2])
+axarr[1].set_yscale('log')
 
 axarr[2].plot(x_values, grad_norm, 'm')
 axarr[2].legend(['gradient norm'], shadow=True, fancybox=True)
+axarr[2].set_yscale('log')
 
 # description
 elapsed_time = npz['elapsed_time'].item()
@@ -35,11 +34,11 @@ n_in = npz['n_in'].item()
 n_out = npz['n_out'].item()
 activation_fnc = npz['activation_fnc']
 task = npz['task']
+n_iterations = check_freq * length
 
-print(type(elapsed_time))
-
-description = 'task: {}\ntraining time: {:2.2f} min\nactivation fnc: {}  n_hidden: {:d}  n_in: {:d}  n_out: ' \
-              '{:d}\n'.format(task, elapsed_time/60, activation_fnc, n_hidden, n_in, n_out)
+description = 'task: {}\ntraining time: {:2.2f} min  num iterations: {:n}\nactivation fnc: {}  ' \
+              'n_hidden: {:d}  n_in: {:d}  n_out: {:d}\n'.format(task, elapsed_time / 60, n_iterations,
+                                                                 activation_fnc, n_hidden, n_in, n_out)
 axarr[0].set_title(description, fontsize=14, ha='left', multialignment='left', loc='left')
 
 plt.xlabel('iteration num')

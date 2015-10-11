@@ -1,7 +1,7 @@
 from RNN import RNN
-from Tasks.AdditionTask import AdditionTask
+from tasks.AdditionTask import AdditionTask
 import theano
-from configs import Configs
+from Configs import Configs
 from Penalty import MeanPenalty
 
 __author__ = 'giulio'

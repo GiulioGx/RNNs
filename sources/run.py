@@ -1,8 +1,8 @@
 from ActivationFunction import Tanh
 from RNN import RNN
-from Tasks.AdditionTask import AdditionTask
+from tasks.AdditionTask import AdditionTask
 import theano
-from configs import Configs
+from Configs import Configs
 from Penalty import MeanPenalty, NullPenalty
 
 __author__ = 'giulio'
@@ -22,7 +22,7 @@ print(separator)
 
 seed = 13
 task = AdditionTask(144, seed)
-n_hidden = 100
+n_hidden = 50
 activation_fnc = Tanh()
 output_fnc = RNN.last_linear_fnc
 loss_fnc = RNN.squared_error

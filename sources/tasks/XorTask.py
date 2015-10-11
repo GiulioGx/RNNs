@@ -1,7 +1,7 @@
 import numpy
-from Tasks.MarkerBasedTask import MarkerBasedTask
-from Tasks.Task import Task
-from configs import Configs
+from tasks.MarkerBasedTask import MarkerBasedTask
+from tasks.Task import Task
+from Configs import Configs
 
 __author__ = 'giulio'
 

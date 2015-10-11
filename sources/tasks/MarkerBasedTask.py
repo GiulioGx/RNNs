@@ -1,6 +1,6 @@
-from Tasks.Batch import Batch
+from tasks.Batch import Batch
 import numpy
-from configs import Configs
+from Configs import Configs
 
 __author__ = 'giulio'
 
