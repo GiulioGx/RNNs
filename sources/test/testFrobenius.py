@@ -14,6 +14,9 @@ frobenius_norm = (A**2).sum()
 reg = TT.grad(frobenius_norm, [W], consider_constant=[deriv_a])
 
 
+n = W.shape[0]
+reg = reg/n
+reg = TT.cast(reg, dtype='float32')
 f = T.function([W,deriv_a], reg)
 
 
