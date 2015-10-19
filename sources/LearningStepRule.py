@@ -4,6 +4,7 @@ import theano as T
 import theano.tensor as TT
 import numpy
 from Rule import Rule
+from theanoUtils import norm
 
 __author__ = 'giulio'
 
@@ -12,7 +13,7 @@ class LearningStepRule(Rule):
     __metaclass__ = abc.ABCMeta
 
     @abc.abstractmethod
-    def get_lr(self, symbol_closet, W_rec_dir, W_in_dir, W_out_dir, b_rec_dir, b_out_dir):
+    def get_lr(self, symbol_closet, obj_symbols, W_rec_dir, W_in_dir, W_out_dir, b_rec_dir, b_out_dir):
         """return a theano expression for the learning rate and the number of steps used to compute it"""
         return
 
@@ -21,8 +22,21 @@ class ConstantStep(LearningStepRule):
     def __init__(self, lr_value=0.001):
         self.__lr_value = TT.alloc(numpy.array(lr_value, dtype=Configs.floatType))
 
-    def get_lr(self, symbol_closet, W_rec_dir, W_in_dir, W_out_dir, b_rec_dir, b_out_dir):
+    def get_lr(self, symbol_closet, obj_symbols, W_rec_dir, W_in_dir, W_out_dir, b_rec_dir, b_out_dir):
         return [self.__lr_value]
+
+    def format_infos(self, infos):
+        return '', infos
+
+
+class W_rec_step():
+    def __init__(self, lr_value=0.001):
+        self.__lr_value = TT.alloc(numpy.array(lr_value, dtype=Configs.floatType))
+
+    def get_lr(self, symbol_closet, obj_symbols, W_rec_dir, W_in_dir, W_out_dir, b_rec_dir, b_out_dir):
+        W_rec_norm = norm(W_rec_dir)
+
+        return [self.__lr_value / W_rec_norm]
 
     def format_infos(self, infos):
         return '', infos
@@ -32,14 +46,10 @@ class ConstantNormalizedStep(LearningStepRule):
     def __init__(self, lr_value=0.001):
         self.__lr_value = TT.alloc(numpy.array(lr_value, dtype=Configs.floatType))
 
-    def get_lr(self, symbol_closet, W_rec_dir, W_in_dir, W_out_dir, b_rec_dir, b_out_dir):
-        norm = TT.sqrt((W_rec_dir ** 2).sum() +
-                       (W_in_dir ** 2).sum() +
-                       (W_out_dir ** 2).sum() +
-                       (b_rec_dir ** 2).sum() +
-                       (b_out_dir ** 2).sum())
+    def get_lr(self, symbol_closet, obj_symbols, W_rec_dir, W_in_dir, W_out_dir, b_rec_dir, b_out_dir):
+        grad_norm = norm(W_rec_dir,W_in_dir,W_out_dir,b_out_dir,b_rec_dir)
 
-        return [self.__lr_value / norm]
+        return [self.__lr_value / grad_norm]
 
     def format_infos(self, infos):
         return '', infos
@@ -52,17 +62,17 @@ class ArmijoStep(LearningStepRule):
         self.__alpha = TT.alloc(numpy.array(alpha, dtype=Configs.floatType))
         self.__n_steps = TT.alloc(numpy.array(max_steps, dtype=int))
 
-    def get_lr(self, symbol_closet, W_rec_dir, W_in_dir, W_out_dir, b_rec_dir, b_out_dir):
+    def get_lr(self, symbol_closet, obj_symbols, W_rec_dir, W_in_dir, W_out_dir, b_rec_dir, b_out_dir):
         max_steps = 10
 
         gradient = TT.concatenate(
-            [symbol_closet.gW_rec.flatten(), symbol_closet.gW_in.flatten(), symbol_closet.gW_out.flatten(),
-             symbol_closet.gb_rec.flatten(), symbol_closet.gb_out.flatten()]).flatten()
+            [obj_symbols.gW_rec.flatten(), obj_symbols.gW_in.flatten(), obj_symbols.gW_out.flatten(),
+             obj_symbols.gb_rec.flatten(), obj_symbols.gb_out.flatten()]).flatten()
 
         direction = TT.concatenate(
-            [symbol_closet.W_rec_dir.flatten(), symbol_closet.W_in_dir.flatten(), symbol_closet.W_out_dir.flatten(),
-             symbol_closet.b_rec_dir.flatten(),
-             symbol_closet.b_out_dir.flatten()]).flatten()
+            [W_rec_dir.flatten(), W_in_dir.flatten(), W_out_dir.flatten(),
+             b_rec_dir.flatten(),
+             b_out_dir.flatten()]).flatten()
 
         grad_dir_dot_product = TT.dot(gradient, direction)
 
@@ -74,7 +84,7 @@ class ArmijoStep(LearningStepRule):
             b_rec_k = symbol_closet.b_rec + step * b_rec_dir
             b_out_k = symbol_closet.b_out + step * b_out_dir
 
-            f_1 = symbol_closet.loss(W_rec_k, W_in_k, W_out_k, b_rec_k, b_out_k, u, t)
+            f_1 = obj_symbols.loss(W_rec_k, W_in_k, W_out_k, b_rec_k, b_out_k, u, t)
 
             condition = f_0 - f_1 >= -alpha * step * grad_dir_dot_product  # sufficient decrease condition
 
