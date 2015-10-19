@@ -3,7 +3,7 @@ from DescentDirectionRule import AntiGradientWithPenalty, MidAnglePenaltyDirecti
 from LearningStepRule import ConstantNormalizedStep, ConstantStep, W_rec_step
 from ObjectiveFunction import ObjectiveFunction
 from RNN import RNN
-from RNNTrainer import RNNTrainer
+from NetTrainer import NetTrainer
 from TrainingRule import TrainingRule
 from tasks.AdditionTask import AdditionTask
 import theano
@@ -31,7 +31,7 @@ task = AdditionTask(144, seed)
 n_hidden = 50
 activation_fnc = Tanh()
 output_fnc = RNN.last_linear_fnc
-loss_fnc = RNNTrainer.squared_error
+loss_fnc = NetTrainer.squared_error
 #penalty = MeanPenalty()
 penalty = ConstantPenalty()
 #dir_rule = AntiGradientWithPenalty(penalty, 1) #0.001
@@ -42,7 +42,7 @@ lr_rule = W_rec_step(0.0001) #0.01
 #lr_rule = ConstantStep(0.01) #0.01
 obj_fnc = ObjectiveFunction(loss_fnc)
 train_rule = TrainingRule(dir_rule, lr_rule)
-trainer = RNNTrainer(train_rule, obj_fnc)
+trainer = NetTrainer(train_rule, obj_fnc)
 net = trainer.train(task, activation_fnc, output_fnc, n_hidden, seed)
 
 # train

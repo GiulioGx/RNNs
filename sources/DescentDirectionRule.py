@@ -46,7 +46,9 @@ class AntiGradientWithPenalty(DescentDirectionRule):
 
     def get_dir(self, symbol_closet, obj_symbols):
         # add penalty term
-        penalty_value, penalty_grad = self.__penalty.penalty_term(symbol_closet.deriv_a_shared, symbol_closet.W_rec)
+        penalty_value, penalty_grad = self.__penalty.penalty_term(symbol_closet.W_rec, symbol_closet.W_in,
+                                                                  symbol_closet.W_out, symbol_closet.b_rec,
+                                                                  symbol_closet.b_out, symbol_closet)
         penalty_grad_norm = norm(penalty_grad)
 
         W_rec_dir = - obj_symbols.gW_rec
@@ -57,12 +59,11 @@ class AntiGradientWithPenalty(DescentDirectionRule):
 
         W_rec_dir = TT.switch(penalty_grad_norm > 0, W_rec_dir - self.__penalty_lambda * penalty_grad, W_rec_dir)
 
-        # W_rec_dir = -penalty_grad *  self.__penalty_lambda / penalty_grad_norm
-
         return W_rec_dir, W_in_dir, W_out_dir, b_rec_dir, b_out_dir, penalty_value, penalty_grad_norm
 
     def format_infos(self, infos):
-        return 'penalty_value: {}, penalty_grad: {:07.3f}'.format(infos[0].item(), infos[1].item()), infos[2:len(infos)]
+        return 'penalty_value: {:07.3f}, penalty_grad: {:07.3f}'.format(infos[0].item(), infos[1].item()), infos[
+                                                                                                           2:len(infos)]
 
 
 class MidAnglePenaltyDirection(DescentDirectionRule):
@@ -71,7 +72,9 @@ class MidAnglePenaltyDirection(DescentDirectionRule):
 
     def get_dir(self, symbol_closet, obj_symbols):
         # get penalty
-        penalty_value, penalty_grad = self.__penalty.penalty_term(symbol_closet.deriv_a_shared, symbol_closet.W_rec)
+        penalty_value, penalty_grad = self.__penalty.penalty_term(symbol_closet.W_rec, symbol_closet.W_in,
+                                                                  symbol_closet.W_out, symbol_closet.b_rec,
+                                                                  symbol_closet.b_out, symbol_closet)
         penalty_grad_norm = TT.sqrt((penalty_grad ** 2).sum())
 
         norm_gW_rec = TT.sqrt((obj_symbols.gW_rec ** 2).sum())
@@ -142,7 +145,9 @@ class FrozenGradient(DescentDirectionRule):
 
     def get_dir(self, symbol_closet, obj_symbols):
         # get penalty
-        penalty_value, penalty_grad = self.__penalty.penalty_term(symbol_closet.deriv_a_shared, symbol_closet.W_rec)
+        penalty_value, penalty_grad = self.__penalty.penalty_term(symbol_closet.W_rec, symbol_closet.W_in,
+                                                                  symbol_closet.W_out, symbol_closet.b_rec,
+                                                                  symbol_closet.b_out, symbol_closet)
         penalty_grad_norm = TT.sqrt((penalty_grad ** 2).sum())
 
         norm_gW_rec = norm(obj_symbols.gW_rec)

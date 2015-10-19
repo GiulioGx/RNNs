@@ -12,7 +12,7 @@ class Penalty(object):
     __metaclass__ = abc.ABCMeta
 
     @abc.abstractmethod
-    def penalty_term(self, deriv__a, W_rec):
+    def penalty_term(self, W_rec, W_in, W_out, b_rec, b_out, symbolic_closet):
         """return a theano expression for a penalty term and it's gradient"""
         return
 
@@ -21,7 +21,7 @@ class NullPenalty(Penalty):
     def __init__(self):
         super().__init__()
 
-    def penalty_term(self, deriv__a, W_rec):
+    def penalty_term(self, W_rec, W_in, W_out, b_rec, b_out, symb_closet):
         penalty = TT.alloc(numpy.array(0., dtype=Configs.floatType))
         penalty_grad = TT.zeros_like(W_rec, dtype=Configs.floatType)
 
@@ -33,9 +33,10 @@ class FullPenalty(Penalty):
     def __init__(self):
         super().__init__()
 
-    def penalty_term(self, deriv_a, W_rec):
+    def penalty_term(self, W_rec, W_in, W_out, b_rec, b_out, symbolic_closet):
         # deriv__a is a matrix n_steps * n_hidden * n_examples
 
+        deriv_a = symbolic_closet.get_deriv_a(W_rec, W_in, W_out, b_rec, b_out)
         permuted_a = deriv_a.dimshuffle(2, 0, 1)
         n_hidden = W_rec.shape[0]
 
@@ -61,8 +62,10 @@ class MeanPenalty(Penalty):
     def __init__(self):
         super().__init__()
 
-    def penalty_term(self, deriv_a, W_rec):
+    def penalty_term(self, W_rec, W_in, W_out, b_rec, b_out, symbolic_closet):
         # deriv__a is a matrix n_steps * n_hidden * n_examples
+
+        deriv_a = symbolic_closet.get_deriv_a(W_rec, W_in, W_out, b_rec, b_out)
 
         mean_deriv_a = deriv_a.mean(axis=2)
 
@@ -81,8 +84,10 @@ class MeanPenalty(Penalty):
 
 class ConstantPenalty(Penalty):
 
-    def penalty_term(self, deriv_a, W_rec):
+    def penalty_term(self, W_rec, W_in, W_out, b_rec, b_out, symbolic_closet):
         # deriv__a is a matrix n_steps * n_hidden * n_examples
+
+        deriv_a = symbolic_closet.get_deriv_a(W_rec, W_in, W_out, b_rec, b_out)
 
         mean_deriv_a = deriv_a.mean(axis=2)
         n_steps = TT.cast(mean_deriv_a.shape[0], dtype=Configs.floatType)

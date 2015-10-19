@@ -9,7 +9,7 @@ from TrainingRule import TrainingRule
 __author__ = 'giulio'
 
 
-class RNNTrainer(object):
+class NetTrainer(object):
 
     def __init__(self, training_rule: TrainingRule, obj_fnc: ObjectiveFunction):
         self.__training_rule = training_rule
@@ -20,7 +20,7 @@ class RNNTrainer(object):
         net = RNN(activation_fnc, output_fnc, n_hidden, task.n_in, task.n_out, seed)
         obj_symbols = self.__obj_fnc.obj_symbols(net)
 
-        #define train step
+        # define train step
         train_step = self.__training_rule.get_train_step_fnc(net.symb_closet, obj_symbols)
 
         # TODO move somewhere else and add them to npz saved file

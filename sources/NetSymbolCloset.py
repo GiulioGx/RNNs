@@ -32,6 +32,11 @@ class NetSymbolCloset:
                                                               W_out: self.__W_out, b_rec: self.__b_rec,
                                                               b_out: self.__b_out})
 
+    def get_deriv_a(self, W_rec, W_in, W_out, b_rec, b_out):
+        _, deriv_a = self.__net.net_output(W_rec, W_in, W_out, b_rec, b_out, self.u)
+        return deriv_a
+
+
     #     # define separate gradients
     #     self.__W_fix = self.__W_rec.clone()
     #
