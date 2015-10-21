@@ -1,6 +1,6 @@
 from ActivationFunction import Tanh
-from DescentDirectionRule import AntiGradientWithPenalty, MidAnglePenaltyDirection, FrozenGradient
-from LearningStepRule import ConstantNormalizedStep, ConstantStep, W_rec_step
+from DescentDirectionRule import AntiGradientWithPenalty, MidAnglePenaltyDirection, FrozenGradient, AntiGradient
+from LearningStepRule import ConstantNormalizedStep, ConstantStep, WRecNormalizedStep, ArmijoStep
 from ObjectiveFunction import ObjectiveFunction
 from RNN import RNN
 from NetTrainer import NetTrainer
@@ -34,13 +34,15 @@ output_fnc = RNN.last_linear_fnc
 loss_fnc = NetTrainer.squared_error
 #penalty = MeanPenalty()
 penalty = ConstantPenalty()
+dir_rule = AntiGradient()
 #dir_rule = AntiGradientWithPenalty(penalty, 1) #0.001
-dir_rule = MidAnglePenaltyDirection(penalty)
+#dir_rule = MidAnglePenaltyDirection(penalty)
 #dir_rule = FrozenGradient(penalty)
 #dir_rule = SepareteGradient()
-lr_rule = W_rec_step(0.0001) #0.01
+#lr_rule = W_rec_step(0.0001) #0.01
 #lr_rule = ConstantStep(0.01) #0.01
-obj_fnc = ObjectiveFunction(loss_fnc)
+lr_rule = ArmijoStep(alpha=0.1, beta=0.5, init_step=1, max_steps=50)
+obj_fnc = ObjectiveFunction(loss_fnc, penalty, 1.5)
 train_rule = TrainingRule(dir_rule, lr_rule)
 trainer = NetTrainer(train_rule, obj_fnc)
 net = trainer.train(task, activation_fnc, output_fnc, n_hidden, seed)

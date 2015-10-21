@@ -10,18 +10,17 @@ __author__ = 'giulio'
 
 
 class NetTrainer(object):
-
     def __init__(self, training_rule: TrainingRule, obj_fnc: ObjectiveFunction):
         self.__training_rule = training_rule
         self.__obj_fnc = obj_fnc
 
     def train(self, task, activation_fnc, output_fnc, n_hidden, seed=13):
 
+        # configure network
         net = RNN(activation_fnc, output_fnc, n_hidden, task.n_in, task.n_out, seed)
-        obj_symbols = self.__obj_fnc.obj_symbols(net)
 
-        # define train step
-        train_step = self.__training_rule.get_train_step_fnc(net.symb_closet, obj_symbols)
+        # compile symbols
+        train_step = self.__training_rule.compile(net, self.__obj_fnc)
 
         # TODO move somewhere else and add them to npz saved file
         max_it = 500000
@@ -39,7 +38,7 @@ class NetTrainer(object):
         print('Generating validation set...')
         validation_set = task.get_batch(validation_set_size)
 
-        rho = numpy.max(abs(numpy.linalg.eigvals(net.symb_closet.W_rec.get_value())))
+        rho = numpy.max(abs(numpy.linalg.eigvals(net.symbols.W_rec.get_value())))
         print('Initial rho: {:5.2f}'.format(rho))
 
         print('Training...')
@@ -51,16 +50,14 @@ class NetTrainer(object):
         while i < max_it and best_error > stop_error_thresh:
 
             batch = task.get_batch(batch_size)
-            infos = train_step(batch.inputs, batch.outputs)
+            desc, norm, penalty_grad_norm = train_step.step(batch.inputs, batch.outputs)
 
-            norm = infos[0]
-            penalty_grad_norm = infos[1]
 
             if i % check_freq == 0:
-                y_net = net.net_output_shared(validation_set.inputs) # FIXME
+                y_net = net.net_output_shared(validation_set.inputs)  # FIXME
                 valid_error = task.error_fnc(y_net, validation_set.outputs)
                 loss = self.__obj_fnc.loss(y_net, validation_set.outputs)
-                rho = numpy.max(abs(numpy.linalg.eigvals(net.symb_closet.W_rec.get_value())))
+                rho = numpy.max(abs(numpy.linalg.eigvals(net.symbols.W_rec.get_value())))
 
                 net.save_model(model_path, model_name, stats)
 
@@ -72,10 +69,9 @@ class NetTrainer(object):
                 stats.update(rho, norm, penalty_grad_norm, valid_error, i, total_elapsed_time)
 
                 print(
-                    'iteration: {:07d}, valid loss: {:07.3f}, valid error: {:.2%} '
-                    '(best: {:.2%}), rho: {:5.2f}, '.format(
-                        i, loss, valid_error, best_error, rho) + self.__training_rule.format_infos(
-                        infos) + ', time: {:2.2f}'.format(
+                    'iteration: {:07d}, validation=[loss: {:07.3f}, error: {:.2%} '
+                    '(best: {:.2%})], rho: {:5.2f}, '.format(
+                        i, loss, valid_error, best_error, rho) + desc + ', time: {:2.2f}\n'.format(
                         batch_end_time - batch_start_time))
                 batch_start_time = time.time()
 

@@ -1,45 +1,72 @@
 import DescentDirectionRule
 import LearningStepRule
 import theano as T
-from Rule import Rule
-from theanoUtils import norm
+import theano.tensor as TT
+from ObjectiveFunction import ObjectiveFunction
 
 __author__ = 'giulio'
 
 
-class TrainingRule(Rule):
+class TrainingRule(object):
+    class TrainCompiled(object):
+        def __init__(self, rule, net, obj_fnc: ObjectiveFunction):
+            net_symbols = net.symbols
+            self.__obj_symbols = obj_fnc.compile(net, net_symbols.W_rec, net_symbols.W_in, net_symbols.W_out,
+                                                 net_symbols.b_rec, net_symbols.b_out, net_symbols.u, net_symbols.t)
+            self.__dir_symbols = rule.desc_dir_rule.compile(net_symbols, self.__obj_symbols)
+            dir_infos = self.__dir_symbols.infos
+
+            self.__lr_symbols = rule.lr_rule.compile(net, obj_fnc, self.__dir_symbols)
+            lr_infos = self.__lr_symbols.infos
+            lr = self.__lr_symbols.learning_rate
+
+            # FIXME
+            if len(dir_infos) > 0:
+                penalty_grad_norm = dir_infos[1]
+            else:
+                penalty_grad_norm = TT.alloc(0)
+
+            output_list = [self.__obj_symbols.grad_norm,
+                           penalty_grad_norm] + self.__obj_symbols.infos + lr_infos + dir_infos
+
+            self.__step = T.function([net_symbols.u, net_symbols.t], output_list,
+                                     allow_input_downcast='true',
+                                     on_unused_input='warn',
+                                     updates=[
+                                         (net_symbols.W_rec, net_symbols.W_rec + lr * self.__dir_symbols.W_rec_dir),
+                                         (net_symbols.W_in, net_symbols.W_in + lr * self.__dir_symbols.W_in_dir),
+                                         (net_symbols.W_out, net_symbols.W_out + lr * self.__dir_symbols.W_out_dir),
+                                         (net_symbols.b_rec, net_symbols.b_rec + lr * self.__dir_symbols.b_rec_dir),
+                                         (net_symbols.b_out, net_symbols.b_out + lr * self.__dir_symbols.b_out_dir)])
+
+        def step(self, inputs, outputs):
+            infos = self.__step(inputs, outputs)
+
+            # FIXME
+            norm = infos[0]
+            penalty_grad_norm = infos[1]
+            description = self.__format_infos(infos)
+
+            return description, norm, penalty_grad_norm
+
+        def __format_infos(self, infos):
+            infos = infos[2:len(infos)]
+            obj_desc, infos = self.__obj_symbols.format_infos(infos)
+            lr_desc, infos = self.__lr_symbols.format_infos(infos)
+            dir_desc, infos = self.__dir_symbols.format_infos(infos)
+            return obj_desc + ' ' + lr_desc + ' ' + dir_desc
 
     def __init__(self, desc_dir_rule: DescentDirectionRule, lr_rule: LearningStepRule):
         self.__desc_dir_rule = desc_dir_rule
         self.__lr_rule = lr_rule
 
-    def get_train_step_fnc(self, net_symbols, obj_symbols):
-        """return a theano compiled function for the training step"""
+    def compile(self, net_symbols, obj_symbols):
+        return TrainingRule.TrainCompiled(self, net_symbols, obj_symbols)
 
-        W_rec_dir, W_in_dir, W_out_dir, b_rec_dir, b_out_dir, *dir_infos = self.__desc_dir_rule.get_dir(
-            net_symbols, obj_symbols)
+    @property
+    def desc_dir_rule(self):
+        return self.__desc_dir_rule
 
-        lr, *lr_infos = self.__lr_rule.get_lr(net_symbols, obj_symbols, W_rec_dir, W_in_dir, W_out_dir, b_rec_dir, b_out_dir)
-
-        gW_rec_norm = norm(obj_symbols.gW_rec)
-
-        # FIXME
-        penalty_grad_norm = dir_infos[1]
-
-        output_list = [obj_symbols.grad_norm, penalty_grad_norm, gW_rec_norm, lr] + lr_infos + dir_infos
-
-        return T.function([net_symbols.u, net_symbols.t], output_list,
-                          allow_input_downcast='true',
-                          on_unused_input='warn',
-                          updates=[(net_symbols.W_rec, net_symbols.W_rec + lr * W_rec_dir),
-                                   (net_symbols.W_in, net_symbols.W_in + lr * W_in_dir),
-                                   (net_symbols.W_out, net_symbols.W_out + lr * W_out_dir),
-                                   (net_symbols.b_rec, net_symbols.b_rec + lr * b_rec_dir),
-                                   (net_symbols.b_out, net_symbols.b_out + lr * b_out_dir)])
-
-    def format_infos(self, infos):
-        desc = 'grad norm: {:07.3f}, gW_rec_norm: {:07.3f}, lr: {:02.4f}'.format(infos[0].item(), infos[2].item(), infos[3].item())
-        infos = infos[4:len(infos)]
-        lr_desc, infos = self.__lr_rule.format_infos(infos)
-        dir_desc, infos = self.__desc_dir_rule.format_infos(infos)
-        return desc + ' ' + lr_desc + '' + dir_desc
+    @property
+    def lr_rule(self):
+        return self.__lr_rule

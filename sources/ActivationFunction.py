@@ -12,11 +12,9 @@ class ActivationFunction(object):
     @abc.abstractmethod
     def f(self, x):
         """applies f() to a theano symbol x"""
-        return
 
     def grad_f(self, x):
         """applies f'() to a theano symbol x"""
-        return
 
     def __str__(self):
         return 'unkwown'
@@ -31,6 +29,7 @@ class Relu(ActivationFunction):
     def grad_f(self, x):
         return TT.switch(x > 0, TT.alloc(numpy.array(1., dtype=Configs.floatType)),
                          TT.alloc(numpy.array(0., dtype=Configs.floatType)))
+
     def __str__(self):
         return 'Relu'
 

@@ -5,7 +5,6 @@ __author__ = 'giulio'
 
 
 def norm(*tensor_list):
-
     squared_norm = TT.alloc(0.)
 
     for w in tensor_list:
@@ -15,12 +14,10 @@ def norm(*tensor_list):
 
 
 def cos_between_dirs(d1, d2):
-
-    return TT.dot(d1.flatten(), d2.flatten()) / (norm(d1)*norm(d2))
+    return TT.dot(d1.flatten(), d2.flatten()) / (norm(d1) * norm(d2))
 
 
 def get_dir_between_2_dirs(c1, c2, cos):
-
     # normalize inputs
     dir1 = - c1 / norm(c1)
     dir2 = - c2 / norm(c2)
