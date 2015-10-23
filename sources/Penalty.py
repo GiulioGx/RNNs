@@ -4,6 +4,7 @@ import theano.tensor as TT
 import numpy
 import abc
 from InfoProducer import InfoProducer
+from Params import Params
 from theanoUtils import norm
 
 __author__ = 'giulio'
@@ -25,7 +26,7 @@ class Penalty(object):
     __metaclass__ = abc.ABCMeta
 
     @abc.abstractmethod
-    def compile(self, W_rec, W_in, W_out, b_rec, b_out, net_symbols):
+    def compile(self, params: Params, net_symbols):
         """returns the compiled version"""
 
 
@@ -53,14 +54,21 @@ class NullPenalty(Penalty):
     def __init__(self):
         super().__init__()
 
-    def compile(self, W_rec, W_in, W_out, b_rec, b_out, net_symbols):
-        return NullPenalty.Symbols(W_rec)
+    def compile(self, params: Params, net_symbols):
+        return NullPenalty.Symbols(params.W_rec)  # FIXME
 
 
 class FullPenalty(Penalty):
     class Symbols(PenaltySymbols):
-        def __init__(self, W_rec, W_in, W_out, b_rec, b_out, net_symbols):
+        def __init__(self, params, net_symbols):
             # deriv__a is a matrix n_steps * n_hidden * n_examples
+
+            # FIXME
+            W_rec = params.W_rec
+            W_in = params.W_in
+            W_out = params.W_out
+            b_rec = params.b_rec
+            b_out = params.b_out
 
             deriv_a = net_symbols.get_deriv_a(W_rec, W_in, W_out, b_rec, b_out)
             permuted_a = deriv_a.dimshuffle(2, 0, 1)
@@ -104,16 +112,19 @@ class FullPenalty(Penalty):
     def __init__(self):
         super().__init__()
 
-    def compile(self, W_rec, W_in, W_out, b_rec, b_out, net_symbols):
-        return FullPenalty.Symbols(W_rec, W_in, W_out, b_rec, b_out, net_symbols)
+    def compile(self, params: Params, net_symbols):
+        return FullPenalty.Symbols(params, net_symbols)
 
 
 class MeanPenalty(Penalty):
     class Symbols(PenaltySymbols):
-        def __init__(self, W_rec, W_in, W_out, b_rec, b_out, net_symbols):
+        def __init__(self, params, net_symbols):
             # deriv__a is a matrix n_steps * n_hidden * n_examples
 
-            deriv_a = net_symbols.get_deriv_a(W_rec, W_in, W_out, b_rec, b_out)
+            # FIXME
+            W_rec = params.W_rec
+
+            deriv_a = net_symbols.get_deriv_a(params)
 
             mean_deriv_a = deriv_a.mean(axis=2)
 
@@ -149,19 +160,21 @@ class MeanPenalty(Penalty):
     def __init__(self):
         super().__init__()
 
-    def compile(self, W_rec, W_in, W_out, b_rec, b_out, net_symbols):
-        return MeanPenalty.Symbols(W_rec, W_in, W_out, b_rec, b_out, net_symbols)
+    def compile(self, params: Params, net_symbols):
+        return MeanPenalty.Symbols(params, net_symbols)
 
 
 class ConstantPenalty(Penalty):
     class Symbols(PenaltySymbols):
-        def __init__(self, W_rec, W_in, W_out, b_rec, b_out, net_symbols):
+        def __init__(self, params, net_symbols):
             # deriv__a is a matrix n_steps * n_hidden * n_examples
 
-            deriv_a = net_symbols.get_deriv_a(W_rec, W_in, W_out, b_rec, b_out)
+            deriv_a = net_symbols.get_deriv_a(params)
 
             mean_deriv_a = deriv_a.mean(axis=2)
             #n_steps = TT.cast(mean_deriv_a.shape[0], dtype=Configs.floatType)
+
+            W_rec = params.W_rec # FIXME
 
             A = deriv_a_T_wrt_a1(W_rec, mean_deriv_a)
 
@@ -187,8 +200,8 @@ class ConstantPenalty(Penalty):
         def infos(self):
             return self.__infos
 
-    def compile(self, W_rec, W_in, W_out, b_rec, b_out, net_symbols):
-        return ConstantPenalty.Symbols(W_rec, W_in, W_out, b_rec, b_out, net_symbols)
+    def compile(self, params: Params, net_symbols):
+        return ConstantPenalty.Symbols(params, net_symbols)
 
 
 # util functions

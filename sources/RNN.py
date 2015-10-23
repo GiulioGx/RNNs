@@ -1,9 +1,12 @@
+from numbers import Number
 import theano as T
 import theano.tensor as TT
 import numpy
 import os
 from Configs import Configs
 import theano.typed_list
+from Params import Params
+from theanoUtils import norm
 
 __author__ = 'giulio'
 
@@ -63,7 +66,10 @@ class RNN(object):
     def symbols(self):
         return self.__symbols
 
-    def net_output(self, W_rec, W_in, W_out, b_rec, b_out, u):
+    def net_output(self, params, u):
+        return self.__net_output(params.W_rec, params.W_in, params.W_out, params.b_rec, params.b_out, u)
+
+    def __net_output(self, W_rec, W_in, W_out, b_rec, b_out, u):
         n_sequences = u.shape[2]
         h_m1 = TT.alloc(numpy.array(0., dtype=Configs.floatType), self.__n_hidden, n_sequences)
 
@@ -108,75 +114,58 @@ class RNN(object):
                     rho=stats.rho,
                     penalty=stats.penalty_norm,
                     elapsed_time=stats.elapsed_time,
-                    W_rec=self.__symbols.W_rec.get_value(),
-                    W_in=self.__symbols.W_in.get_value(),
-                    W_out=self.__symbols.W_out.get_value(),
-                    b_rec=self.__symbols.b_rec.get_value(),
-                    b_out=self.__symbols.b_out.get_value())
+                    W_rec=self.__symbols.current_params.W_rec.get_value(),
+                    W_in=self.__symbols.current_params.W_in.get_value(),
+                    W_out=self.__symbols.current_params.W_out.get_value(),
+                    b_rec=self.__symbols.current_params.b_rec.get_value(),
+                    b_out=self.__symbols.current_params.b_out.get_value())  # FIXME
 
     # predefined output functions
     @staticmethod
     def last_linear_fnc(y):
         return y
 
-    class Experimental:
-        def __init__(self, net):
-            self.__net = net
+    class Params(Params):
 
-        def net_output(self, W_rec, W_in, W_out, b_rec, b_out, u):
+        def __init__(self, W_rec, W_in, W_out, b_rec, b_out):
+            self.__W_rec = W_rec
+            self.__W_in = W_in
+            self.__W_out = W_out
+            self.__b_rec = b_rec
+            self.__b_out = b_out
 
-                W_fixes = []
-                for i in range(200):
-                    W_fixes.append(self.__net.symbols.W_rec.clone())
+        def __add__(self, other):
+            if not isinstance(other, RNN.Params):
+                raise TypeError('cannot add an object of type' + type(self) + 'with an object of type ' + type(other))
+            return RNN.Params(self.__W_rec + other.__W_rec, self.__W_in + other.__W_in, self.__W_out + other.__W_out,
+                              self.__b_rec + other.__b_rec, self.__b_out + other.__b_out)
 
-                n_sequences = u.shape[2]
-                h_m1 = TT.alloc(numpy.array(0., dtype=Configs.floatType), self.__net.n_hidden, n_sequences)
+        def __mul__(self, alpha):
+            # if not isinstance(alpha, Number):
+            #     raise TypeError('cannot multuple object of type ' + type(self),
+            #                     ' with a non numeric type: ' + type(alpha))  # TODO theano scalar
+            return RNN.Params(self.__W_rec * alpha, self.__W_in * alpha, self.__W_out * alpha,
+                              self.__b_rec * alpha, self.__b_out * alpha)
 
-                values, _ = T.scan(self.__net_output_t, sequences=[u, TT.as_tensor_variable(W_fixes)],
-                                   outputs_info=[h_m1, None, None],
-                                   non_sequences=[W_in, W_out, b_rec, b_out],
-                                   name='net_output',
-                                   mode=T.Mode(linker='cvm'))
-                y = values[1]
-                deriv_a = values[2]
-                return y, deriv_a, W_fixes
+        def norm(self):
+            return norm(self.__W_rec, self.__W_in, self.__W_out, self.__b_rec, self.__b_out)
 
-        def __net_output_t(self, u_t, W_rec, h_tm1, W_in, W_out, b_rec, b_out):
-                h_t, deriv_a_t = self.__net.h_t(u_t, h_tm1, W_rec, W_in, b_rec)
-                y_t = self.__net.y_t(h_t, W_out, b_out)
-                return h_t, y_t, deriv_a_t
+        def grad(self, fnc):
+            gW_rec, gW_in, gW_out, \
+            gb_rec, gb_out = TT.grad(fnc, [self.__W_rec, self.__W_in, self.__W_out, self.__b_rec, self.__b_out])
+            return RNN.Params(gW_rec, gW_in, gW_out, gb_rec, gb_out)
 
-    class Symbols:
-        def __init__(self, net, W_rec, W_in, W_out, b_rec, b_out):
-            self.__net = net
+        def update_dictionary(self, other):
+            return [
+                (self.__W_rec, other.W_rec),
+                (self.__W_in, other.W_in),
+                (self.__W_out, other.W_out),
+                (self.__b_rec, other.b_rec),
+                (self.__b_out, other.b_out)]
 
-            # define shared variables
-            self.__W_in = T.shared(W_in, 'W_in')
-            self.__W_rec = T.shared(W_rec, 'W_rec')
-            self.__W_out = T.shared(W_out, 'W_out')
-            self.__b_rec = T.shared(b_rec, 'b_rec', broadcastable=(False, True))
-            self.__b_out = T.shared(b_out, 'b_out', broadcastable=(False, True))
-
-            # define symbols
-            W_in = TT.matrix()
-            W_rec = TT.matrix()
-            W_out = TT.matrix()
-            b_rec = TT.tensor(dtype=Configs.floatType, broadcastable=(False, True))
-            b_out = TT.tensor(dtype=Configs.floatType, broadcastable=(False, True))
-
-            self.u = TT.tensor3()  # input tensor
-            self.t = TT.tensor3()  # label tensor
-
-            self.y, self.deriv_a = net.net_output(W_rec, W_in, W_out, b_rec, b_out, self.u)
-            self.y_shared, self.deriv_a_shared = T.clone([self.y, self.deriv_a],
-                                                         replace={W_rec: self.__W_rec, W_in: self.__W_in,
-                                                                  W_out: self.__W_out, b_rec: self.__b_rec,
-                                                                  b_out: self.__b_out})
-
-        def get_deriv_a(self, W_rec, W_in, W_out, b_rec, b_out):
-            _, deriv_a = self.__net.net_output(W_rec, W_in, W_out, b_rec, b_out, self.u)
-            return deriv_a
-
+        # TODO REMOVE
+        def setW_rec(self, W_rec):
+            self.__W_rec = W_rec
 
         @property
         def W_rec(self):
@@ -197,3 +186,70 @@ class RNN(object):
         @property
         def b_out(self):
             return self.__b_out
+
+    class Experimental:
+        def __init__(self, net):
+            self.__net = net
+
+        def net_output(self, params, u):
+            return self.__net_output(params.W_rec, params.W_in, params.W_out, params.b_rec, params.b_out, u)
+
+        def __net_output(self, W_rec, W_in, W_out, b_rec, b_out, u):
+            W_fixes = []
+            for i in range(200):
+                W_fixes.append(W_rec.clone())
+
+            n_sequences = u.shape[2]
+            h_m1 = TT.alloc(numpy.array(0., dtype=Configs.floatType), self.__net.n_hidden, n_sequences)
+
+            values, _ = T.scan(self.__net_output_t, sequences=[u, TT.as_tensor_variable(W_fixes)],
+                               outputs_info=[h_m1, None, None],
+                               non_sequences=[W_in, W_out, b_rec, b_out],
+                               name='net_output',
+                               mode=T.Mode(linker='cvm'),
+                               n_steps=u.shape[0])
+            y = values[1]
+            deriv_a = values[2]
+            return y, deriv_a, W_fixes
+
+        def __net_output_t(self, u_t, W_rec, h_tm1, W_in, W_out, b_rec, b_out):
+            h_t, deriv_a_t = self.__net.h_t(u_t, h_tm1, W_rec, W_in, b_rec)
+            y_t = self.__net.y_t(h_t, W_out, b_out)
+            return h_t, y_t, deriv_a_t
+
+    class Symbols:
+        def __init__(self, net, W_rec, W_in, W_out, b_rec, b_out):
+            self.__net = net
+
+            # define shared variables
+            self.__W_in = T.shared(W_in, 'W_in')
+            self.__W_rec = T.shared(W_rec, 'W_rec')
+            self.__W_out = T.shared(W_out, 'W_out')
+            self.__b_rec = T.shared(b_rec, 'b_rec', broadcastable=(False, True))
+            self.__b_out = T.shared(b_out, 'b_out', broadcastable=(False, True))
+
+            # define symbols
+            W_in = TT.matrix()
+            W_rec = TT.matrix()
+            W_out = TT.matrix()
+            b_rec = TT.tensor(dtype=Configs.floatType, broadcastable=(False, True))
+            b_out = TT.tensor(dtype=Configs.floatType, broadcastable=(False, True))
+
+            self.__current_params = RNN.Params(self.__W_rec, self.__W_in, self.__W_out, self.__b_rec, self.__b_out)
+
+            self.u = TT.tensor3()  # input tensor
+            self.t = TT.tensor3()  # target tensor
+
+            self.y, self.deriv_a = net.net_output(self.__current_params, self.u)
+            self.y_shared, self.deriv_a_shared = T.clone([self.y, self.deriv_a],
+                                                         replace={W_rec: self.__W_rec, W_in: self.__W_in,
+                                                                  W_out: self.__W_out, b_rec: self.__b_rec,
+                                                                  b_out: self.__b_out})
+
+        def get_deriv_a(self, params):
+            _, deriv_a = self.__net.net_output(params, self.u)
+            return deriv_a
+
+        @property
+        def current_params(self):
+            return self.__current_params

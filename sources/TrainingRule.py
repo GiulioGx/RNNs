@@ -11,8 +11,8 @@ class TrainingRule(object):
     class TrainCompiled(object):
         def __init__(self, rule, net, obj_fnc: ObjectiveFunction):
             net_symbols = net.symbols
-            self.__obj_symbols = obj_fnc.compile(net, net_symbols.W_rec, net_symbols.W_in, net_symbols.W_out,
-                                                 net_symbols.b_rec, net_symbols.b_out, net_symbols.u, net_symbols.t)
+            self.__obj_symbols = obj_fnc.compile(net, net_symbols.current_params, net_symbols.u,
+                                                 net_symbols.t)
             self.__dir_symbols = rule.desc_dir_rule.compile(net_symbols, self.__obj_symbols)
             dir_infos = self.__dir_symbols.infos
 
@@ -29,15 +29,11 @@ class TrainingRule(object):
             output_list = [self.__obj_symbols.grad_norm,
                            penalty_grad_norm] + self.__obj_symbols.infos + lr_infos + dir_infos
 
+            new_params = net_symbols.current_params + (self.__dir_symbols.direction * lr)
             self.__step = T.function([net_symbols.u, net_symbols.t], output_list,
                                      allow_input_downcast='true',
                                      on_unused_input='warn',
-                                     updates=[
-                                         (net_symbols.W_rec, net_symbols.W_rec + lr * self.__dir_symbols.W_rec_dir),
-                                         (net_symbols.W_in, net_symbols.W_in + lr * self.__dir_symbols.W_in_dir),
-                                         (net_symbols.W_out, net_symbols.W_out + lr * self.__dir_symbols.W_out_dir),
-                                         (net_symbols.b_rec, net_symbols.b_rec + lr * self.__dir_symbols.b_rec_dir),
-                                         (net_symbols.b_out, net_symbols.b_out + lr * self.__dir_symbols.b_out_dir)])
+                                     updates=net_symbols.current_params.update_dictionary(new_params))
 
         def step(self, inputs, outputs):
             infos = self.__step(inputs, outputs)

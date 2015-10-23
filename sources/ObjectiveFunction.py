@@ -1,4 +1,5 @@
 from InfoProducer import InfoProducer
+from Params import Params
 from Penalty import Penalty, NullPenalty
 import theano.tensor as TT
 import theano as T
@@ -13,8 +14,8 @@ class ObjectiveFunction(object):
         self.__penalty = penalty
         self.__penalty_lambda = penalty_lambda
 
-    def compile(self, net, W_rec, W_in, W_out, b_rec, b_out, u, t):
-        return ObjectiveSymbols(self, net, W_rec, W_in, W_out, b_rec, b_out, u, t)
+    def compile(self, net, params: Params, u, t):
+        return ObjectiveSymbols(self, net, params, u, t)
 
     def loss(self, y, t):  # loss without penalty
         return self.__loss_fnc(y, t)
@@ -33,37 +34,35 @@ class ObjectiveFunction(object):
 
 
 class ObjectiveSymbols(InfoProducer):
-    def __init__(self, obj_fnc: ObjectiveFunction, net, W_rec, W_in, W_out, b_rec, b_out, u, t):
+    def __init__(self, obj_fnc: ObjectiveFunction, net, params, u, t):
         self.__net = net
         self.__obj_fnc = obj_fnc
 
         # loss gradient
-        y, _ = self.__net.net_output(W_rec, W_in, W_out, b_rec, b_out, u)
+        y, _ = self.__net.net_output(params, u)
 
         loss = obj_fnc.loss_fnc(y, t)
-        self.__gW_rec, self.__gW_in, self.__gW_out, \
-        self.__gb_rec, self.__gb_out = TT.grad(loss, [W_rec, W_in, W_out, b_rec, b_out])
+        self.__grad = params.grad(loss)
 
         # add penalty
-        self.__penalty_symbols = obj_fnc.penalty.compile(W_rec, W_in, W_out, b_rec, b_out, net.symbols)
+        self.__penalty_symbols = obj_fnc.penalty.compile(params, net.symbols)
         penalty_grad = self.__penalty_symbols.penalty_grad
         penalty_value = self.__penalty_symbols.penalty_value
 
-        loss_grad_norm = norm(self.__gW_rec, self.__gW_in, self.__gW_out, self.__gb_rec, self.__gb_out)
+        loss_grad_norm = self.__grad.norm()
 
-        self.__gW_rec += obj_fnc.penalty_lambda * penalty_grad
+        self.__grad.setW_rec(self.__grad.W_rec + obj_fnc.penalty_lambda * penalty_grad) # FIXME
         self.__objective_value = loss + (penalty_value * obj_fnc.penalty_lambda)
-        self.__grad_norm = norm(self.__gW_rec, self.__gW_in, self.__gW_out, self.__gb_rec, self.__gb_out)
+        self.__grad_norm = self.__grad.norm()
 
         self.__infos = self.__penalty_symbols.infos + [loss, loss_grad_norm]
 
 
         # experimental
-        y, _, W_fixes = net.experimental.net_output(W_rec, W_in, W_out, b_rec, b_out, u)
+        y, _, W_fixes = net.experimental.net_output(params, u)
         loss = obj_fnc.loss_fnc(y, t)
 
-        # a = W_fixes[0]
-        # self.__gW_rec = T.grad(loss, W_fixes)
+        W_rec = params.W_rec  # FIXME
 
         def step(W, acc):
             return W + acc
@@ -75,7 +74,7 @@ class ObjectiveSymbols(InfoProducer):
                            mode=T.Mode(linker='cvm'),
                            n_steps=u.shape[0])
 
-        self.__infos = self.__infos + [norm(self.__gW_rec - values[-1])]
+        self.__infos = self.__infos + [norm(self.__grad.W_rec - values[-1])]
         self.__gW_rec = values[-1]
 
     def format_infos(self, infos):
@@ -93,24 +92,8 @@ class ObjectiveSymbols(InfoProducer):
         return self.__objective_value
 
     @property
-    def gW_rec(self):
-        return self.__gW_rec
-
-    @property
-    def gW_in(self):
-        return self.__gW_in
-
-    @property
-    def gW_out(self):
-        return self.__gW_out
-
-    @property
-    def gb_rec(self):
-        return self.__gb_rec
-
-    @property
-    def gb_out(self):
-        return self.__gb_out
+    def grad(self):
+        return self.__grad
 
     @property
     def grad_norm(self):

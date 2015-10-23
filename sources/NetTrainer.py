@@ -38,7 +38,7 @@ class NetTrainer(object):
         print('Generating validation set...')
         validation_set = task.get_batch(validation_set_size)
 
-        rho = numpy.max(abs(numpy.linalg.eigvals(net.symbols.W_rec.get_value())))
+        rho = numpy.max(abs(numpy.linalg.eigvals(net.symbols.current_params.W_rec.get_value())))
         print('Initial rho: {:5.2f}'.format(rho))
 
         print('Training...')
@@ -52,12 +52,11 @@ class NetTrainer(object):
             batch = task.get_batch(batch_size)
             desc, norm, penalty_grad_norm = train_step.step(batch.inputs, batch.outputs)
 
-
             if i % check_freq == 0:
                 y_net = net.net_output_shared(validation_set.inputs)  # FIXME
                 valid_error = task.error_fnc(y_net, validation_set.outputs)
                 loss = self.__obj_fnc.loss(y_net, validation_set.outputs)
-                rho = numpy.max(abs(numpy.linalg.eigvals(net.symbols.W_rec.get_value())))
+                rho = numpy.max(abs(numpy.linalg.eigvals(net.symbols.current_params.W_rec.get_value())))
 
                 net.save_model(model_path, model_name, stats)
 
