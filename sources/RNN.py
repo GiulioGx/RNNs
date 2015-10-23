@@ -3,6 +3,7 @@ import theano.tensor as TT
 import numpy
 import os
 from Configs import Configs
+import theano.typed_list
 
 __author__ = 'giulio'
 
@@ -39,6 +40,9 @@ class RNN(object):
 
         # build symbol closet
         self.__symbols = RNN.Symbols(self, W_rec, W_in, W_out, b_rec, b_out)
+
+        # experimental
+        self.experimental = RNN.Experimental(self)
 
         # define visible functions
         self.net_output_shared = T.function([self.__symbols.u], self.__symbols.y_shared)
@@ -115,6 +119,33 @@ class RNN(object):
     def last_linear_fnc(y):
         return y
 
+    class Experimental:
+        def __init__(self, net):
+            self.__net = net
+
+        def net_output(self, W_rec, W_in, W_out, b_rec, b_out, u):
+
+                W_fixes = []
+                for i in range(200):
+                    W_fixes.append(self.__net.symbols.W_rec.clone())
+
+                n_sequences = u.shape[2]
+                h_m1 = TT.alloc(numpy.array(0., dtype=Configs.floatType), self.__net.n_hidden, n_sequences)
+
+                values, _ = T.scan(self.__net_output_t, sequences=[u, TT.as_tensor_variable(W_fixes)],
+                                   outputs_info=[h_m1, None, None],
+                                   non_sequences=[W_in, W_out, b_rec, b_out],
+                                   name='net_output',
+                                   mode=T.Mode(linker='cvm'))
+                y = values[1]
+                deriv_a = values[2]
+                return y, deriv_a, W_fixes
+
+        def __net_output_t(self, u_t, W_rec, h_tm1, W_in, W_out, b_rec, b_out):
+                h_t, deriv_a_t = self.__net.h_t(u_t, h_tm1, W_rec, W_in, b_rec)
+                y_t = self.__net.y_t(h_t, W_out, b_out)
+                return h_t, y_t, deriv_a_t
+
     class Symbols:
         def __init__(self, net, W_rec, W_in, W_out, b_rec, b_out):
             self.__net = net
@@ -146,44 +177,6 @@ class RNN(object):
             _, deriv_a = self.__net.net_output(W_rec, W_in, W_out, b_rec, b_out, self.u)
             return deriv_a
 
-
-        #     # define separate gradients
-        #     self.__W_fix = self.__W_rec.clone()
-        #
-        # def net_output(self, W_rec, W_in, W_out, b_rec, b_out, u, W_fix, target_index):
-        #     n_sequences = u.shape[2]
-        #     h_m1 = TT.alloc(numpy.array(0., dtype=Configs.floatType), self.__net.n_hidden, n_sequences)
-        #
-        #     values, _ = T.scan(self.net_output_t, sequences=u,
-        #                        outputs_info=[h_m1, 0, None, None],
-        #                        non_sequences=[W_rec, W_in, W_out, b_rec, b_out, W_fix, target_index],
-        #                        name='net_output',
-        #                        mode=T.Mode(linker='cvm'))
-        #     y = values[2]
-        #     deriv_a = values[3]
-        #     return y, deriv_a
-        #
-        # def net_output_t(self, u_t, h_tm1, i, W_rec, W_in, W_out, b_rec, b_out, W_fix, target_index):
-        #     W = TT.switch(TT.eq(i, target_index), W_fix, W_rec)
-        #     h_t, deriv_a_t = self.__net.h_t(u_t, h_tm1, W, W_in, b_rec)
-        #     y_t = self.__net.y_t(h_t, W_out, b_out)
-        #     return h_t, i + 1, y_t, deriv_a_t
-        #
-        # def get_separate(self, target_index):
-        #     y_f, _ = self.net_output(self.__W_rec, self.__W_in, self.__W_out, self.__b_rec, self.__b_out, self.u,
-        #                                    self.__W_fix, target_index)
-        #     loss_f = self.__loss_fnc(y_f, self.t)
-        #
-        #     gW_rec, gW_in, gW_out, \
-        #     gb_rec, gb_out = TT.grad(loss_f,
-        #                                        [self.__W_fix, self.__W_in, self.__W_out, self.__b_rec, self.__b_out])
-        #     grad_norm = TT.sqrt((gW_rec ** 2).sum() +
-        #                              (gW_in ** 2).sum() +
-        #                              (gW_out ** 2).sum() +
-        #                              (gb_rec ** 2).sum() +
-        #                              (gb_out ** 2).sum())
-        #
-        #     return gW_rec, gW_in, gW_out, gb_rec, gb_out
 
         @property
         def W_rec(self):

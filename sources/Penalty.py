@@ -44,7 +44,7 @@ class NullPenalty(Penalty):
             return self.__penalty_value
 
         def format_infos(self, infos):
-            return '', []
+            return '', infos
 
         @property
         def infos(self):
@@ -204,6 +204,7 @@ def penalty_step(deriv_a, penalty_acc, penalty_grad_acc, W_rec):
 
 
 def deriv_a_T_wrt_a1(W_rec, deriv_a):
+
     def prod_step(deriv_a_t, A_prev, W_rec):
         A = TT.dot(A_prev, (W_rec * deriv_a_t))
         return A

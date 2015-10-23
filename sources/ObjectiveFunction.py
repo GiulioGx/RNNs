@@ -1,6 +1,7 @@
 from InfoProducer import InfoProducer
 from Penalty import Penalty, NullPenalty
 import theano.tensor as TT
+import theano as T
 from theanoUtils import norm
 
 __author__ = 'giulio'
@@ -56,11 +57,32 @@ class ObjectiveSymbols(InfoProducer):
 
         self.__infos = self.__penalty_symbols.infos + [loss, loss_grad_norm]
 
+
+        # experimental
+        y, _, W_fixes = net.experimental.net_output(W_rec, W_in, W_out, b_rec, b_out, u)
+        loss = obj_fnc.loss_fnc(y, t)
+
+        # a = W_fixes[0]
+        # self.__gW_rec = T.grad(loss, W_fixes)
+
+        def step(W, acc):
+            return W + acc
+
+        values, _ = T.scan(step, sequences=[TT.as_tensor_variable(T.grad(loss, W_fixes))],
+                           outputs_info=[TT.zeros_like(W_rec)],
+                           non_sequences=[],
+                           name='net_output',
+                           mode=T.Mode(linker='cvm'),
+                           n_steps=u.shape[0])
+
+        self.__infos = self.__infos + [norm(self.__gW_rec - values[-1])]
+        self.__gW_rec = values[-1]
+
     def format_infos(self, infos):
         desc, infos = self.__penalty_symbols.format_infos(infos)
-        return 'obj=[' + desc + ' loss=[value: {:07.3f}, grad: {:07.3f}]]'.format(infos[0].item(),
-                                                                                      infos[1].item()), infos[
-                                                                                                        2:len(infos)]
+        return '@@: {},'.format(infos[2].item()) + 'obj=[' + desc + ' loss=[value: {:07.3f}, grad: {:07.3f}]]'.format(infos[0].item(),
+                                                                                  infos[1].item()), infos[
+                                                                                                    3:len(infos)]
 
     @property
     def infos(self):

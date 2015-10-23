@@ -84,10 +84,10 @@ class WRecNormalizedStep(LearningStepRule):
 
 class ConstantNormalizedStep(LearningStepRule):
     class Symbols(LearningStepSymbols):
-        def __init__(self, rule, net_symbols):
-            grad_norm = norm(net_symbols.W_rec_dir, net_symbols.W_in_dir, net_symbols.W_out_dir, net_symbols.b_out_dir,
-                             net_symbols.b_rec_dir)
-            self.__learning_rate = rule.lr_value / grad_norm(net_symbols.W_rec)
+        def __init__(self, rule, dir_symbols):
+            dir_norm = norm(dir_symbols.W_rec_dir, dir_symbols.W_in_dir, dir_symbols.W_out_dir, dir_symbols.b_out_dir,
+                            dir_symbols.b_rec_dir)
+            self.__learning_rate = rule.lr_value / dir_norm
 
         @property
         def learning_rate(self):
@@ -108,8 +108,7 @@ class ConstantNormalizedStep(LearningStepRule):
         return self.__lr_value
 
     def compile(self, net, obj_fnc, dir_symbols):
-        net_symbols = net.symbol_closet
-        return ConstantNormalizedStep.Symbols(self, net_symbols)
+        return ConstantNormalizedStep.Symbols(self, dir_symbols)
 
 
 class ArmijoStep(LearningStepRule):
@@ -172,7 +171,7 @@ class ArmijoStep(LearningStepRule):
             return self.__infos
 
         def format_infos(self, infos):
-            return 'lr: {:02.4f}, n_steps: {:02d}'.format(infos[0].item(), infos[1].item()), infos[2:len(infos)]
+            return 'lr: {:02.2e}, n_steps: {:02d}'.format(infos[0].item(), infos[1].item()), infos[2:len(infos)]
 
     def __init__(self, alpha=0.1, beta=0.5, init_step=1, max_steps=10):
         self.__init_step = TT.alloc(numpy.array(init_step, dtype=Configs.floatType))
