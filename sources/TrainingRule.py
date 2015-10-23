@@ -3,6 +3,7 @@ import LearningStepRule
 import theano as T
 import theano.tensor as TT
 from ObjectiveFunction import ObjectiveFunction
+from plotUtils.plot_fncs import plot_norms
 
 __author__ = 'giulio'
 
@@ -27,7 +28,7 @@ class TrainingRule(object):
                 penalty_grad_norm = TT.alloc(0)
 
             output_list = [self.__obj_symbols.grad_norm,
-                           penalty_grad_norm] + self.__obj_symbols.infos + lr_infos + dir_infos
+                           penalty_grad_norm, self.__obj_symbols.separate_grads_norms] + self.__obj_symbols.infos + lr_infos + dir_infos
 
             new_params = net_symbols.current_params + (self.__dir_symbols.direction * lr)
             self.__step = T.function([net_symbols.u, net_symbols.t], output_list,
@@ -38,15 +39,21 @@ class TrainingRule(object):
         def step(self, inputs, outputs):
             infos = self.__step(inputs, outputs)
 
+            l = infos[2]
+
             # FIXME
             norm = infos[0]
             penalty_grad_norm = infos[1]
             description = self.__format_infos(infos)
 
+            # print gradients norms
+            plot_norms(l)
+            input("Press Enter to continue...")
+
             return description, norm, penalty_grad_norm
 
         def __format_infos(self, infos):
-            infos = infos[2:len(infos)]
+            infos = infos[3:len(infos)]
             obj_desc, infos = self.__obj_symbols.format_infos(infos)
             lr_desc, infos = self.__lr_symbols.format_infos(infos)
             dir_desc, infos = self.__dir_symbols.format_infos(infos)

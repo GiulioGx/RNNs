@@ -51,7 +51,7 @@ class ObjectiveSymbols(InfoProducer):
 
         loss_grad_norm = self.__grad.norm()
 
-        self.__grad.setW_rec(self.__grad.W_rec + obj_fnc.penalty_lambda * penalty_grad) # FIXME
+        self.__grad.setW_rec(self.__grad.W_rec + obj_fnc.penalty_lambda * penalty_grad)  # FIXME
         self.__objective_value = loss + (penalty_value * obj_fnc.penalty_lambda)
         self.__grad_norm = self.__grad.norm()
 
@@ -63,25 +63,30 @@ class ObjectiveSymbols(InfoProducer):
         loss = obj_fnc.loss_fnc(y, t)
 
         W_rec = params.W_rec  # FIXME
+        self.separate_grads = T.grad(loss, W_fixes)  # FIXME
 
         def step(W, acc):
-            return W + acc
+            return W + acc, norm(W)
 
-        values, _ = T.scan(step, sequences=[TT.as_tensor_variable(T.grad(loss, W_fixes))],
-                           outputs_info=[TT.zeros_like(W_rec)],
+        values, _ = T.scan(step, sequences=[TT.as_tensor_variable(self.separate_grads)],
+                           outputs_info=[TT.zeros_like(W_rec), None],
                            non_sequences=[],
                            name='net_output',
                            mode=T.Mode(linker='cvm'),
                            n_steps=u.shape[0])
 
-        self.__infos = self.__infos + [norm(self.__grad.W_rec - values[-1])]
-        self.__gW_rec = values[-1]
+        sep_grads = values[0]
+        self.separate_grads_norms = values[1]
+
+        self.__infos = self.__infos + [norm(self.__grad.W_rec - sep_grads[-1])]
+        self.__gW_rec = sep_grads[-1]
 
     def format_infos(self, infos):
         desc, infos = self.__penalty_symbols.format_infos(infos)
-        return '@@: {},'.format(infos[2].item()) + 'obj=[' + desc + ' loss=[value: {:07.3f}, grad: {:07.3f}]]'.format(infos[0].item(),
-                                                                                  infos[1].item()), infos[
-                                                                                                    3:len(infos)]
+        return '@@: {},'.format(infos[2].item()) + 'obj=[' + desc + ' loss=[value: {:07.3f}, grad: {:07.3f}]]'.format(
+            infos[0].item(),
+            infos[1].item()), infos[
+                              3:len(infos)]
 
     @property
     def infos(self):
