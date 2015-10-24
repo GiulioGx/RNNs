@@ -8,7 +8,7 @@ class InfoProducer(object):
 
     @abc.abstractmethod
     def format_infos(self, infos):
-        """return a string representation of the infos produced by the rule and the consumed infos list"""
+        """return a representation (Info) of the infos produced by the rule and the consumed infos list"""
 
     @abc.abstractmethod
     def infos(self):

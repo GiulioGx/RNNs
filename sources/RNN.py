@@ -6,6 +6,7 @@ import os
 from Configs import Configs
 import theano.typed_list
 from Params import Params
+from Statistics import Statistics
 from theanoUtils import norm
 
 __author__ = 'giulio'
@@ -99,26 +100,25 @@ class RNN(object):
     def y_t(self, h_t, W_out, b_out):
         return self.__output_fnc(TT.dot(W_out, h_t) + b_out)
 
-    def save_model(self, path, filename, stats):
+    def save_model(self, path, filename, stats: Statistics):
         """saves the model with statistics to file"""
 
         os.makedirs(path, exist_ok=True)
 
-        numpy.savez(path + '/' + filename + '.npz',
-                    n_hidden=self.__n_hidden,
-                    n_in=self.__n_in,
-                    n_out=self.__n_out,
-                    activation_fnc=str(self.__activation_fnc),
-                    valid_error=stats.valid_error,
-                    gradient_norm=stats.grad_norm,
-                    rho=stats.rho,
-                    penalty=stats.penalty_norm,
-                    elapsed_time=stats.elapsed_time,
-                    W_rec=self.__symbols.current_params.W_rec.get_value(),
-                    W_in=self.__symbols.current_params.W_in.get_value(),
-                    W_out=self.__symbols.current_params.W_out.get_value(),
-                    b_rec=self.__symbols.current_params.b_rec.get_value(),
-                    b_out=self.__symbols.current_params.b_out.get_value())  # FIXME
+        info_dict = stats.dictionary
+        d = dict(n_hidden=self.__n_hidden,
+                 n_in=self.__n_in,
+                 n_out=self.__n_out,
+                 activation_fnc=str(self.__activation_fnc),
+                 elapsed_time=stats.elapsed_time,
+                 W_rec=self.__symbols.current_params.W_rec.get_value(),
+                 W_in=self.__symbols.current_params.W_in.get_value(),
+                 W_out=self.__symbols.current_params.W_out.get_value(),
+                 b_rec=self.__symbols.current_params.b_rec.get_value(),
+                 b_out=self.__symbols.current_params.b_out.get_value())
+
+        info_dict.update(d)
+        numpy.savez(path + '/' + filename + '.npz', **info_dict)
 
     # predefined output functions
     @staticmethod

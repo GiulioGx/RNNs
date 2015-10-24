@@ -6,6 +6,7 @@ import theano.tensor as TT
 import numpy
 from DescentDirectionRule import DescentDirectionSymbols
 from InfoProducer import InfoProducer
+from Infos import InfoList, PrintableInfoElement
 from theanoUtils import norm
 
 __author__ = 'giulio'
@@ -40,8 +41,9 @@ class ConstantStep(LearningStepRule):
         def infos(self):
             return [self.__learning_rate]
 
-        def format_infos(self, infos):
-            return 'lr: {:02.4f}'.format(infos[0].item()), infos[1:len(infos)]
+        def format_infos(self, infos_symbols):
+            lr_info = PrintableInfoElement('lr', ':02.4f', infos_symbols[0].item())
+            return lr_info, infos_symbols[1:len(infos_symbols)]
 
     def __init__(self, lr_value=0.001):
         self.__lr_value = TT.alloc(numpy.array(lr_value, dtype=Configs.floatType))
@@ -67,8 +69,9 @@ class WRecNormalizedStep(LearningStepRule):
         def infos(self):
             return [self.__learning_rate]
 
-        def format_infos(self, infos):
-            return 'lr: {:02.4f}'.format(infos[0].item()), infos[1:len(infos)]
+        def format_infos(self, infos_symbols):
+            lr_info = PrintableInfoElement('lr', ':02.4f', infos_symbols[0].item())
+            return lr_info, infos_symbols[1:len(infos_symbols)]
 
     def __init__(self, lr_value=0.001):
         self.__lr_value = TT.alloc(numpy.array(lr_value, dtype=Configs.floatType))
@@ -97,8 +100,9 @@ class ConstantNormalizedStep(LearningStepRule):
         def infos(self):
             return [self.__learning_rate]
 
-        def format_infos(self, infos):
-            return 'lr: {:02.4f}'.format(infos[0].item()), infos[1:len(infos)]
+        def format_infos(self, infos_symbols):
+            lr_info = PrintableInfoElement('lr', ':02.2e', infos_symbols[0].item())
+            return lr_info, infos_symbols[1:len(infos_symbols)]
 
     def __init__(self, lr_value=0.001):
         self.__lr_value = TT.alloc(numpy.array(lr_value, dtype=Configs.floatType))
@@ -170,8 +174,11 @@ class ArmijoStep(LearningStepRule):
         def infos(self):
             return self.__infos
 
-        def format_infos(self, infos):
-            return 'lr: {:02.2e}, n_steps: {:02d}'.format(infos[0].item(), infos[1].item()), infos[2:len(infos)]
+        def format_infos(self, infos_symbols):
+            lr_info = PrintableInfoElement('lr', ':02.2e', infos_symbols[0].item())
+            n_step_info = PrintableInfoElement('n_step', ':02d', infos_symbols[1].item())
+            infos = InfoList(lr_info, n_step_info)
+            return infos, infos_symbols[2:len(infos_symbols)]
 
     def __init__(self, alpha=0.1, beta=0.5, init_step=1, max_steps=10):
         self.__init_step = TT.alloc(numpy.array(init_step, dtype=Configs.floatType))

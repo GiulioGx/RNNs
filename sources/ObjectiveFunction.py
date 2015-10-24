@@ -1,4 +1,5 @@
 from InfoProducer import InfoProducer
+from Infos import InfoGroup, PrintableInfoElement, InfoList
 from Params import Params
 from Penalty import Penalty, NullPenalty
 import theano.tensor as TT
@@ -81,12 +82,19 @@ class ObjectiveSymbols(InfoProducer):
         self.__infos = self.__infos + [norm(self.__grad.W_rec - sep_grads[-1])]
         self.__gW_rec = sep_grads[-1]
 
-    def format_infos(self, infos):
-        desc, infos = self.__penalty_symbols.format_infos(infos)
-        return '@@: {},'.format(infos[2].item()) + 'obj=[' + desc + ' loss=[value: {:07.3f}, grad: {:07.3f}]]'.format(
-            infos[0].item(),
-            infos[1].item()), infos[
-                              3:len(infos)]
+    def format_infos(self, infos_symbols):
+        desc, infos_symbols = self.__penalty_symbols.format_infos(infos_symbols)
+
+        loss_value_info = PrintableInfoElement('value', ':07.3f', infos_symbols[0].item())
+        loss_grad_info = PrintableInfoElement('grad', ':07.3f', infos_symbols[1].item())
+
+        loss_info = InfoGroup('loss', InfoList(loss_value_info, loss_grad_info))
+        obj_info = InfoGroup('obj', loss_info)
+        exp_info = PrintableInfoElement('@@', '', infos_symbols[2].item())
+
+        info = InfoList(exp_info, obj_info)
+
+        return info, infos_symbols[3:len(infos_symbols)]
 
     @property
     def infos(self):

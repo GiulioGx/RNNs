@@ -1,9 +1,11 @@
 import time
 
 import numpy
+from Infos import PrintableInfoElement, InfoGroup, InfoList
 
 from ObjectiveFunction import ObjectiveFunction
 from RNN import RNN
+from Statistics import Statistics
 from TrainingRule import TrainingRule
 
 __author__ = 'giulio'
@@ -50,28 +52,26 @@ class NetTrainer(object):
         while i < max_it and best_error > stop_error_thresh:
 
             batch = task.get_batch(batch_size)
-            desc, norm, penalty_grad_norm = train_step.step(batch.inputs, batch.outputs)
+            train_info = train_step.step(batch.inputs, batch.outputs)
 
             if i % check_freq == 0:
                 y_net = net.net_output_shared(validation_set.inputs)  # FIXME
                 valid_error = task.error_fnc(y_net, validation_set.outputs)
-                loss = self.__obj_fnc.loss(y_net, validation_set.outputs)
+                valid_loss = self.__obj_fnc.loss(y_net, validation_set.outputs)
                 rho = numpy.max(abs(numpy.linalg.eigvals(net.symbols.current_params.W_rec.get_value())))
-
-                net.save_model(model_path, model_name, stats)
 
                 if valid_error < best_error:
                     best_error = valid_error
 
                 batch_end_time = time.time()
                 total_elapsed_time = batch_end_time - start_time
-                stats.update(rho, norm, penalty_grad_norm, valid_error, i, total_elapsed_time)
 
-                print(
-                    'iteration: {:07d}, validation=[loss: {:07.3f}, error: {:.2%} '
-                    '(best: {:.2%})], rho: {:5.2f}, '.format(
-                        i, loss, valid_error, best_error, rho) + desc + ', time: {:2.2f}\n'.format(
-                        batch_end_time - batch_start_time))
+                batch_time = batch_end_time - batch_start_time
+                info = self.__build_infos(train_info, i, valid_loss, valid_error, best_error, rho, batch_time)
+                print(info)
+                stats.update(info, i, total_elapsed_time)
+                net.save_model(model_path, model_name, stats)
+
                 batch_start_time = time.time()
 
             i += 1
@@ -80,51 +80,25 @@ class NetTrainer(object):
         print('Elapsed time: {:2.2f} min'.format((end_time - start_time) / 60))
         return net
 
+    def __build_infos(self, train_info, i, valid_loss, valid_error, best_error, rho, batch_time):
+
+        it_info = PrintableInfoElement('iteration', ':07d', i)
+
+        val_loss_info = PrintableInfoElement('loss', ':07.3f', valid_loss)
+
+        error_info = PrintableInfoElement('curr', ':.2%', valid_error)
+        best_info = PrintableInfoElement('best', ':.2%', best_error)
+        error_group = InfoGroup('error', InfoList(error_info, best_info))
+
+        val_info = InfoGroup('validation', InfoList(val_loss_info, error_group))
+
+        rho_info = PrintableInfoElement('rho', ':5.2f', rho)
+        time_info = PrintableInfoElement('time', ':2.2f', batch_time)
+
+        info = InfoList(it_info, val_info, rho_info, train_info, time_info)
+        return info
+
     # predefined loss functions
     @staticmethod
     def squared_error(y, t):
         return ((t[-1:, :, :] - y[-1:, :, :]) ** 2).sum(axis=0).mean()
-
-
-class Statistics(object):
-    def __init__(self, max_it, check_freq):
-        self.__check_freq = check_freq
-        self.__current_it = 0
-        self.__actual_length = 0
-
-        m = numpy.ceil(max_it / check_freq) - 1
-        self.__rho_values = numpy.zeros((m,), dtype='float32')
-        self.__grad_norm_values = numpy.zeros((m,), dtype='float32')
-        self.__penalty_norm_values = numpy.zeros((m,), dtype='float32')
-        self.__valid_error_values = numpy.zeros((m,), dtype='float32')
-        self.__elapsed_time = 0
-
-    def update(self, rho, grad_norm, penalty_grad_norm, valid_error, it, elapsed_time):
-        j = it / self.__check_freq
-        self.__current_it = it
-        self.__actual_length += 1
-        self.__rho_values[j] = rho
-        self.__grad_norm_values[j] = grad_norm
-        self.__penalty_norm_values[j] = penalty_grad_norm
-        self.__valid_error_values[j] = valid_error
-        self.__elapsed_time = elapsed_time
-
-    @property
-    def rho(self):
-        return self.__rho_values[0:self.__actual_length]
-
-    @property
-    def grad_norm(self):
-        return self.__grad_norm_values[0:self.__actual_length]
-
-    @property
-    def valid_error(self):
-        return self.__valid_error_values[0:self.__actual_length]
-
-    @property
-    def penalty_norm(self):
-        return self.__penalty_norm_values[0:self.__actual_length]
-
-    @property
-    def elapsed_time(self):
-        return self.__elapsed_time

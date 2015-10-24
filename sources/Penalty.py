@@ -4,6 +4,7 @@ import theano.tensor as TT
 import numpy
 import abc
 from InfoProducer import InfoProducer
+from Infos import NullInfo, PrintableInfoElement, InfoGroup, InfoList
 from Params import Params
 from theanoUtils import norm
 
@@ -44,8 +45,8 @@ class NullPenalty(Penalty):
         def penalty_value(self):
             return self.__penalty_value
 
-        def format_infos(self, infos):
-            return '', infos
+        def format_infos(self, infos_symbols):
+            return NullInfo(), infos_symbols
 
         @property
         def infos(self):
@@ -99,10 +100,11 @@ class FullPenalty(Penalty):
         def penalty_value(self):
             return self.__penalty_value
 
-        def format_infos(self, infos):
-            return 'penalty=[value: {:07.3f}, grad: {:07.3f}]'.format(infos[0].item(), infos[1].item()), infos[
-                                                                                                         2:len(
-                                                                                                             infos)]
+        def format_infos(self, info_symbols):
+            penalty_value_info = PrintableInfoElement('value', ':07.3f', info_symbols[0].item())
+            penalty_grad_info = PrintableInfoElement('grad', ':07.3f', info_symbols[1].item())
+            infos = InfoGroup('penalty', InfoList(penalty_value_info, penalty_grad_info))
+            return infos, info_symbols[2:len(info_symbols)]
 
         @property
         def infos(self):
@@ -148,10 +150,11 @@ class MeanPenalty(Penalty):
         def penalty_value(self):
             return self.__penalty_value
 
-        def format_infos(self, infos):
-            return 'penalty=[value: {:07.3f}, grad: {:07.3f}]'.format(infos[0].item(), infos[1].item()), infos[
-                                                                                                         2:len(
-                                                                                                             infos)]
+        def format_infos(self, info_symbols):
+            penalty_value_info = PrintableInfoElement('value', ':07.3f', info_symbols[0].item())
+            penalty_grad_info = PrintableInfoElement('grad', ':07.3f', info_symbols[1].item())
+            infos = InfoGroup('penalty', InfoList(penalty_value_info, penalty_grad_info))
+            return infos, info_symbols[2:len(info_symbols)]
 
         @property
         def infos(self):
@@ -191,10 +194,11 @@ class ConstantPenalty(Penalty):
         def penalty_value(self):
             return self.__penalty_value
 
-        def format_infos(self, infos):
-            return 'penalty=[value: {:07.3f}, grad: {:07.3f}]'.format(infos[0].item(), infos[1].item()), infos[
-                                                                                                         2:len(
-                                                                                                             infos)]
+        def format_infos(self, info_symbols):
+            penalty_value_info = PrintableInfoElement('value', ':07.3f', info_symbols[0].item())
+            penalty_grad_info = PrintableInfoElement('grad', ':07.3f', info_symbols[1].item())
+            infos = InfoGroup('penalty', InfoList(penalty_value_info, penalty_grad_info))
+            return infos, info_symbols[2:len(info_symbols)]
 
         @property
         def infos(self):
