@@ -16,6 +16,27 @@ class NetTrainer(object):
         self.__training_rule = training_rule
         self.__obj_fnc = obj_fnc
 
+        #  FIXME magic constants
+        self.__max_it = 500000
+        self.__batch_size = 100
+        self.__validation_set_size = 10000
+        self.__stop_error_thresh = 0.001
+        self.__check_freq = 50
+
+        self.__model_path = '/home/giulio/RNNs/models'
+        self.__model_name = 'model'
+
+        # build training setting info
+        self.__trainign_settings_info = InfoGroup('settings',
+                                                  InfoList(PrintableInfoElement('max_it', ':d', self.__max_it),
+                                                           PrintableInfoElement('check_freq', ':d', self.__check_freq),
+                                                           PrintableInfoElement('batch_size', ':d', self.__batch_size),
+                                                           PrintableInfoElement('validation_set_size', ':d',
+                                                                                self.__validation_set_size),
+                                                           PrintableInfoElement('stop_error_thresh', ':f',
+                                                                                self.__stop_error_thresh)
+                                                           ))
+
     def train(self, task, activation_fnc, output_fnc, n_hidden, seed=13):
 
         # configure network
@@ -24,37 +45,29 @@ class NetTrainer(object):
         # compile symbols
         train_step = self.__training_rule.compile(net, self.__obj_fnc)
 
-        # TODO move somewhere else and add them to npz saved file
-        max_it = 500000
-        batch_size = 100
-        validation_set_size = 10000
-        stop_error_thresh = 0.001
-        check_freq = 50
-
-        model_path = '/home/giulio/RNNs/models'
-        model_name = 'model'
-
         # training statistics
-        stats = Statistics(max_it, check_freq)
+        stats = Statistics(self.__max_it, self.__check_freq)
 
-        print('Generating validation set...')
-        validation_set = task.get_batch(validation_set_size)
+        print('Generating validation set ...')
+        validation_set = task.get_batch(self.__validation_set_size)
+        print('... Done')
 
-        rho = numpy.max(abs(numpy.linalg.eigvals(net.symbols.current_params.W_rec.get_value())))
+        rho = numpy.max(abs(numpy.linalg.eigvals(net.symbols.current_params.W_rec.get_value()))) #  FIXME
         print('Initial rho: {:5.2f}'.format(rho))
 
-        print('Training...')
+        print(self.__trainign_settings_info)
+        print('Training ...\n')
         start_time = time.time()
         batch_start_time = time.time()
 
         i = 0
         best_error = 100
-        while i < max_it and best_error > stop_error_thresh:
+        while i < self.__max_it and best_error > self.__stop_error_thresh:
 
-            batch = task.get_batch(batch_size)
+            batch = task.get_batch(self.__batch_size)
             train_info = train_step.step(batch.inputs, batch.outputs)
 
-            if i % check_freq == 0:
+            if i % self.__check_freq == 0:
                 y_net = net.net_output_shared(validation_set.inputs)  # FIXME
                 valid_error = task.error_fnc(y_net, validation_set.outputs)
                 valid_loss = self.__obj_fnc.loss(y_net, validation_set.outputs)
@@ -69,8 +82,8 @@ class NetTrainer(object):
                 batch_time = batch_end_time - batch_start_time
                 info = self.__build_infos(train_info, i, valid_loss, valid_error, best_error, rho, batch_time)
                 print(info)
-                stats.update(info, i, total_elapsed_time)
-                net.save_model(model_path, model_name, stats)
+                stats.update(InfoList(self.__trainign_settings_info, info), i, total_elapsed_time)
+                net.save_model(self.__model_path, self.__model_name, stats)
 
                 batch_start_time = time.time()
 

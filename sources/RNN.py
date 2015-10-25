@@ -110,7 +110,6 @@ class RNN(object):
                  n_in=self.__n_in,
                  n_out=self.__n_out,
                  activation_fnc=str(self.__activation_fnc),
-                 elapsed_time=stats.elapsed_time,
                  W_rec=self.__symbols.current_params.W_rec.get_value(),
                  W_in=self.__symbols.current_params.W_in.get_value(),
                  W_out=self.__symbols.current_params.W_out.get_value(),

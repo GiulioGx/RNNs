@@ -6,7 +6,6 @@ __author__ = 'giulio'
 
 
 class Statistics(object):
-
     def __init__(self, max_it, check_freq):
         self.__dictionary = {}
         self.__check_freq = check_freq
@@ -24,18 +23,13 @@ class Statistics(object):
 
         for e in info.elements:
             if e.name not in self.__dictionary:
-                self.__dictionary[e.name] = numpy.zeros((self.__m,), dtype=Configs.floatType)
-            self.__dictionary[e.name][j] = e.value
+                # self.__dictionary[e.name] = numpy.zeros((self.__m,), dtype=Configs.floatType)
+                self.__dictionary[e.name] = [None] * self.__m
 
-    @property
-    def elapsed_time(self):
-        return self.__elapsed_time
+            self.__dictionary[e.name][int(j)] = e.value
+        self.__dictionary['elapsed_time'] = elapsed_time
+        self.__dictionary['length'] = self.__actual_length
 
     @property
     def dictionary(self):
         return self.__dictionary
-
-
-
-
-

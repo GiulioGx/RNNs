@@ -22,7 +22,7 @@ class TrainingRule(object):
             lr_infos = self.__lr_symbols.infos
             lr = self.__lr_symbols.learning_rate
 
-            output_list = [self.__obj_symbols.separate_grads_norms] + self.__obj_symbols.infos + lr_infos + dir_infos
+            output_list = self.__obj_symbols.infos + lr_infos + dir_infos
 
             new_params = net_symbols.current_params + (self.__dir_symbols.direction * lr)
             self.__step = T.function([net_symbols.u, net_symbols.t], output_list,
@@ -32,18 +32,10 @@ class TrainingRule(object):
 
         def step(self, inputs, outputs):
             infos_symbols = self.__step(inputs, outputs)
-
-            l = infos_symbols[0]
             infos = self.__format_infos(infos_symbols)
-
-            # print gradients norms
-            #plot_norms(l)
-            #input("Press Enter to continue...")
-
             return infos
 
         def __format_infos(self, infos_symbols):
-            infos_symbols = infos_symbols[1:len(infos_symbols)] # FIXME
             obj_info, infos_symbols = self.__obj_symbols.format_infos(infos_symbols)
             lr_info, infos_symbols = self.__lr_symbols.format_infos(infos_symbols)
             dir_info, infos_symbols = self.__dir_symbols.format_infos(infos_symbols)

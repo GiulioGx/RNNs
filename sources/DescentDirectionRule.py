@@ -1,4 +1,5 @@
 import abc
+from Infos import PrintableInfoElement, InfoList, InfoGroup
 from Penalty import Penalty, NullPenalty
 import theano.tensor as TT
 from InfoProducer import InfoProducer
@@ -11,24 +12,8 @@ class DescentDirectionSymbols(InfoProducer):
     __metaclass__ = abc.ABCMeta
 
     @abc.abstractmethod
-    def W_rec_dir(self):
-        """returns a theano expression for W_rec_dir """
-
-    @abc.abstractmethod
-    def W_in_dir(self):
-        """returns a theano expression for W_in_dir """
-
-    @abc.abstractmethod
-    def W_out_dir(self):
-        """returns a theano expression for W_out_dir """
-
-    @abc.abstractmethod
-    def b_rec_dir(self):
-        """returns a theano expression for b_rec_dir """
-
-    @abc.abstractmethod
-    def b_out_dir(self):
-        """returns a theano expression for b_out_dir """
+    def direction(self):
+        """return a symbol for the computed descent direction"""
 
 
 class DescentDirectionRule(object):
@@ -59,7 +44,7 @@ class AntiGradientWithPenalty(DescentDirectionRule):
 
             W_rec_dir = - obj_symbols.grad.W_rec
             W_rec_dir = TT.switch(penalty_grad_norm > 0, W_rec_dir - rule.penalty_lambda * penalty_grad,
-                                         W_rec_dir)
+                                  W_rec_dir)
 
             self.__direction.setW_rec(W_rec_dir)
 
@@ -163,12 +148,19 @@ class MidAnglePenaltyDirection(DescentDirectionRule):
         def infos(self):
             return self.__infos
 
-        def format_infos(self, infos):
-            desc, infos = self.__penalty_symbols.format_infos(infos)
-            return desc + 'cos(g,p): {:1.2f}, cos(d,g): {:1.2f}, cos(d,p): {:1.2f}, norm_dir: {:07.3f}, tr: {:07.3f}' \
-                .format(infos[0].item(), infos[1].item(), infos[2].item(), infos[3].item(), infos[4].item()), infos[
-                                                                                                              5:len(
-                                                                                                                  infos)]
+        def format_infos(self, infos_symbols):
+            penalty_info, infos_symbols = self.__penalty_symbols.format_infos(infos_symbols)
+
+            info = InfoGroup('dir', InfoList(
+                penalty_info,
+                PrintableInfoElement('cos(g,p)', ':1.2f', infos_symbols[0].item()),
+                PrintableInfoElement('cos(d,p)', ':1.2f', infos_symbols[1].item()),
+                PrintableInfoElement('cos(d,p)', ':1.2f', infos_symbols[2].item()),
+                PrintableInfoElement('norm_dir', ':07.3f', infos_symbols[3].item()),
+                PrintableInfoElement('tr', ':07.3f', infos_symbols[4].item())
+            ))
+
+            return info, infos_symbols[5:len(infos_symbols)]
 
     def __init__(self, penalty: Penalty):
         self.__penalty = penalty
@@ -223,10 +215,15 @@ class FrozenGradient(DescentDirectionRule):
         def infos(self):
             return self.__infos
 
-        def format_infos(self, infos):
-            desc, infos = self.__penalty_symbols.format_infos(infos)
-            return desc + 'dirChange: {}, cos(d,p): {:1.2f}'.format(
-                infos[0].item(), infos[1].item()), infos[3:len(infos)]
+        def format_infos(self, infos_symbols):
+            penalty_info, infos_symbols = self.__penalty_symbols.format_infos(infos_symbols)
+
+            info = InfoGroup('dir', InfoList(
+                penalty_info,
+                PrintableInfoElement('dir_change', '', infos_symbols[0].item()),
+                PrintableInfoElement('cos(d,p)', ':1.2f', infos_symbols[1].item()),
+            ))
+            return info, infos_symbols[2:len(infos_symbols)]
 
     def __init__(self, penalty: Penalty):
         self.__penalty = penalty

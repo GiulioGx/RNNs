@@ -6,8 +6,7 @@ __author__ = 'giulio'
 
 def plot_norms(norms):
 
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(figsize=(20, 30))
     x = range(len(norms))
     ax.bar(x, norms)
-    plt.savefig("grads.svg")
-    plt.show()
+    return fig
