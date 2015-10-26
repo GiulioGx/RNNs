@@ -1,10 +1,14 @@
-from InfoProducer import InfoProducer
-from Infos import InfoGroup, PrintableInfoElement, InfoList, NonPrintableInfoElement
-from Params import Params
-from Penalty import Penalty, NullPenalty
 import theano.tensor as TT
 import theano as T
-from theanoUtils import norm
+
+from InfoProducer import InfoProducer
+from infos.InfoGroup import InfoGroup
+from infos.InfoList import InfoList
+from infos.InfoElement import NonPrintableInfoElement, PrintableInfoElement
+from Params import Params
+from penalty.Penalty import Penalty
+from penalty.NullPenalty import NullPenalty
+from theanoUtils import norm, cos_between_dirs
 
 __author__ = 'giulio'
 
@@ -67,10 +71,10 @@ class ObjectiveSymbols(InfoProducer):
         self.separate_grads = T.grad(loss, W_fixes)  # FIXME
 
         def step(W, acc):
-            return W + acc, norm(W)
+            return W + acc, norm(W), cos_between_dirs(W, self.__grad.W_rec)
 
         values, _ = T.scan(step, sequences=[TT.as_tensor_variable(self.separate_grads)],
-                           outputs_info=[TT.zeros_like(W_rec), None],
+                           outputs_info=[TT.zeros_like(W_rec), None, None],
                            non_sequences=[],
                            name='net_output',
                            mode=T.Mode(linker='cvm'),
@@ -78,8 +82,9 @@ class ObjectiveSymbols(InfoProducer):
 
         sep_grads = values[0]
         self.__separate_grads_norms = values[1]
+        self.__separate_grads_dots = values[2]
 
-        self.__infos = self.__infos + [norm(self.__grad.W_rec - sep_grads[-1])] + [self.__separate_grads_norms]
+        self.__infos = self.__infos + [norm(self.__grad.W_rec - sep_grads[-1])] + [self.__separate_grads_norms, self.__separate_grads_dots]
         self.__gW_rec = sep_grads[-1]
 
     def format_infos(self, infos_symbols):
@@ -92,10 +97,11 @@ class ObjectiveSymbols(InfoProducer):
         obj_info = InfoGroup('obj', InfoList(loss_info, penalty_info))
         exp_info = PrintableInfoElement('@@', '', infos_symbols[2].item())
         separate_norms_info = NonPrintableInfoElement('separate_norms', infos_symbols[3])
+        separate_dots_info = NonPrintableInfoElement('separate_dots', infos_symbols[4])
 
-        info = InfoList(exp_info, obj_info, separate_norms_info)
+        info = InfoList(exp_info, obj_info, separate_norms_info, separate_dots_info)
 
-        return info, infos_symbols[4:len(infos_symbols)]
+        return info, infos_symbols[5:len(infos_symbols)]
 
     @property
     def infos(self):

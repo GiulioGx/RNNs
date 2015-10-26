@@ -1,13 +1,14 @@
-from numbers import Number
+import os
+
 import theano as T
 import theano.tensor as TT
 import numpy
-import os
+
 from Configs import Configs
-import theano.typed_list
+from infos.Info import Info
 from Params import Params
 from Statistics import Statistics
-from theanoUtils import norm
+from theanoUtils import norm, as_vector
 
 __author__ = 'giulio'
 
@@ -100,7 +101,7 @@ class RNN(object):
     def y_t(self, h_t, W_out, b_out):
         return self.__output_fnc(TT.dot(W_out, h_t) + b_out)
 
-    def save_model(self, path, filename, stats: Statistics):
+    def save_model(self, path, filename, stats: Statistics, info: Info):
         """saves the model with statistics to file"""
 
         os.makedirs(path, exist_ok=True)
@@ -117,6 +118,7 @@ class RNN(object):
                  b_out=self.__symbols.current_params.b_out.get_value())
 
         info_dict.update(d)
+        info_dict.update(info.dictionary)
         numpy.savez(path + '/' + filename + '.npz', **info_dict)
 
     # predefined output functions
@@ -125,6 +127,14 @@ class RNN(object):
         return y
 
     class Params(Params):
+
+        def as_tensor_list(self):
+            return self.__W_rec, self.__W_in, self.__W_out, self.__b_rec, self.__b_out
+
+        def dot(self, other):
+            v1 = as_vector(self.as_tensor_list())
+            v2 = as_vector(other.as_tensor_list())
+            return TT.dot(v1, v2)
 
         def __init__(self, W_rec, W_in, W_out, b_rec, b_out):
             self.__W_rec = W_rec

@@ -9,4 +9,4 @@ def plot_norms(norms):
     fig, ax = plt.subplots(figsize=(20, 30))
     x = range(len(norms))
     ax.bar(x, norms)
-    return fig
+    return fig, ax

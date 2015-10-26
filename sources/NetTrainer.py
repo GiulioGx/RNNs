@@ -1,8 +1,10 @@
 import time
 
 import numpy
-from Infos import PrintableInfoElement, InfoGroup, InfoList
 
+from infos.InfoGroup import InfoGroup
+from infos.InfoList import InfoList
+from infos.InfoElement import PrintableInfoElement
 from ObjectiveFunction import ObjectiveFunction
 from RNN import RNN
 from Statistics import Statistics
@@ -82,8 +84,8 @@ class NetTrainer(object):
                 batch_time = batch_end_time - batch_start_time
                 info = self.__build_infos(train_info, i, valid_loss, valid_error, best_error, rho, batch_time)
                 print(info)
-                stats.update(InfoList(self.__trainign_settings_info, info), i, total_elapsed_time)
-                net.save_model(self.__model_path, self.__model_name, stats)
+                stats.update(info, i, total_elapsed_time)
+                net.save_model(self.__model_path, self.__model_name, stats, self.__trainign_settings_info)
 
                 batch_start_time = time.time()
 

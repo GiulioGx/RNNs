@@ -4,6 +4,13 @@ import theano.tensor as TT
 __author__ = 'giulio'
 
 
+def as_vector(tensor_list):
+    l = []
+    for t in tensor_list:
+        l.append(t.flatten())
+    return TT.concatenate(l)
+
+
 def norm(*tensor_list):
     squared_norm = TT.alloc(0.)
 

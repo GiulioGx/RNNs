@@ -15,6 +15,10 @@ class Params(object):
         """scalar multiplication"""
 
     @abc.abstractmethod
+    def dot(self, other):
+        """dot product between two param objects viewed as vectors"""
+
+    @abc.abstractmethod
     def norm(self):
         """euclidean norm"""
 

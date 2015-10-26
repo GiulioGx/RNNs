@@ -1,6 +1,6 @@
-from Configs import Configs
-from Infos import Info
 import numpy
+
+from infos.Info import Info
 
 __author__ = 'giulio'
 

@@ -1,10 +1,9 @@
-import DescentDirectionRule
-from Infos import InfoList
-import LearningStepRule
 import theano as T
-import theano.tensor as TT
+
+from descentDirectionRule import DescentDirectionRule
+from infos.InfoList import InfoList
+from learningRule import LearningRule
 from ObjectiveFunction import ObjectiveFunction
-from plotUtils.plot_fncs import plot_norms
 
 __author__ = 'giulio'
 
@@ -42,7 +41,7 @@ class TrainingRule(object):
             info = InfoList(obj_info, lr_info, dir_info)
             return info
 
-    def __init__(self, desc_dir_rule: DescentDirectionRule, lr_rule: LearningStepRule):
+    def __init__(self, desc_dir_rule: DescentDirectionRule, lr_rule: LearningRule):
         self.__desc_dir_rule = desc_dir_rule
         self.__lr_rule = lr_rule
 
