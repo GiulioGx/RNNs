@@ -237,6 +237,9 @@ class RNN(object):
             self.__b_rec = T.shared(b_rec, 'b_rec', broadcastable=(False, True))
             self.__b_out = T.shared(b_out, 'b_out', broadcastable=(False, True))
 
+            # current params
+            self.__current_params = RNN.Params(self.__W_rec, self.__W_in, self.__W_out, self.__b_rec, self.__b_out)
+
             # define symbols
             W_in = TT.matrix()
             W_rec = TT.matrix()
@@ -244,11 +247,12 @@ class RNN(object):
             b_rec = TT.tensor(dtype=Configs.floatType, broadcastable=(False, True))
             b_out = TT.tensor(dtype=Configs.floatType, broadcastable=(False, True))
 
-            self.__current_params = RNN.Params(self.__W_rec, self.__W_in, self.__W_out, self.__b_rec, self.__b_out)
+
 
             self.u = TT.tensor3()  # input tensor
             self.t = TT.tensor3()  # target tensor
 
+            # output of the net
             self.y, self.deriv_a = net.net_output(self.__current_params, self.u)
             self.y_shared, self.deriv_a_shared = T.clone([self.y, self.deriv_a],
                                                          replace={W_rec: self.__W_rec, W_in: self.__W_in,

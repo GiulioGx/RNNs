@@ -47,26 +47,26 @@
 	\maketitle
 	
 \noindent
-Consider the problem
+We are interested in finding a direction $\vec{d}$ which makes equal angles with all the the vectors $\{\vec{g}_i\}_{i=1}^N$, which we suppose to have unary norm. This problem can be formulated as
 \begin{equation}
 \label{eq:equiangular_prob}
 \begin{aligned}
-& \min_{\vec{c},\vec{d}} &&&&-\vec{c} &\\
-& \text{subject to} &&&& \vec{g}_i^T\vec{d} = c & i = 1, \ldots, T\\
-& &&&&\vec{d}^T\vec{d} = 1&
+& \min_{c,\vec{d}} &&&&-c &\\
+& \text{subject to} &&&& \vec{g}_i^T\vec{d} = c & i = 1, \ldots, N\\
+& &&&&\vec{d}^T\vec{d} = 1.&
 \end{aligned}
 \end{equation}
-where $\norm{\vec{g}_i}=1$.
-The Lagrangian is
+Note that $c$ represents the cosine between the direction and the $\vec{g}_i$'s
+The Lagrangian of the problem above is
 \begin{equation}
-	\mathcal{L}(c,\vec{d},\vec{\lambda},\mu) = -c +\lambda^T(G\vec{d}-c \onevec)+ \mu(\vec{d}^T\vec{d}-1),
+	\mathcal{L}(c,\vec{d},\vec{\lambda},\mu) = -c +\vec{\lambda}^T(G\vec{d}- \onevec c)+ \mu(\vec{d}^T\vec{d}-1),
 \end{equation} where
 \begin{equation}
-G=\begin{bmatrix}
+G\defeq\begin{bmatrix}
 \vec{g}_1^T \\
 \vec{g}_2^T \\
 \vdots\\
-\vec{g}_T^T\\
+\vec{g}_N^T\\
 \end{bmatrix}
 \end{equation}
 We find the solution of \ref{eq:equiangular_prob} imposing
@@ -83,14 +83,14 @@ We find the solution of \ref{eq:equiangular_prob} imposing
 From (\ref{eq:lagrangian_d}) and \ref{eq:lagrangian_lambda} we get
 \begin{equation}
 	\label{eq:step1}
-	GG^T\vec{\lambda} = -2\mu c \onevec,
+	GG^T\vec{\lambda} = -2\mu c\,  \onevec,
 \end{equation}hence, supposing $\vec{g}_i$'s linearly independent we write
 \begin{equation}
+\label{eq:step2}
 	\lambda = (-2uc)(GG^T)^{-1} \onevec
 \end{equation}
 From \ref{eq:lagrangian_d} we have
 \begin{equation}
-\label{eq:step2}
 	\vec{\lambda}^T GG^T \vec{\lambda} = 4\mu^2,
 \end{equation} which, combined with (\ref{eq:step1}) and (\ref{eq:lagrangian_c}) yields
 \begin{equation}
