@@ -27,6 +27,10 @@ class Params(object):
         """return the gradient of the function fnc wrt the parameters this class represents"""
 
     @abc.abstractmethod
+    def grad_combining_steps(self, loss_fnc, strategy, u, t):
+        """return a combinantion of gradients for each time steps defined by 'strategy' of the function 'fnc'
+        wrt the parameters this class represents"""
+
+    @abc.abstractmethod
     def update_dictionary(self, other):
         """return the update dictionary for a theano function"""
-

@@ -1,4 +1,4 @@
-from tasks.Batch import Batch
+from task.Batch import Batch
 import numpy
 from Configs import Configs
 

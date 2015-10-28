@@ -1,6 +1,6 @@
 import numpy
-from tasks.MarkerBasedTask import MarkerBasedTask
-from tasks.Task import Task
+from task.MarkerBasedTask import MarkerBasedTask
+from task.Task import Task
 from Configs import Configs
 __author__ = 'giulio'
 

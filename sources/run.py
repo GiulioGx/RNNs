@@ -10,7 +10,7 @@ from learningRule.ArmijoStep import ArmijoStep
 from learningRule.ConstantNormalizedStep import ConstantNormalizedStep
 from learningRule.ConstantStep import ConstantStep
 from penalty.ConstantPenalty import ConstantPenalty
-from tasks.AdditionTask import AdditionTask
+from task.AdditionTask import AdditionTask
 from Configs import Configs
 from penalty.NullPenalty import NullPenalty
 

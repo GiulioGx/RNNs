@@ -2,6 +2,7 @@ import theano.tensor as TT
 import theano as T
 
 from InfoProducer import InfoProducer
+from combiningRule.SImpleSum import SimpleSum
 from infos.InfoGroup import InfoGroup
 from infos.InfoList import InfoList
 from infos.InfoElement import NonPrintableInfoElement, PrintableInfoElement
@@ -20,7 +21,7 @@ class ObjectiveFunction(object):
         self.__penalty_lambda = penalty_lambda
 
     def compile(self, net, params: Params, u, t):
-        return ObjectiveSymbols(self, net, params, u, t)
+        return ObjectiveFunction.Symbols(self, net, params, u, t)
 
     def loss(self, y, t):  # loss without penalty
         return self.__loss_fnc(y, t)
@@ -37,84 +38,62 @@ class ObjectiveFunction(object):
     def penalty_lambda(self):
         return self.__penalty_lambda
 
+    class Symbols(InfoProducer):
+        def __init__(self, obj_fnc, net, params, u, t):
+            self.__net = net
+            self.__obj_fnc = obj_fnc
 
-class ObjectiveSymbols(InfoProducer):
-    def __init__(self, obj_fnc: ObjectiveFunction, net, params, u, t):
-        self.__net = net
-        self.__obj_fnc = obj_fnc
+            # loss gradient
+            y, _ = self.__net.net_output(params, u)
 
-        # loss gradient
-        y, _ = self.__net.net_output(params, u)
+            loss = obj_fnc.loss_fnc(y, t)
+            self.__grad = params.grad(loss)
 
-        loss = obj_fnc.loss_fnc(y, t)
-        self.__grad = params.grad(loss)
+            # add penalty
+            self.__penalty_symbols = obj_fnc.penalty.compile(params, net.symbols)
+            penalty_grad = self.__penalty_symbols.penalty_grad
+            penalty_value = self.__penalty_symbols.penalty_value
 
-        # add penalty
-        self.__penalty_symbols = obj_fnc.penalty.compile(params, net.symbols)
-        penalty_grad = self.__penalty_symbols.penalty_grad
-        penalty_value = self.__penalty_symbols.penalty_value
+            loss_grad_norm = self.__grad.norm()
 
-        loss_grad_norm = self.__grad.norm()
+            self.__grad.setW_rec(self.__grad.W_rec + obj_fnc.penalty_lambda * penalty_grad)  # FIXME
+            self.__objective_value = loss + (penalty_value * obj_fnc.penalty_lambda)
+            self.__grad_norm = self.__grad.norm()
 
-        self.__grad.setW_rec(self.__grad.W_rec + obj_fnc.penalty_lambda * penalty_grad)  # FIXME
-        self.__objective_value = loss + (penalty_value * obj_fnc.penalty_lambda)
-        self.__grad_norm = self.__grad.norm()
+            self.__infos = self.__penalty_symbols.infos + [loss, loss_grad_norm]
 
-        self.__infos = self.__penalty_symbols.infos + [loss, loss_grad_norm]
+            # separate time steps grad
+            combined_grad, separate_norms = params.grad_combining_steps(obj_fnc.loss_fnc, SimpleSum(), u, t)
 
+            self.__infos = self.__infos + [combined_grad.norm()-self.__grad_norm] + [separate_norms]
 
-        # experimental
-        y, _, W_fixes = net.experimental.net_output(params, u)
-        loss = obj_fnc.loss_fnc(y, t)
+        def format_infos(self, infos_symbols):
+            penalty_info, infos_symbols = self.__penalty_symbols.format_infos(infos_symbols)
 
-        W_rec = params.W_rec  # FIXME
-        self.separate_grads = T.grad(loss, W_fixes)  # FIXME
+            loss_value_info = PrintableInfoElement('value', ':07.3f', infos_symbols[0].item())
+            loss_grad_info = PrintableInfoElement('grad', ':07.3f', infos_symbols[1].item())
 
-        def step(W, acc):
-            return W + acc, norm(W), cos_between_dirs(W, self.__grad.W_rec)
+            loss_info = InfoGroup('loss', InfoList(loss_value_info, loss_grad_info))
+            obj_info = InfoGroup('obj', InfoList(loss_info, penalty_info))
+            exp_info = PrintableInfoElement('@@', '', infos_symbols[2].item())
+            separate_norms_info = NonPrintableInfoElement('separate_norms', infos_symbols[3])
 
-        values, _ = T.scan(step, sequences=[TT.as_tensor_variable(self.separate_grads)],
-                           outputs_info=[TT.zeros_like(W_rec), None, None],
-                           non_sequences=[],
-                           name='net_output',
-                           mode=T.Mode(linker='cvm'),
-                           n_steps=u.shape[0])
+            info = InfoList(exp_info, obj_info, separate_norms_info)
 
-        sep_grads = values[0]
-        self.__separate_grads_norms = values[1]
-        self.__separate_grads_dots = values[2]
+            return info, infos_symbols[info.length:len(infos_symbols)]
 
-        self.__infos = self.__infos + [norm(self.__grad.W_rec - sep_grads[-1])] + [self.__separate_grads_norms, self.__separate_grads_dots]
-        self.__gW_rec = sep_grads[-1]
+        @property
+        def infos(self):
+            return self.__infos
 
-    def format_infos(self, infos_symbols):
-        penalty_info, infos_symbols = self.__penalty_symbols.format_infos(infos_symbols)
+        @property
+        def objective_value(self):
+            return self.__objective_value
 
-        loss_value_info = PrintableInfoElement('value', ':07.3f', infos_symbols[0].item())
-        loss_grad_info = PrintableInfoElement('grad', ':07.3f', infos_symbols[1].item())
+        @property
+        def grad(self):
+            return self.__grad
 
-        loss_info = InfoGroup('loss', InfoList(loss_value_info, loss_grad_info))
-        obj_info = InfoGroup('obj', InfoList(loss_info, penalty_info))
-        exp_info = PrintableInfoElement('@@', '', infos_symbols[2].item())
-        separate_norms_info = NonPrintableInfoElement('separate_norms', infos_symbols[3])
-        separate_dots_info = NonPrintableInfoElement('separate_dots', infos_symbols[4])
-
-        info = InfoList(exp_info, obj_info, separate_norms_info, separate_dots_info)
-
-        return info, infos_symbols[5:len(infos_symbols)]
-
-    @property
-    def infos(self):
-        return self.__infos
-
-    @property
-    def objective_value(self):
-        return self.__objective_value
-
-    @property
-    def grad(self):
-        return self.__grad
-
-    @property
-    def grad_norm(self):
-        return self.__grad_norm
+        @property
+        def grad_norm(self):
+            return self.__grad_norm

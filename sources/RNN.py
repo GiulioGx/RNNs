@@ -5,10 +5,11 @@ import theano.tensor as TT
 import numpy
 
 from Configs import Configs
+from combiningRule.CombiningRule import CombiningRule
 from infos.Info import Info
 from Params import Params
 from Statistics import Statistics
-from theanoUtils import norm, as_vector
+from theanoUtils import norm, as_vector, cos_between_dirs
 
 __author__ = 'giulio'
 
@@ -136,7 +137,8 @@ class RNN(object):
             v2 = as_vector(other.as_tensor_list())
             return TT.dot(v1, v2)
 
-        def __init__(self, W_rec, W_in, W_out, b_rec, b_out):
+        def __init__(self, net, W_rec, W_in, W_out, b_rec, b_out):
+            self.__net = net
             self.__W_rec = W_rec
             self.__W_in = W_in
             self.__W_out = W_out
@@ -146,14 +148,14 @@ class RNN(object):
         def __add__(self, other):
             if not isinstance(other, RNN.Params):
                 raise TypeError('cannot add an object of type' + type(self) + 'with an object of type ' + type(other))
-            return RNN.Params(self.__W_rec + other.__W_rec, self.__W_in + other.__W_in, self.__W_out + other.__W_out,
+            return RNN.Params(self.__net, self.__W_rec + other.__W_rec, self.__W_in + other.__W_in, self.__W_out + other.__W_out,
                               self.__b_rec + other.__b_rec, self.__b_out + other.__b_out)
 
         def __mul__(self, alpha):
             # if not isinstance(alpha, Number):
             #     raise TypeError('cannot multuple object of type ' + type(self),
             #                     ' with a non numeric type: ' + type(alpha))  # TODO theano scalar
-            return RNN.Params(self.__W_rec * alpha, self.__W_in * alpha, self.__W_out * alpha,
+            return RNN.Params(self.__net, self.__W_rec * alpha, self.__W_in * alpha, self.__W_out * alpha,
                               self.__b_rec * alpha, self.__b_out * alpha)
 
         def norm(self):
@@ -162,7 +164,21 @@ class RNN(object):
         def grad(self, fnc):
             gW_rec, gW_in, gW_out, \
             gb_rec, gb_out = TT.grad(fnc, [self.__W_rec, self.__W_in, self.__W_out, self.__b_rec, self.__b_out])
-            return RNN.Params(gW_rec, gW_in, gW_out, gb_rec, gb_out)
+            return RNN.Params(self.__net, gW_rec, gW_in, gW_out, gb_rec, gb_out)
+
+        def grad_combining_steps(self, loss_fnc, strategy: CombiningRule, u, t):
+
+            y, _, W_fixes = self.__net.experimental.net_output(self, u)
+            loss = loss_fnc(y, t)
+
+            separate_grads = T.grad(loss, W_fixes)
+
+            grads_combinantion, separate_norms = strategy.combine(separate_grads, u.shape[0])
+
+            gW_in, gW_out, \
+            gb_rec, gb_out = TT.grad(loss, [self.__W_in, self.__W_out, self.__b_rec, self.__b_out])
+
+            return RNN.Params(self.__net, grads_combinantion, gW_in, gW_out, gb_rec, gb_out), separate_norms
 
         def update_dictionary(self, other):
             return [
@@ -196,7 +212,7 @@ class RNN(object):
         def b_out(self):
             return self.__b_out
 
-    class Experimental:
+    class Experimental:  # FIXME XXX
         def __init__(self, net):
             self.__net = net
 
@@ -238,7 +254,7 @@ class RNN(object):
             self.__b_out = T.shared(b_out, 'b_out', broadcastable=(False, True))
 
             # current params
-            self.__current_params = RNN.Params(self.__W_rec, self.__W_in, self.__W_out, self.__b_rec, self.__b_out)
+            self.__current_params = RNN.Params(self.__net, self.__W_rec, self.__W_in, self.__W_out, self.__b_rec, self.__b_out)
 
             # define symbols
             W_in = TT.matrix()

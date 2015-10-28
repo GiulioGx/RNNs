@@ -14,6 +14,10 @@ class Info(object):
     def elements(self):
         """return the list of InfoElements the object is composed of"""
 
+    @property
+    def length(self):
+        return len(self.elements)
+
     def __str__(self):
         return self.descr
 
