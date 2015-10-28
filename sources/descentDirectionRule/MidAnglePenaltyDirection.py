@@ -93,7 +93,7 @@ class MidAnglePenaltyDirection(DescentDirectionRule):
                 PrintableInfoElement('tr', ':07.3f', infos_symbols[4].item())
             ))
 
-            return info, infos_symbols[5:len(infos_symbols)]
+            return info, infos_symbols[info.length:len(infos_symbols)]
 
     def __init__(self, penalty: Penalty):
         self.__penalty = penalty

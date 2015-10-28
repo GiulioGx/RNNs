@@ -51,8 +51,8 @@ class ArmijoStep(LearningStepRule):
         def format_infos(self, infos_symbols):
             lr_info = PrintableInfoElement('lr', ':02.2e', infos_symbols[0].item())
             n_step_info = PrintableInfoElement('n_step', ':02d', infos_symbols[1].item())
-            infos = InfoList(lr_info, n_step_info)
-            return infos, infos_symbols[2:len(infos_symbols)]
+            info = InfoList(lr_info, n_step_info)
+            return info, infos_symbols[info.length:len(infos_symbols)]
 
     def __init__(self, alpha=0.1, beta=0.5, init_step=1, max_steps=10):
         self.__init_step = TT.alloc(numpy.array(init_step, dtype=Configs.floatType))

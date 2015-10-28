@@ -23,7 +23,7 @@ class ConstantStep(LearningStepRule):
 
         def format_infos(self, infos_symbols):
             lr_info = PrintableInfoElement('lr', ':02.4f', infos_symbols[0].item())
-            return lr_info, infos_symbols[1:len(infos_symbols)]
+            return lr_info, infos_symbols[lr_info.length:len(infos_symbols)]
 
     def __init__(self, lr_value=0.001):
         self.__lr_value = TT.alloc(numpy.array(lr_value, dtype=Configs.floatType))

@@ -60,7 +60,7 @@ class FrozenGradient(DescentDirectionRule):
                 PrintableInfoElement('dir_change', '', infos_symbols[0].item()),
                 PrintableInfoElement('cos(d,p)', ':1.2f', infos_symbols[1].item()),
             ))
-            return info, infos_symbols[2:len(infos_symbols)]
+            return info, infos_symbols[info.length:len(infos_symbols)]
 
     def __init__(self, penalty: Penalty):
         self.__penalty = penalty
