@@ -2,7 +2,7 @@ import theano.tensor as TT
 import theano as T
 
 from InfoProducer import InfoProducer
-from combiningRule.SImpleSum import SimpleSum
+from combiningRule.SimpleSum import SimpleSum
 from infos.InfoGroup import InfoGroup
 from infos.InfoList import InfoList
 from infos.InfoElement import NonPrintableInfoElement, PrintableInfoElement
@@ -43,6 +43,10 @@ class ObjectiveFunction(object):
             self.__net = net
             self.__obj_fnc = obj_fnc
 
+            self.__u = u
+            self.__t = t
+            self.__params = params
+
             # loss gradient
             y, _ = self.__net.net_output(params, u)
 
@@ -62,10 +66,7 @@ class ObjectiveFunction(object):
 
             self.__infos = self.__penalty_symbols.infos + [loss, loss_grad_norm]
 
-            # separate time steps grad
-            combined_grad, separate_norms = params.grad_combining_steps(obj_fnc.loss_fnc, SimpleSum(), u, t)
-
-            self.__infos = self.__infos + [combined_grad.norm()-self.__grad_norm] + [separate_norms]
+            self.__infos = self.__infos
 
         def format_infos(self, infos_symbols):
             penalty_info, infos_symbols = self.__penalty_symbols.format_infos(infos_symbols)
@@ -75,12 +76,10 @@ class ObjectiveFunction(object):
 
             loss_info = InfoGroup('loss', InfoList(loss_value_info, loss_grad_info))
             obj_info = InfoGroup('obj', InfoList(loss_info, penalty_info))
-            exp_info = PrintableInfoElement('@@', '', infos_symbols[2].item())
-            separate_norms_info = NonPrintableInfoElement('separate_norms', infos_symbols[3])
 
-            info = InfoList(exp_info, obj_info, separate_norms_info)
+            info = obj_info
 
-            return info, infos_symbols[info.length:len(infos_symbols)]
+            return info, infos_symbols[loss_info.length:len(infos_symbols)]
 
         @property
         def infos(self):
@@ -97,3 +96,8 @@ class ObjectiveFunction(object):
         @property
         def grad_norm(self):
             return self.__grad_norm
+
+        def combined_grad(self, strategy):
+            # separate time steps grad
+            combined_grad, norms = self.__params.grad_combining_steps(self.__obj_fnc.loss_fnc, strategy, self.__u, self.__t)
+            return combined_grad, norms

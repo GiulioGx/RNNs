@@ -47,3 +47,11 @@ def get_dir_between_2_dirs(c1, c2, cos):
     mid_dir = mid_dir / norm(mid_dir)
 
     return mid_dir
+
+
+def is_not_real(v):
+    return TT.or_(TT.isnan(v), TT.isinf(v))
+
+
+def normalize(v):
+    return TT.exp(TT.log(v)-TT.log(norm(v)))

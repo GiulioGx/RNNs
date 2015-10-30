@@ -263,8 +263,6 @@ class RNN(object):
             b_rec = TT.tensor(dtype=Configs.floatType, broadcastable=(False, True))
             b_out = TT.tensor(dtype=Configs.floatType, broadcastable=(False, True))
 
-
-
             self.u = TT.tensor3()  # input tensor
             self.t = TT.tensor3()  # target tensor
 

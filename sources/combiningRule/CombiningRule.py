@@ -1,6 +1,7 @@
 import abc
 
-from InfoProducer import InfoProducer
+import theano as T
+import theano.tensor as TT
 
 __author__ = 'giulio'
 
@@ -8,6 +9,25 @@ __author__ = 'giulio'
 class CombiningRule(object):
     __metaclass__ = abc.ABCMeta
 
-    @abc.abstractmethod
     def combine(self, vector_list, n):
-        """return the combination of the first 'n' vectors in vectors_list alongside some informations"""
+        values, _ = T.scan(self.step, sequences=[TT.as_tensor_variable(vector_list)],
+                           outputs_info=[TT.zeros_like(vector_list[0]), None],
+                           non_sequences=[],
+                           name='net_output',
+                           mode=T.Mode(linker='cvm'),
+                           n_steps=n)
+
+        grads_combinantions = values[0]
+        separate_norms = values[1]
+
+        normalized_combinantion = self.normalize_step(grads_combinantions[-1], separate_norms)
+
+        return normalized_combinantion, separate_norms
+
+    @abc.abstractmethod
+    def step(self, v, acc):
+        """define the combining step """
+
+    @abc.abstractmethod
+    def normalize_step(self, grads_combinantion, norms):
+        """final step, used for an eventual normalization"""

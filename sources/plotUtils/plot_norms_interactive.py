@@ -24,6 +24,7 @@ for i in range(length):
     fig, ax = plot_norms(norms[i])
     cid = fig.canvas.mpl_connect('key_press_event', on_button_press)
     print(sep)
+    print(norms[i])
     print('Press a button to continue...')
     fig.canvas.set_window_title('Gradient norms it: {:07d}'.format(i*check_freq))
     ax.set_yscale('log')
