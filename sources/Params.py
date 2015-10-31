@@ -11,6 +11,10 @@ class Params(object):
         """addition with params operation"""
 
     @abc.abstractmethod
+    def __sub__(self, other):
+        """subtraction with params operation"""
+
+    @abc.abstractmethod
     def __mul__(self, alpha):
         """scalar multiplication"""
 

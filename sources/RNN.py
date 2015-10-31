@@ -5,10 +5,12 @@ import theano.tensor as TT
 import numpy
 
 from Configs import Configs
+from InfoProducer import InfoProducer
 from combiningRule.CombiningRule import CombiningRule
 from infos.Info import Info
 from Params import Params
 from Statistics import Statistics
+from infos.InfoElement import NonPrintableInfoElement
 from theanoUtils import norm, as_vector, cos_between_dirs
 
 __author__ = 'giulio'
@@ -31,7 +33,7 @@ class RNN(object):
         self.__rng = numpy.random.RandomState(seed)
 
         # init weight matrices TODO
-        scale = .14
+        scale = .1
         loc = 0
         W_in = numpy.asarray(
             self.__rng.normal(size=(self.__n_hidden, self.__n_in), scale=scale, loc=loc), dtype=Configs.floatType)
@@ -148,8 +150,16 @@ class RNN(object):
         def __add__(self, other):
             if not isinstance(other, RNN.Params):
                 raise TypeError('cannot add an object of type' + type(self) + 'with an object of type ' + type(other))
-            return RNN.Params(self.__net, self.__W_rec + other.__W_rec, self.__W_in + other.__W_in, self.__W_out + other.__W_out,
+            return RNN.Params(self.__net, self.__W_rec + other.__W_rec, self.__W_in + other.__W_in,
+                              self.__W_out + other.__W_out,
                               self.__b_rec + other.__b_rec, self.__b_out + other.__b_out)
+
+        def __sub__(self, other):
+            if not isinstance(other, RNN.Params):
+                raise TypeError('cannot subtract an object of type' + type(self) + 'with an object of type ' + type(other))
+            return RNN.Params(self.__net, self.__W_rec - other.__W_rec, self.__W_in - other.__W_in,
+                              self.__W_out - other.__W_out,
+                              self.__b_rec - other.__b_rec, self.__b_out - other.__b_out)
 
         def __mul__(self, alpha):
             # if not isinstance(alpha, Number):
@@ -167,26 +177,56 @@ class RNN(object):
             return RNN.Params(self.__net, gW_rec, gW_in, gW_out, gb_rec, gb_out)
 
         def grad_combining_steps(self, loss_fnc, strategy: CombiningRule, u, t):
+            return RNN.Params.SeparateGrads(self, loss_fnc, strategy, u, t)
 
-            y, _, W_fixes = self.__net.experimental.net_output(self, u)
-            loss = loss_fnc(y, t)
+        class SeparateGrads(InfoProducer):
 
-            separate_grads = T.grad(loss, W_fixes)
+            @property
+            def infos(self):
+                return self.__info
 
-            grads_combinantion, separate_norms = strategy.combine(separate_grads, u.shape[0])
+            def format_infos(self, info_symbols):
+                separate_norms_dict = {'W_rec': info_symbols[0], 'W_in': info_symbols[1], 'W_out': info_symbols[2],
+                                       'b_rec': info_symbols[3],
+                                       'b_out': info_symbols[4]}
+                info = NonPrintableInfoElement('separate_norms', separate_norms_dict)
+                return info, info_symbols[5: len(info_symbols)]
 
-            gW_in, gW_out, \
-            gb_rec, gb_out = TT.grad(loss, [self.__W_in, self.__W_out, self.__b_rec, self.__b_out])
+            @property
+            def grad_combination(self):
+                return self.__grad_combination
 
-            return RNN.Params(self.__net, grads_combinantion, gW_in, gW_out, gb_rec, gb_out), separate_norms
+            def __init__(self, params, loss_fnc, strategy: CombiningRule, u, t):
+                y, _, W_rec_fixes, W_in_fixes, W_out_fixes, b_rec_fixes, b_out_fixes = params.net.experimental.net_output(
+                    params, u)
+                loss = loss_fnc(y, t)
+
+                gW_rec_list = T.grad(loss, W_rec_fixes)
+                gW_in_list = T.grad(loss, W_in_fixes)
+                gW_out_list = T.grad(loss, W_out_fixes)
+                gb_rec_list = T.grad(loss, b_rec_fixes)
+                gb_out_list = T.grad(loss, b_out_fixes)
+
+                l = u.shape[0]
+                gW_rec_combinantion, gW_rec_norms = strategy.combine(gW_rec_list, l)
+                gW_in_combinantion, gW_in_norms = strategy.combine(gW_in_list, l)
+                gW_out_combinantion, gW_out_norms = strategy.combine(gW_out_list, l)
+                gb_rec_combinantion, gb_rec_norms = strategy.combine(gb_rec_list, l)
+                gb_out_combinantion, gb_out_norms = strategy.combine(gb_out_list, l)
+
+                self.__grad_combination = RNN.Params(params.net, gW_rec_combinantion, gW_in_combinantion,
+                                                     gW_out_combinantion,
+                                                     gb_rec_combinantion, gb_out_combinantion)
+
+                self.__info = [gW_rec_norms, gW_in_norms, gW_out_norms, gb_rec_norms, gb_out_norms]
 
         def update_dictionary(self, other):
             return [
                 (self.__W_rec, other.W_rec),
                 (self.__W_in, other.W_in),
                 (self.__W_out, other.W_out),
-                (self.__b_rec, other.b_rec),
-                (self.__b_out, other.b_out)]
+                (self.__b_rec, TT.addbroadcast(other.b_rec, 1)),
+                (self.__b_out, TT.addbroadcast(other.b_out, 1))]
 
         # TODO REMOVE
         def setW_rec(self, W_rec):
@@ -212,6 +252,10 @@ class RNN(object):
         def b_out(self):
             return self.__b_out
 
+        @property
+        def net(self):
+            return self.__net
+
     class Experimental:  # FIXME XXX
         def __init__(self, net):
             self.__net = net
@@ -220,26 +264,38 @@ class RNN(object):
             return self.__net_output(params.W_rec, params.W_in, params.W_out, params.b_rec, params.b_out, u)
 
         def __net_output(self, W_rec, W_in, W_out, b_rec, b_out, u):
-            W_fixes = []
-            for i in range(200):
-                W_fixes.append(W_rec.clone())
+            W_rec_fixes = []
+            W_in_fixes = []
+            W_out_fixes = []
+            b_rec_fixes = []
+            b_out_fixes = []
+
+            for i in range(200):  # FIXME max_lenght
+                W_rec_fixes.append(W_rec.clone())
+                W_in_fixes.append(W_in.clone())
+                W_out_fixes.append(W_out.clone())
+                b_rec_fixes.append(b_rec.clone())
+                b_out_fixes.append(b_out.clone())
 
             n_sequences = u.shape[2]
             h_m1 = TT.alloc(numpy.array(0., dtype=Configs.floatType), self.__net.n_hidden, n_sequences)
 
-            values, _ = T.scan(self.__net_output_t, sequences=[u, TT.as_tensor_variable(W_fixes)],
+            values, _ = T.scan(self.__net_output_t,
+                               sequences=[u, TT.as_tensor_variable(W_rec_fixes), TT.as_tensor_variable(W_in_fixes),
+                                          TT.as_tensor_variable(W_out_fixes), TT.as_tensor_variable(b_rec_fixes),
+                                          TT.as_tensor_variable(b_out_fixes)],
                                outputs_info=[h_m1, None, None],
-                               non_sequences=[W_in, W_out, b_rec, b_out],
+                               non_sequences=[],
                                name='net_output',
                                mode=T.Mode(linker='cvm'),
-                               n_steps=u.shape[0])
+                               n_steps=u.shape[0])  # TODO check if +1
             y = values[1]
             deriv_a = values[2]
-            return y, deriv_a, W_fixes
+            return y, deriv_a, W_rec_fixes, W_in_fixes, W_out_fixes, b_rec_fixes, b_out_fixes
 
-        def __net_output_t(self, u_t, W_rec, h_tm1, W_in, W_out, b_rec, b_out):
-            h_t, deriv_a_t = self.__net.h_t(u_t, h_tm1, W_rec, W_in, b_rec)
-            y_t = self.__net.y_t(h_t, W_out, b_out)
+        def __net_output_t(self, u_t, W_rec_fixes, W_in_fixes, W_out_fixes, b_rec_fixes, b_out_fixes, h_tm1):
+            h_t, deriv_a_t = self.__net.h_t(u_t, h_tm1, W_rec_fixes, W_in_fixes, b_rec_fixes)
+            y_t = self.__net.y_t(h_t, W_out_fixes, b_out_fixes)
             return h_t, y_t, deriv_a_t
 
     class Symbols:
@@ -254,7 +310,8 @@ class RNN(object):
             self.__b_out = T.shared(b_out, 'b_out', broadcastable=(False, True))
 
             # current params
-            self.__current_params = RNN.Params(self.__net, self.__W_rec, self.__W_in, self.__W_out, self.__b_rec, self.__b_out)
+            self.__current_params = RNN.Params(self.__net, self.__W_rec, self.__W_in, self.__W_out, self.__b_rec,
+                                               self.__b_out)
 
             # define symbols
             W_in = TT.matrix()

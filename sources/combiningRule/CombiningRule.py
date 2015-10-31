@@ -10,8 +10,8 @@ class CombiningRule(object):
     __metaclass__ = abc.ABCMeta
 
     def combine(self, vector_list, n):
-        values, _ = T.scan(self.step, sequences=[TT.as_tensor_variable(vector_list)],
-                           outputs_info=[TT.zeros_like(vector_list[0]), None],
+        values, _ = T.scan(self.step, sequences=[TT.unbroadcast(TT.as_tensor_variable(vector_list),1)],
+                           outputs_info=[TT.unbroadcast(TT.zeros_like(vector_list[0]), 1), None],
                            non_sequences=[],
                            name='net_output',
                            mode=T.Mode(linker='cvm'),

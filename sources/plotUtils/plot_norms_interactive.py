@@ -7,12 +7,9 @@ __author__ = 'giulio'
 modelFile = '/home/giulio/RNNs/models/model.npz'
 
 npz = numpy.load(modelFile)
-norms = npz['separate_norms']
+norms_dicts = npz['obj_separate_norms']
 check_freq = npz['settings_check_freq']
 length = npz['length']
-
-print(check_freq)
-print(type(check_freq))
 
 sep = '#'*5
 
@@ -20,14 +17,26 @@ sep = '#'*5
 def on_button_press(event):
     plt.close("all")
 
+
+x = range(length)
+
 for i in range(length):
-    fig, ax = plot_norms(norms[i])
+    dict = norms_dicts[i]
+    keys = dict.keys()
+    fig, axarr = plt.subplots(len(dict), sharex=True, figsize=(20, 30))
+
+    j = 0
+    for key in keys:
+        y = dict[key]
+        axarr[j].bar(range(len(y)), y)
+        axarr[j].legend([key], shadow=True, fancybox=True)
+        axarr[j].set_yscale('log')
+        j += 1
+
     cid = fig.canvas.mpl_connect('key_press_event', on_button_press)
     print(sep)
-    print(norms[i])
     print('Press a button to continue...')
     fig.canvas.set_window_title('Gradient norms it: {:07d}'.format(i*check_freq))
-    ax.set_yscale('log')
     plt.show()
 
 

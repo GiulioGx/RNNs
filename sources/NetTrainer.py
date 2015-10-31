@@ -88,7 +88,6 @@ class NetTrainer(object):
                 net.save_model(self.__model_path, self.__model_name, stats, self.__trainign_settings_info)
 
                 batch_start_time = time.time()
-
             i += 1
 
         end_time = time.time()
