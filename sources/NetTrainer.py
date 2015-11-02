@@ -9,14 +9,17 @@ from ObjectiveFunction import ObjectiveFunction
 from RNN import RNN
 from Statistics import Statistics
 from TrainingRule import TrainingRule
+from initialization.GaussianInit import GaussianInit
+from initialization.MatrixInit import MatrixInit
 
 __author__ = 'giulio'
 
 
 class NetTrainer(object):
-    def __init__(self, training_rule: TrainingRule, obj_fnc: ObjectiveFunction):
+    def __init__(self, training_rule: TrainingRule, obj_fnc: ObjectiveFunction, init_strategy: MatrixInit=GaussianInit()):
         self.__training_rule = training_rule
         self.__obj_fnc = obj_fnc
+        self.__init_strategy = init_strategy
 
         #  FIXME magic constants
         self.__max_it = 500000
@@ -25,8 +28,8 @@ class NetTrainer(object):
         self.__stop_error_thresh = 0.001
         self.__check_freq = 50
 
-        self.__model_path = '/home/giulio/RNNs/models'
-        self.__model_name = 'model'
+        self.__model_path = '~/RNNs/models'
+        self.__model_name = 'model2'
 
         # build training setting info
         self.__trainign_settings_info = InfoGroup('settings',
@@ -42,7 +45,7 @@ class NetTrainer(object):
     def train(self, task, activation_fnc, output_fnc, n_hidden, seed=13):
 
         # configure network
-        net = RNN(activation_fnc, output_fnc, n_hidden, task.n_in, task.n_out, seed)
+        net = RNN(activation_fnc, output_fnc, n_hidden, task.n_in, task.n_out, self.__init_strategy, seed)
 
         # compile symbols
         train_step = self.__training_rule.compile(net, self.__obj_fnc)

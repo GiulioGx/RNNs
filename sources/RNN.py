@@ -11,13 +11,15 @@ from infos.Info import Info
 from Params import Params
 from Statistics import Statistics
 from infos.InfoElement import NonPrintableInfoElement
+from initialization.GaussianInit import GaussianInit
+from initialization.MatrixInit import MatrixInit
 from theanoUtils import norm, as_vector, cos_between_dirs
 
 __author__ = 'giulio'
 
 
 class RNN(object):
-    def __init__(self, activation_fnc, output_fnc, n_hidden, n_in, n_out, seed):
+    def __init__(self, activation_fnc, output_fnc, n_hidden, n_in, n_out, init_strategy: MatrixInit=GaussianInit(), seed=Configs.seed):
         # topology
         self.__n_hidden = n_hidden
         self.__n_in = n_in
@@ -33,20 +35,16 @@ class RNN(object):
         self.__rng = numpy.random.RandomState(seed)
 
         # init weight matrices TODO
-        scale = .1
-        loc = 0
-        W_in = numpy.asarray(
-            self.__rng.normal(size=(self.__n_hidden, self.__n_in), scale=scale, loc=loc), dtype=Configs.floatType)
-        W_rec = numpy.asarray(
-            self.__rng.normal(size=(self.__n_hidden, self.__n_hidden), scale=scale, loc=loc), dtype=Configs.floatType)
-        W_out = numpy.asarray(
-            self.__rng.normal(size=(self.__n_out, self.__n_hidden), scale=scale, loc=loc), dtype=Configs.floatType)
+
+        W_rec = init_strategy.init_matrix((self.__n_hidden, self.__n_hidden), Configs.floatType)
+        W_in = init_strategy.init_matrix((self.__n_hidden, self.__n_in), Configs.floatType)
+        W_out = init_strategy.init_matrix((self.__n_out, self.__n_hidden), Configs.floatType)
 
         # init biases
         b_rec = numpy.zeros((self.__n_hidden, 1), Configs.floatType)
         b_out = numpy.zeros((self.__n_out, 1), Configs.floatType)
 
-        # build symbol closet
+        # build symbols
         self.__symbols = RNN.Symbols(self, W_rec, W_in, W_out, b_rec, b_out)
 
         # experimental

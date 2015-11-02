@@ -1,10 +1,9 @@
 import numpy
-from plotUtils.plot_fncs import plot_norms
 import matplotlib.pyplot as plt
 
 __author__ = 'giulio'
 
-modelFile = '/home/giulio/RNNs/models/model.npz'
+modelFile = '/home/giulio/RNNs/models/model2.npz'
 
 npz = numpy.load(modelFile)
 norms_dicts = npz['obj_separate_norms']
@@ -20,9 +19,9 @@ def on_button_press(event):
 
 x = range(length)
 
-for i in range(length):
+for i in range(length-1, 0, -1):
     dict = norms_dicts[i]
-    keys = dict.keys()
+    keys = sorted(dict.keys())
     fig, axarr = plt.subplots(len(dict), sharex=True, figsize=(20, 30))
 
     j = 0

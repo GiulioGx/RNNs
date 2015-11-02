@@ -1,12 +1,13 @@
+from Configs import Configs
 from combiningRule.CombiningRule import CombiningRule
-from theanoUtils import norm
+import theano.tensor as TT
 
 __author__ = 'giulio'
 
 
 class SimpleSum(CombiningRule):
+    def get_linear_coefficients(self, vector_list, n):
+        return TT.ones((n, 1), dtype=Configs.floatType)
+
     def normalize_step(self, grads_combinantion, norms):
         return grads_combinantion
-
-    def step(self, v, acc):
-        return v + acc, norm(v)
