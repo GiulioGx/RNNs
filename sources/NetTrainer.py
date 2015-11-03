@@ -9,6 +9,8 @@ from Statistics import Statistics
 from TrainingRule import TrainingRule
 from initialization.GaussianInit import GaussianInit
 from initialization.MatrixInit import MatrixInit
+import logging
+import os
 
 __author__ = 'giulio'
 
@@ -27,6 +29,12 @@ class NetTrainer(object):
         self.__stop_error_thresh = stop_error_thresh
         self.__check_freq = check_freq
         self.__model_filename = model_save_file
+
+        # logging
+        log_file = 'example.log'
+        if os.path.exists(log_file):
+            os.remove(log_file)
+        logging.basicConfig(filename=log_file, level=logging.INFO, format='%(levelname)s:%(message)s')
 
         # build training setting info
         self.__trainign_settings_info = InfoGroup('settings',
@@ -50,15 +58,15 @@ class NetTrainer(object):
         # training statistics
         stats = Statistics(self.__max_it, self.__check_freq)
 
-        print('Generating validation set ...')
+        logging.info('Generating validation set ...')
         validation_set = task.get_batch(self.__validation_set_size)
-        print('... Done')
+        logging.info('... Done')
 
         rho = numpy.max(abs(numpy.linalg.eigvals(net.symbols.current_params.W_rec.get_value())))  # FIXME
-        print('Initial rho: {:5.2f}'.format(rho))
+        logging.info('Initial rho: {:5.2f}'.format(rho))
 
-        print(self.__trainign_settings_info)
-        print('Training ...\n')
+        logging.info(self.__trainign_settings_info)
+        logging.info('Training ...\n')
         start_time = time.time()
         batch_start_time = time.time()
 
@@ -83,7 +91,7 @@ class NetTrainer(object):
 
                 batch_time = batch_end_time - batch_start_time
                 info = NetTrainer.__build_infos(train_info, i, valid_loss, valid_error, best_error, rho, batch_time)
-                print(info)
+                logging.info(info)
                 stats.update(info, i, total_elapsed_time)
                 net.save_model(self.__model_filename, stats, self.__trainign_settings_info)
 
@@ -91,7 +99,7 @@ class NetTrainer(object):
             i += 1
 
         end_time = time.time()
-        print('Elapsed time: {:2.2f} min'.format((end_time - start_time) / 60))
+        logging.info('Elapsed time: {:2.2f} min'.format((end_time - start_time) / 60))
         return net
 
     @staticmethod
