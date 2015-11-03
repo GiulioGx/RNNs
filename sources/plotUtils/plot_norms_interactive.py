@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 __author__ = 'giulio'
 
-modelFile = '/home/giulio/RNNs/models/model2.npz'
+modelFile = '/home/giulio/RNNs/models/model.npz'
 
 npz = numpy.load(modelFile)
 norms_dicts = npz['obj_separate_norms']

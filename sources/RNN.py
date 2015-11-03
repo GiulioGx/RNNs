@@ -102,10 +102,10 @@ class RNN(object):
     def y_t(self, h_t, W_out, b_out):
         return self.__output_fnc(TT.dot(W_out, h_t) + b_out)
 
-    def save_model(self, path, filename, stats: Statistics, info: Info):
+    def save_model(self, filename, stats: Statistics, info: Info):
         """saves the model with statistics to file"""
 
-        os.makedirs(path, exist_ok=True)
+        os.makedirs(filename, exist_ok=True)
 
         info_dict = stats.dictionary
         d = dict(n_hidden=self.__n_hidden,
@@ -120,7 +120,7 @@ class RNN(object):
 
         info_dict.update(d)
         info_dict.update(info.dictionary)
-        numpy.savez(path + '/' + filename + '.npz', **info_dict)
+        numpy.savez(filename + '.npz', **info_dict)
 
     # predefined output functions
     @staticmethod

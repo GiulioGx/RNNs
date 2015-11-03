@@ -1,7 +1,5 @@
 import time
-
 import numpy
-
 from infos.InfoGroup import InfoGroup
 from infos.InfoList import InfoList
 from infos.InfoElement import PrintableInfoElement
@@ -16,20 +14,19 @@ __author__ = 'giulio'
 
 
 class NetTrainer(object):
-    def __init__(self, training_rule: TrainingRule, obj_fnc: ObjectiveFunction, init_strategy: MatrixInit=GaussianInit()):
+    def __init__(self, training_rule: TrainingRule, obj_fnc: ObjectiveFunction,
+                 init_strategy: MatrixInit = GaussianInit(), max_it=500000, bacth_size=100, validation_set_size=10000,
+                 stop_error_thresh=0.001, check_freq=50, model_save_file='./model'):
+
         self.__training_rule = training_rule
         self.__obj_fnc = obj_fnc
         self.__init_strategy = init_strategy
-
-        #  FIXME magic constants
-        self.__max_it = 500000
-        self.__batch_size = 100
-        self.__validation_set_size = 10000
-        self.__stop_error_thresh = 0.001
-        self.__check_freq = 50
-
-        self.__model_path = '~/RNNs/models'
-        self.__model_name = 'model2'
+        self.__max_it = max_it
+        self.__batch_size = bacth_size
+        self.__validation_set_size = validation_set_size
+        self.__stop_error_thresh = stop_error_thresh
+        self.__check_freq = check_freq
+        self.__model_filename = model_save_file
 
         # build training setting info
         self.__trainign_settings_info = InfoGroup('settings',
@@ -57,7 +54,7 @@ class NetTrainer(object):
         validation_set = task.get_batch(self.__validation_set_size)
         print('... Done')
 
-        rho = numpy.max(abs(numpy.linalg.eigvals(net.symbols.current_params.W_rec.get_value()))) #  FIXME
+        rho = numpy.max(abs(numpy.linalg.eigvals(net.symbols.current_params.W_rec.get_value())))  # FIXME
         print('Initial rho: {:5.2f}'.format(rho))
 
         print(self.__trainign_settings_info)
@@ -85,10 +82,10 @@ class NetTrainer(object):
                 total_elapsed_time = batch_end_time - start_time
 
                 batch_time = batch_end_time - batch_start_time
-                info = self.__build_infos(train_info, i, valid_loss, valid_error, best_error, rho, batch_time)
+                info = NetTrainer.__build_infos(train_info, i, valid_loss, valid_error, best_error, rho, batch_time)
                 print(info)
                 stats.update(info, i, total_elapsed_time)
-                net.save_model(self.__model_path, self.__model_name, stats, self.__trainign_settings_info)
+                net.save_model(self.__model_filename, stats, self.__trainign_settings_info)
 
                 batch_start_time = time.time()
             i += 1
@@ -97,7 +94,8 @@ class NetTrainer(object):
         print('Elapsed time: {:2.2f} min'.format((end_time - start_time) / 60))
         return net
 
-    def __build_infos(self, train_info, i, valid_loss, valid_error, best_error, rho, batch_time):
+    @staticmethod
+    def __build_infos(train_info, i, valid_loss, valid_error, best_error, rho, batch_time):
 
         it_info = PrintableInfoElement('iteration', ':07d', i)
 
