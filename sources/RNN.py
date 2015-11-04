@@ -105,7 +105,7 @@ class RNN(object):
     def save_model(self, filename, stats: Statistics, info: Info):
         """saves the model with statistics to file"""
 
-        os.makedirs(filename, exist_ok=True)
+        os.makedirs(os.path.dirname(filename), exist_ok=True)
 
         info_dict = stats.dictionary
         d = dict(n_hidden=self.__n_hidden,

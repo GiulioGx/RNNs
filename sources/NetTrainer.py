@@ -34,6 +34,7 @@ class NetTrainer(object):
         # logging
         if os.path.exists(log_filename):
             os.remove(log_filename)
+        os.makedirs(os.path.dirname(log_filename), exist_ok=True)
         logging.basicConfig(filename=log_filename, level=logging.INFO, format='%(levelname)s:%(message)s')
 
         # build training setting info
