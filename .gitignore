@@ -107,8 +107,9 @@ hs_err_pid*
 *.directory
 *.swp
 
-#non references pdf
-Notes/*.pdf
-
 #References folder
-References/*
+docs/References/*
+
+#saved model
+models/*
+
