@@ -1,5 +1,4 @@
 import numpy
-
 from infos.Info import Info
 
 __author__ = 'giulio'
@@ -24,9 +23,9 @@ class Statistics(object):
         for e in info.elements:
             if e.name not in self.__dictionary:
                 # self.__dictionary[e.name] = numpy.zeros((self.__m,), dtype=Configs.floatType)
-                self.__dictionary[e.name] = [None] * self.__m
+                self.__dictionary[e.name] = []
 
-            self.__dictionary[e.name][int(j)] = e.value
+            self.__dictionary[e.name].append(e.value)
         self.__dictionary['elapsed_time'] = elapsed_time
         self.__dictionary['length'] = self.__actual_length
 

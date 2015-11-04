@@ -11,8 +11,12 @@ __author__ = 'giulio'
 class SimplexCombination(CombiningRule):
 
     def get_linear_coefficients(self, vector_list, n):
-        b = self.__srng.exponential(scale=1, size=(1, n))
-        return b/b.sum()
+
+        u = self.__srng.uniform(low=0, high=1, size=(n, 1))
+
+        exp_lambda = 1
+        x = -TT.log(-u+1)/exp_lambda
+        return x/x.sum()
 
     def __init__(self, seed=Configs.seed):
         self.__srng = RandomStreams(seed=seed)

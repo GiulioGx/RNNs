@@ -18,7 +18,7 @@ __author__ = 'giulio'
 class NetTrainer(object):
     def __init__(self, training_rule: TrainingRule, obj_fnc: ObjectiveFunction,
                  init_strategy: MatrixInit = GaussianInit(), max_it=500000, bacth_size=100, validation_set_size=10000,
-                 stop_error_thresh=0.001, check_freq=50, model_save_file='./model'):
+                 stop_error_thresh=0.001, check_freq=50, model_save_file='./model', log_filename='./model.log'):
 
         self.__training_rule = training_rule
         self.__obj_fnc = obj_fnc
@@ -29,25 +29,29 @@ class NetTrainer(object):
         self.__stop_error_thresh = stop_error_thresh
         self.__check_freq = check_freq
         self.__model_filename = model_save_file
+        self.__log_filename = log_filename
 
         # logging
-        log_file = 'example.log'
-        if os.path.exists(log_file):
-            os.remove(log_file)
-        logging.basicConfig(filename=log_file, level=logging.INFO, format='%(levelname)s:%(message)s')
+        if os.path.exists(log_filename):
+            os.remove(log_filename)
+        logging.basicConfig(filename=log_filename, level=logging.INFO, format='%(levelname)s:%(message)s')
 
         # build training setting info
-        self.__trainign_settings_info = InfoGroup('settings',
+        self.__training_settings_info = InfoGroup('settings',
                                                   InfoList(PrintableInfoElement('max_it', ':d', self.__max_it),
                                                            PrintableInfoElement('check_freq', ':d', self.__check_freq),
                                                            PrintableInfoElement('batch_size', ':d', self.__batch_size),
                                                            PrintableInfoElement('validation_set_size', ':d',
                                                                                 self.__validation_set_size),
                                                            PrintableInfoElement('stop_error_thresh', ':f',
-                                                                                self.__stop_error_thresh)
+                                                                                self.__stop_error_thresh),
                                                            ))
 
     def train(self, task, activation_fnc, output_fnc, n_hidden, seed=13):
+
+        # add task description to infos
+        self.__training_settings_info = InfoList(self.__training_settings_info,
+                                                 PrintableInfoElement('task', '', str(task)))
 
         # configure network
         net = RNN(activation_fnc, output_fnc, n_hidden, task.n_in, task.n_out, self.__init_strategy, seed)
@@ -65,7 +69,7 @@ class NetTrainer(object):
         rho = numpy.max(abs(numpy.linalg.eigvals(net.symbols.current_params.W_rec.get_value())))  # FIXME
         logging.info('Initial rho: {:5.2f}'.format(rho))
 
-        logging.info(self.__trainign_settings_info)
+        logging.info(self.__training_settings_info)
         logging.info('Training ...\n')
         start_time = time.time()
         batch_start_time = time.time()
@@ -93,7 +97,7 @@ class NetTrainer(object):
                 info = NetTrainer.__build_infos(train_info, i, valid_loss, valid_error, best_error, rho, batch_time)
                 logging.info(info)
                 stats.update(info, i, total_elapsed_time)
-                net.save_model(self.__model_filename, stats, self.__trainign_settings_info)
+                net.save_model(self.__model_filename, stats, self.__training_settings_info)
 
                 batch_start_time = time.time()
             i += 1
