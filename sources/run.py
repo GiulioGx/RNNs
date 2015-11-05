@@ -39,14 +39,14 @@ print(separator)
 seed = 13
 task = AdditionTask(144, seed)
 n_hidden = 50
-activation_fnc = Tanh()
+activation_fnc = Relu()
 output_fnc = RNN.last_linear_fnc
 loss_fnc = NetTrainer.squared_error
 model_filename = Configs.model_filename
 log_filename = Configs.log_filename
 
 # init strategy
-init_strategy = GaussianInit(0, 0.14)
+init_strategy = GaussianInit(0, 0.22)       # 0.14 Tanh
 #init_strategy = UniformInit(low=-0.01, high=0.01)
 
 # penalty strategy
@@ -61,11 +61,11 @@ penalty = NullPenalty()
 #dir_rule = FrozenGradient(penalty)
 #dir_rule = SepareteGradient()
 dir_rule = CombinedGradients()
-combining_rule = SimplexCombination()
+combining_rule = NormalizedSum()
 
 # learning step rule
 #lr_rule = WRecNormalizedStep(0.0001) #0.01
-lr_rule = ConstantStep(0.001) #0.01
+lr_rule = ConstantStep(0.0004) #0.01
 #lr_rule = ConstantNormalizedStep(0.001) #0.01
 #lr_rule = ArmijoStep(alpha=0.1, beta=0.1, init_step=1, max_steps=50)
 
