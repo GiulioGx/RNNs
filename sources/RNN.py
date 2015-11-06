@@ -1,9 +1,8 @@
 import os
-
 import theano as T
 import theano.tensor as TT
 import numpy
-
+from ActivationFunction import Relu
 from Configs import Configs
 from InfoProducer import InfoProducer
 from combiningRule.CombiningRule import CombiningRule
@@ -12,14 +11,19 @@ from Params import Params
 from Statistics import Statistics
 from infos.InfoElement import NonPrintableInfoElement
 from initialization.GaussianInit import GaussianInit
-from initialization.MatrixInit import MatrixInit
-from theanoUtils import norm, as_vector, cos_between_dirs
+from initialization.GivenValueInit import GivenValueInit
+from initialization.ZeroInit import ZeroInit
+from theanoUtils import norm, as_vector
 
 __author__ = 'giulio'
 
 
 class RNN(object):
-    def __init__(self, activation_fnc, output_fnc, n_hidden, n_in, n_out, init_strategy: MatrixInit=GaussianInit(), seed=Configs.seed):
+    deafult_init_strategies = {'W_rec': GaussianInit(), 'W_in': GaussianInit(), 'W_out': GaussianInit(),
+                               'b_rec': ZeroInit(), 'b_out': ZeroInit()}
+
+    def __init__(self, activation_fnc, output_fnc, n_hidden, n_in, n_out, init_strategies: deafult_init_strategies,
+                 seed=Configs.seed):
         # topology
         self.__n_hidden = n_hidden
         self.__n_in = n_in
@@ -34,15 +38,13 @@ class RNN(object):
         # random generator
         self.__rng = numpy.random.RandomState(seed)
 
-        # init weight matrices TODO
-
-        W_rec = init_strategy.init_matrix((self.__n_hidden, self.__n_hidden), Configs.floatType)
-        W_in = init_strategy.init_matrix((self.__n_hidden, self.__n_in), Configs.floatType)
-        W_out = init_strategy.init_matrix((self.__n_out, self.__n_hidden), Configs.floatType)
+        W_rec = init_strategies['W_rec'].init_matrix((self.__n_hidden, self.__n_hidden), Configs.floatType)
+        W_in = init_strategies['W_in'].init_matrix((self.__n_hidden, self.__n_in), Configs.floatType)
+        W_out = init_strategies['W_out'].init_matrix((self.__n_out, self.__n_hidden), Configs.floatType)
 
         # init biases
-        b_rec = numpy.zeros((self.__n_hidden, 1), Configs.floatType)
-        b_out = numpy.zeros((self.__n_out, 1), Configs.floatType)
+        b_rec = init_strategies['b_rec'].init_matrix((self.__n_hidden, 1), Configs.floatType)
+        b_out = init_strategies['b_out'].init_matrix((self.__n_out, 1), Configs.floatType)
 
         # build symbols
         self.__symbols = RNN.Symbols(self, W_rec, W_in, W_out, b_rec, b_out)
@@ -102,6 +104,28 @@ class RNN(object):
     def y_t(self, h_t, W_out, b_out):
         return self.__output_fnc(TT.dot(W_out, h_t) + b_out)
 
+    @staticmethod
+    def load_model(filename):
+        npz = numpy.load(filename)
+
+        W_rec = npz["W_rec"]
+        W_in = npz["W_in"]
+        W_out = npz["W_out"]
+        b_rec = npz["b_rec"]
+        b_out = npz["b_out"]
+
+        n_hidden = npz["n_hidden"]
+        n_in = npz["n_in"]
+        n_out = npz["n_out"]
+
+        activation_fnc = Relu()  # FIXME XXX
+        output_fnc = RNN.linear_fnc
+
+        init_strategies = {'W_rec': GivenValueInit(W_rec), 'W_in': GivenValueInit(W_in), 'W_out': GivenValueInit(W_out),
+                           'b_rec': GivenValueInit(b_rec), 'b_out': GivenValueInit(b_out)}
+
+        return RNN(activation_fnc, output_fnc, n_hidden, n_in, n_out, init_strategies)
+
     def save_model(self, filename, stats: Statistics, info: Info):
         """saves the model with statistics to file"""
 
@@ -124,8 +148,13 @@ class RNN(object):
 
     # predefined output functions
     @staticmethod
-    def last_linear_fnc(y):
+    def linear_fnc(y):
         return y
+
+    # @staticmethod
+    # def softmax(y):
+    #     e_y = TT.exp(y - y.max(axis=0))
+    #     return e_y / e_y.sum(axis=0)
 
     class Params(Params):
 
@@ -154,7 +183,8 @@ class RNN(object):
 
         def __sub__(self, other):
             if not isinstance(other, RNN.Params):
-                raise TypeError('cannot subtract an object of type' + type(self) + 'with an object of type ' + type(other))
+                raise TypeError(
+                    'cannot subtract an object of type' + type(self) + 'with an object of type ' + type(other))
             return RNN.Params(self.__net, self.__W_rec - other.__W_rec, self.__W_in - other.__W_in,
                               self.__W_out - other.__W_out,
                               self.__b_rec - other.__b_rec, self.__b_out - other.__b_out)

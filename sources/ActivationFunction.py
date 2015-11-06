@@ -31,7 +31,7 @@ class Relu(ActivationFunction):
                          TT.alloc(numpy.array(0., dtype=Configs.floatType)))
 
     def __str__(self):
-        return 'Relu'
+        return 'relu'
 
 
 class Tanh(ActivationFunction):

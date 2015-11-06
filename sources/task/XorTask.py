@@ -8,6 +8,7 @@ __author__ = 'giulio'
 
 # TODO error fnc
 class XorTask(Task):
+
     def __init__(self, min_length: int, seed: int):
         self.__min_length = min_length
         self.__n_in = 2
@@ -27,7 +28,10 @@ class XorTask(Task):
         a = data[p0, numpy.ones((n,), dtype='int32'), numpy.arange(n)].astype('int32')
         b = data[p1, numpy.ones((n,), dtype='int32'), numpy.arange(n)].astype('int32')
 
-        outputs[m-1, 0, :] = numpy.bitwise_xor(a, b)
+        outputs[m-1, 0, :] = numpy.bitwise_xor(a, b).astype(Configs.floatType)
+
+    def error_fnc(self, t, y):
+        return (abs(t[-1:, :, :] - y[-1:, :, :]).sum(axis=0) > .2).mean()
 
     def get_batch(self, batch_size: int):
         return self.__marker_based_task.get_batch(batch_size)
