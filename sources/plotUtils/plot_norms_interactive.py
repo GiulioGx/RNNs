@@ -20,7 +20,7 @@ def on_button_press(event):
 x = range(length)
 # reversed(x)
 
-for i in reversed(x):
+for i in x:
     dict = norms_dicts[i]
     keys = sorted(dict.keys())
     fig, axarr = plt.subplots(len(dict), sharex=True, figsize=(20, 30))

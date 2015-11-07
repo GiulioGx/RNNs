@@ -22,7 +22,7 @@ class ConstantStep(LearningStepRule):
             return [self.__learning_rate]
 
         def format_infos(self, infos_symbols):
-            lr_info = PrintableInfoElement('lr', ':02.4f', infos_symbols[0].item())
+            lr_info = PrintableInfoElement('lr', ':02.2e', infos_symbols[0].item())
             return lr_info, infos_symbols[lr_info.length:len(infos_symbols)]
 
     def __init__(self, lr_value=0.001):

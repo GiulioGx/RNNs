@@ -131,7 +131,7 @@ class NetTrainer(object):
 
         it_info = PrintableInfoElement('iteration', ':07d', i)
 
-        val_loss_info = PrintableInfoElement('loss', ':07.3f', valid_loss)
+        val_loss_info = PrintableInfoElement('loss', ':07.4f', valid_loss)
 
         error_info = PrintableInfoElement('curr', ':.2%', valid_error)
         best_info = PrintableInfoElement('best', ':.2%', best_error)

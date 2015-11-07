@@ -46,7 +46,7 @@ model_filename = Configs.model_filename+'_xor'
 log_filename = Configs.log_filename+'_xor'
 
 # init strategy
-std_dev = 0.14  # 0.14 Tanh #0.21 Relu
+std_dev = 0.18  # 0.14 Tanh #0.21 Relu
 init_strategies = {'W_rec': GaussianInit(0, std_dev), 'W_in': GaussianInit(0, std_dev),
                    'W_out': GaussianInit(0, std_dev),
                    'b_rec': ZeroInit(), 'b_out': ZeroInit()}
@@ -59,17 +59,17 @@ init_strategies = {'W_rec': GaussianInit(0, std_dev), 'W_in': GaussianInit(0, st
 # dir_rule = FrozenGradient(penalty)
 # dir_rule = SepareteGradient()
 dir_rule = CombinedGradients()
-combining_rule = NormalizedSum()
+combining_rule = SimpleSum()
 
 # learning step rule
 # lr_rule = WRecNormalizedStep(0.0001) #0.01
-#lr_rule = ConstantStep(0.0004)  # 0.01
+#lr_rule = ConstantStep(0.001)  # 0.01
 lr_rule = ConstantNormalizedStep(0.0001) #0.01
 # lr_rule = ArmijoStep(alpha=0.1, beta=0.1, init_step=1, max_steps=50)
 
 obj_fnc = ObjectiveFunction(loss_fnc)
 train_rule = TrainingRule(dir_rule, lr_rule, combining_rule)
 
-trainer = NetTrainer(train_rule, obj_fnc, model_save_file=model_filename, log_filename=log_filename)
+trainer = NetTrainer(train_rule, obj_fnc, model_save_file=model_filename, log_filename=log_filename, bacth_size=100)
 
 net = trainer.train(task, activation_fnc, output_fnc, n_hidden, init_strategies, seed)
