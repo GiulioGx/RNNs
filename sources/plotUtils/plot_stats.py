@@ -3,20 +3,22 @@ import numpy
 
 __author__ = 'giulio'
 
-#modelFile = '/home/giulio/RNNs/models/model.npz'
-modelFile = '/home/giulio/model_octopus.npz'
+modelFile = '/home/giulio/RNNs/models/model_add.npz'
+#modelFile = '/home/giulio/model_octopus.npz'
 
 
 npz = numpy.load(modelFile)
 valid_error = npz['validation_error_curr']
 #penalty = npz['penalty']
 grad_norm = npz['obj_loss_grad']
+grad_dot = npz['grad_dot']
+
 
 check_freq = npz['settings_check_freq']
 length = len(valid_error) #FIXME
 x_values = numpy.arange(length) * check_freq
 
-fig, axarr = plt.subplots(2, sharex=True)
+fig, axarr = plt.subplots(3, sharex=True)
 
 axarr[0].plot(x_values, valid_error, 'r')
 axarr[0].legend(['validation error'], shadow=True, fancybox=True)
@@ -28,6 +30,9 @@ axarr[0].legend(['validation error'], shadow=True, fancybox=True)
 axarr[1].plot(x_values, grad_norm, 'm')
 axarr[1].legend(['gradient norm'], shadow=True, fancybox=True)
 axarr[1].set_yscale('log')
+
+axarr[2].plot(x_values, grad_dot, 'b')
+axarr[2].legend(['gradient dot'], shadow=True, fancybox=True)
 
 # description
 elapsed_time = npz['elapsed_time'].item()

@@ -23,9 +23,9 @@ class CombiningRule(object):
         grads_combinantions = values[0]
         separate_norms = values[1]
 
-        normalized_combinantion = self.normalize_step(grads_combinantions[-1], separate_norms)
+        normalized_combination = self.normalize_step(grads_combinantions[-1], separate_norms)
 
-        return normalized_combinantion, separate_norms
+        return normalized_combination, separate_norms
 
     @staticmethod
     def step(v, alpha, acc):

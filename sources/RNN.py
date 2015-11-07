@@ -158,13 +158,39 @@ class RNN(object):
 
     class Params(Params):
 
-        def as_tensor_list(self):
+        def __as_tensor_list(self):
             return self.__W_rec, self.__W_in, self.__W_out, self.__b_rec, self.__b_out
 
+        def flatten(self):
+            return as_vector(self.__as_tensor_list())
+
+        @staticmethod
+        def from_flattened_tensor(v, net):
+
+            n1 = net.n_hidden ** 2
+            n2 = n1 + net.n_hidden * net.n_in
+            n3 = n2 + net.n_hidden * net.n_out
+            n4 = n3 + net.n_hidden
+            n5 = n4 + net.n_out
+
+            W_rec_v = v[0:n1]
+            W_in_v = v[n1:n2]
+            W_out_v = v[n2:n3]
+            b_rec_v = v[n3:n4]
+            b_out_v = v[n4:n5]
+
+            W_rec = W_rec_v.reshape((net.n_hidden, net.n_hidden))
+            W_in = W_in_v.reshape((net.n_hidden, net.n_in))
+            W_out = W_out_v.reshape((net.n_out, net.n_hidden))
+            b_rec = b_rec_v.reshape((net.n_hidden, 1))
+            b_out = b_out_v.reshape((net.n_out, 1))
+
+            return RNN.Params(net, W_rec, W_in, W_out, b_rec, b_out)
+
         def dot(self, other):
-            v1 = as_vector(self.as_tensor_list())
-            v2 = as_vector(other.as_tensor_list())
-            return TT.dot(v1, v2)
+            v1 = as_vector(*self.__as_tensor_list())
+            v2 = as_vector(*other.__as_tensor_list())
+            return TT.dot(v1.dimshuffle(1, 0), v2)
 
         def __init__(self, net, W_rec, W_in, W_out, b_rec, b_out):
             self.__net = net
@@ -236,17 +262,58 @@ class RNN(object):
                 gb_out_list = T.grad(loss, b_out_fixes)
 
                 l = u.shape[0]
-                gW_rec_combinantion, gW_rec_norms = strategy.combine(gW_rec_list, l)
-                gW_in_combinantion, gW_in_norms = strategy.combine(gW_in_list, l)
-                gW_out_combinantion, gW_out_norms = strategy.combine(gW_out_list, l)
-                gb_rec_combinantion, gb_rec_norms = strategy.combine(gb_rec_list, l)
-                gb_out_combinantion, gb_out_norms = strategy.combine(gb_out_list, l)
 
-                self.__grad_combination = RNN.Params(params.net, gW_rec_combinantion, gW_in_combinantion,
+                self.__grad_combination, gW_rec_norms, gW_in_norms, gW_out_norms, \
+                gb_rec_norms, gb_out_norms = self.__get_combination_togheter(
+                    gW_rec_list, gW_in_list, gW_out_list, gb_rec_list, gb_out_list, l, strategy, params.net)
+
+                self.__info = [gW_rec_norms, gW_in_norms, gW_out_norms, gb_rec_norms, gb_out_norms]
+
+            def __get_combination_separately(self, gW_rec_list, gW_in_list, gW_out_list, gb_rec_list, gb_out_list, l, strategy, net):
+                    gW_rec_combinantion, gW_rec_norms = strategy.combine(gW_rec_list, l)
+                    gW_in_combinantion, gW_in_norms = strategy.combine(gW_in_list, l)
+                    gW_out_combinantion, gW_out_norms = strategy.combine(gW_out_list, l)
+                    gb_rec_combinantion, gb_rec_norms = strategy.combine(gb_rec_list, l)
+                    gb_out_combinantion, gb_out_norms = strategy.combine(gb_out_list, l)
+
+                    combination = RNN.Params(net, gW_rec_combinantion, gW_in_combinantion,
                                                      gW_out_combinantion,
                                                      gb_rec_combinantion, gb_out_combinantion)
 
-                self.__info = [gW_rec_norms, gW_in_norms, gW_out_norms, gb_rec_norms, gb_out_norms]
+                    return combination, gW_rec_norms, gW_in_norms, gW_out_norms, gb_rec_norms, gb_out_norms
+
+            def get_norms(self, list, n):
+
+                values, _ = T.scan(norm, sequences=[TT.as_tensor_variable(list)],
+                           outputs_info=[None],
+                           non_sequences=[],
+                           name='get_norms',
+                           mode=T.Mode(linker='cvm'),
+                           n_steps=n)
+
+                return values
+
+            def __get_combination_togheter(self, gW_rec_list, gW_in_list, gW_out_list, gb_rec_list, gb_out_list, l, strategy, net):
+
+                    gW_rec_norms = self.get_norms(gW_rec_list, l)
+                    gW_in_norms = self.get_norms(gW_in_list, l)
+                    gW_out_norms = self.get_norms(gW_out_list, l)
+                    gb_rec_norms = self.get_norms(gb_rec_list, l)
+                    gb_out_norms = self.get_norms(gb_out_list, l)
+
+                    values, _ = T.scan(as_vector, sequences=[TT.as_tensor_variable(gW_rec_list), TT.as_tensor_variable(gW_in_list),
+                                                        TT.as_tensor_variable(gW_out_list), TT.as_tensor_variable(gb_rec_list),
+                                                        TT.as_tensor_variable(gb_out_list)],
+                           outputs_info=[None],
+                           non_sequences=[],
+                           name='as_vector_combinations',
+                           mode=T.Mode(linker='cvm'),
+                           n_steps=l)
+
+                    combination_v, norms = strategy.combine(values, l)
+                    combination = RNN.Params.from_flattened_tensor(combination_v, net)
+
+                    return combination, gW_rec_norms, gW_in_norms, gW_out_norms, gb_rec_norms, gb_out_norms
 
         def update_dictionary(self, other):
             return [

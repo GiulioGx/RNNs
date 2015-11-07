@@ -18,7 +18,7 @@ __author__ = 'giulio'
 
 class NetTrainer(object):
     def __init__(self, training_rule: TrainingRule, obj_fnc: ObjectiveFunction, max_it=1000000, bacth_size=100, validation_set_size=10000,
-                 stop_error_thresh=0.001, check_freq=50, model_save_file='./model', log_filename='./model.log'):
+                 stop_error_thresh=0.01, check_freq=50, model_save_file='./model', log_filename='./model.log'):
 
         self.__training_rule = training_rule
         self.__obj_fnc = obj_fnc
@@ -74,7 +74,7 @@ class NetTrainer(object):
         error_occured = False
         i = 0
         best_error = 100
-        while i < self.__max_it and best_error > self.__stop_error_thresh and (not error_occured):
+        while i < self.__max_it and best_error > self.__stop_error_thresh/100 and (not error_occured):
 
             batch = task.get_batch(self.__batch_size)
             train_info = train_step.step(batch.inputs, batch.outputs)

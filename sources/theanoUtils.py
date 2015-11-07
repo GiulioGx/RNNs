@@ -4,10 +4,10 @@ import theano.tensor as TT
 __author__ = 'giulio'
 
 
-def as_vector(tensor_list):
+def as_vector(*tensor_list):
     l = []
     for t in tensor_list:
-        l.append(t.flatten())
+        l.append(t.flatten().dimshuffle(0, 'x'))
     return TT.concatenate(l)
 
 

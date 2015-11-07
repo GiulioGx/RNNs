@@ -38,14 +38,14 @@ print(separator)
 seed = 13
 task = AdditionTask(144, seed)
 n_hidden = 50
-activation_fnc = Relu()
+activation_fnc = Tanh()
 output_fnc = RNN.linear_fnc
 loss_fnc = NetTrainer.squared_error
 model_filename = Configs.model_filename+'_add'
 log_filename = Configs.log_filename+'_add'
 
 # init strategy
-std_dev = 0.21  # 0.14 Tanh
+std_dev = 0.14  # 0.14 Tanh # 0.21 Relu
 init_strategies = {'W_rec': GaussianInit(0, std_dev), 'W_in': GaussianInit(0, .01),
                    'W_out': GaussianInit(0, .01),
                    'b_rec': ZeroInit(), 'b_out': ZeroInit()}
@@ -66,8 +66,8 @@ combining_rule = NormalizedSum()
 
 # learning step rule
 # lr_rule = WRecNormalizedStep(0.0001) #0.01
-lr_rule = ConstantStep(0.0004)  # 0.01
-# lr_rule = ConstantNormalizedStep(0.001) #0.01
+lr_rule = ConstantStep(0.001)  # 0.01
+#lr_rule = ConstantNormalizedStep(0.001) #0.01
 # lr_rule = ArmijoStep(alpha=0.1, beta=0.1, init_step=1, max_steps=50)
 
 obj_fnc = ObjectiveFunction(loss_fnc, penalty, 0.1)
