@@ -3,8 +3,8 @@ import matplotlib.pyplot as plt
 
 __author__ = 'giulio'
 
-modelFile = '/home/giulio/RNNs/models/model_xor.npz'
-#modelFile = '/home/giulio/model_octopus.npz'
+# modelFile = '/home/giulio/RNNs/models/model_xor.npz'
+modelFile = '/home/giulio/model_octopus.npz'
 npz = numpy.load(modelFile)
 norms_dicts = npz['obj_separate_norms']
 check_freq = npz['settings_check_freq']
@@ -20,7 +20,7 @@ def on_button_press(event):
 x = range(length)
 # reversed(x)
 
-for i in reversed(x):
+for i in x:
     dict = norms_dicts[i]
     keys = sorted(dict.keys())
     fig, axarr = plt.subplots(len(dict), sharex=True, figsize=(20, 30))
