@@ -3,8 +3,8 @@ import matplotlib.pyplot as plt
 
 __author__ = 'giulio'
 
-# modelFile = '/home/giulio/RNNs/models/model_xor.npz'
-modelFile = '/home/giulio/model_octopus.npz'
+modelFile = '/home/giulio/RNNs/models/model_add.npz'
+#modelFile = '/home/giulio/model_octopus.npz'
 npz = numpy.load(modelFile)
 norms_dicts = npz['obj_separate_norms']
 check_freq = npz['settings_check_freq']

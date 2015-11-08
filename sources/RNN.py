@@ -243,14 +243,19 @@ class RNN(object):
                 separate_norms_dict = {'W_rec': info_symbols[0], 'W_in': info_symbols[1], 'W_out': info_symbols[2],
                                        'b_rec': info_symbols[3],
                                        'b_out': info_symbols[4]}
+                if self.__togheter:
+                    separate_norms_dict["grad_combined"] = info_symbols[5]
                 info = NonPrintableInfoElement('separate_norms', separate_norms_dict)
-                return info, info_symbols[5: len(info_symbols)]
+                return info, info_symbols[len(separate_norms_dict): len(info_symbols)]
 
             @property
             def grad_combination(self):
                 return self.__grad_combination
 
             def __init__(self, params, loss_fnc, strategy: CombiningRule, u, t):
+
+                self.__togheter = True
+
                 y, _, W_rec_fixes, W_in_fixes, W_out_fixes, b_rec_fixes, b_out_fixes = params.net.experimental.net_output(
                     params, u)
                 loss = loss_fnc(y, t)
@@ -263,11 +268,13 @@ class RNN(object):
 
                 l = u.shape[0]
 
-                self.__grad_combination, gW_rec_norms, gW_in_norms, gW_out_norms, \
-                gb_rec_norms, gb_out_norms = self.__get_combination_togheter(
-                    gW_rec_list, gW_in_list, gW_out_list, gb_rec_list, gb_out_list, l, strategy, params.net)
+                if self.__togheter:
+                    f = self.__get_combination_togheter
+                else:
+                    f = self.__get_combination_separately
 
-                self.__info = [gW_rec_norms, gW_in_norms, gW_out_norms, gb_rec_norms, gb_out_norms]
+                self.__grad_combination, self.__info = f(
+                    gW_rec_list, gW_in_list, gW_out_list, gb_rec_list, gb_out_list, l, strategy, params.net)
 
             def __get_combination_separately(self, gW_rec_list, gW_in_list, gW_out_list, gb_rec_list, gb_out_list, l, strategy, net):
                     gW_rec_combinantion, gW_rec_norms = strategy.combine(gW_rec_list, l)
@@ -280,7 +287,7 @@ class RNN(object):
                                                      gW_out_combinantion,
                                                      gb_rec_combinantion, gb_out_combinantion)
 
-                    return combination, gW_rec_norms, gW_in_norms, gW_out_norms, gb_rec_norms, gb_out_norms
+                    return combination, [gW_rec_norms, gW_in_norms, gW_out_norms, gb_rec_norms, gb_out_norms]
 
             def get_norms(self, list, n):
 
@@ -313,7 +320,7 @@ class RNN(object):
                     combination_v, norms = strategy.combine(values, l)
                     combination = RNN.Params.from_flattened_tensor(combination_v, net)
 
-                    return combination, gW_rec_norms, gW_in_norms, gW_out_norms, gb_rec_norms, gb_out_norms
+                    return combination, [gW_rec_norms, gW_in_norms, gW_out_norms, gb_rec_norms, gb_out_norms, norms]
 
         def update_dictionary(self, other):
             return [
