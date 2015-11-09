@@ -1,14 +1,19 @@
 import numpy
+from theano.tensor.shared_randomstreams import RandomStreams
+import theano.tensor as TT
+import theano as T
 
-rng = numpy.random.RandomState(12)
-u = rng.uniform(low=0, high=1, size=(1, 5))
+srng = RandomStreams(seed=13)
+u = srng.uniform(low=0, high=1, size=(200, 1))
 
-lamda = 1
-x = -numpy.log(-u+1)/lamda
+exp_lambda = 1
+x = -TT.log(-u+1)/exp_lambda
+r = x/x.sum()
 
-print(u)
-print(x)
-print(numpy.sum(x))
-r = x/numpy.sum(x)
-print(r)
-print(numpy.sum(r))
+f = T.function([], r)
+
+
+for i in range(300000):
+    a = f()
+    if sum(a) < 0.9:
+        print('MERDA')

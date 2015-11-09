@@ -105,13 +105,24 @@ Again from (\ref{eq:lagrangian_c}) and (\ref{eq:step2}) we get
 \end{equation}
 Since we are interested in a positive value for $c$ the solution is
 \begin{align}
-	& c = 2\mu\\
-	&\vec{\lambda} = (-4\mu^2)(GG^T)^{-1} \onevec\\
-	&\vec{d} = -\frac{G^T\vec{\lambda}}{2\mu}\\
-	&\mu = \frac{1}{2\sqrt{\onevec(GG^T)^{-1}\onevec}}
+	& c = \frac{1}{\sqrt{\onevec(GG^T)^{-1}\onevec}}\\
+	&\vec{\lambda} = (-c^2)(GG^T)^{-1} \onevec\\
+	&\vec{d} = -\frac{G^T\vec{\lambda}}{c}\\
 \end{align}
 
+\paragraph{Solving using QR factorization}
 
+It is sufficient to compute $\vec{b}=(GG^T)^{-1}\onevec$ to easily find all the other quantities of interest. We can find $\vec{b}$ decomposing $G^T$ with the QR factorization
+\begin{equation}
+	G^T=QR,
+\end{equation}
+which leads to 
+\begin{equation}
+	R^TQ^TQRb=R^TR\vec{b}=\onevec.
+\end{equation}
+Hence, we first solve $R^T\vec{x}=\onevec$ w.r.t. $\vec{x}$ and then $Rb = x$ w.r.t. $\vec{b}$
+\\\\
+Thus, solving problem \ref{eq:equiangular_prob} amounts to the QR factorization of $G$ and to solving two triangular linear system.
 \end{document}      
 
 
