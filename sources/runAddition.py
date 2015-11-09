@@ -66,7 +66,7 @@ combining_rule = NormalizedSum()
 
 # learning step rule
 # lr_rule = WRecNormalizedStep(0.0001) #0.01
-lr_rule = ConstantStep(0.001)  # 0.01
+lr_rule = ConstantStep(0.01)  # 0.01
 #lr_rule = ConstantNormalizedStep(0.0001) #0.01
 # lr_rule = ArmijoStep(alpha=0.1, beta=0.1, init_step=1, max_steps=50)
 
