@@ -1,3 +1,5 @@
+from ObjectiveFunction import ObjectiveFunction
+from combiningRule.CombiningRule import CombiningRule
 from descentDirectionRule.DescentDirectionRule import DescentDirectionRule
 from infos.InfoElement import PrintableInfoElement
 from infos.InfoList import InfoList
@@ -6,12 +8,27 @@ __author__ = 'giulio'
 
 
 class CombinedGradients(DescentDirectionRule):
+    def __init__(self, strategy: CombiningRule):
+        self.__combining_strategy = strategy
+
+    @property
+    def combining_strategy(self):
+        return self.__combining_strategy
+
+    def compile(self, net_symbols, obj_symbols):
+        return CombinedGradients.Symbols(self, net_symbols, obj_symbols)
+
     class Symbols(DescentDirectionRule.Symbols):
-        def __init__(self, rule, net_symbols, obj_symbols):
-            combined_grad = obj_symbols.combined_grad
-            self.__direction = combined_grad * (-1)  # FIXME - operator
+        def __init__(self, rule, net_symbols, obj_symbols: ObjectiveFunction.Symbols):
+            self.__combined_grad_symbols = obj_symbols.grad_combination(rule.combining_strategy)
+            self.__direction = -self.__combined_grad_symbols.value
             grad_dot = self.__direction.dot(obj_symbols.grad)
-            self.__infos = [self.__direction.norm(), grad_dot/(self.__direction.norm()*obj_symbols.grad.norm())]
+
+            diff_norm = (-obj_symbols.grad - self.__direction).norm()
+
+            self.__infos = self.__combined_grad_symbols.infos + [self.__direction.norm(), grad_dot / (
+                self.__direction.norm() * obj_symbols.grad.norm()),
+                                                                 diff_norm]
 
         @property
         def direction(self):
@@ -22,12 +39,10 @@ class CombinedGradients(DescentDirectionRule):
             return self.__infos
 
         def format_infos(self, infos_symbols):
+            combining_info, infos_symbols = self.__combined_grad_symbols.format_infos(infos_symbols)
             dir_norm_info = PrintableInfoElement('dir_norm', ':07.3f', infos_symbols[0].item())
             dot_info = PrintableInfoElement('grad_dot', ':1.2f', infos_symbols[1].item())
-
-            info = InfoList(dir_norm_info, dot_info)
+            norm_diff_info = PrintableInfoElement('@@', '', infos_symbols[2].item())
+            info = InfoList(combining_info, dir_norm_info, dot_info, norm_diff_info)
 
             return info, infos_symbols[info.length:len(infos_symbols)]
-
-    def compile(self, symbol_closet, obj_symbols):
-        return CombinedGradients.Symbols(self, symbol_closet, obj_symbols)

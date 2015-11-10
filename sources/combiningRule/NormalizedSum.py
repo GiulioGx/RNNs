@@ -1,5 +1,5 @@
 from Configs import Configs
-from combiningRule.CombiningRule import CombiningRule
+from combiningRule.LinearCombination import LinearCombinationRule
 import theano.tensor as TT
 import theano as T
 from theanoUtils import norm, is_not_real
@@ -7,7 +7,7 @@ from theanoUtils import norm, is_not_real
 __author__ = 'giulio'
 
 
-class NormalizedSum(CombiningRule):
+class NormalizedSum(LinearCombinationRule):
 
     def normalize_step(self, grads_combination, norms):
         return grads_combination/norm(grads_combination)

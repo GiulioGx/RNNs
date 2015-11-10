@@ -9,7 +9,7 @@ class DescentDirectionRule(object):
     __metaclass__ = abc.ABCMeta
 
     @abc.abstractmethod
-    def compile(self, symbol_closet, obj_symbols):
+    def compile(self, net_symbols, obj_symbols):
         """returns the compiled version"""
         
     class Symbols(InfoProducer):

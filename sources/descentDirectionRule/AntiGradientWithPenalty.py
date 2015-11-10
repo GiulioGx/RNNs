@@ -48,5 +48,5 @@ class AntiGradientWithPenalty(DescentDirectionRule):
     def penalty_lambda(self):
         return self.__penalty_lambda
 
-    def compile(self, symbol_closet, obj_symbols):
-        return AntiGradientWithPenalty.Symbols(self, symbol_closet, obj_symbols)
+    def compile(self, net_symbols, obj_symbols):
+        return AntiGradientWithPenalty.Symbols(self, net_symbols, obj_symbols)

@@ -1,17 +1,16 @@
-import theano as T
 import theano.tensor as TT
 
 __author__ = 'giulio'
 
 
-def as_vector(*tensor_list):
+def as_vector(*tensor_list):  # FIXME avoid for loops use scan
     l = []
     for t in tensor_list:
         l.append(t.flatten().dimshuffle(0, 'x'))
     return TT.concatenate(l)
 
 
-def norm(*tensor_list):
+def norm(*tensor_list):  # FIXME avoid for loops use scan
     squared_norm = TT.alloc(0.)
 
     for w in tensor_list:
@@ -51,7 +50,3 @@ def get_dir_between_2_dirs(c1, c2, cos):
 
 def is_not_real(v):
     return TT.or_(TT.isnan(v), TT.isinf(v))
-
-
-def normalize(v):
-    return TT.exp(TT.log(v)-TT.log(norm(v)))

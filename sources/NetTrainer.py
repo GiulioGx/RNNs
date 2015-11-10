@@ -1,7 +1,6 @@
 import time
 import numpy
 from numpy.linalg import LinAlgError
-
 from infos.InfoGroup import InfoGroup
 from infos.InfoList import InfoList
 from infos.InfoElement import PrintableInfoElement
@@ -11,13 +10,13 @@ from Statistics import Statistics
 from TrainingRule import TrainingRule
 import logging
 import os
-import theano.tensor as TT
 
 __author__ = 'giulio'
 
 
 class NetTrainer(object):
-    def __init__(self, training_rule: TrainingRule, obj_fnc: ObjectiveFunction, max_it=1000000, bacth_size=100, validation_set_size=10000,
+    def __init__(self, training_rule: TrainingRule, obj_fnc: ObjectiveFunction, max_it=10**5, bacth_size=100,
+                 validation_set_size=10**4,
                  stop_error_thresh=0.01, check_freq=50, model_save_file='./model', log_filename='./model.log'):
 
         self.__training_rule = training_rule
@@ -54,7 +53,9 @@ class NetTrainer(object):
                                                  PrintableInfoElement('task', '', str(task)))
 
         # compile symbols
+        logging.info('Compiling theano functions for the training step...')
         train_step = self.__training_rule.compile(net, self.__obj_fnc)
+        logging.info('... Done')
 
         # training statistics
         stats = Statistics(self.__max_it, self.__check_freq)
@@ -63,7 +64,7 @@ class NetTrainer(object):
         validation_set = task.get_batch(self.__validation_set_size)
         logging.info('... Done')
 
-        rho = numpy.max(abs(numpy.linalg.eigvals(net.symbols.current_params.W_rec.get_value())))  # FIXME
+        rho = NetTrainer.get_spectral_radius(net.symbols.current_params.W_rec.get_value())
         logging.info('Initial rho: {:5.2f}'.format(rho))
 
         logging.info(str(self.__training_settings_info))
@@ -74,12 +75,13 @@ class NetTrainer(object):
         error_occured = False
         i = 0
         best_error = 100
-        while i < self.__max_it and best_error > self.__stop_error_thresh/100 and (not error_occured):
+        while i < self.__max_it and best_error > self.__stop_error_thresh / 100 and (not error_occured):
 
             batch = task.get_batch(self.__batch_size)
             train_info = train_step.step(batch.inputs, batch.outputs)
 
             if i % self.__check_freq == 0:
+                eval_start_time = time.time()
                 y_net = net.net_output_shared(validation_set.inputs)  # FIXME
                 valid_error = task.error_fnc(y_net, validation_set.outputs)
                 valid_loss = self.__obj_fnc.loss(y_net, validation_set.outputs)
@@ -106,6 +108,7 @@ class NetTrainer(object):
                 batch_start_time = time.time()
                 if error_occured:
                     logging.warning('stopping training...')
+                print('eval_time:{:2.2f}s'.format(time.time() - eval_start_time))
 
             i += 1
 
@@ -116,7 +119,9 @@ class NetTrainer(object):
     def train(self, task, activation_fnc, output_fnc, n_hidden, init_strategies=RNN.deafult_init_strategies, seed=13):
 
         # configure network
+        logging.info('Compiling theano functions for the net')
         net = RNN(activation_fnc, output_fnc, n_hidden, task.n_in, task.n_out, init_strategies, seed)
+        logging.info('...Done')
         return self._train(task, net)
 
     def resume_training(self, task, net):  # TODO load statistics too
@@ -150,6 +155,6 @@ class NetTrainer(object):
     def squared_error(y, t):
         return ((t[-1:, :, :] - y[-1:, :, :]) ** 2).sum(axis=0).mean()
 
-    # @staticmethod
-    # def cross_entropy(y, t):
-    #     return -(t[-1, :, :] * TT.log(y[-1, :, :])).sum(axis=0).mean()
+        # @staticmethod
+        # def cross_entropy(y, t):
+        #     return -(t[-1, :, :] * TT.log(y[-1, :, :])).sum(axis=0).mean()

@@ -1,16 +1,12 @@
-import theano.tensor as TT
-import theano as T
 
 from InfoProducer import InfoProducer
-from combiningRule.CombiningRule import CombiningRule
-from combiningRule.SimpleSum import SimpleSum
+from combiningRule.LinearCombination import LinearCombinationRule
 from infos.InfoGroup import InfoGroup
 from infos.InfoList import InfoList
-from infos.InfoElement import NonPrintableInfoElement, PrintableInfoElement
+from infos.InfoElement import PrintableInfoElement
 from Params import Params
 from penalty.Penalty import Penalty
 from penalty.NullPenalty import NullPenalty
-from theanoUtils import norm, cos_between_dirs
 
 __author__ = 'giulio'
 
@@ -21,8 +17,8 @@ class ObjectiveFunction(object):
         self.__penalty = penalty
         self.__penalty_lambda = penalty_lambda
 
-    def compile(self, net, params: Params, strategy: CombiningRule, u, t):
-        return ObjectiveFunction.Symbols(self, net, params, strategy, u, t)
+    def compile(self, net, params: Params, u, t):
+        return ObjectiveFunction.Symbols(self, net, params, u, t)
 
     def loss(self, y, t):  # loss without penalty
         return self.__loss_fnc(y, t)
@@ -40,7 +36,7 @@ class ObjectiveFunction(object):
         return self.__penalty_lambda
 
     class Symbols(InfoProducer):
-        def __init__(self, obj_fnc, net, params, strategy: CombiningRule, u, t):
+        def __init__(self, obj_fnc, net, params, u, t):
             self.__net = net
             self.__obj_fnc = obj_fnc
 
@@ -66,11 +62,10 @@ class ObjectiveFunction(object):
             self.__grad_norm = self.__grad.norm()
 
             # separate
-            self.__separate_grads_rule = self.__params.grad_combining_steps(self.__obj_fnc.loss_fnc, strategy, self.__u, self.__t)
+            self.__separate_grads_rule = self.__params.grad_combining_steps(self.__obj_fnc.loss_fnc, self.__u, self.__t)
             separate_info = self.__separate_grads_rule.infos
-            diff_norm = (self.__grad - self.__separate_grads_rule.grad_combination).norm()
 
-            self.__infos = self.__penalty_symbols.infos + separate_info + [loss, loss_grad_norm, diff_norm]
+            self.__infos = self.__penalty_symbols.infos + separate_info + [loss, loss_grad_norm]
 
         def format_infos(self, infos_symbols):
             penalty_info, infos_symbols = self.__penalty_symbols.format_infos(infos_symbols)
@@ -79,9 +74,7 @@ class ObjectiveFunction(object):
             loss_value_info = PrintableInfoElement('value', ':07.3f', infos_symbols[0].item())
             loss_grad_info = PrintableInfoElement('grad', ':07.3f', infos_symbols[1].item())
 
-            norm_diff_info = PrintableInfoElement('@@', '', infos_symbols[2].item())
-            loss_info = InfoGroup('loss', InfoList(loss_value_info, loss_grad_info, norm_diff_info))
-
+            loss_info = InfoGroup('loss', InfoList(loss_value_info, loss_grad_info))
             obj_info = InfoGroup('obj', InfoList(loss_info, penalty_info, separate_info))
 
             info = obj_info
@@ -104,8 +97,7 @@ class ObjectiveFunction(object):
         def grad_norm(self):
             return self.__grad_norm
 
-        @property
-        def combined_grad(self):
+        def grad_combination(self, strategy: LinearCombinationRule):
             # separate time steps grad
-            return self.__separate_grads_rule.grad_combination
+            return self.__separate_grads_rule.grad_combination(strategy)
 

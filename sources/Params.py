@@ -19,6 +19,10 @@ class Params(object):
         """scalar multiplication"""
 
     @abc.abstractmethod
+    def __neg__(self):
+        """negation: returns -self"""
+
+    @abc.abstractmethod
     def dot(self, other):
         """dot product between two param objects viewed as vectors"""
 
@@ -31,8 +35,8 @@ class Params(object):
         """return the gradient of the function fnc wrt the parameters this class represents"""
 
     @abc.abstractmethod
-    def grad_combining_steps(self, loss_fnc, strategy, u, t):
-        """return a combinantion of gradients for each time steps defined by 'strategy' of the function 'fnc'
+    def grad_combining_steps(self, loss_fnc, u, t):
+        """return a class that can produce combinantion of gradients for each time steps given a 'strategy' for combining them
         wrt the parameters this class represents"""
 
     @abc.abstractmethod

@@ -1,3 +1,4 @@
+import abc
 import os
 import theano as T
 import theano.tensor as TT
@@ -5,8 +6,7 @@ import numpy
 from ActivationFunction import Relu
 from Configs import Configs
 from InfoProducer import InfoProducer
-from combiningRule.CombiningRule import CombiningRule
-from infos.Info import Info
+from infos.Info import Info, NullInfo
 from Params import Params
 from Statistics import Statistics
 from infos.InfoElement import NonPrintableInfoElement
@@ -53,7 +53,7 @@ class RNN(object):
         self.experimental = RNN.Experimental(self)
 
         # define visible functions
-        self.net_output_shared = T.function([self.__symbols.u], self.__symbols.y_shared)
+        self.net_output_shared = T.function([self.__symbols.u], self.__symbols.y_shared, name='net_output_shared_fun')
 
     @property
     def n_hidden(self):
@@ -81,8 +81,7 @@ class RNN(object):
         values, _ = T.scan(self.net_output_t, sequences=u,
                            outputs_info=[h_m1, None, None],
                            non_sequences=[W_rec, W_in, W_out, b_rec, b_out],
-                           name='net_output',
-                           mode=T.Mode(linker='cvm'))
+                           name='net_output_scan')
         y = values[1]
         deriv_a = values[2]
         return y, deriv_a
@@ -222,6 +221,9 @@ class RNN(object):
             return RNN.Params(self.__net, self.__W_rec * alpha, self.__W_in * alpha, self.__W_out * alpha,
                               self.__b_rec * alpha, self.__b_out * alpha)
 
+        def __neg__(self):
+            return self * (-1)
+
         def norm(self):
             return norm(self.__W_rec, self.__W_in, self.__W_out, self.__b_rec, self.__b_out)
 
@@ -230,10 +232,69 @@ class RNN(object):
             gb_rec, gb_out = TT.grad(fnc, [self.__W_rec, self.__W_in, self.__W_out, self.__b_rec, self.__b_out])
             return RNN.Params(self.__net, gW_rec, gW_in, gW_out, gb_rec, gb_out)
 
-        def grad_combining_steps(self, loss_fnc, strategy: CombiningRule, u, t):
-            return RNN.Params.SeparateGrads(self, loss_fnc, strategy, u, t)
+        def grad_combining_steps(self, loss_fnc, u, t):
+            return RNN.Params.SeparateGrads(self, loss_fnc, u, t)
 
-        class SeparateGrads(InfoProducer):
+        class SeparateGrads(InfoProducer):  # TODO base class
+
+            class Combination(InfoProducer):
+                __metaclass__ = abc.ABCMeta
+
+                @abc.abstractproperty
+                def value(self):
+                    """"""
+
+            class ToghterCombination(Combination):
+
+                @property
+                def value(self):
+                    return self.__combination
+
+                @property
+                def infos(self):
+                    return self.__infos
+
+                def format_infos(self, infos):
+                    return self.__combination_symbols.format_infos(infos)
+
+                def __init__(self, gW_rec_list, gW_in_list, gW_out_list, gb_rec_list, gb_out_list, l, net, strategy):
+                    values, _ = T.scan(as_vector, sequences=[TT.as_tensor_variable(gW_rec_list),
+                                                             TT.as_tensor_variable(gW_in_list),
+                                                             TT.as_tensor_variable(gW_out_list),
+                                                             TT.as_tensor_variable(gb_rec_list),
+                                                             TT.as_tensor_variable(gb_out_list)],
+                                       outputs_info=[None],
+                                       non_sequences=[],
+                                       name='as_vector_combinations_scan',
+                                       n_steps=l)
+
+                    self.__combination_symbols = strategy.compile(values, l)
+                    self.__infos = self.__combination_symbols.infos
+                    combination = self.__combination_symbols.combination
+                    self.__combination = RNN.Params.from_flattened_tensor(combination, net)
+
+            class SeparateCombination(Combination):
+                @property
+                def value(self):
+                    return self.__combination
+
+                @property
+                def infos(self):
+                    return []
+
+                def format_infos(self, infos):
+                    return NullInfo(), infos
+
+                def __init__(self, gW_rec_list, gW_in_list, gW_out_list, gb_rec_list, gb_out_list, l, net, strategy):
+                    gW_rec_combinantion = strategy.compile(gW_rec_list, l).combination
+                    gW_in_combinantion = strategy.compile(gW_in_list, l).combination
+                    gW_out_combinantion = strategy.compile(gW_out_list, l).combination
+                    gb_rec_combinantion = strategy.compile(gb_rec_list, l).combination
+                    gb_out_combinantion = strategy.compile(gb_out_list, l).combination
+
+                    self.__combination = RNN.Params(net, gW_rec_combinantion, gW_in_combinantion,
+                                                    gW_out_combinantion,
+                                                    gb_rec_combinantion, gb_out_combinantion)
 
             @property
             def infos(self):
@@ -243,84 +304,57 @@ class RNN(object):
                 separate_norms_dict = {'W_rec': info_symbols[0], 'W_in': info_symbols[1], 'W_out': info_symbols[2],
                                        'b_rec': info_symbols[3],
                                        'b_out': info_symbols[4]}
-                if self.__togheter:
-                    separate_norms_dict["grad_combined"] = info_symbols[5]
+
                 info = NonPrintableInfoElement('separate_norms', separate_norms_dict)
                 return info, info_symbols[len(separate_norms_dict): len(info_symbols)]
 
-            @property
-            def grad_combination(self):
-                return self.__grad_combination
+            def grad_combination(self, strategy):  # FIXME
+                if self.__togheter:
+                    return RNN.Params.SeparateGrads.ToghterCombination(self.__gW_rec_list, self.__gW_in_list,
+                                                                       self.__gW_out_list, self.__gb_rec_list,
+                                                                       self.__gb_out_list, self.__l, self.__net,
+                                                                       strategy)
+                else:
+                    return RNN.Params.SeparateGrads.SeparateCombination(self.__gW_rec_list, self.__gW_in_list,
+                                                                        self.__gW_out_list, self.__gb_rec_list,
+                                                                        self.__gb_out_list, self.__l, self.__net,
+                                                                        strategy)
 
-            def __init__(self, params, loss_fnc, strategy: CombiningRule, u, t):
+            def __init__(self, params, loss_fnc, u, t):
 
                 self.__togheter = True
+                self.__net = params.net
 
                 y, _, W_rec_fixes, W_in_fixes, W_out_fixes, b_rec_fixes, b_out_fixes = params.net.experimental.net_output(
                     params, u)
                 loss = loss_fnc(y, t)
 
-                gW_rec_list = T.grad(loss, W_rec_fixes)
-                gW_in_list = T.grad(loss, W_in_fixes)
-                gW_out_list = T.grad(loss, W_out_fixes)
-                gb_rec_list = T.grad(loss, b_rec_fixes)
-                gb_out_list = T.grad(loss, b_out_fixes)
+                self.__gW_rec_list = T.grad(loss, W_rec_fixes)
+                self.__gW_in_list = T.grad(loss, W_in_fixes)
+                self.__gW_out_list = T.grad(loss, W_out_fixes)
+                self.__gb_rec_list = T.grad(loss, b_rec_fixes)
+                self.__gb_out_list = T.grad(loss, b_out_fixes)
 
-                l = u.shape[0]
+                self.__l = u.shape[0]
 
-                if self.__togheter:
-                    f = self.__get_combination_togheter
-                else:
-                    f = self.__get_combination_separately
+                gW_rec_norms = RNN.Params.SeparateGrads.get_norms(self.__gW_rec_list, self.__l)
+                gW_in_norms = RNN.Params.SeparateGrads.get_norms(self.__gW_in_list, self.__l)
+                gW_out_norms = RNN.Params.SeparateGrads.get_norms(self.__gW_out_list, self.__l)
+                gb_rec_norms = RNN.Params.SeparateGrads.get_norms(self.__gb_rec_list, self.__l)
+                gb_out_norms = RNN.Params.SeparateGrads.get_norms(self.__gb_out_list, self.__l)
 
-                self.__grad_combination, self.__info = f(
-                    gW_rec_list, gW_in_list, gW_out_list, gb_rec_list, gb_out_list, l, strategy, params.net)
+                self.__info = [gW_rec_norms, gW_in_norms, gW_out_norms, gb_rec_norms, gb_out_norms]
 
-            def __get_combination_separately(self, gW_rec_list, gW_in_list, gW_out_list, gb_rec_list, gb_out_list, l, strategy, net):
-                    gW_rec_combinantion, gW_rec_norms = strategy.combine(gW_rec_list, l)
-                    gW_in_combinantion, gW_in_norms = strategy.combine(gW_in_list, l)
-                    gW_out_combinantion, gW_out_norms = strategy.combine(gW_out_list, l)
-                    gb_rec_combinantion, gb_rec_norms = strategy.combine(gb_rec_list, l)
-                    gb_out_combinantion, gb_out_norms = strategy.combine(gb_out_list, l)
+            @staticmethod
+            def get_norms(vec_list, n):
 
-                    combination = RNN.Params(net, gW_rec_combinantion, gW_in_combinantion,
-                                                     gW_out_combinantion,
-                                                     gb_rec_combinantion, gb_out_combinantion)
-
-                    return combination, [gW_rec_norms, gW_in_norms, gW_out_norms, gb_rec_norms, gb_out_norms]
-
-            def get_norms(self, list, n):
-
-                values, _ = T.scan(norm, sequences=[TT.as_tensor_variable(list)],
-                           outputs_info=[None],
-                           non_sequences=[],
-                           name='get_norms',
-                           mode=T.Mode(linker='cvm'),
-                           n_steps=n)
+                values, _ = T.scan(norm, sequences=[TT.as_tensor_variable(vec_list)],
+                                   outputs_info=[None],
+                                   non_sequences=[],
+                                   name='get_norms_scan',
+                                   n_steps=n)
 
                 return values
-
-            def __get_combination_togheter(self, gW_rec_list, gW_in_list, gW_out_list, gb_rec_list, gb_out_list, l, strategy, net):
-
-                    gW_rec_norms = self.get_norms(gW_rec_list, l)
-                    gW_in_norms = self.get_norms(gW_in_list, l)
-                    gW_out_norms = self.get_norms(gW_out_list, l)
-                    gb_rec_norms = self.get_norms(gb_rec_list, l)
-                    gb_out_norms = self.get_norms(gb_out_list, l)
-
-                    values, _ = T.scan(as_vector, sequences=[TT.as_tensor_variable(gW_rec_list), TT.as_tensor_variable(gW_in_list),
-                                                        TT.as_tensor_variable(gW_out_list), TT.as_tensor_variable(gb_rec_list),
-                                                        TT.as_tensor_variable(gb_out_list)],
-                           outputs_info=[None],
-                           non_sequences=[],
-                           name='as_vector_combinations',
-                           mode=T.Mode(linker='cvm'),
-                           n_steps=l)
-
-                    combination_v, norms = strategy.combine(values, l)
-                    combination = RNN.Params.from_flattened_tensor(combination_v, net)
-
-                    return combination, [gW_rec_norms, gW_in_norms, gW_out_norms, gb_rec_norms, gb_out_norms, norms]
 
         def update_dictionary(self, other):
             return [
@@ -388,8 +422,7 @@ class RNN(object):
                                           TT.as_tensor_variable(b_out_fixes)],
                                outputs_info=[h_m1, None, None],
                                non_sequences=[],
-                               name='net_output',
-                               mode=T.Mode(linker='cvm'),
+                               name='separate_grad_scan',
                                n_steps=u.shape[0])  # TODO check if +1
             y = values[1]
             deriv_a = values[2]

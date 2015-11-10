@@ -1,5 +1,5 @@
 from Configs import Configs
-from combiningRule.CombiningRule import CombiningRule
+from combiningRule.LinearCombination import LinearCombinationRule
 from theanoUtils import norm, is_not_real
 import theano.tensor as TT
 from theano.tensor.shared_randomstreams import RandomStreams
@@ -8,7 +8,7 @@ from theano.tensor.shared_randomstreams import RandomStreams
 __author__ = 'giulio'
 
 
-class SimplexCombination(CombiningRule):
+class SimplexCombination(LinearCombinationRule):
 
     def get_linear_coefficients(self, vector_list, n):
 

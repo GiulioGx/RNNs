@@ -1,4 +1,4 @@
-from combiningRule.CombiningRule import CombiningRule
+from combiningRule.LinearCombination import LinearCombinationRule
 import theano.tensor as TT
 import theano as T
 
@@ -7,15 +7,14 @@ from theanoUtils import norm
 __author__ = 'giulio'
 
 
-class SimpleSum(CombiningRule):
+class SimpleSum(LinearCombinationRule):
 
     def get_linear_coefficients(self, vector_list, n):
 
         values, _ = T.scan(norm, sequences=[TT.unbroadcast(TT.as_tensor_variable(vector_list), 1)],
                            outputs_info=[None],
                            non_sequences=[],
-                           name='net_output',
-                           mode=T.Mode(linker='cvm'),
+                           name='simple_sum_coeffs_scan',
                            n_steps=n)
 
         return values

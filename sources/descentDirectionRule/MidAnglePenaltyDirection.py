@@ -102,5 +102,5 @@ class MidAnglePenaltyDirection(DescentDirectionRule):
     def penalty(self):
         return self.__penalty
 
-    def compile(self, symbol_closet, obj_symbols):
-        return MidAnglePenaltyDirection.Symbols(self, symbol_closet, obj_symbols)
+    def compile(self, net_symbols, obj_symbols):
+        return MidAnglePenaltyDirection.Symbols(self, net_symbols, obj_symbols)

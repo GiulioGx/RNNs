@@ -1,5 +1,6 @@
 import theano
 from ActivationFunction import Tanh, Relu
+from combiningRule.EquiangularCombination import EquiangularCombination
 from combiningRule.NormalizedSum import NormalizedSum
 from combiningRule.SimpleSum import SimpleSum
 from combiningRule.SimplexCombination import SimplexCombination
@@ -37,12 +38,12 @@ print(separator)
 # setup
 seed = 13
 task = AdditionTask(144, seed)
-n_hidden = 50
+n_hidden = 100
 activation_fnc = Tanh()
 output_fnc = RNN.linear_fnc
 loss_fnc = NetTrainer.squared_error
-model_filename = Configs.model_filename+'_add_sim'
-log_filename = Configs.log_filename+'_add_sim'
+model_filename = Configs.model_filename+'_add'
+log_filename = Configs.log_filename+'_add'
 
 # init strategy
 std_dev = 0.14  # 0.14 Tanh # 0.21 Relu
@@ -61,8 +62,10 @@ penalty = NullPenalty()
 # dir_rule = MidAnglePenaltyDirection(penalty)
 # dir_rule = FrozenGradient(penalty)
 # dir_rule = SepareteGradient()
-dir_rule = CombinedGradients()
-combining_rule = SimplexCombination()
+
+#combining_rule = SimplexCombination()
+combining_rule = SimpleSum()
+dir_rule = CombinedGradients(combining_rule)
 
 # learning step rule
 # lr_rule = WRecNormalizedStep(0.0001) #0.01
@@ -71,8 +74,8 @@ lr_rule = ConstantNormalizedStep(0.001) #0.01
 # lr_rule = ArmijoStep(alpha=0.1, beta=0.1, init_step=1, max_steps=50)
 
 obj_fnc = ObjectiveFunction(loss_fnc, penalty, 0.1)
-train_rule = TrainingRule(dir_rule, lr_rule, combining_rule)
+train_rule = TrainingRule(dir_rule, lr_rule)
 
-trainer = NetTrainer(train_rule, obj_fnc, model_save_file=model_filename, log_filename=log_filename)
+trainer = NetTrainer(train_rule, obj_fnc, model_save_file=model_filename, log_filename=log_filename, max_it=100)
 
 net = trainer.train(task, activation_fnc, output_fnc, n_hidden, init_strategies, seed)

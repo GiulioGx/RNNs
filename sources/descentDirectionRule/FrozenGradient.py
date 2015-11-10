@@ -69,5 +69,5 @@ class FrozenGradient(DescentDirectionRule):
     def penalty(self):
         return self.__penalty
 
-    def compile(self, symbol_closet, obj_symbols):
-        return FrozenGradient.Symbols(self, symbol_closet, obj_symbols)
+    def compile(self, net_symbols, obj_symbols):
+        return FrozenGradient.Symbols(self, net_symbols, obj_symbols)
