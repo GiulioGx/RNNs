@@ -1,5 +1,6 @@
 import theano
 from ActivationFunction import Tanh, Relu
+from combiningRule.EquiangularCombination import EquiangularCombination
 from combiningRule.NormalizedSum import NormalizedSum
 from combiningRule.SimpleSum import SimpleSum
 from combiningRule.SimplexCombination import SimplexCombination
@@ -38,19 +39,23 @@ print(separator)
 # setup
 seed = 13
 task = XorTask(144, seed)
-n_hidden = 50
-activation_fnc = Tanh()
+n_hidden = 100
+activation_fnc = Relu()
 output_fnc = RNN.linear_fnc
 loss_fnc = NetTrainer.squared_error
 model_filename = Configs.model_filename+'_xor'
 log_filename = Configs.log_filename+'_xor'
 
 # init strategy
-std_dev = 0.18  # 0.14 Tanh #0.21 Relu
+std_dev = 0.13  # 0.14 Tanh # 0.21 Relu
 init_strategies = {'W_rec': GaussianInit(0, std_dev), 'W_in': GaussianInit(0, std_dev),
                    'W_out': GaussianInit(0, std_dev),
                    'b_rec': ZeroInit(), 'b_out': ZeroInit()}
 
+# penalty strategy
+# penalty = MeanPenalty()
+# penalty = ConstantPenalty()
+penalty = NullPenalty()
 
 # direction strategy
 # dir_rule = AntiGradient()
@@ -58,18 +63,21 @@ init_strategies = {'W_rec': GaussianInit(0, std_dev), 'W_in': GaussianInit(0, st
 # dir_rule = MidAnglePenaltyDirection(penalty)
 # dir_rule = FrozenGradient(penalty)
 # dir_rule = SepareteGradient()
-dir_rule = CombinedGradients()
-combining_rule = SimpleSum()
+
+#combining_rule = SimplexCombination()
+combining_rule = NormalizedSum()
+dir_rule = CombinedGradients(combining_rule)
 
 # learning step rule
 # lr_rule = WRecNormalizedStep(0.0001) #0.01
 #lr_rule = ConstantStep(0.001)  # 0.01
-lr_rule = ConstantNormalizedStep(0.0001) #0.01
+lr_rule = ConstantNormalizedStep(0.001) #0.01
 # lr_rule = ArmijoStep(alpha=0.1, beta=0.1, init_step=1, max_steps=50)
 
-obj_fnc = ObjectiveFunction(loss_fnc)
-train_rule = TrainingRule(dir_rule, lr_rule, combining_rule)
+obj_fnc = ObjectiveFunction(loss_fnc, penalty, 0.1)
+train_rule = TrainingRule(dir_rule, lr_rule)
 
-trainer = NetTrainer(train_rule, obj_fnc, model_save_file=model_filename, log_filename=log_filename, bacth_size=100)
+trainer = NetTrainer(train_rule, obj_fnc, model_save_file=model_filename, log_filename=log_filename, max_it=10**5)
 
 net = trainer.train(task, activation_fnc, output_fnc, n_hidden, init_strategies, seed)
+

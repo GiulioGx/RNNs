@@ -18,7 +18,7 @@ class FrozenGradient(DescentDirectionRule):
 
             penalty_grad = self.__penalty_symbols.penalty_grad
 
-            gW_rec = obj_symbols.grad.W_rec
+            gW_rec = obj_symbols.failsafe_grad.W_rec
             norm_gW_rec = norm(gW_rec)
 
             froze_condition = norm_gW_rec < 10000
@@ -39,7 +39,7 @@ class FrozenGradient(DescentDirectionRule):
             # statistics
             cos_d_p = cos_between_dirs(W_rec_dir, -penalty_grad)
 
-            self.__direction = obj_symbols.grad() * (-1)
+            self.__direction = obj_symbols.failsafe_grad() * (-1)
             self.__direction.setW_rec(W_rec_dir)  # FIXME
 
             self.__infos = self.__penalty_symbols.infos + [froze_condition, cos_d_p]

@@ -39,7 +39,7 @@ class ConstantPenalty(Penalty):
 
         def format_infos(self, info_symbols):
             penalty_value_info = PrintableInfoElement('value', ':07.3f', info_symbols[0].item())
-            penalty_grad_info = PrintableInfoElement('grad', ':07.3f', info_symbols[1].item())
+            penalty_grad_info = PrintableInfoElement('value', ':07.3f', info_symbols[1].item())
             info = InfoGroup('penalty', InfoList(penalty_value_info, penalty_grad_info))
             return info, info_symbols[info.length:len(info_symbols)]
 

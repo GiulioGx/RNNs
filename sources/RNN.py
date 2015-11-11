@@ -6,10 +6,13 @@ import numpy
 from ActivationFunction import Relu
 from Configs import Configs
 from InfoProducer import InfoProducer
+from combiningRule.SimpleSum import SimpleSum
 from infos.Info import Info, NullInfo
 from Params import Params
 from Statistics import Statistics
-from infos.InfoElement import NonPrintableInfoElement
+from infos.InfoElement import NonPrintableInfoElement, PrintableInfoElement
+from infos.InfoGroup import InfoGroup
+from infos.InfoList import InfoList
 from initialization.GaussianInit import GaussianInit
 from initialization.GivenValueInit import GivenValueInit
 from initialization.ZeroInit import ZeroInit
@@ -125,25 +128,32 @@ class RNN(object):
 
         return RNN(activation_fnc, output_fnc, n_hidden, n_in, n_out, init_strategies)
 
-    def save_model(self, filename, stats: Statistics, info: Info):
+    @property
+    def info(self):
+        return InfoGroup('net',
+                         InfoList(PrintableInfoElement('n_hidden', ':d', self.__n_hidden),
+                                  PrintableInfoElement('n_in', ':d', self.__n_in),
+                                  PrintableInfoElement('n_out', ':d', self.__n_out),
+                                  PrintableInfoElement('activation_fnc', '',self.__activation_fnc)
+                                  ))
+
+    def save_model(self, filename, stats: Statistics, train_info: Info):
         """saves the model with statistics to file"""
 
         os.makedirs(os.path.dirname(filename), exist_ok=True)
 
-        info_dict = stats.dictionary
-        d = dict(n_hidden=self.__n_hidden,
-                 n_in=self.__n_in,
-                 n_out=self.__n_out,
-                 activation_fnc=str(self.__activation_fnc),
-                 W_rec=self.__symbols.current_params.W_rec.get_value(),
+        net_info_dict = self.info.dictionary
+        stat_info_dict = stats.dictionary
+        d = dict(W_rec=self.__symbols.current_params.W_rec.get_value(),
                  W_in=self.__symbols.current_params.W_in.get_value(),
                  W_out=self.__symbols.current_params.W_out.get_value(),
                  b_rec=self.__symbols.current_params.b_rec.get_value(),
                  b_out=self.__symbols.current_params.b_out.get_value())
 
-        info_dict.update(d)
-        info_dict.update(info.dictionary)
-        numpy.savez(filename + '.npz', **info_dict)
+        stat_info_dict.update(d)
+        stat_info_dict.update(train_info.dictionary)
+        stat_info_dict.update(net_info_dict)
+        numpy.savez(filename + '.npz', **stat_info_dict)
 
     # predefined output functions
     @staticmethod
@@ -227,15 +237,17 @@ class RNN(object):
         def norm(self):
             return norm(self.__W_rec, self.__W_in, self.__W_out, self.__b_rec, self.__b_out)
 
-        def grad(self, fnc):
+        def gradient(self, loss_fnc, u, t):
+            return RNN.Params.Gradient(self, loss_fnc, u, t)
+
+        def failsafe_grad(self, loss_fnc, u, t):  # FIXME XXX remove me
+            y, _ = self.__net.net_output(self, u)
+            loss = loss_fnc(y, t)
             gW_rec, gW_in, gW_out, \
-            gb_rec, gb_out = TT.grad(fnc, [self.__W_rec, self.__W_in, self.__W_out, self.__b_rec, self.__b_out])
+            gb_rec, gb_out = TT.grad(loss, [self.__W_rec, self.__W_in, self.__W_out, self.__b_rec, self.__b_out])
             return RNN.Params(self.__net, gW_rec, gW_in, gW_out, gb_rec, gb_out)
 
-        def grad_combining_steps(self, loss_fnc, u, t):
-            return RNN.Params.SeparateGrads(self, loss_fnc, u, t)
-
-        class SeparateGrads(InfoProducer):  # TODO base class
+        class Gradient(InfoProducer):
 
             class Combination(InfoProducer):
                 __metaclass__ = abc.ABCMeta
@@ -308,17 +320,28 @@ class RNN(object):
                 info = NonPrintableInfoElement('separate_norms', separate_norms_dict)
                 return info, info_symbols[len(separate_norms_dict): len(info_symbols)]
 
-            def grad_combination(self, strategy):  # FIXME
+            def temporal_combination(self, strategy):  # FIXME
                 if self.__togheter:
-                    return RNN.Params.SeparateGrads.ToghterCombination(self.__gW_rec_list, self.__gW_in_list,
-                                                                       self.__gW_out_list, self.__gb_rec_list,
-                                                                       self.__gb_out_list, self.__l, self.__net,
-                                                                       strategy)
+                    return RNN.Params.Gradient.ToghterCombination(self.__gW_rec_list, self.__gW_in_list,
+                                                                  self.__gW_out_list, self.__gb_rec_list,
+                                                                  self.__gb_out_list, self.__l, self.__net,
+                                                                  strategy)
                 else:
-                    return RNN.Params.SeparateGrads.SeparateCombination(self.__gW_rec_list, self.__gW_in_list,
-                                                                        self.__gW_out_list, self.__gb_rec_list,
-                                                                        self.__gb_out_list, self.__l, self.__net,
-                                                                        strategy)
+                    return RNN.Params.Gradient.SeparateCombination(self.__gW_rec_list, self.__gW_in_list,
+                                                                   self.__gW_out_list, self.__gb_rec_list,
+                                                                   self.__gb_out_list, self.__l, self.__net,
+                                                                   strategy)
+
+            @property
+            def value(self):
+                return RNN.Params.Gradient.SeparateCombination(self.__gW_rec_list, self.__gW_in_list,
+                                                               self.__gW_out_list, self.__gb_rec_list,
+                                                               self.__gb_out_list, self.__l, self.__net,
+                                                               SimpleSum()).value
+
+            @property
+            def loss_value(self):
+                return self.__loss
 
             def __init__(self, params, loss_fnc, u, t):
 
@@ -327,21 +350,21 @@ class RNN(object):
 
                 y, _, W_rec_fixes, W_in_fixes, W_out_fixes, b_rec_fixes, b_out_fixes = params.net.experimental.net_output(
                     params, u)
-                loss = loss_fnc(y, t)
+                self.__loss = loss_fnc(y, t)
 
-                self.__gW_rec_list = T.grad(loss, W_rec_fixes)
-                self.__gW_in_list = T.grad(loss, W_in_fixes)
-                self.__gW_out_list = T.grad(loss, W_out_fixes)
-                self.__gb_rec_list = T.grad(loss, b_rec_fixes)
-                self.__gb_out_list = T.grad(loss, b_out_fixes)
+                self.__gW_rec_list = T.grad(self.__loss, W_rec_fixes)
+                self.__gW_in_list = T.grad(self.__loss, W_in_fixes)
+                self.__gW_out_list = T.grad(self.__loss, W_out_fixes)
+                self.__gb_rec_list = T.grad(self.__loss, b_rec_fixes)
+                self.__gb_out_list = T.grad(self.__loss, b_out_fixes)
 
                 self.__l = u.shape[0]
 
-                gW_rec_norms = RNN.Params.SeparateGrads.get_norms(self.__gW_rec_list, self.__l)
-                gW_in_norms = RNN.Params.SeparateGrads.get_norms(self.__gW_in_list, self.__l)
-                gW_out_norms = RNN.Params.SeparateGrads.get_norms(self.__gW_out_list, self.__l)
-                gb_rec_norms = RNN.Params.SeparateGrads.get_norms(self.__gb_rec_list, self.__l)
-                gb_out_norms = RNN.Params.SeparateGrads.get_norms(self.__gb_out_list, self.__l)
+                gW_rec_norms = RNN.Params.Gradient.get_norms(self.__gW_rec_list, self.__l)
+                gW_in_norms = RNN.Params.Gradient.get_norms(self.__gW_in_list, self.__l)
+                gW_out_norms = RNN.Params.Gradient.get_norms(self.__gW_out_list, self.__l)
+                gb_rec_norms = RNN.Params.Gradient.get_norms(self.__gb_rec_list, self.__l)
+                gb_out_norms = RNN.Params.Gradient.get_norms(self.__gb_out_list, self.__l)
 
                 self.__info = [gW_rec_norms, gW_in_norms, gW_out_norms, gb_rec_norms, gb_out_norms]
 
@@ -422,8 +445,8 @@ class RNN(object):
                                           TT.as_tensor_variable(b_out_fixes)],
                                outputs_info=[h_m1, None, None],
                                non_sequences=[],
-                               name='separate_grad_scan',
-                               n_steps=u.shape[0])  # TODO check if +1
+                               name='separate_matrices_net_output_scan',
+                               n_steps=u.shape[0])
             y = values[1]
             deriv_a = values[2]
             return y, deriv_a, W_rec_fixes, W_in_fixes, W_out_fixes, b_rec_fixes, b_out_fixes
@@ -438,25 +461,25 @@ class RNN(object):
             self.__net = net
 
             # define shared variables
-            self.__W_in = T.shared(W_in, 'W_in')
-            self.__W_rec = T.shared(W_rec, 'W_rec')
-            self.__W_out = T.shared(W_out, 'W_out')
-            self.__b_rec = T.shared(b_rec, 'b_rec', broadcastable=(False, True))
-            self.__b_out = T.shared(b_out, 'b_out', broadcastable=(False, True))
+            self.__W_in = T.shared(W_in, name='W_in_shared')
+            self.__W_rec = T.shared(W_rec, name='W_rec_shared')
+            self.__W_out = T.shared(W_out, name='W_out_shared')
+            self.__b_rec = T.shared(b_rec, name='b_rec_shared', broadcastable=(False, True))
+            self.__b_out = T.shared(b_out, name='b_out_shared', broadcastable=(False, True))
 
             # current params
             self.__current_params = RNN.Params(self.__net, self.__W_rec, self.__W_in, self.__W_out, self.__b_rec,
                                                self.__b_out)
 
             # define symbols
-            W_in = TT.matrix()
-            W_rec = TT.matrix()
-            W_out = TT.matrix()
-            b_rec = TT.tensor(dtype=Configs.floatType, broadcastable=(False, True))
-            b_out = TT.tensor(dtype=Configs.floatType, broadcastable=(False, True))
+            W_in = TT.matrix(name='W_in')
+            W_rec = TT.matrix(name='W_rec')
+            W_out = TT.matrix(name='W_out')
+            b_rec = TT.tensor(dtype=Configs.floatType, broadcastable=(False, True), name='b_rec')
+            b_out = TT.tensor(dtype=Configs.floatType, broadcastable=(False, True), name='b_out')
 
-            self.u = TT.tensor3()  # input tensor
-            self.t = TT.tensor3()  # target tensor
+            self.u = TT.tensor3(name='u')  # input tensor
+            self.t = TT.tensor3(name='t')  # target tensor
 
             # output of the net
             self.y, self.deriv_a = net.net_output(self.__current_params, self.u)

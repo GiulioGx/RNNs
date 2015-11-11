@@ -48,9 +48,9 @@ class LinearCombinationRule(CombiningRule):
 
     @staticmethod
     def step(v, alpha, acc):
-        norm_v = norm(v)
+        norm_v = v.norm(2)
         return TT.switch(TT.or_(TT.or_(is_not_real(norm_v), norm_v <= 0), is_not_real(alpha)), acc,
-                         (v * alpha) / norm(v) + acc), norm_v
+                         (v * alpha) / norm_v + acc), norm_v
 
     @abc.abstractmethod
     def get_linear_coefficients(self, vector_list, n):

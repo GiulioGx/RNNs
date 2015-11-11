@@ -24,7 +24,7 @@ axarr[0].plot(x_values, valid_error, 'r')
 axarr[0].legend(['validation error'], shadow=True, fancybox=True)
 
 # axarr[1].plot(x_values, penalty, 'c')
-# axarr[1].legend(['penalty grad norm'], shadow=True, fancybox=True)
+# axarr[1].legend(['penalty value norm'], shadow=True, fancybox=True)
 # axarr[1].set_yscale('log')
 
 axarr[1].plot(x_values, grad_norm, 'm')

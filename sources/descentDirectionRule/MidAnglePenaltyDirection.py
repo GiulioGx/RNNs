@@ -19,7 +19,7 @@ class MidAnglePenaltyDirection(DescentDirectionRule):
             penalty_grad = self.__penalty_symbols.penalty_grad
             penalty_grad_norm = norm(penalty_grad)
 
-            gW_rec = obj_symbols.grad.W_rec
+            gW_rec = obj_symbols.failsafe_grad.W_rec
             norm_gW_rec = norm(gW_rec)
 
             min_norm = TT.min([norm_gW_rec, penalty_grad_norm])
@@ -67,7 +67,7 @@ class MidAnglePenaltyDirection(DescentDirectionRule):
             b = (TT.dot(W_rec_dir.flatten(), obj_symbols.gW_rec.flatten()) < 0)
             is_disc_dir = TT.and_(a, b)
 
-            self.__direction = obj_symbols.grad() * (-1)
+            self.__direction = obj_symbols.failsafe_grad() * (-1)
             self.__direction.setW_rec(W_rec_dir)  # FIXME
 
             self.__infos = self.__penalty_symbols.infos + [cosine, new_cosine_grad, new_cosine_pen, norm_W_rec_dir,

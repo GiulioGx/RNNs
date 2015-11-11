@@ -31,11 +31,11 @@ class Params(object):
         """euclidean norm"""
 
     @abc.abstractmethod
-    def grad(self, fnc):
+    def failsafe_grad(self, loss_fnc, u, t):
         """return the gradient of the function fnc wrt the parameters this class represents"""
 
     @abc.abstractmethod
-    def grad_combining_steps(self, loss_fnc, u, t):
+    def gradient(self, loss_fnc, u, t):
         """return a class that can produce combinantion of gradients for each time steps given a 'strategy' for combining them
         wrt the parameters this class represents"""
 

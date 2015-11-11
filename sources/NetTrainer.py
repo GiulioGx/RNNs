@@ -10,6 +10,7 @@ from Statistics import Statistics
 from TrainingRule import TrainingRule
 import logging
 import os
+import theano as T
 
 __author__ = 'giulio'
 
@@ -57,6 +58,14 @@ class NetTrainer(object):
         train_step = self.__training_rule.compile(net, self.__obj_fnc)
         logging.info('... Done')
 
+        #  loss and error theano fnc
+        u = net.symbols.u
+        t = net.symbols.t
+        y = net.symbols.y_shared
+        error = task.error_fnc(y, t)
+        loss = self.__obj_fnc.loss(y, t)
+        self.__loss_and_error = T.function([u, t], [error, loss], name='loss_and_error_fnc')
+
         # training statistics
         stats = Statistics(self.__max_it, self.__check_freq)
 
@@ -64,8 +73,9 @@ class NetTrainer(object):
         validation_set = task.get_batch(self.__validation_set_size)
         logging.info('... Done')
 
+        logging.info(str(net.info))
         rho = NetTrainer.get_spectral_radius(net.symbols.current_params.W_rec.get_value())
-        logging.info('Initial rho: {:5.2f}'.format(rho))
+        logging.info('Initial rho: {:5.2f}'.format(rho))  # FIXME move in RNN
 
         logging.info(str(self.__training_settings_info))
         logging.info('Training ...\n')
@@ -82,9 +92,9 @@ class NetTrainer(object):
 
             if i % self.__check_freq == 0:
                 eval_start_time = time.time()
-                y_net = net.net_output_shared(validation_set.inputs)  # FIXME
-                valid_error = task.error_fnc(y_net, validation_set.outputs)
-                valid_loss = self.__obj_fnc.loss(y_net, validation_set.outputs)
+                valid_error, valid_loss = self.__loss_and_error(validation_set.inputs, validation_set.outputs)
+                valid_error = valid_error.item()
+                valid_loss = valid_loss.item()
 
                 try:
                     rho = NetTrainer.get_spectral_radius(net.symbols.current_params.W_rec.get_value())
@@ -99,8 +109,11 @@ class NetTrainer(object):
                 batch_end_time = time.time()
                 total_elapsed_time = batch_end_time - start_time
 
+                eval_time = time.time() - eval_start_time
                 batch_time = batch_end_time - batch_start_time
-                info = NetTrainer.__build_infos(train_info, i, valid_loss, valid_error, best_error, rho, batch_time)
+
+                info = NetTrainer.__build_infos(train_info, i, valid_loss, valid_error, best_error, rho,
+                                                batch_time, eval_time)
                 logging.info(info)
                 stats.update(info, i, total_elapsed_time)
                 net.save_model(self.__model_filename, stats, self.__training_settings_info)
@@ -108,7 +121,6 @@ class NetTrainer(object):
                 batch_start_time = time.time()
                 if error_occured:
                     logging.warning('stopping training...')
-                print('eval_time:{:2.2f}s'.format(time.time() - eval_start_time))
 
             i += 1
 
@@ -119,7 +131,7 @@ class NetTrainer(object):
     def train(self, task, activation_fnc, output_fnc, n_hidden, init_strategies=RNN.deafult_init_strategies, seed=13):
 
         # configure network
-        logging.info('Compiling theano functions for the net')
+        logging.info('Compiling theano functions for the net...')
         net = RNN(activation_fnc, output_fnc, n_hidden, task.n_in, task.n_out, init_strategies, seed)
         logging.info('...Done')
         return self._train(task, net)
@@ -128,11 +140,11 @@ class NetTrainer(object):
         return self._train(task, net)
 
     @staticmethod
-    def get_spectral_radius(W):
-        return numpy.max(abs(numpy.linalg.eigvals(W)))
+    def get_spectral_radius(matrix):
+        return numpy.max(abs(numpy.linalg.eigvals(matrix)))
 
     @staticmethod
-    def __build_infos(train_info, i, valid_loss, valid_error, best_error, rho, batch_time):
+    def __build_infos(train_info, i, valid_loss, valid_error, best_error, rho, batch_time, eval_time):
 
         it_info = PrintableInfoElement('iteration', ':07d', i)
 
@@ -145,7 +157,9 @@ class NetTrainer(object):
         val_info = InfoGroup('validation', InfoList(val_loss_info, error_group))
 
         rho_info = PrintableInfoElement('rho', ':5.2f', rho)
-        time_info = PrintableInfoElement('time', ':2.2f', batch_time)
+        eval_time_info = PrintableInfoElement('eval', ':2.2f', eval_time)
+        batch_time_info = PrintableInfoElement('tot', ':2.2f', batch_time)
+        time_info = InfoGroup('time', InfoList(eval_time_info, batch_time_info))
 
         info = InfoList(it_info, val_info, rho_info, train_info, time_info)
         return info

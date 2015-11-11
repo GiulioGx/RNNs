@@ -18,7 +18,7 @@ class ArmijoStep(LearningStepRule):
                                           net_symbols.t)
 
             f_0 = obj_symbols.objective_value
-            grad_dir_dot_product = obj_symbols.grad.dot(dir_symbols.direction)
+            grad_dir_dot_product = obj_symbols.failsafe_grad.dot(dir_symbols.direction)
 
             def armijo_step(step, beta, alpha, u, t):  # FIXME se capissi perchè togliendoli nn va...
                 new_param = net_symbols.current_params + (dir_symbols.direction * step)

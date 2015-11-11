@@ -15,9 +15,9 @@ class AntiGradientWithPenalty(DescentDirectionRule):
             penalty_grad = self.__penalty_symbols.penalty_grad
             penalty_grad_norm = norm(penalty_grad)
 
-            self.__direction = obj_symbols.grad * (-1)  # FIXME - operator
+            self.__direction = obj_symbols.failsafe_grad * (-1)  # FIXME - operator
 
-            W_rec_dir = - obj_symbols.grad.W_rec
+            W_rec_dir = - obj_symbols.failsafe_grad.W_rec
             W_rec_dir = TT.switch(penalty_grad_norm > 0, W_rec_dir - rule.penalty_lambda * penalty_grad,
                                   W_rec_dir)
 

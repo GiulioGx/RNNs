@@ -13,14 +13,14 @@ class SimplexCombination(LinearCombinationRule):
     def get_linear_coefficients(self, vector_list, n):
 
         u = self.__srng.uniform(low=0, high=1, size=(n, 1))
-
-        exp_lambda = 1
-        x = -TT.log(-u+1)/exp_lambda
-        return x/x.sum()
+        x = TT.exp(1.-u)
+        r = x/x.sum()
+        return r
 
     def __init__(self, seed=Configs.seed):
         self.__srng = RandomStreams(seed=seed)
 
     def normalize_step(self, grads_combinantion, norms):
-        return grads_combinantion/norm(grads_combinantion)
+        norm_comb = grads_combinantion.norm(2)
+        return TT.switch(norm_comb <= 0, grads_combinantion, grads_combinantion/norm_comb)
 

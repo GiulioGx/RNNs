@@ -1,6 +1,7 @@
 
 from InfoProducer import InfoProducer
 from combiningRule.LinearCombination import LinearCombinationRule
+from combiningRule.SimpleSum import SimpleSum
 from infos.InfoGroup import InfoGroup
 from infos.InfoList import InfoList
 from infos.InfoElement import PrintableInfoElement
@@ -44,11 +45,13 @@ class ObjectiveFunction(object):
             self.__t = t
             self.__params = params
 
-            # loss gradient
-            y, _ = self.__net.net_output(params, u)
+            self.__grad_symbols = self.__params.gradient(self.__obj_fnc.loss_fnc, self.__u, self.__t)
+            self.__grad = self.__grad_symbols.value
 
-            loss = obj_fnc.loss_fnc(y, t)
-            self.__grad = params.grad(loss)
+            #y, _ = self.__net.net_output(self, u)
+            #loss = loss_fnc(y, t)
+
+            loss = self.__grad_symbols.loss_value
 
             # add penalty
             self.__penalty_symbols = obj_fnc.penalty.compile(params, net.symbols)
@@ -62,17 +65,16 @@ class ObjectiveFunction(object):
             self.__grad_norm = self.__grad.norm()
 
             # separate
-            self.__separate_grads_rule = self.__params.grad_combining_steps(self.__obj_fnc.loss_fnc, self.__u, self.__t)
-            separate_info = self.__separate_grads_rule.infos
+            separate_info = self.__grad_symbols.infos
 
             self.__infos = self.__penalty_symbols.infos + separate_info + [loss, loss_grad_norm]
 
         def format_infos(self, infos_symbols):
             penalty_info, infos_symbols = self.__penalty_symbols.format_infos(infos_symbols)
-            separate_info, infos_symbols = self.__separate_grads_rule.format_infos(infos_symbols)
+            separate_info, infos_symbols = self.__grad_symbols.format_infos(infos_symbols)
 
             loss_value_info = PrintableInfoElement('value', ':07.3f', infos_symbols[0].item())
-            loss_grad_info = PrintableInfoElement('grad', ':07.3f', infos_symbols[1].item())
+            loss_grad_info = PrintableInfoElement('value', ':07.3f', infos_symbols[1].item())
 
             loss_info = InfoGroup('loss', InfoList(loss_value_info, loss_grad_info))
             obj_info = InfoGroup('obj', InfoList(loss_info, penalty_info, separate_info))
@@ -98,6 +100,6 @@ class ObjectiveFunction(object):
             return self.__grad_norm
 
         def grad_combination(self, strategy: LinearCombinationRule):
-            # separate time steps grad
-            return self.__separate_grads_rule.grad_combination(strategy)
+            # separate time steps value
+            return self.__grad_symbols.temporal_combination(strategy)
 
