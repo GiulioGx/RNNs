@@ -22,7 +22,6 @@ class Statistics(object):
 
         for e in info.elements:
             if e.name not in self.__dictionary:
-                # self.__dictionary[e.name] = numpy.zeros((self.__m,), dtype=Configs.floatType)
                 self.__dictionary[e.name] = []
 
             self.__dictionary[e.name].append(e.value)

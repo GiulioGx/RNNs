@@ -2,7 +2,7 @@ from Configs import Configs
 from combiningRule.LinearCombination import LinearCombinationRule
 import theano.tensor as TT
 import theano as T
-from theanoUtils import norm, is_not_real
+from theanoUtils import norm, is_not_real, normalize
 
 __author__ = 'giulio'
 
@@ -10,7 +10,7 @@ __author__ = 'giulio'
 class NormalizedSum(LinearCombinationRule):
 
     def normalize_step(self, grads_combination, norms):
-        return grads_combination/norm(grads_combination)
+        return normalize(grads_combination)
 
     def get_linear_coefficients(self, vector_list, n):
         return TT.ones((n, 1), dtype=Configs.floatType)

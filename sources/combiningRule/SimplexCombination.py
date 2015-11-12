@@ -1,6 +1,6 @@
 from Configs import Configs
 from combiningRule.LinearCombination import LinearCombinationRule
-from theanoUtils import norm, is_not_real
+from theanoUtils import norm, is_not_real, normalize
 import theano.tensor as TT
 from theano.tensor.shared_randomstreams import RandomStreams
 
@@ -21,6 +21,5 @@ class SimplexCombination(LinearCombinationRule):
         self.__srng = RandomStreams(seed=seed)
 
     def normalize_step(self, grads_combinantion, norms):
-        norm_comb = grads_combinantion.norm(2)
-        return TT.switch(norm_comb <= 0, grads_combinantion, grads_combinantion/norm_comb)
+        return normalize(grads_combinantion)
 

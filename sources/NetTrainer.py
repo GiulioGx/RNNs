@@ -16,8 +16,8 @@ __author__ = 'giulio'
 
 
 class NetTrainer(object):
-    def __init__(self, training_rule: TrainingRule, obj_fnc: ObjectiveFunction, max_it=10**5, bacth_size=100,
-                 validation_set_size=10**4,
+    def __init__(self, training_rule: TrainingRule, obj_fnc: ObjectiveFunction, max_it=10 ** 5, bacth_size=100,
+                 validation_set_size=10 ** 4,
                  stop_error_thresh=0.01, check_freq=50, model_save_file='./model', log_filename='./model.log'):
 
         self.__training_rule = training_rule
@@ -127,6 +127,9 @@ class NetTrainer(object):
         end_time = time.time()
         if i == self.__max_it:
             logging.warning('Maximum number of iterations reached, stopping training...')
+        elif best_error <= self.__stop_error_thresh / 100:
+            logging.info('Training succeded, validation error below the given threshold of {.2%}'.format(
+                self.__stop_error_thresh * 100))
         logging.info('Elapsed time: {:2.2f} min'.format((end_time - start_time) / 60))
         return net
 
@@ -142,7 +145,7 @@ class NetTrainer(object):
         return self._train(task, net)
 
     @staticmethod
-    def get_spectral_radius(matrix):
+    def get_spectral_radius(matrix):  # TODO move in RNN.Params
         return numpy.max(abs(numpy.linalg.eigvals(matrix)))
 
     @staticmethod

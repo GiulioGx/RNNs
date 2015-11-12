@@ -50,3 +50,8 @@ def get_dir_between_2_dirs(c1, c2, cos):
 
 def is_not_real(v):
     return TT.or_(TT.isnan(v), TT.isinf(v))
+
+
+def normalize(vector, norm_type=2):
+    vector_norm = vector.norm(norm_type)
+    return TT.switch(vector_norm <= 0, vector, vector/vector_norm)
