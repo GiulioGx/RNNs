@@ -3,7 +3,7 @@ import os
 import theano as T
 import theano.tensor as TT
 import numpy
-from ActivationFunction import Relu
+from ActivationFunction import Relu, Tanh
 from Configs import Configs
 from InfoProducer import InfoProducer
 from combiningRule.SimpleSum import SimpleSum
@@ -116,11 +116,11 @@ class RNN(object):
         b_rec = npz["b_rec"]
         b_out = npz["b_out"]
 
-        n_hidden = npz["n_hidden"]
-        n_in = npz["n_in"]
-        n_out = npz["n_out"]
+        n_hidden = npz["net_n_hidden"].item()
+        n_in = npz["net_n_in"].item()
+        n_out = npz["net_n_out"].item()
 
-        activation_fnc = Relu()  # FIXME XXX
+        activation_fnc = Tanh()  # FIXME XXX
         output_fnc = RNN.linear_fnc
 
         init_strategies = {'W_rec': GivenValueInit(W_rec), 'W_in': GivenValueInit(W_in), 'W_out': GivenValueInit(W_out),

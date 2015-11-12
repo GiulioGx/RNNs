@@ -42,8 +42,8 @@ n_hidden = 50
 activation_fnc = Tanh()
 output_fnc = RNN.linear_fnc
 loss_fnc = NetTrainer.squared_error
-model_filename = Configs.model_filename+'_add'
-log_filename = Configs.log_filename+'_add'
+model_filename = Configs.model_filename + '_add'
+log_filename = Configs.log_filename + '_add'
 
 # init strategy
 std_dev = 0.14  # 0.14 Tanh # 0.21 Relu
@@ -63,19 +63,20 @@ penalty = NullPenalty()
 # dir_rule = FrozenGradient(penalty)
 # dir_rule = SepareteGradient()
 
-combining_rule = NormalizedSum()
-#combining_rule = EquiangularCombination()
+combining_rule = SimplexCombination()
+# combining_rule = EquiangularCombination()
 dir_rule = CombinedGradients(combining_rule)
 
 # learning step rule
 # lr_rule = WRecNormalizedStep(0.0001) #0.01
-#lr_rule = ConstantStep(0.001)  # 0.01
-lr_rule = ConstantNormalizedStep(0.001) #0.01
+# lr_rule = ConstantStep(0.001)  # 0.01
+lr_rule = ConstantNormalizedStep(0.001)  # 0.01
 # lr_rule = ArmijoStep(alpha=0.1, beta=0.1, init_step=1, max_steps=50)
 
 obj_fnc = ObjectiveFunction(loss_fnc, penalty, 0.1)
 train_rule = TrainingRule(dir_rule, lr_rule)
 
-trainer = NetTrainer(train_rule, obj_fnc, model_save_file=model_filename, log_filename=log_filename, max_it=10**5, check_freq=100)
+trainer = NetTrainer(train_rule, obj_fnc, model_save_file=model_filename, log_filename=log_filename, max_it=10 ** 10,
+                     check_freq=200, bacth_size=20)
 
 net = trainer.train(task, activation_fnc, output_fnc, n_hidden, init_strategies, seed)

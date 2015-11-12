@@ -125,6 +125,8 @@ class NetTrainer(object):
             i += 1
 
         end_time = time.time()
+        if i == self.__max_it:
+            logging.warning('Maximum number of iterations reached, stopping training...')
         logging.info('Elapsed time: {:2.2f} min'.format((end_time - start_time) / 60))
         return net
 
