@@ -2,7 +2,7 @@ from theano import tensor as TT
 
 from penalty.Penalty import Penalty
 from descentDirectionRule.DescentDirectionRule import DescentDirectionRule
-from infos.InfoElement import PrintableInfoElement
+from infos.InfoElement import PrintableInfoElement, SimpleDescription
 from infos.InfoGroup import InfoGroup
 from infos.InfoList import InfoList
 from theanoUtils import norm, cos_between_dirs, get_dir_between_2_dirs
@@ -11,6 +11,18 @@ __author__ = 'giulio'
 
 
 class FrozenGradient(DescentDirectionRule):
+
+    @property
+    def infos(self):
+        return InfoList(SimpleDescription('frozen_gradient'), self.__penalty.infos)
+
+    @property
+    def penalty(self):
+        return self.__penalty
+
+    def compile(self, net_symbols, obj_symbols):
+        return FrozenGradient.Symbols(self, net_symbols, obj_symbols)
+
     class Symbols(DescentDirectionRule.Symbols):
         def __init__(self, rule, net_symbols, obj_symbols):
             # compile penalty
@@ -64,10 +76,3 @@ class FrozenGradient(DescentDirectionRule):
 
     def __init__(self, penalty: Penalty):
         self.__penalty = penalty
-
-    @property
-    def penalty(self):
-        return self.__penalty
-
-    def compile(self, net_symbols, obj_symbols):
-        return FrozenGradient.Symbols(self, net_symbols, obj_symbols)

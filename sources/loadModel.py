@@ -14,7 +14,7 @@ from task.AdditionTask import AdditionTask
 
 loadFile = '/home/giulio/RNNs/models/model_add_p.npz'
 log_filename = Configs.log_filename+'_cont'
-model_filename = Configs.model_filename+'_cont'
+model_filename = Configs.output_dir + '_cont'
 
 Configs.seed = 23
 

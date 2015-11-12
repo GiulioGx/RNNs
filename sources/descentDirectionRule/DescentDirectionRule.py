@@ -1,18 +1,19 @@
 import abc
 
-from InfoProducer import InfoProducer
+from infos.SimpleInfoProducer import SimpleInfoProducer
+from infos.SymbolicInfoProducer import SymbolicInfoProducer
 
 __author__ = 'giulio'
 
 
-class DescentDirectionRule(object):
+class DescentDirectionRule(SimpleInfoProducer):
     __metaclass__ = abc.ABCMeta
 
     @abc.abstractmethod
     def compile(self, net_symbols, obj_symbols):
         """returns the compiled version"""
         
-    class Symbols(InfoProducer):
+    class Symbols(SymbolicInfoProducer):
         __metaclass__ = abc.ABCMeta
 
         @abc.abstractmethod

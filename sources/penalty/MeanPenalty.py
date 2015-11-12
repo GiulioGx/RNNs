@@ -2,7 +2,7 @@ import numpy
 from theano import tensor as TT
 from Configs import Configs
 from Params import Params
-from infos.InfoElement import PrintableInfoElement
+from infos.InfoElement import PrintableInfoElement, SimpleDescription
 from infos.InfoGroup import InfoGroup
 from infos.InfoList import InfoList
 from penalty.Penalty import Penalty
@@ -59,3 +59,7 @@ class MeanPenalty(Penalty):
 
     def compile(self, params: Params, net_symbols):
         return MeanPenalty.Symbols(params, net_symbols)
+
+    @property
+    def infos(self):
+        return SimpleDescription('mean_penalty')

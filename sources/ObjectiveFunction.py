@@ -1,13 +1,11 @@
-
-from InfoProducer import InfoProducer
+from Params import Params
 from combiningRule.LinearCombination import LinearCombinationRule
-from combiningRule.SimpleSum import SimpleSum
+from infos.InfoElement import PrintableInfoElement
 from infos.InfoGroup import InfoGroup
 from infos.InfoList import InfoList
-from infos.InfoElement import PrintableInfoElement
-from Params import Params
-from penalty.Penalty import Penalty
+from infos.SymbolicInfoProducer import SymbolicInfoProducer
 from penalty.NullPenalty import NullPenalty
+from penalty.Penalty import Penalty
 
 __author__ = 'giulio'
 
@@ -36,7 +34,7 @@ class ObjectiveFunction(object):
     def penalty_lambda(self):
         return self.__penalty_lambda
 
-    class Symbols(InfoProducer):
+    class Symbols(SymbolicInfoProducer):
         def __init__(self, obj_fnc, net, params, u, t):
             self.__net = net
             self.__obj_fnc = obj_fnc

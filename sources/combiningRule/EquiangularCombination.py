@@ -3,13 +3,17 @@ import theano.tensor as TT
 import theano.tensor.nlinalg as li
 import theano.tensor.slinalg as sli
 from combiningRule.CombiningRule import CombiningRule
-from infos.InfoElement import PrintableInfoElement
+from infos.InfoElement import PrintableInfoElement, SimpleDescription
 from infos.InfoList import InfoList
 
 __author__ = 'giulio'
 
 
 class EquiangularCombination(CombiningRule):
+
+    @property
+    def infos(self):
+        return SimpleDescription('equiangular_combination')
 
     def compile(self, vector_list, n):
         return EquiangularCombination.Symbols(vector_list, n)

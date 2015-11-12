@@ -1,12 +1,13 @@
 import abc
 
 from descentDirectionRule.DescentDirectionRule import DescentDirectionRule
-from InfoProducer import InfoProducer
+from infos.SimpleInfoProducer import SimpleInfoProducer
+from infos.SymbolicInfoProducer import SymbolicInfoProducer
 
 __author__ = 'giulio'
 
 
-class LearningStepRule(object):
+class LearningStepRule(SimpleInfoProducer):
     __metaclass__ = abc.ABCMeta
 
     @abc.abstractmethod
@@ -14,7 +15,7 @@ class LearningStepRule(object):
         """return the compiled version"""
 
 
-class LearningStepSymbols(InfoProducer):
+class LearningStepSymbols(SymbolicInfoProducer):
     __metaclass__ = abc.ABCMeta
 
     @abc.abstractmethod

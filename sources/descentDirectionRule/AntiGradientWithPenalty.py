@@ -1,5 +1,7 @@
 from theano import tensor as TT
 
+from infos.InfoElement import SimpleDescription
+from infos.InfoList import InfoList
 from penalty.Penalty import Penalty
 from descentDirectionRule.DescentDirectionRule import DescentDirectionRule
 from theanoUtils import norm
@@ -8,6 +10,26 @@ __author__ = 'giulio'
 
 
 class AntiGradientWithPenalty(DescentDirectionRule):
+
+    def __init__(self, penalty: Penalty, penalty_lambda=0.001):
+        self.__penalty = penalty
+        self.__penalty_lambda = penalty_lambda
+
+    @property
+    def infos(self):
+        return InfoList(SimpleDescription('antigradient'), self.__penalty.infos)
+
+    @property
+    def penalty(self):
+        return self.__penalty
+
+    @property
+    def penalty_lambda(self):
+        return self.__penalty_lambda
+
+    def compile(self, net_symbols, obj_symbols):
+        return AntiGradientWithPenalty.Symbols(self, net_symbols, obj_symbols)
+
     class Symbols(DescentDirectionRule.Symbols):
         def __init__(self, rule, net_symbols, obj_symbols):
             # add penalty term
@@ -36,17 +58,3 @@ class AntiGradientWithPenalty(DescentDirectionRule):
         def format_infos(self, infos):
             return self.__penalty_symbols.format_infos(infos)
 
-    def __init__(self, penalty: Penalty, penalty_lambda=0.001):
-        self.__penalty = penalty
-        self.__penalty_lambda = penalty_lambda
-
-    @property
-    def penalty(self):
-        return self.__penalty
-
-    @property
-    def penalty_lambda(self):
-        return self.__penalty_lambda
-
-    def compile(self, net_symbols, obj_symbols):
-        return AntiGradientWithPenalty.Symbols(self, net_symbols, obj_symbols)

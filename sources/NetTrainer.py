@@ -18,7 +18,7 @@ __author__ = 'giulio'
 class NetTrainer(object):
     def __init__(self, training_rule: TrainingRule, obj_fnc: ObjectiveFunction, max_it=10 ** 5, bacth_size=100,
                  validation_set_size=10 ** 4,
-                 stop_error_thresh=0.01, check_freq=50, model_save_file='./model', log_filename='./model.log'):
+                 stop_error_thresh=0.01, check_freq=50, output_dir='.'):
 
         self.__training_rule = training_rule
         self.__obj_fnc = obj_fnc
@@ -27,14 +27,13 @@ class NetTrainer(object):
         self.__validation_set_size = validation_set_size
         self.__stop_error_thresh = stop_error_thresh
         self.__check_freq = check_freq
-        self.__model_filename = model_save_file
-        self.__log_filename = log_filename
+        self.__output_dir = output_dir
 
         # logging
-        log_filename += '.log'
+        log_filename = self.__output_dir + '/train.log'
         if os.path.exists(log_filename):
             os.remove(log_filename)
-        os.makedirs(os.path.dirname(log_filename), exist_ok=True)
+        os.makedirs(output_dir, exist_ok=True)
         logging.basicConfig(filename=log_filename, level=logging.INFO, format='%(levelname)s:%(message)s')
 
         # build training setting info
@@ -74,10 +73,9 @@ class NetTrainer(object):
         logging.info('... Done')
 
         logging.info(str(net.info))
-        rho = NetTrainer.get_spectral_radius(net.symbols.current_params.W_rec.get_value())
-        logging.info('Initial rho: {:5.2f}'.format(rho))  # FIXME move in RNN
 
         logging.info(str(self.__training_settings_info))
+        logging.info(str(self.__training_rule.infos))
         logging.info('Training ...\n')
         start_time = time.time()
         batch_start_time = time.time()
@@ -97,7 +95,7 @@ class NetTrainer(object):
                 valid_loss = valid_loss.item()
 
                 try:
-                    rho = NetTrainer.get_spectral_radius(net.symbols.current_params.W_rec.get_value())
+                    rho = net.spectral_radius
                 except LinAlgError as e:
                     logging.error(str(e))
                     error_occured = True
@@ -116,7 +114,8 @@ class NetTrainer(object):
                                                 batch_time, eval_time)
                 logging.info(info)
                 stats.update(info, i, total_elapsed_time)
-                net.save_model(self.__model_filename, stats, self.__training_settings_info)
+                model_filename = self.__output_dir + '/model.npz'
+                net.save_model(model_filename, stats, self.__training_settings_info)
 
                 batch_start_time = time.time()
                 if error_occured:
@@ -128,7 +127,7 @@ class NetTrainer(object):
         if i == self.__max_it:
             logging.warning('Maximum number of iterations reached, stopping training...')
         elif best_error <= self.__stop_error_thresh / 100:
-            logging.info('Training succeded, validation error below the given threshold of {.2%}'.format(
+            logging.info('Training succeded, validation error below the given threshold({.2%})'.format(
                 self.__stop_error_thresh * 100))
         logging.info('Elapsed time: {:2.2f} min'.format((end_time - start_time) / 60))
         return net
@@ -143,10 +142,6 @@ class NetTrainer(object):
 
     def resume_training(self, task, net):  # TODO load statistics too
         return self._train(task, net)
-
-    @staticmethod
-    def get_spectral_radius(matrix):  # TODO move in RNN.Params
-        return numpy.max(abs(numpy.linalg.eigvals(matrix)))
 
     @staticmethod
     def __build_infos(train_info, i, valid_loss, valid_error, best_error, rho, batch_time, eval_time):

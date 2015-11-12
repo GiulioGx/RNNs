@@ -1,18 +1,20 @@
 import abc
 import os
+
+import numpy
 import theano as T
 import theano.tensor as TT
-import numpy
-from ActivationFunction import Relu, Tanh
+
+from ActivationFunction import Tanh
 from Configs import Configs
-from InfoProducer import InfoProducer
-from combiningRule.SimpleSum import SimpleSum
-from infos.Info import Info, NullInfo
 from Params import Params
 from Statistics import Statistics
+from combiningRule.SimpleSum import SimpleSum
+from infos.Info import Info, NullInfo
 from infos.InfoElement import NonPrintableInfoElement, PrintableInfoElement
 from infos.InfoGroup import InfoGroup
 from infos.InfoList import InfoList
+from infos.SymbolicInfoProducer import SymbolicInfoProducer
 from initialization.GaussianInit import GaussianInit
 from initialization.GivenValueInit import GivenValueInit
 from initialization.ZeroInit import ZeroInit
@@ -106,6 +108,10 @@ class RNN(object):
     def y_t(self, h_t, W_out, b_out):
         return self.__output_fnc(TT.dot(W_out, h_t) + b_out)
 
+    @property
+    def spectral_radius(self):
+        return numpy.max(abs(numpy.linalg.eigvals(self.symbols.current_params.W_rec.get_value())))
+
     @staticmethod
     def load_model(filename):
         npz = numpy.load(filename)
@@ -130,14 +136,16 @@ class RNN(object):
 
     @property
     def info(self):
+
         return InfoGroup('net',
-                         InfoList(PrintableInfoElement('n_hidden', ':d', self.__n_hidden),
+                         InfoList(PrintableInfoElement('init_rho', ':2.2f', self.spectral_radius),
+                                  PrintableInfoElement('n_hidden', ':d', self.__n_hidden),
                                   PrintableInfoElement('n_in', ':d', self.__n_in),
                                   PrintableInfoElement('n_out', ':d', self.__n_out),
-                                  PrintableInfoElement('activation_fnc', '',self.__activation_fnc)
+                                  PrintableInfoElement('activation_fnc', '', self.__activation_fnc)
                                   ))
 
-    def save_model(self, filename, stats: Statistics, train_info: Info):
+    def save_model(self, filename: str, stats: Statistics, train_info: Info):
         """saves the model with statistics to file"""
 
         os.makedirs(os.path.dirname(filename), exist_ok=True)
@@ -247,9 +255,9 @@ class RNN(object):
             gb_rec, gb_out = TT.grad(loss, [self.__W_rec, self.__W_in, self.__W_out, self.__b_rec, self.__b_out])
             return RNN.Params(self.__net, gW_rec, gW_in, gW_out, gb_rec, gb_out)
 
-        class Gradient(InfoProducer):
+        class Gradient(SymbolicInfoProducer):
 
-            class Combination(InfoProducer):
+            class Combination(SymbolicInfoProducer):
                 __metaclass__ = abc.ABCMeta
 
                 @abc.abstractproperty

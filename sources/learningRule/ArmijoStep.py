@@ -4,7 +4,7 @@ from theano import tensor as TT
 
 from Configs import Configs
 from infos.InfoList import InfoList
-from infos.InfoElement import PrintableInfoElement
+from infos.InfoElement import PrintableInfoElement, SimpleDescription
 from learningRule.LearningRule import LearningStepRule, LearningStepSymbols
 
 __author__ = 'giulio'
@@ -75,6 +75,10 @@ class ArmijoStep(LearningStepRule):
     @property
     def beta(self):
         return self.__beta
+
+    @property
+    def infos(self):
+        return SimpleDescription('armijo')  # TODO add beta alpha...
 
     def compile(self, net, obj_fnc, dir_symbols):
         return ArmijoStep.Symbols(self, net, obj_fnc, dir_symbols)

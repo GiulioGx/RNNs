@@ -1,5 +1,6 @@
 from Configs import Configs
 from combiningRule.LinearCombination import LinearCombinationRule
+from infos.InfoElement import SimpleDescription
 from theanoUtils import norm, is_not_real, normalize
 import theano.tensor as TT
 from theano.tensor.shared_randomstreams import RandomStreams
@@ -22,4 +23,8 @@ class SimplexCombination(LinearCombinationRule):
 
     def normalize_step(self, grads_combinantion, norms):
         return normalize(grads_combinantion)
+
+    @property
+    def infos(self):
+        return SimpleDescription('simplex_combination')
 

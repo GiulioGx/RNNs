@@ -11,7 +11,7 @@ __author__ = 'giulio'
 class ConstantStep(LearningStepRule):
     class Symbols(LearningStepSymbols):
         def __init__(self, rule):
-            self.__learning_rate = rule.lr_value
+            self.__learning_rate = TT.alloc(numpy.array(rule.lr_value, dtype=Configs.floatType))
 
         @property
         def learning_rate(self):
@@ -26,11 +26,15 @@ class ConstantStep(LearningStepRule):
             return lr_info, infos_symbols[lr_info.length:len(infos_symbols)]
 
     def __init__(self, lr_value=0.001):
-        self.__lr_value = TT.alloc(numpy.array(lr_value, dtype=Configs.floatType))
+        self.__lr_value = lr_value
 
     @property
     def lr_value(self):
         return self.__lr_value
+
+    @property
+    def infos(self):
+        return PrintableInfoElement('constant_step', ':02.2e', self.__lr_value)
 
     def compile(self, net, obj_fnc, dir_symbols):
         return ConstantStep.Symbols(self)

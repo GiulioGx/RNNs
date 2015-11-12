@@ -1,18 +1,27 @@
 import theano as T
-
 from descentDirectionRule import DescentDirectionRule
+from infos.InfoGroup import InfoGroup
 from infos.InfoList import InfoList
+from infos.SimpleInfoProducer import SimpleInfoProducer
 from learningRule import LearningRule
 from ObjectiveFunction import ObjectiveFunction
 
 __author__ = 'giulio'
 
 
-class TrainingRule(object):
+class TrainingRule(SimpleInfoProducer):
+    @property
+    def infos(self):
+        return self.__infos
+
+    def __str__(self):
+        return str(self.__infos)
 
     def __init__(self, desc_dir_rule: DescentDirectionRule, lr_rule: LearningRule):
         self.__desc_dir_rule = desc_dir_rule
         self.__lr_rule = lr_rule
+        self.__infos = InfoGroup('train_rule', InfoList(InfoGroup('desc_dir', InfoList(self.__desc_dir_rule.infos)),
+                                                        InfoGroup('lr_rate', InfoList(self.__lr_rule.infos))))
 
     def compile(self, net_symbols, obj_symbols):
         return TrainingRule.TrainCompiled(self, net_symbols, obj_symbols)

@@ -34,3 +34,7 @@ class NullPenalty(Penalty):
 
     def compile(self, params: Params, net_symbols):
         return NullPenalty.Symbols(params.W_rec)  # FIXME
+
+    @property
+    def infos(self):
+        return NullInfo()

@@ -2,6 +2,7 @@ from combiningRule.LinearCombination import LinearCombinationRule
 import theano.tensor as TT
 import theano as T
 
+from infos.InfoElement import SimpleDescription
 from theanoUtils import norm
 
 __author__ = 'giulio'
@@ -21,3 +22,7 @@ class SimpleSum(LinearCombinationRule):
 
     def normalize_step(self, grads_combinantion, norms):
         return grads_combinantion
+
+    @property
+    def infos(self):
+        return SimpleDescription('simple_sum_combination')

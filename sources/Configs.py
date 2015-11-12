@@ -2,8 +2,7 @@ __author__ = 'giulio'
 
 
 class Configs:
-    floatType = 'float32'
+    floatType = 'float32'  # TODO move elsewhere
     seed = 13
-    model_filename = '/home/giulio/RNNs/models/model'  # TODO move elsewhere
-    log_filename = '/home/giulio/RNNs/models/model'
+    output_dir = '/home/giulio/RNNs/models/'
 

@@ -1,9 +1,11 @@
 import abc
 
+from infos.SimpleInfoProducer import SimpleInfoProducer
+
 __author__ = 'giulio'
 
 
-class Task(object):
+class Task(SimpleInfoProducer):
     __metaclass__ = abc.ABCMeta
 
     @abc.abstractmethod

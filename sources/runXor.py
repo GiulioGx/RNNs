@@ -43,7 +43,7 @@ n_hidden = 100
 activation_fnc = Relu()
 output_fnc = RNN.linear_fnc
 loss_fnc = NetTrainer.squared_error
-model_filename = Configs.model_filename+'_xor'
+model_filename = Configs.output_dir + '_xor'
 log_filename = Configs.log_filename+'_xor'
 
 # init strategy

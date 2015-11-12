@@ -1,13 +1,18 @@
 from ObjectiveFunction import ObjectiveFunction
 from combiningRule.CombiningRule import CombiningRule
 from descentDirectionRule.DescentDirectionRule import DescentDirectionRule
-from infos.InfoElement import PrintableInfoElement
+from infos.InfoElement import PrintableInfoElement, SimpleDescription
 from infos.InfoList import InfoList
 
 __author__ = 'giulio'
 
 
 class CombinedGradients(DescentDirectionRule):
+
+    @property
+    def infos(self):
+        return InfoList(SimpleDescription('combined_gradients'), self.__combining_strategy.infos)
+
     def __init__(self, strategy: CombiningRule):
         self.__combining_strategy = strategy
 

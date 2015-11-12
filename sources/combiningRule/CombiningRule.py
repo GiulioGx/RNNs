@@ -1,18 +1,19 @@
 import abc
 
-from InfoProducer import InfoProducer
+from infos.SimpleInfoProducer import SimpleInfoProducer
+from infos.SymbolicInfoProducer import SymbolicInfoProducer
 
 __author__ = 'giulio'
 
 
-class CombiningRule(object):
+class CombiningRule(SimpleInfoProducer):
     __metaclass__ = abc.ABCMeta
 
     @abc.abstractmethod
     def compile(self, vector_list, n):
         """combine the vectors in 'vector_list' in some way"""
 
-    class Symbols(InfoProducer):
+    class Symbols(SymbolicInfoProducer):
         __metaclass__ = abc.ABCMeta
 
         @abc.abstractproperty

@@ -19,6 +19,23 @@ class InfoElement(Info):
     def value(self):
         """value"""
 
+class SimpleDescription(InfoElement):
+
+    def __init__(self, descr):
+        self.__descr = descr
+
+    @property
+    def value(self):
+        return self.__descr
+
+    @property
+    def name(self):
+        return 'description'
+
+    @property
+    def descr(self):
+        return self.__descr
+
 
 class NonPrintableInfoElement(InfoElement):
 

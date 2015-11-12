@@ -1,4 +1,7 @@
 import numpy
+
+from infos.InfoElement import SimpleDescription, PrintableInfoElement
+from infos.InfoList import InfoList
 from task.MarkerBasedTask import MarkerBasedTask
 from task.Task import Task
 from Configs import Configs
@@ -19,6 +22,7 @@ class AdditionTask(Task):
         # random binary inputs (channel 1)
         return self.__rng.uniform(size=(length, batch_size)).astype(Configs.floatType)
 
+    @staticmethod
     def output_fnc(data, outputs, p0: int, p1: int):
         m = data.shape[0]
         n = data.shape[2]
@@ -35,7 +39,7 @@ class AdditionTask(Task):
         return (((t[-1:, :, :] - y[-1:, :, :]) ** 2).sum(axis=0) > .04).mean()
 
     def __str__(self):
-        return 'addition task (min_length:{:d})'.format(self.__min_length)
+        return str(self.infos)
 
     @property
     def n_in(self):
@@ -44,6 +48,10 @@ class AdditionTask(Task):
     @property
     def n_out(self):
         return self.__n_out
+
+    @property
+    def infos(self):
+        return InfoList(SimpleDescription('add_task'), PrintableInfoElement('min_length', ':d', self.__min_length))
 
 
 if __name__ == '__main__':

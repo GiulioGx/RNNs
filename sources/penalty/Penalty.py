@@ -1,19 +1,20 @@
 import abc
 
-from InfoProducer import InfoProducer
 from Params import Params
+from infos.SimpleInfoProducer import SimpleInfoProducer
+from infos.SymbolicInfoProducer import SymbolicInfoProducer
 
 __author__ = 'giulio'
 
 
-class Penalty(object):
+class Penalty(SimpleInfoProducer):
     __metaclass__ = abc.ABCMeta
 
     @abc.abstractmethod
     def compile(self, params: Params, net_symbols):
         """returns the compiled version"""
         
-    class Symbols(InfoProducer):
+    class Symbols(SymbolicInfoProducer):
         __metaclass__ = abc.ABCMeta
 
         @abc.abstractmethod
