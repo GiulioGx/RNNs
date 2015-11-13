@@ -64,8 +64,18 @@
       <file leaf-file-name="RNN.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/RNN.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.53642386">
-              <caret line="380" column="17" selection-start-line="380" selection-start-column="17" selection-end-line="380" selection-end-column="17" />
+            <state vertical-scroll-proportion="0.65562916">
+              <caret line="387" column="55" selection-start-line="387" selection-start-column="55" selection-end-line="387" selection-end-column="55" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="plot_norms_interactive.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/plotUtils/plot_norms_interactive.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="5" column="56" selection-start-line="5" selection-start-column="56" selection-end-line="5" selection-end-column="56" />
               <folding />
             </state>
           </provider>
@@ -77,18 +87,6 @@
             <state vertical-scroll-proportion="0.0">
               <caret line="8" column="31" selection-start-line="8" selection-start-column="31" selection-end-line="8" selection-end-column="31" />
               <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="testExp.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/test/testExp.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="6" column="41" selection-start-line="6" selection-start-column="41" selection-end-line="6" selection-end-column="41" />
-              <folding>
-                <element signature="e#0#12#0" expanded="true" />
-              </folding>
             </state>
           </provider>
         </entry>
@@ -359,7 +357,7 @@
       <recent name="$PROJECT_DIR$" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.testExp">
+  <component name="RunManager" selected="Python.plot_norms_interactive">
     <configuration default="false" name="plot_norms_interactive" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -648,8 +646,8 @@
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Python.testExp" />
-        <item index="1" class="java.lang.String" itemvalue="Python.plot_norms_interactive" />
+        <item index="0" class="java.lang.String" itemvalue="Python.plot_norms_interactive" />
+        <item index="1" class="java.lang.String" itemvalue="Python.testExp" />
         <item index="2" class="java.lang.String" itemvalue="Python.testfix" />
         <item index="3" class="java.lang.String" itemvalue="Python.testFlatten" />
         <item index="4" class="java.lang.String" itemvalue="Python.loadModel" />
@@ -938,6 +936,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="6" column="10" selection-start-line="6" selection-start-column="4" selection-end-line="6" selection-end-column="14" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1025,14 +1024,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/plotUtils/plot_norms_interactive.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="5" column="56" selection-start-line="5" selection-start-column="56" selection-end-line="5" selection-end-column="56" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/combiningRule/SimplexCombination.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1085,6 +1076,14 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/plotUtils/plot_norms_interactive.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="5" column="56" selection-start-line="5" selection-start-column="56" selection-end-line="5" selection-end-column="56" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/combiningRule/LinearCombination.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1119,8 +1118,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/RNN.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.53642386">
-          <caret line="380" column="17" selection-start-line="380" selection-start-column="17" selection-end-line="380" selection-end-column="17" />
+        <state vertical-scroll-proportion="0.65562916">
+          <caret line="387" column="55" selection-start-line="387" selection-start-column="55" selection-end-line="387" selection-end-column="55" />
           <folding />
         </state>
       </provider>
