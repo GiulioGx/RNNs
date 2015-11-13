@@ -3,8 +3,9 @@ import matplotlib.pyplot as plt
 
 __author__ = 'giulio'
 
-modelFile = '/home/giulio/RNNs/models/model_cont.npz'
+modelFile = '/home/giulio/RNNs/models/addition/model.npz'
 #modelFile = '/home/giulio/model_octopus.npz'
+#modelFile = '/home/giulio/RNNs/models/old/model_add.npz'
 npz = numpy.load(modelFile)
 norms_dicts = npz['obj_separate_norms']
 check_freq = npz['settings_check_freq']
@@ -27,7 +28,9 @@ for i in reversed(x):
 
     j = 0
     for key in keys:
+        print(key)
         y = dict[key]
+        print(y)
         axarr[j].bar(range(len(y)), y)
         axarr[j].legend([key], shadow=True, fancybox=True)
         axarr[j].set_yscale('log')

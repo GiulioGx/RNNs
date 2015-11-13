@@ -1,11 +1,12 @@
 import abc
 import os
-
 import numpy
 import theano as T
 import theano.tensor as TT
+from numpy.testing.decorators import deprecated
 
 from ActivationFunction import Tanh
+
 from Configs import Configs
 from Params import Params
 from Statistics import Statistics
@@ -293,6 +294,7 @@ class RNN(object):
                     combination = self.__combination_symbols.combination
                     self.__combination = RNN.Params.from_flattened_tensor(combination, net)
 
+            #  FIXME delete me
             class SeparateCombination(Combination):
                 @property
                 def value(self):
@@ -374,7 +376,20 @@ class RNN(object):
                 gb_rec_norms = RNN.Params.Gradient.get_norms(self.__gb_rec_list, self.__l)
                 gb_out_norms = RNN.Params.Gradient.get_norms(self.__gb_out_list, self.__l)
 
+                # FIXME (add some option or control to do or not to do this op)
+                self.__gW_out_list = self._fix(self.__gW_out_list,  self.__l)
+                self.__gb_out_list = self._fix(self.__gb_out_list,  self.__l)
+
                 self.__info = [gW_rec_norms, gW_in_norms, gW_out_norms, gb_rec_norms, gb_out_norms]
+
+            def _fix(self, W_list, l):
+                """aggiusta le cose quando la loss è colcolata solo sull'ultimo step"""
+                values, _ = T.scan(lambda w: w, sequences=[],
+                                   outputs_info=[None],
+                                   non_sequences=[TT.as_tensor_variable(W_list)[l-1]],
+                                   name='fix_scan',
+                                   n_steps=l)
+                return values
 
             @staticmethod
             def get_norms(vec_list, n):

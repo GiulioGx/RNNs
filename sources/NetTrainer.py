@@ -114,7 +114,7 @@ class NetTrainer(object):
                                                 batch_time, eval_time)
                 logging.info(info)
                 stats.update(info, i, total_elapsed_time)
-                model_filename = self.__output_dir + '/model.npz'
+                model_filename = self.__output_dir + '/model'
                 net.save_model(model_filename, stats, self.__training_settings_info)
 
                 batch_start_time = time.time()
