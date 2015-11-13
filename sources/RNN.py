@@ -377,8 +377,8 @@ class RNN(object):
                 gb_out_norms = RNN.Params.Gradient.get_norms(self.__gb_out_list, self.__l)
 
                 # FIXME (add some option or control to do or not to do this op)
-                self.__gW_out_list = self._fix(self.__gW_out_list,  self.__l)
-                self.__gb_out_list = self._fix(self.__gb_out_list,  self.__l)
+                #self.__gW_out_list = self._fix(self.__gW_out_list,  self.__l)
+                #self.__gb_out_list = self._fix(self.__gb_out_list,  self.__l)
 
                 self.__info = [gW_rec_norms, gW_in_norms, gW_out_norms, gb_rec_norms, gb_out_norms]
 
