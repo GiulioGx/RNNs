@@ -8,7 +8,7 @@ from numpy.linalg import norm
 
 
 n_seq = 200
-p = 1000
+p = 100
 
 G = np.random.randn(n_seq, p)
 
@@ -20,7 +20,11 @@ t1 = time.time()
 
 u = np.ones((n_seq, 1))
 
-_, r = np.linalg.qr(G.T)
+_, r_ = np.linalg.qr(G.T)
+
+print(r_.shape)
+r = np.zeros((n_seq, n_seq))
+r[0:p, :] = r_
 
 x = li.solve_triangular(r.T, u)
 b = li.solve_triangular(r, x)

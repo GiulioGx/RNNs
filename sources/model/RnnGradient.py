@@ -171,14 +171,17 @@ class RnnGradient(SymbolicInfoProducer):
 
         def format_infos(self, infos_symbols):
             W_rec_infos, infos_symbols = self.__str_W_rec.format_infos(infos_symbols)
-            W_in_infos, infos_symbols = self.__str_W_in.format_infos(infos_symbols)
-            b_rec_infos, infos_symbols = self.__str_b_rec.format_infos(infos_symbols)
+            # W_in_infos, infos_symbols = self.__str_W_in.format_infos(infos_symbols)
+            # b_rec_infos, infos_symbols = self.__str_b_rec.format_infos(infos_symbols)
 
-            if W_rec_infos.length + W_in_infos.length + b_rec_infos.length != 0:
+            # if W_rec_infos.length + W_in_infos.length + b_rec_infos.length != 0:
+            #
+            #     info = InfoList(InfoGroup("W_rec", InfoList(W_rec_infos)),
+            #                     InfoGroup("W_in", InfoList(W_in_infos)),
+            #                     InfoGroup("b_rec", InfoList(b_rec_infos)))
+            if W_rec_infos.length != 0:
 
-                info = InfoList(InfoGroup("W_rec", InfoList(W_rec_infos)),
-                                InfoGroup("W_in", InfoList(W_in_infos)),
-                                InfoGroup("b_rec", InfoList(b_rec_infos)))
+                info = InfoList(InfoGroup("W_rec", InfoList(W_rec_infos)))
             else:
 
                 info = NullInfo()
@@ -188,19 +191,23 @@ class RnnGradient(SymbolicInfoProducer):
                      grad):
             self.__preserve_norm = True
 
-            self.__str_W_rec = strategy.compile(flatten_list_element(TT.as_tensor_variable(gW_rec_list), l), l)
+            self.__str_W_rec = strategy.compile(flatten_list_element(TT.as_tensor_variable(gW_rec_list)[1:l], l - 1),
+                                                l - 1)  # FIXME cambiare se hm1 diventa variablibe
             gW_rec_combinantion = self.__str_W_rec.combination * grad.value.W_rec.flatten().norm(2)
 
-            self.__str_W_in = strategy.compile(flatten_list_element(TT.as_tensor_variable(gW_in_list), l), l)
-            gW_in_combinantion = self.__str_W_in.combination * grad.value.W_in.flatten().norm(2)
+            # self.__str_W_in = strategy.compile(flatten_list_element(TT.as_tensor_variable(gW_in_list), l), l)
+            # gW_in_combinantion = self.__str_W_in.combination * grad.value.W_in.flatten().norm(2)
 
-            self.__str_b_rec = strategy.compile(flatten_list_element(TT.as_tensor_variable(gb_rec_list), l), l)
-            gb_rec_combinantion = self.__str_b_rec.combination * grad.value.b_rec.flatten().norm(2)
+            # self.__str_b_rec = strategy.compile(flatten_list_element(TT.as_tensor_variable(gb_rec_list), l), l)
+            # gb_rec_combinantion = self.__str_b_rec.combination * grad.value.b_rec.flatten().norm(2)
 
             gW_out_combinantion = TT.as_tensor_variable(gW_out_list)[l - 1]
             gb_out_combinantion = TT.as_tensor_variable(gb_out_list)[l - 1]
+            gb_rec_combinantion = TT.as_tensor_variable(gb_rec_list)[l - 1]
+            gW_in_combinantion = TT.as_tensor_variable(gW_in_list)[l - 1]
 
-            self.__info = self.__str_W_rec.infos + self.__str_W_in.infos + self.__str_b_rec.infos
+            self.__info = self.__str_W_rec.infos
+            # self.__info = self.__str_W_rec.infos + self.__str_W_in.infos + self.__str_b_rec.infos
 
             flattened = as_vector(gW_rec_combinantion, gW_in_combinantion, gW_out_combinantion, gb_rec_combinantion,
                                   gb_out_combinantion)

@@ -46,7 +46,7 @@ class EquiangularCombination(CombiningRule):
 
             # solve problem
             r = li.qr(G.T, mode='r')
-            # _, r = li.qr(G.T)
+            #_, r = li.qr(G.T, mode='complete')
 
             x = sli.solve(r.T, u)
             b = sli.solve(r, x)
