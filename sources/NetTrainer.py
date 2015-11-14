@@ -1,16 +1,18 @@
-import time
-import numpy
-from numpy.linalg import LinAlgError
-from infos.InfoGroup import InfoGroup
-from infos.InfoList import InfoList
-from infos.InfoElement import PrintableInfoElement
-from ObjectiveFunction import ObjectiveFunction
-from RNN import RNN
-from Statistics import Statistics
-from TrainingRule import TrainingRule
 import logging
 import os
+import time
+
+import numpy
 import theano as T
+from numpy.linalg import LinAlgError
+
+from ObjectiveFunction import ObjectiveFunction
+from Statistics import Statistics
+from TrainingRule import TrainingRule
+from infos.InfoElement import PrintableInfoElement
+from infos.InfoGroup import InfoGroup
+from infos.InfoList import InfoList
+from model.RNN import RNN
 
 __author__ = 'giulio'
 

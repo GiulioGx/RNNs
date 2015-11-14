@@ -1,11 +1,12 @@
 import numpy
 import theano as T
 from theano import tensor as TT
+
 from Configs import Configs
-from Params import Params
 from infos.InfoElement import PrintableInfoElement, SimpleDescription
 from infos.InfoGroup import InfoGroup
 from infos.InfoList import InfoList
+from model.Variables import Variables
 from penalty.Penalty import Penalty
 from penalty.utils import penalty_step
 from theanoUtils import norm
@@ -68,7 +69,7 @@ class FullPenalty(Penalty):
     def __init__(self):
         super().__init__()
 
-    def compile(self, params: Params, net_symbols):
+    def compile(self, params: Variables, net_symbols):
         return FullPenalty.Symbols(params, net_symbols)
 
     @property

@@ -1,9 +1,9 @@
-from Params import Params
 from combiningRule.LinearCombination import LinearCombinationRule
 from infos.InfoElement import PrintableInfoElement
 from infos.InfoGroup import InfoGroup
 from infos.InfoList import InfoList
 from infos.SymbolicInfoProducer import SymbolicInfoProducer
+from model.Variables import Variables
 from penalty.NullPenalty import NullPenalty
 from penalty.Penalty import Penalty
 
@@ -16,7 +16,7 @@ class ObjectiveFunction(object):
         self.__penalty = penalty
         self.__penalty_lambda = penalty_lambda
 
-    def compile(self, net, params: Params, u, t):
+    def compile(self, net, params: Variables, u, t):
         return ObjectiveFunction.Symbols(self, net, params, u, t)
 
     def loss(self, y, t):  # loss without penalty

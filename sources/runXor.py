@@ -1,24 +1,16 @@
 import theano
-from ActivationFunction import Tanh, Relu
-from combiningRule.EquiangularCombination import EquiangularCombination
-from combiningRule.NormalizedSum import NormalizedSum
-from combiningRule.SimpleSum import SimpleSum
-from combiningRule.SimplexCombination import SimplexCombination
-from descentDirectionRule.AntiGradient import AntiGradient
-from ObjectiveFunction import ObjectiveFunction
-from RNN import RNN
+
+from ActivationFunction import Relu
+from Configs import Configs
 from NetTrainer import NetTrainer
+from ObjectiveFunction import ObjectiveFunction
 from TrainingRule import TrainingRule
+from combiningRule.NormalizedSum import NormalizedSum
 from descentDirectionRule.CombinedGradients import CombinedGradients
 from initialization.GaussianInit import GaussianInit
-from initialization.UniformInit import UniformInit
 from initialization.ZeroInit import ZeroInit
-from learningRule.ArmijoStep import ArmijoStep
 from learningRule.ConstantNormalizedStep import ConstantNormalizedStep
-from learningRule.ConstantStep import ConstantStep
-from penalty.ConstantPenalty import ConstantPenalty
-from task.AdditionTask import AdditionTask
-from Configs import Configs
+from model.RNN import RNN
 from penalty.NullPenalty import NullPenalty
 from task.XorTask import XorTask
 

@@ -1,8 +1,9 @@
 import numpy
 from theano import tensor as TT
+
 from Configs import Configs
-from Params import Params
 from infos.Info import NullInfo
+from model.Variables import Variables
 from penalty.Penalty import Penalty
 
 __author__ = 'giulio'
@@ -32,7 +33,7 @@ class NullPenalty(Penalty):
     def __init__(self):
         super().__init__()
 
-    def compile(self, params: Params, net_symbols):
+    def compile(self, params: Variables, net_symbols):
         return NullPenalty.Symbols(params.W_rec)  # FIXME
 
     @property

@@ -1,4 +1,5 @@
 import theano.tensor as TT
+import theano as T
 
 __author__ = 'giulio'
 
@@ -54,4 +55,23 @@ def is_not_real(v):
 
 def normalize(vector, norm_type=2):
     vector_norm = vector.norm(norm_type)
-    return TT.switch(vector_norm <= 0, vector, vector/vector_norm)
+    return TT.switch(vector_norm <= 0, vector, vector / vector_norm)
+
+
+def get_norms(vec_list, n):
+    values, _ = T.scan(lambda x: x.norm(2), sequences=[TT.as_tensor_variable(vec_list)],
+                       outputs_info=[None],
+                       non_sequences=[],
+                       name='get_norms_scan',
+                       n_steps=n)
+
+    return values
+
+
+def flatten_list_element(list_of_tensor_variables, l):
+    values, _ = T.scan(as_vector, sequences=list_of_tensor_variables,
+                       outputs_info=[None],
+                       non_sequences=[],
+                       name='as_vector_combinations_scan',
+                       n_steps=l)
+    return values

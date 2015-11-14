@@ -1,8 +1,9 @@
 from theano import tensor as TT
-from Params import Params
+
 from infos.InfoElement import PrintableInfoElement, SimpleDescription
 from infos.InfoGroup import InfoGroup
 from infos.InfoList import InfoList
+from model.Variables import Variables
 from penalty.Penalty import Penalty
 from penalty.utils import deriv_a_T_wrt_a1
 from theanoUtils import norm
@@ -47,7 +48,7 @@ class ConstantPenalty(Penalty):
         def infos(self):
             return self.__infos
 
-    def compile(self, params: Params, net_symbols):
+    def compile(self, params: Variables, net_symbols):
         return ConstantPenalty.Symbols(params, net_symbols)
 
     @property

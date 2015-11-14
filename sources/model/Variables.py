@@ -3,7 +3,7 @@ import abc
 __author__ = 'giulio'
 
 
-class Params(object):
+class Variables(object):
     __metaclass__ = abc.ABCMeta
 
     @abc.abstractmethod
@@ -40,5 +40,9 @@ class Params(object):
         wrt the parameters this class represents"""
 
     @abc.abstractmethod
+    def net_output(self, u):
+        """returns the output of the network parametrized with the variables this class represents """
+
+    @abc.abstractmethod
     def update_dictionary(self, other):
-        """return the update dictionary for a theano function"""
+        """returns the update dictionary for a theano function"""

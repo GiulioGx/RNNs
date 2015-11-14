@@ -1,15 +1,11 @@
 from Configs import Configs
 from NetTrainer import NetTrainer
 from ObjectiveFunction import ObjectiveFunction
-from RNN import RNN
 from TrainingRule import TrainingRule
-from combiningRule.NormalizedSum import NormalizedSum
-from combiningRule.SimpleSum import SimpleSum
 from combiningRule.SimplexCombination import SimplexCombination
-from descentDirectionRule.AntiGradient import AntiGradient
 from descentDirectionRule.CombinedGradients import CombinedGradients
 from learningRule.ConstantNormalizedStep import ConstantNormalizedStep
-from learningRule.ConstantStep import ConstantStep
+from model.RNN import RNN
 from task.AdditionTask import AdditionTask
 
 loadFile = '/home/giulio/RNNs/models/model_add_p.npz'
