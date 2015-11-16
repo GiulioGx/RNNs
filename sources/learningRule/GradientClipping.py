@@ -49,4 +49,4 @@ class GradientClipping(LearningStepRule):
         return info
 
     def compile(self, net, obj_fnc, dir_symbols):
-        return ClippingGradient.Symbols(self, dir_symbols)
+        return GradientClipping.Symbols(self, dir_symbols)
