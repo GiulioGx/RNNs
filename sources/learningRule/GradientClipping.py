@@ -4,7 +4,7 @@ from Configs import Configs
 from descentDirectionRule.DescentDirectionRule import DescentDirectionRule
 from infos.InfoElement import PrintableInfoElement
 from infos.InfoList import InfoList
-from learningRule.LearningRule import LearningStepRule, Symbols
+from learningRule.LearningRule import LearningStepRule
 
 __author__ = 'giulio'
 
