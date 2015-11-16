@@ -14,10 +14,12 @@ class LearningStepRule(SimpleInfoProducer):
     def compile(self, net, obj_fnc, dir_symbols: DescentDirectionRule.Symbols):
         """return the compiled version"""
 
+    class Symbols(SymbolicInfoProducer):
+        __metaclass__ = abc.ABCMeta
 
-class LearningStepSymbols(SymbolicInfoProducer):
-    __metaclass__ = abc.ABCMeta
+        @abc.abstractmethod
+        def learning_rate(self):
+            """return a theano expression for the learning rate """
 
-    @abc.abstractmethod
-    def learning_rate(self):
-        """return a theano expression for the learning rate """
+
+

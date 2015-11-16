@@ -3,13 +3,13 @@ from theano import tensor as TT
 
 from Configs import Configs
 from infos.InfoElement import PrintableInfoElement
-from learningRule.LearningRule import LearningStepRule, LearningStepSymbols
+from learningRule.LearningRule import LearningStepRule
 
 __author__ = 'giulio'
 
 
 class ConstantNormalizedStep(LearningStepRule):
-    class Symbols(LearningStepSymbols):
+    class Symbols(LearningStepRule.Symbols):
         def __init__(self, rule, dir_symbols):
             self.__learning_rate = TT.alloc(numpy.array(rule.lr_value, dtype=Configs.floatType)) / dir_symbols.direction.norm()
 

@@ -5,13 +5,13 @@ from theano import tensor as TT
 from Configs import Configs
 from infos.InfoList import InfoList
 from infos.InfoElement import PrintableInfoElement, SimpleDescription
-from learningRule.LearningRule import LearningStepRule, LearningStepSymbols
+from learningRule.LearningRule import LearningStepRule, Symbols
 
 __author__ = 'giulio'
 
 
 class ArmijoStep(LearningStepRule):
-    class Symbols(LearningStepSymbols):
+    class Symbols(Symbols):
         def __init__(self, rule, net, obj_fnc, dir_symbols):
             net_symbols = net.symbols
             obj_symbols = obj_fnc.compile(net, net_symbols.current_params, net_symbols.u,

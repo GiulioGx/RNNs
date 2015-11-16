@@ -49,7 +49,9 @@ class RnnGradient(SymbolicInfoProducer):
 
         self.__info = [gW_rec_norms, gW_in_norms, gW_out_norms, gb_rec_norms, gb_out_norms]
 
-    def _fix(self, W_list, l):
+
+    @staticmethod
+    def fix(W_list, l):
         """aggiusta le cose quando la loss è colcolata solo sull'ultimo step"""
         values, _ = T.scan(lambda w: w, sequences=[],
                            outputs_info=[None],
@@ -118,6 +120,9 @@ class RnnGradient(SymbolicInfoProducer):
             #                    non_sequences=[],
             #                    name='as_vector_combinations_scan',
             #                    n_steps=l)
+
+            gW_out_list = RnnGradient.fix(gW_out_list, l)
+            gb_out_list = RnnGradient.fix(gb_out_list, l)
 
             values = flatten_list_element([TT.as_tensor_variable(gW_rec_list),
                                            TT.as_tensor_variable(gW_in_list),
