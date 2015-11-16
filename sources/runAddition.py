@@ -17,6 +17,7 @@ from learningRule.ConstantStep import ConstantStep
 from model.RNN import RNN
 from penalty.NullPenalty import NullPenalty
 from task.AdditionTask import AdditionTask
+from learningRule.GradientClipping import GradientClipping
 
 __author__ = 'giulio'
 
@@ -66,7 +67,7 @@ dir_rule = CombinedGradients(combining_rule)
 # learning step rule
 # lr_rule = WRecNormalizedStep(0.0001) #0.01
 #lr_rule = ConstantStep(0.01)  # 0.01
-lr_rule = ConstantNormalizedStep(0.001)  # 0.01
+lr_rule = GradientClipping(0.01)  # 0.01
 # lr_rule = ArmijoStep(alpha=0.1, beta=0.1, init_step=1, max_steps=50)
 
 obj_fnc = ObjectiveFunction(loss_fnc, penalty, 0.1)

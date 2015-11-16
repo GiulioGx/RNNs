@@ -124,7 +124,12 @@ class RnnGradient(SymbolicInfoProducer):
             gW_out_list = RnnGradient.fix(gW_out_list, l)
             gb_out_list = RnnGradient.fix(gb_out_list, l)
 
-            values = flatten_list_element([TT.as_tensor_variable(gW_rec_list),
+            #fix per w_rec 0
+
+            W_rec_tensor = TT.as_tensor_variable(gW_rec_list)
+            #W_rec_tensor = TT.inc_subtensor(W_rec_tensor[0], W_rec_tensor.mean(axis=0))
+
+            values = flatten_list_element([W_rec_tensor,
                                            TT.as_tensor_variable(gW_in_list),
                                            TT.as_tensor_variable(gW_out_list),
                                            TT.as_tensor_variable(gb_rec_list),

@@ -9,7 +9,7 @@ from learningRule.LearningRule import LearningStepRule, Symbols
 __author__ = 'giulio'
 
 
-class ClippingGradient(LearningStepRule):
+class GradientClipping(LearningStepRule):
     class Symbols(LearningStepRule.Symbols):
         def __init__(self, rule, dir_symbols: DescentDirectionRule.Symbols):
             norm = dir_symbols.direction.norm()
