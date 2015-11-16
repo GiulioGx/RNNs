@@ -85,7 +85,7 @@ class RnnGradient(SymbolicInfoProducer):
             return RnnGradient.ToghterCombination(self.__gW_rec_list, self.__gW_in_list,
                                                   self.__gW_out_list, self.__gb_rec_list,
                                                   self.__gb_out_list, self.__l, self.__net,
-                                                  strategy)
+                                                  strategy, self)
         elif self.type == 'separate':
             return RnnGradient.SeparateCombination(self.__gW_rec_list, self.__gW_in_list,
                                                    self.__gW_out_list, self.__gb_rec_list,
@@ -110,7 +110,7 @@ class RnnGradient(SymbolicInfoProducer):
         def format_infos(self, infos):
             return self.__combination_symbols.format_infos(infos)
 
-        def __init__(self, gW_rec_list, gW_in_list, gW_out_list, gb_rec_list, gb_out_list, l, net, strategy):
+        def __init__(self, gW_rec_list, gW_in_list, gW_out_list, gb_rec_list, gb_out_list, l, net, strategy, grad):
             # values, _ = T.scan(as_vector, sequences=[TT.as_tensor_variable(gW_rec_list),
             #                                          TT.as_tensor_variable(gW_in_list),
             #                                          TT.as_tensor_variable(gW_out_list),
@@ -137,7 +137,7 @@ class RnnGradient(SymbolicInfoProducer):
 
             self.__combination_symbols = strategy.compile(values, l)
             self.__infos = self.__combination_symbols.infos
-            combination = self.__combination_symbols.combination
+            combination = self.__combination_symbols.combination * grad.value.norm()
             self.__combination = model.RnnVars.from_flattened_tensor(combination, net)
 
     class SeparateCombination(Combination):
