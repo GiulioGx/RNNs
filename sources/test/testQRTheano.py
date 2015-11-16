@@ -13,6 +13,8 @@ G =  H / H.norm(2, axis=1).reshape((H.shape[0], 1))
 u = TT.ones((G.shape[0], 1))
 
 r = li.qr(G.T, mode='r')
+
+
 x = sli.solve(r.T, u)
 b = sli.solve(r, x)
 c = 1./TT.sqrt(TT.sum(b))
@@ -22,8 +24,8 @@ equi = T.function([H], [c, d, G])
 
 #####
 
-n_seq = 200
-p = 1000
+n_seq = 154
+p = 2500
 
 G_real = np.random.randn(n_seq, p).astype(dtype='float32')
 

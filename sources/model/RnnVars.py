@@ -2,7 +2,7 @@ import theano.tensor as TT
 
 from model.RnnGradient import RnnGradient
 from model.Variables import Variables
-from theanoUtils import norm, as_vector
+from theanoUtils import norm, as_vector, norm2
 
 __author__ = 'giulio'
 
@@ -50,6 +50,12 @@ class RnnVars(Variables):
         v2 = as_vector(*other.__as_tensor_list())
         return TT.dot(v1.dimshuffle(1, 0), v2)
 
+    def cos(self, other):
+        return self.dot(other)/(self.norm() * other.norm())
+
+    def norm(self):
+        return norm2(self.__W_rec, self.__W_in, self.__W_out, self.__b_rec, self.__b_out)
+
     def __add__(self, other):
         if not isinstance(other, RnnVars):
             raise TypeError('cannot add an object of type' + type(self) + 'with an object of type ' + type(other))
@@ -74,9 +80,6 @@ class RnnVars(Variables):
 
     def __neg__(self):
         return self * (-1)
-
-    def norm(self):
-        return norm(self.__W_rec, self.__W_in, self.__W_out, self.__b_rec, self.__b_out)
 
     def gradient(self, loss_fnc, u, t):
         return RnnGradient(self, loss_fnc, u, t)

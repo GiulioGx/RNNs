@@ -6,6 +6,8 @@ from NetTrainer import NetTrainer
 from ObjectiveFunction import ObjectiveFunction
 from TrainingRule import TrainingRule
 from combiningRule.EquiangularCombination import EquiangularCombination
+from combiningRule.NormalizedSum import NormalizedSum
+from combiningRule.SimpleSum import SimpleSum
 from combiningRule.SimplexCombination import SimplexCombination
 from descentDirectionRule.CombinedGradients import CombinedGradients
 from initialization.GaussianInit import GaussianInit
@@ -33,7 +35,7 @@ print(separator)
 # setup
 seed = 13
 task = AdditionTask(144, seed)
-n_hidden = 50
+n_hidden = 70
 activation_fnc = Tanh()
 output_fnc = RNN.linear_fnc
 loss_fnc = NetTrainer.squared_error
@@ -57,14 +59,14 @@ penalty = NullPenalty()
 # dir_rule = FrozenGradient(penalty)
 # dir_rule = SepareteGradient()
 
-combining_rule = SimplexCombination()
-#combining_rule = EquiangularCombination()
+#combining_rule = SimplexCombination()
+combining_rule = SimpleSum()
 dir_rule = CombinedGradients(combining_rule)
 
 # learning step rule
-#lr_rule = WRecNormalizedStep(0.0001) #0.01
+# lr_rule = WRecNormalizedStep(0.0001) #0.01
 #lr_rule = ConstantStep(0.01)  # 0.01
-lr_rule = ConstantNormalizedStep(0.001)  # 0.01
+lr_rule = ConstantNormalizedStep(0.004)  # 0.01
 # lr_rule = ArmijoStep(alpha=0.1, beta=0.1, init_step=1, max_steps=50)
 
 obj_fnc = ObjectiveFunction(loss_fnc, penalty, 0.1)

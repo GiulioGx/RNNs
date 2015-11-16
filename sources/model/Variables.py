@@ -31,6 +31,10 @@ class Variables(object):
         """euclidean norm"""
 
     @abc.abstractmethod
+    def cos(self, other):
+        """returns the cosine between this 'Variable' object (seen as a vector) and 'other' """
+
+    @abc.abstractmethod
     def failsafe_grad(self, loss_fnc, u, t):
         """return the gradient of the function fnc wrt the parameters this class represents"""
 

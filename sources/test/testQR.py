@@ -7,8 +7,8 @@ from numpy.linalg import norm
 
 
 
-n_seq = 200
-p = 100
+n_seq = 10
+p = 300
 
 G = np.random.randn(n_seq, p)
 

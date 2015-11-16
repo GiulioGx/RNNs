@@ -8,7 +8,6 @@ __author__ = 'giulio'
 
 
 class CombinedGradients(DescentDirectionRule):
-
     @property
     def infos(self):
         return InfoList(SimpleDescription('combined_gradients'), self.__combining_strategy.infos)
@@ -26,13 +25,12 @@ class CombinedGradients(DescentDirectionRule):
     class Symbols(DescentDirectionRule.Symbols):
         def __init__(self, rule, net_symbols, obj_symbols: ObjectiveFunction.Symbols):
             self.__combined_grad_symbols = obj_symbols.grad_combination(rule.combining_strategy)
-            self.__direction = -self.__combined_grad_symbols.value
-            grad_dot = self.__direction.dot(obj_symbols.grad)
+            self.__direction = - self.__combined_grad_symbols.value
 
             diff_norm = (-obj_symbols.grad - self.__direction).norm()
 
-            self.__infos = self.__combined_grad_symbols.infos + [self.__direction.norm(), grad_dot / (
-                self.__direction.norm() * obj_symbols.grad.norm()),
+            self.__infos = self.__combined_grad_symbols.infos + [self.__direction.norm(),
+                                                                 self.__direction.cos(obj_symbols.grad),
                                                                  diff_norm]
 
         @property
@@ -50,4 +48,4 @@ class CombinedGradients(DescentDirectionRule):
             norm_diff_info = PrintableInfoElement('@@', '', infos_symbols[2].item())
             info = InfoList(combining_info, dir_norm_info, dot_info, norm_diff_info)
 
-            return info, infos_symbols[info.length:len(infos_symbols)]
+            return info, infos_symbols[3:len(infos_symbols)]

@@ -2,6 +2,8 @@
 import theano.tensor as TT
 import theano.tensor.nlinalg as li
 import theano.tensor.slinalg as sli
+
+from Configs import Configs
 from combiningRule.CombiningRule import CombiningRule
 from infos.InfoElement import PrintableInfoElement, SimpleDescription
 from infos.InfoList import InfoList

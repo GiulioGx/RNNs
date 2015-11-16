@@ -11,6 +11,10 @@ def as_vector(*tensor_list):  # FIXME avoid for loops use scan
     return TT.concatenate(l)
 
 
+def norm2(*tensor_list):
+    return as_vector(*tensor_list).norm(2)
+
+
 def norm(*tensor_list):  # FIXME avoid for loops use scan
     squared_norm = TT.alloc(0.)
 
@@ -42,7 +46,6 @@ def get_dir_between_2_dirs(c1, c2, cos):
 
     alpha = TT.switch(a1 > a2, a1, a2)
 
-    # descend dir candidate
     mid_dir = c1 + alpha * c2
     mid_dir = mid_dir / norm(mid_dir)
 
