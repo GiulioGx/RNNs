@@ -35,7 +35,7 @@ print(separator)
 # setup
 seed = 13
 task = AdditionTask(144, seed)
-n_hidden = 70
+n_hidden = 50
 activation_fnc = Tanh()
 output_fnc = RNN.linear_fnc
 loss_fnc = NetTrainer.squared_error
@@ -66,7 +66,7 @@ dir_rule = CombinedGradients(combining_rule)
 # learning step rule
 # lr_rule = WRecNormalizedStep(0.0001) #0.01
 #lr_rule = ConstantStep(0.01)  # 0.01
-lr_rule = ConstantNormalizedStep(0.004)  # 0.01
+lr_rule = ConstantNormalizedStep(0.001)  # 0.01
 # lr_rule = ArmijoStep(alpha=0.1, beta=0.1, init_step=1, max_steps=50)
 
 obj_fnc = ObjectiveFunction(loss_fnc, penalty, 0.1)
