@@ -13,9 +13,9 @@ class GradientClipping(LearningStepRule):
     class Symbols(LearningStepRule.Symbols):
         def __init__(self, rule, dir_symbols: DescentDirectionRule.Symbols):
             norm = dir_symbols.direction.norm()
-            TT.switch(norm > rule.clip_thr, rule.clip_thr / norm, rule.lr_value)
+            self.__learning_rate = TT.switch(norm > rule.clip_thr, rule.clip_thr / norm, rule.lr_value)
 
-            self.__learning_rate = TT.alloc(numpy.array(rule.lr_value, dtype=Configs.floatType))
+             #= TT.alloc(numpy.array(rule.lr_value, dtype=Configs.floatType))
 
         @property
         def learning_rate(self):
