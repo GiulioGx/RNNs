@@ -21,10 +21,10 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="RnnGradient.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="RnnGradient.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/model/RnnGradient.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="3.7794561">
+            <state vertical-scroll-proportion="0.0">
               <caret line="139" column="83" selection-start-line="139" selection-start-column="83" selection-end-line="139" selection-end-column="83" />
               <folding>
                 <element signature="e#0#27#0" expanded="true" />
@@ -91,11 +91,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="runAddition.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="runAddition.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/runAddition.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="69" column="40" selection-start-line="69" selection-start-column="40" selection-end-line="69" selection-end-column="40" />
+            <state vertical-scroll-proportion="0.6465257">
+              <caret line="69" column="55" selection-start-line="69" selection-start-column="55" selection-end-line="69" selection-end-column="55" />
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
               </folding>
@@ -175,9 +175,9 @@
         <option value="$PROJECT_DIR$/learningRule/ConstantStep.py" />
         <option value="$PROJECT_DIR$/test/testAx.py" />
         <option value="$PROJECT_DIR$/test/testQRTheano.py" />
-        <option value="$PROJECT_DIR$/runAddition.py" />
         <option value="$PROJECT_DIR$/learningRule/GradientClipping.py" />
         <option value="$PROJECT_DIR$/model/RnnGradient.py" />
+        <option value="$PROJECT_DIR$/runAddition.py" />
       </list>
     </option>
   </component>
@@ -1116,12 +1116,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/runAddition.py">
+    <entry file="file://$PROJECT_DIR$/model/RnnGradient.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="69" column="40" selection-start-line="69" selection-start-column="40" selection-end-line="69" selection-end-column="40" />
+          <caret line="139" column="83" selection-start-line="139" selection-start-column="83" selection-end-line="139" selection-end-column="83" />
           <folding>
-            <element signature="e#0#13#0" expanded="true" />
+            <element signature="e#0#27#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1136,12 +1136,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/model/RnnGradient.py">
+    <entry file="file://$PROJECT_DIR$/runAddition.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="3.7794561">
-          <caret line="139" column="83" selection-start-line="139" selection-start-column="83" selection-end-line="139" selection-end-column="83" />
+        <state vertical-scroll-proportion="0.6465257">
+          <caret line="69" column="55" selection-start-line="69" selection-start-column="55" selection-end-line="69" selection-end-column="55" />
           <folding>
-            <element signature="e#0#27#0" expanded="true" />
+            <element signature="e#0#13#0" expanded="true" />
           </folding>
         </state>
       </provider>
