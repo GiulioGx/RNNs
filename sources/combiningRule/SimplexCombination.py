@@ -23,6 +23,7 @@ class SimplexCombination(LinearCombinationRule):
 
     def normalize_step(self, grads_combinantion, norms):
         return normalize(grads_combinantion)
+        #return grads_combinantion
 
     @property
     def infos(self):

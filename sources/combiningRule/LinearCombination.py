@@ -19,7 +19,7 @@ class LinearCombinationRule(CombiningRule):
 
         @property
         def infos(self):
-            return []
+            return self.__infos
 
         def format_infos(self, infos):
             return NullInfo(), infos
@@ -29,7 +29,11 @@ class LinearCombinationRule(CombiningRule):
             return self.__grads_combinantions
 
         def __init__(self, rule, vector_list, n):
+
+            self.__infos = []
             coefficients = rule.get_linear_coefficients(vector_list, n)
+
+            self.__infos = [coefficients]
 
             values, _ = T.scan(LinearCombinationRule.step,
                                sequences=[TT.unbroadcast(TT.as_tensor_variable(vector_list), 1),

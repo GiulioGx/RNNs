@@ -55,7 +55,7 @@ class RnnGradient(SymbolicInfoProducer):
         """aggiusta le cose quando la loss è colcolata solo sull'ultimo step"""
         values, _ = T.scan(lambda w: w, sequences=[],
                            outputs_info=[None],
-                           non_sequences=[TT.as_tensor_variable(W_list)[l - 1] / TT.cast(l, Configs.floatType)],
+                           non_sequences=[TT.as_tensor_variable(W_list)[l - 1]], #/ TT.cast(l, Configs.floatType)],
                            name='fix_scan',
                            n_steps=l)
         return values
