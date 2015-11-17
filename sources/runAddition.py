@@ -60,8 +60,8 @@ penalty = NullPenalty()
 # dir_rule = FrozenGradient(penalty)
 # dir_rule = SepareteGradient()
 
-combining_rule = SimplexCombination()
-#combining_rule = EquiangularCombination()
+#combining_rule = SimplexCombination()
+combining_rule = NormalizedSum()
 dir_rule = CombinedGradients(combining_rule)
 
 # learning step rule

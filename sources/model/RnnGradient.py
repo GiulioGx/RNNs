@@ -18,7 +18,7 @@ class RnnGradient(SymbolicInfoProducer):
     def __init__(self, params, loss_fnc, u, t):
 
         self.preserve_norms = True # FIXME
-        self.type = 'togheter'
+        self.type = 'separate'
         self.__net = params.net
 
         y, _, W_rec_fixes, W_in_fixes, W_out_fixes, b_rec_fixes, b_out_fixes = params.net.experimental.net_output(
@@ -125,10 +125,9 @@ class RnnGradient(SymbolicInfoProducer):
             gW_out_list = RnnGradient.fix(gW_out_list, l)
             gb_out_list = RnnGradient.fix(gb_out_list, l)
 
-            #fix per w_rec 0
-
+            # fix per w_rec 0
             W_rec_tensor = TT.as_tensor_variable(gW_rec_list)
-            #W_rec_tensor = TT.inc_subtensor(W_rec_tensor[0], W_rec_tensor.mean(axis=0))
+            W_rec_tensor = TT.inc_subtensor(W_rec_tensor[0], W_rec_tensor.mean(axis=0))
 
             values = flatten_list_element([W_rec_tensor,
                                            TT.as_tensor_variable(gW_in_list),
@@ -200,7 +199,6 @@ class RnnGradient(SymbolicInfoProducer):
 
         def __init__(self, gW_rec_list, gW_in_list, gW_out_list, gb_rec_list, gb_out_list, l, net, strategy,
                      grad):
-            self.__preserve_norm = True
 
             self.__str_W_rec = strategy.compile(flatten_list_element(TT.as_tensor_variable(gW_rec_list)[1:l], l - 1),
                                                 l - 1)  # FIXME cambiare se hm1 diventa variablibe
@@ -213,8 +211,8 @@ class RnnGradient(SymbolicInfoProducer):
             # gb_rec_combinantion = self.__str_b_rec.combination * grad.value.b_rec.flatten().norm(2)
 
             #gW_rec_combinantion = grad.value.W_rec
-            gW_out_combinantion = TT.as_tensor_variable(gW_out_list)[l - 1]
-            gb_out_combinantion = TT.as_tensor_variable(gb_out_list)[l - 1]
+            gW_out_combinantion = grad.value.W_out
+            gb_out_combinantion = grad.value.b_out
             gb_rec_combinantion = grad.value.b_rec
             gW_in_combinantion = grad.value.W_in
 
