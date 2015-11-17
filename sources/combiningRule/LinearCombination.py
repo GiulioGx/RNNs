@@ -33,8 +33,6 @@ class LinearCombinationRule(CombiningRule):
             self.__infos = []
             coefficients = rule.get_linear_coefficients(vector_list, n)
 
-            self.__infos = [coefficients]
-
             values, _ = T.scan(LinearCombinationRule.step,
                                sequences=[TT.unbroadcast(TT.as_tensor_variable(vector_list), 1),
                                           coefficients],

@@ -17,6 +17,7 @@ __author__ = 'giulio'
 class RnnGradient(SymbolicInfoProducer):
     def __init__(self, params, loss_fnc, u, t):
 
+        self.preserve_norms = True # FIXME
         self.type = 'togheter'
         self.__net = params.net
 
@@ -139,6 +140,9 @@ class RnnGradient(SymbolicInfoProducer):
             self.__infos = self.__combination_symbols.infos
             combination = self.__combination_symbols.combination * grad.value.norm()
             self.__combination = model.RnnVars.from_flattened_tensor(combination, net)
+
+            if grad.preserve_norms:
+                self.__combination = self.__combination.scale_norms_as(grad.value)
 
     class SeparateCombination(Combination):
         @property

@@ -1,5 +1,4 @@
 import theano.tensor as TT
-
 from model.RnnGradient import RnnGradient
 from model.Variables import Variables
 from theanoUtils import norm, as_vector, norm2
@@ -51,10 +50,19 @@ class RnnVars(Variables):
         return TT.dot(v1.dimshuffle(1, 0), v2)
 
     def cos(self, other):
-        return self.dot(other)/(self.norm() * other.norm())
+        return self.dot(other) / (self.norm() * other.norm())
 
     def norm(self):
         return norm2(self.__W_rec, self.__W_in, self.__W_out, self.__b_rec, self.__b_out)
+
+    def scale_norms_as(self, other):
+        if not isinstance(other, RnnVars):
+            raise TypeError('cannot perform this action with an object of type ' + type(other))
+        return RnnVars(self.__net, self.__W_rec / norm(self.__W_rec) * norm(other.W_rec),
+                       self.__W_in / norm(self.__W_in) * norm(other.W_in),
+                       self.__W_out / norm(self.__W_out) * norm(other.W_out)
+                       , self.__b_rec / norm(self.__b_rec) * norm(other.b_rec),
+                       self.__b_out / norm(self.__b_out) * norm(other.b_out))
 
     def __add__(self, other):
         if not isinstance(other, RnnVars):
