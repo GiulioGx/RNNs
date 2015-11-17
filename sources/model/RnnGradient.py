@@ -17,8 +17,8 @@ __author__ = 'giulio'
 class RnnGradient(SymbolicInfoProducer):
     def __init__(self, params, loss_fnc, u, t):
 
-        self.preserve_norms = True # FIXME
-        self.type = 'separate'
+        self.preserve_norms = True  # FIXME
+        self.type = 'recurrent'
         self.__net = params.net
 
         y, _, W_rec_fixes, W_in_fixes, W_out_fixes, b_rec_fixes, b_out_fixes = params.net.experimental.net_output(
@@ -50,13 +50,12 @@ class RnnGradient(SymbolicInfoProducer):
 
         self.__info = [gW_rec_norms, gW_in_norms, gW_out_norms, gb_rec_norms, gb_out_norms]
 
-
     @staticmethod
     def fix(W_list, l):
         """aggiusta le cose quando la loss è colcolata solo sull'ultimo step"""
         values, _ = T.scan(lambda w: w, sequences=[],
                            outputs_info=[None],
-                           non_sequences=[TT.as_tensor_variable(W_list)[l - 1]], #/ TT.cast(l, Configs.floatType)],
+                           non_sequences=[TT.as_tensor_variable(W_list)[l - 1]],  # / TT.cast(l, Configs.floatType)],
                            name='fix_scan',
                            n_steps=l)
         return values
@@ -97,6 +96,11 @@ class RnnGradient(SymbolicInfoProducer):
                                                self.__gW_out_list, self.__gb_rec_list,
                                                self.__gb_out_list, self.__l, self.__net,
                                                strategy, self)
+        elif self.type == 'recurrent':
+            return RnnGradient.RecurrentCombination(self.__gW_rec_list, self.__gW_in_list,
+                                                    self.__gW_out_list, self.__gb_rec_list,
+                                                    self.__gb_out_list, self.__l, self.__net,
+                                                    strategy, self)
 
     class ToghterCombination(Combination):
 
@@ -192,14 +196,13 @@ class RnnGradient(SymbolicInfoProducer):
             #                     InfoGroup("b_rec", InfoList(b_rec_infos)))
 
             rec_info = PrintableInfoElement('w_rec_dot', ':1.3f', infos_symbols[0].item())
-            #if W_rec_infos.length != 0:
+            # if W_rec_infos.length != 0:
             info = InfoList(InfoGroup("W_rec", InfoList(W_rec_infos)), rec_info)
 
             return info, infos_symbols[1: len(infos_symbols)]
 
         def __init__(self, gW_rec_list, gW_in_list, gW_out_list, gb_rec_list, gb_out_list, l, net, strategy,
                      grad):
-
             self.__str_W_rec = strategy.compile(flatten_list_element(TT.as_tensor_variable(gW_rec_list)[1:l], l - 1),
                                                 l - 1)  # FIXME cambiare se hm1 diventa variablibe
             gW_rec_combinantion = self.__str_W_rec.combination * grad.value.W_rec.flatten().norm(2)
@@ -210,7 +213,7 @@ class RnnGradient(SymbolicInfoProducer):
             # self.__str_b_rec = strategy.compile(flatten_list_element(TT.as_tensor_variable(gb_rec_list), l), l)
             # gb_rec_combinantion = self.__str_b_rec.combination * grad.value.b_rec.flatten().norm(2)
 
-            #gW_rec_combinantion = grad.value.W_rec
+            # gW_rec_combinantion = grad.value.W_rec
             gW_out_combinantion = grad.value.W_out
             gb_out_combinantion = grad.value.b_out
             gb_rec_combinantion = grad.value.b_rec
@@ -223,4 +226,80 @@ class RnnGradient(SymbolicInfoProducer):
 
             flattened = as_vector(gW_rec_combinantion, gW_in_combinantion, gW_out_combinantion, gb_rec_combinantion,
                                   gb_out_combinantion)
+            self.__combination = model.RnnVars.from_flattened_tensor(flattened, net)
+
+    class RecurrentCombination(Combination):  # FIXME come la merda
+        @property
+        def value(self):
+            return self.__combination
+
+        @property
+        def infos(self):
+            return self.__info
+
+        def format_infos(self, infos_symbols):
+            str_infos, infos_symbols = self.__combination_symbols.format_infos(infos_symbols)
+            # W_in_infos, infos_symbols = self.__str_W_in.format_infos(infos_symbols)
+            # b_rec_infos, infos_symbols = self.__str_b_rec.format_infos(infos_symbols)
+
+            # if W_rec_infos.length + W_in_infos.length + b_rec_infos.length != 0:
+            #
+            #     info = InfoList(InfoGroup("W_rec", InfoList(W_rec_infos)),
+            #                     InfoGroup("W_in", InfoList(W_in_infos)),
+            #                     InfoGroup("b_rec", InfoList(b_rec_infos)))
+
+            rec_info = PrintableInfoElement('w_rec_dot', ':1.3f', infos_symbols[0].item())
+            # if W_rec_infos.length != 0:
+            info = InfoList(InfoGroup("W_rec", InfoList(str_infos)), rec_info)
+
+            return info, infos_symbols[1: len(infos_symbols)]
+
+        def __init__(self, gW_rec_list, gW_in_list, gW_out_list, gb_rec_list, gb_out_list, l, net, strategy,
+                     grad):
+            W_rec_tensor = TT.as_tensor_variable(gW_rec_list)
+            # W_rec_tensor = TT.inc_subtensor(W_rec_tensor[0], W_rec_tensor.mean(axis=0)) #fix w_rec
+
+            values = flatten_list_element([W_rec_tensor,
+                                           TT.as_tensor_variable(gW_in_list),
+                                           TT.as_tensor_variable(gb_rec_list),
+                                           TT.as_tensor_variable(gW_out_list),
+                                           TT.as_tensor_variable(gb_out_list)], l)
+
+            self.__combination_symbols = strategy.compile(values, l)
+            combination = self.__combination_symbols.combination
+
+            # normalize combination
+            partial_norm = TT.sqrt((grad.value.W_rec ** 2).sum() + (grad.value.W_in ** 2).sum() +
+                                   (grad.value.b_rec ** 2).sum() + (grad.value.W_out ** 2).sum() + (grad.value.b_out**2).sum())
+            combination *= partial_norm
+
+            n1 = net.n_hidden ** 2
+            n2 = n1 + net.n_hidden * net.n_in
+            n3 = n2 + net.n_hidden
+            gW_rec_combination = combination[0:n1]
+            gW_rec_combination = gW_rec_combination.reshape((net.n_hidden, net.n_hidden))
+
+            gW_in_combination = combination[n1:n2]
+            gW_in_combination = gW_in_combination.reshape((net.n_hidden, net.n_in))
+
+            gb_rec_combinantion = combination[n2:n3]
+            gb_rec_combinantion = gb_rec_combinantion.reshape((net.n_hidden, 1))
+
+            n4 = n3 + net.n_hidden * net.n_out
+            gW_out_combination = combination[n3:n4]
+            gW_out_combination = gW_out_combination.reshape((net.n_out, net.n_hidden))
+
+            n5 = n4 + net.n_out
+            gb_out_combination = combination[n4:n5]
+            gb_out_combination = gb_out_combination.reshape((net.n_out, 1))
+
+            # gW_out_combination = grad.value.W_out
+            #gb_out_combination = grad.value.b_out
+
+            dot_w_rec = cos_between_dirs(gW_rec_combination, grad.value.W_rec)
+
+            self.__info = self.__combination_symbols.infos + [dot_w_rec]
+
+            flattened = as_vector(gW_rec_combination, gW_in_combination, gW_out_combination, gb_rec_combinantion,
+                                  gb_out_combination)
             self.__combination = model.RnnVars.from_flattened_tensor(flattened, net)
