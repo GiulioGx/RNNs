@@ -10,7 +10,7 @@ class AlternatingDirections(DescentDirectionRule):
     def infos(self):
         return InfoList(SimpleDescription('alternating_direction'), self.__main_strategy.infos)
 
-    def __init__(self, strategy):
+    def __init__(self, strategy: DescentDirectionRule):
         self.__main_strategy = strategy
 
     @property
