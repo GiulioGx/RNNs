@@ -56,7 +56,7 @@ class Variables(object):
         """return a tensor view of this object"""
 
     @abc.abstractmethod # XXX spostare in net???
-    def from_tensor(self, v, net):
+    def from_tensor(self, v):
         """returns a 'Variables' object of vector 'v' according to the network 'net' """
 
     @abc.abstractproperty

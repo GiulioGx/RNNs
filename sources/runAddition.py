@@ -39,7 +39,7 @@ print(separator)
 # setup
 seed = 13
 task = AdditionTask(144, seed)
-n_hidden = 50
+n_hidden = 100
 activation_fnc = Tanh()
 output_fnc = RNN.linear_fnc
 loss_fnc = NetTrainer.squared_error
@@ -69,7 +69,7 @@ combining_rule = EquiangularCombination()
 #combining_rule = MedianCombination()
 dir_rule = CombinedGradients(combining_rule)
 
-dir_rule = AlternatingDirections(dir_rule)
+#dir_rule = AlternatingDirections(dir_rule)
 
 # learning step rule
 # lr_rule = WRecNormalizedStep(0.0001) #0.01

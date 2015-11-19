@@ -19,7 +19,7 @@ class RnnVars(Variables):
         return self.__W_rec, self.__W_in, self.__W_out, self.__b_rec, self.__b_out
 
     def flatten(self):
-        return as_vector(self.__as_tensor_list())
+        return as_vector(*self.__as_tensor_list())
 
     @property
     def net(self):
@@ -28,8 +28,8 @@ class RnnVars(Variables):
     def as_tensor(self):
         return self.flatten()
 
-    def from_tensor(self, v, net):
-        return RnnVars.from_flattened_tensor(v, net)
+    def from_tensor(self, v):
+        return RnnVars.from_flattened_tensor(v, self.__net)
 
     @staticmethod
     def from_flattened_tensor(v, net):
