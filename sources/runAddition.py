@@ -11,6 +11,7 @@ from combiningRule.MedianCombination import MedianCombination
 from combiningRule.NormalizedSum import NormalizedSum
 from combiningRule.SimpleSum import SimpleSum
 from combiningRule.SimplexCombination import SimplexCombination
+from descentDirectionRule.AlternatingDirections import AlternatingDirections
 from descentDirectionRule.CombinedGradients import CombinedGradients
 from initialization.GaussianInit import GaussianInit
 from initialization.ZeroInit import ZeroInit
@@ -67,6 +68,8 @@ combining_rule = EquiangularCombination()
 #combining_rule = DropoutCombination(drop_rate=0.8)
 #combining_rule = MedianCombination()
 dir_rule = CombinedGradients(combining_rule)
+
+dir_rule = AlternatingDirections(dir_rule)
 
 # learning step rule
 # lr_rule = WRecNormalizedStep(0.0001) #0.01
