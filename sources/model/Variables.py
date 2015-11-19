@@ -50,3 +50,15 @@ class Variables(object):
     @abc.abstractmethod
     def update_dictionary(self, other):
         """returns the update dictionary for a theano function"""
+
+    @abc.abstractmethod
+    def as_tensor(self):
+        """return a tensor view of this object"""
+
+    @abc.abstractmethod # XXX spostare in net???
+    def from_tensor(self, v, net):
+        """returns a 'Variables' object of vector 'v' according to the network 'net' """
+
+    @abc.abstractproperty
+    def net(self):
+        """returns the networks this 'Variables' class parametrizes"""

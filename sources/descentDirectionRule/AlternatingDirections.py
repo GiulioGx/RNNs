@@ -26,8 +26,10 @@ class AlternatingDirections(DescentDirectionRule):
 
             gradient = obj_symbols.grad
 
-            self.__direction = TT.switch(gradient.norm() > 1, -gradient,
-                                         self.__compiled_strategy.direction)  # FOXME
+            v = TT.switch(gradient.norm() > 1, -gradient.as_tensor(),
+                                         self.__compiled_strategy.direction.as_tensor())  # FOXME
+
+            self.__direction = gradient.from_tensor(v)
 
             self.__infos = self.__compiled_strategy.infos
 
