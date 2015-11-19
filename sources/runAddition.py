@@ -18,6 +18,7 @@ from initialization.ZeroInit import ZeroInit
 from learningRule.ConstantNormalizedStep import ConstantNormalizedStep
 from learningRule.ConstantStep import ConstantStep
 from model.RNN import RNN
+from penalty.ConstantPenalty import ConstantPenalty
 from penalty.NullPenalty import NullPenalty
 from task.AdditionTask import AdditionTask
 from learningRule.GradientClipping import GradientClipping
@@ -53,8 +54,8 @@ init_strategies = {'W_rec': GaussianInit(0, std_dev), 'W_in': GaussianInit(0, st
 
 # penalty strategy
 # penalty = MeanPenalty()
-# penalty = ConstantPenalty()
-penalty = NullPenalty()
+penalty = ConstantPenalty()
+# penalty = NullPenalty()
 
 # direction strategy
 # dir_rule = AntiGradient()
@@ -64,9 +65,10 @@ penalty = NullPenalty()
 # dir_rule = SepareteGradient()
 
 #combining_rule = SimplexCombination()
-combining_rule = EquiangularCombination()
+#combining_rule = EquiangularCombination()
 #combining_rule = DropoutCombination(drop_rate=0.8)
 #combining_rule = MedianCombination()
+combining_rule = SimpleSum()
 dir_rule = CombinedGradients(combining_rule)
 
 #dir_rule = AlternatingDirections(dir_rule)
