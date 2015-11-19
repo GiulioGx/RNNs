@@ -5,7 +5,9 @@ from Configs import Configs
 from NetTrainer import NetTrainer
 from ObjectiveFunction import ObjectiveFunction
 from TrainingRule import TrainingRule
+from combiningRule.DropoutCombination import DropoutCombination
 from combiningRule.EquiangularCombination import EquiangularCombination
+from combiningRule.MedianCombination import MedianCombination
 from combiningRule.NormalizedSum import NormalizedSum
 from combiningRule.SimpleSum import SimpleSum
 from combiningRule.SimplexCombination import SimplexCombination
@@ -62,6 +64,8 @@ penalty = NullPenalty()
 
 #combining_rule = SimplexCombination()
 combining_rule = EquiangularCombination()
+#combining_rule = DropoutCombination(drop_rate=0.8)
+#combining_rule = MedianCombination()
 dir_rule = CombinedGradients(combining_rule)
 
 # learning step rule

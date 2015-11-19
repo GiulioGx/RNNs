@@ -18,7 +18,7 @@ class RnnGradient(SymbolicInfoProducer):
     def __init__(self, params, loss_fnc, u, t):
 
         self.preserve_norms = True  # FIXME
-        self.type = 'recurrent'
+        self.type = 'togheter'
         self.__net = params.net
 
         y, _, W_rec_fixes, W_in_fixes, W_out_fixes, b_rec_fixes, b_out_fixes = params.net.experimental.net_output(
@@ -126,12 +126,12 @@ class RnnGradient(SymbolicInfoProducer):
             #                    name='as_vector_combinations_scan',
             #                    n_steps=l)
 
-            gW_out_list = RnnGradient.fix(gW_out_list, l)
-            gb_out_list = RnnGradient.fix(gb_out_list, l)
+            #gW_out_list = RnnGradient.fix(gW_out_list, l)
+            #gb_out_list = RnnGradient.fix(gb_out_list, l)
 
             # fix per w_rec 0
             W_rec_tensor = TT.as_tensor_variable(gW_rec_list)
-            W_rec_tensor = TT.inc_subtensor(W_rec_tensor[0], W_rec_tensor.mean(axis=0))
+            #W_rec_tensor = TT.inc_subtensor(W_rec_tensor[0], W_rec_tensor.mean(axis=0))
 
             values = flatten_list_element([W_rec_tensor,
                                            TT.as_tensor_variable(gW_in_list),
@@ -141,11 +141,11 @@ class RnnGradient(SymbolicInfoProducer):
 
             self.__combination_symbols = strategy.compile(values, l)
             self.__infos = self.__combination_symbols.infos
-            combination = self.__combination_symbols.combination * grad.value.norm()
+            combination = self.__combination_symbols.combination
             self.__combination = model.RnnVars.from_flattened_tensor(combination, net)
 
             if grad.preserve_norms:
-                self.__combination = self.__combination.scale_norms_as(grad.value)
+                self.__combination *= grad.value.norm()
 
     class SeparateCombination(Combination):
         @property
@@ -261,16 +261,14 @@ class RnnGradient(SymbolicInfoProducer):
 
             values = flatten_list_element([W_rec_tensor,
                                            TT.as_tensor_variable(gW_in_list),
-                                           TT.as_tensor_variable(gb_rec_list),
-                                           TT.as_tensor_variable(gW_out_list),
-                                           TT.as_tensor_variable(gb_out_list)], l)
+                                           TT.as_tensor_variable(gb_rec_list)], l)
 
             self.__combination_symbols = strategy.compile(values, l)
             combination = self.__combination_symbols.combination
 
             # normalize combination
             partial_norm = TT.sqrt((grad.value.W_rec ** 2).sum() + (grad.value.W_in ** 2).sum() +
-                                   (grad.value.b_rec ** 2).sum() + (grad.value.W_out ** 2).sum() + (grad.value.b_out**2).sum())
+                                   (grad.value.b_rec ** 2).sum())  #+ (grad.value.W_out ** 2).sum() + (grad.value.b_out**2).sum())
             combination *= partial_norm
 
             n1 = net.n_hidden ** 2
@@ -285,16 +283,16 @@ class RnnGradient(SymbolicInfoProducer):
             gb_rec_combinantion = combination[n2:n3]
             gb_rec_combinantion = gb_rec_combinantion.reshape((net.n_hidden, 1))
 
-            n4 = n3 + net.n_hidden * net.n_out
-            gW_out_combination = combination[n3:n4]
-            gW_out_combination = gW_out_combination.reshape((net.n_out, net.n_hidden))
+            # n4 = n3 + net.n_hidden * net.n_out
+            # gW_out_combination = combination[n3:n4]
+            # gW_out_combination = gW_out_combination.reshape((net.n_out, net.n_hidden))
+            #
+            # n5 = n4 + net.n_out
+            # gb_out_combination = combination[n4:n5]
+            # gb_out_combination = gb_out_combination.reshape((net.n_out, 1))
 
-            n5 = n4 + net.n_out
-            gb_out_combination = combination[n4:n5]
-            gb_out_combination = gb_out_combination.reshape((net.n_out, 1))
-
-            # gW_out_combination = grad.value.W_out
-            #gb_out_combination = grad.value.b_out
+            gW_out_combination = grad.value.W_out
+            gb_out_combination = grad.value.b_out
 
             dot_w_rec = cos_between_dirs(gW_rec_combination, grad.value.W_rec)
 

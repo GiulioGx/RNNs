@@ -4,14 +4,7 @@ import theano.tensor as TT
 import theano as T
 
 srng = RandomStreams(seed=13)
-u = srng.uniform(low=0, high=1, size=(200, 1))
-
-# x = TT.log(1.-u)
-# r = x/x.sum()
-
-d = srng.normal(size=(200, 1))
-
-r = d/d.norm(2)
+u = srng.uniform(low=0, high=1, size=(5, 1))
 
 x = TT.exp(1.-u)
 r = x/x.sum()

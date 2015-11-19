@@ -24,7 +24,7 @@ class CombinedGradients(DescentDirectionRule):
 
     class Symbols(DescentDirectionRule.Symbols):
         def __init__(self, rule, net_symbols, obj_symbols: ObjectiveFunction.Symbols):
-            self.__combined_grad_symbols = obj_symbols.grad_combination(rule.combining_strategy)
+            self.__combined_grad_symbols = obj_symbols.grad_combination(rule.main_strategy)
             self.__direction = - self.__combined_grad_symbols.value
 
             diff_norm = (-obj_symbols.grad - self.__direction).norm()

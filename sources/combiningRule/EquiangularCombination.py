@@ -36,6 +36,10 @@ class EquiangularCombination(CombiningRule):
         def combination(self):
             return self.__combination
 
+        @property
+        def equi_cos(self):
+            return self.__equi_cos
+
         def __init__(self, vector_list, n):
 
             # build G matrix
@@ -47,14 +51,14 @@ class EquiangularCombination(CombiningRule):
             u = TT.ones((G.shape[0], 1))
 
             # solve problem
-            r = li.qr(G.T, mode='r')
+            r = li.qr(G.T, mode='r') # QR factorization
             #_, r = li.qr(G.T, mode='complete')
 
             x = sli.solve(r.T, u)
             b = sli.solve(r, x)
-            c = 1./TT.sqrt(TT.sum(b))
-            lambda_ = (-c**2) * b
-            d = - TT.dot(G.T, lambda_)/c
+            self.__equi_cos = 1./TT.sqrt(TT.sum(b))
+            lambda_ = (-self.__equi_cos**2) * b
+            d = - TT.dot(G.T, lambda_)/self.__equi_cos
 
             self.__combination = d
-            self.__info = [c, G.shape]
+            self.__info = [self.__equi_cos, G.shape]

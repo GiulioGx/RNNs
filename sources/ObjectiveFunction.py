@@ -72,7 +72,7 @@ class ObjectiveFunction(object):
             separate_info, infos_symbols = self.__grad_symbols.format_infos(infos_symbols)
 
             loss_value_info = PrintableInfoElement('value', ':07.3f', infos_symbols[0].item())
-            loss_grad_info = PrintableInfoElement('value', ':07.3f', infos_symbols[1].item())
+            loss_grad_info = PrintableInfoElement('grad', ':07.3f', infos_symbols[1].item())
 
             loss_info = InfoGroup('loss', InfoList(loss_value_info, loss_grad_info))
             obj_info = InfoGroup('obj', InfoList(loss_info, penalty_info, separate_info))

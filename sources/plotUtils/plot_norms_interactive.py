@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 __author__ = 'giulio'
 
-modelFile = '/home/giulio/RNNs/models/addition/model.npz'
+modelFile = '/home/giulio/RNNs/models/xor/model.npz'
 #modelFile = '/home/giulio/model_octopus.npz'
 #modelFile = '/home/giulio/RNNs/models/old/model_add.npz'
 npz = numpy.load(modelFile)
