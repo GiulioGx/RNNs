@@ -9,12 +9,15 @@ u = srng.uniform(low=0, high=1, size=(5, 1))
 x = TT.exp(1.-u)
 r = x/x.sum()
 
-f = T.function([], r)
+u/u.sum()
+
+f = T.function([], [r, u])
 
 
 for i in range(5):
-    a = f()
+    a, u = f()
     print(a)
+    print('u', u)
     #print('sum: {}'.format(sum(a)))
     if sum(a) < 0.9:
         print('MERDA')

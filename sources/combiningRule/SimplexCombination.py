@@ -14,8 +14,9 @@ class SimplexCombination(LinearCombinationRule):
     def get_linear_coefficients(self, vector_list, n):
 
         u = self.__srng.uniform(low=0, high=1, size=(n, 1))
-        x = TT.exp(1.-u)
-        r = x/x.sum()
+        # x = TT.exp(1.-u)
+        # r = x/x.sum()
+        r = u/u.sum()  # XXX simplex
         return r
 
     def __init__(self, seed=Configs.seed):

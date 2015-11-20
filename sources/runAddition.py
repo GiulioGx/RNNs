@@ -18,7 +18,6 @@ from initialization.ZeroInit import ZeroInit
 from learningRule.ConstantNormalizedStep import ConstantNormalizedStep
 from learningRule.ConstantStep import ConstantStep
 from model.RNN import RNN
-from penalty.ConstantPenalty import ConstantPenalty
 from penalty.NullPenalty import NullPenalty
 from task.AdditionTask import AdditionTask
 from learningRule.GradientClipping import GradientClipping
@@ -40,7 +39,7 @@ print(separator)
 # setup
 seed = 13
 task = AdditionTask(144, seed)
-n_hidden = 100
+n_hidden = 50
 activation_fnc = Tanh()
 output_fnc = RNN.linear_fnc
 loss_fnc = NetTrainer.squared_error
@@ -54,8 +53,8 @@ init_strategies = {'W_rec': GaussianInit(0, std_dev), 'W_in': GaussianInit(0, st
 
 # penalty strategy
 # penalty = MeanPenalty()
-penalty = ConstantPenalty()
-# penalty = NullPenalty()
+# penalty = ConstantPenalty()
+penalty = NullPenalty()
 
 # direction strategy
 # dir_rule = AntiGradient()
@@ -64,14 +63,13 @@ penalty = ConstantPenalty()
 # dir_rule = FrozenGradient(penalty)
 # dir_rule = SepareteGradient()
 
-#combining_rule = SimplexCombination()
+combining_rule = SimplexCombination()
 #combining_rule = EquiangularCombination()
 #combining_rule = DropoutCombination(drop_rate=0.8)
 #combining_rule = MedianCombination()
-combining_rule = SimpleSum()
 dir_rule = CombinedGradients(combining_rule)
 
-#dir_rule = AlternatingDirections(dir_rule)
+dir_rule = AlternatingDirections(dir_rule)
 
 # learning step rule
 # lr_rule = WRecNormalizedStep(0.0001) #0.01
