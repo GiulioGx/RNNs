@@ -16,7 +16,7 @@ class DescentDirectionRule(SimpleInfoProducer):
     class Symbols(SymbolicInfoProducer):
         __metaclass__ = abc.ABCMeta
 
-        @abc.abstractmethod
+        @abc.abstractproperty
         def direction(self):
             """return a symbol for the computed descent direction"""
 

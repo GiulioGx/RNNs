@@ -26,38 +26,19 @@ class RnnVars(Variables):
         return self.__net
 
     def as_tensor(self):
+        # v1 =  self.__W_rec.flatten().dimshuffle(0, 'x')
+        # v2 =  self.__W_in.flatten().dimshuffle(0, 'x')
+        # v3 =  self.__W_out.flatten().dimshuffle(0, 'x')
+        # v4 =  self.__b_rec.flatten().dimshuffle(0, 'x')
+        # v5 =  self.__b_out.flatten().dimshuffle(0, 'x')
+        #
+        # return TT.concatenate([v1, v2, v3, v4, v5])
         return self.flatten()
-
-    def from_tensor(self, v):
-        return RnnVars.from_flattened_tensor(v, self.__net)
-
-    @staticmethod
-    def from_flattened_tensor(v, net):
-
-        n1 = net.n_hidden ** 2
-        n2 = n1 + net.n_hidden * net.n_in
-        n3 = n2 + net.n_hidden * net.n_out
-        n4 = n3 + net.n_hidden
-        n5 = n4 + net.n_out
-
-        W_rec_v = v[0:n1]
-        W_in_v = v[n1:n2]
-        W_out_v = v[n2:n3]
-        b_rec_v = v[n3:n4]
-        b_out_v = v[n4:n5]
-
-        W_rec = W_rec_v.reshape((net.n_hidden, net.n_hidden))
-        W_in = W_in_v.reshape((net.n_hidden, net.n_in))
-        W_out = W_out_v.reshape((net.n_out, net.n_hidden))
-        b_rec = b_rec_v.reshape((net.n_hidden, 1))
-        b_out = b_out_v.reshape((net.n_out, 1))
-
-        return RnnVars(net, W_rec, W_in, W_out, b_rec, b_out)
 
     def dot(self, other):
         v1 = as_vector(*self.__as_tensor_list())
         v2 = as_vector(*other.__as_tensor_list())
-        return TT.dot(v1.dimshuffle(1, 0), v2)
+        return TT.dot(v1.dimshuffle(1, 0), v2).squeeze()
 
     def cos(self, other):
         return self.dot(other) / (self.norm() * other.norm())

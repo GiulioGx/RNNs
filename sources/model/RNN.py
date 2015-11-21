@@ -70,6 +70,27 @@ class RNN(object):
     def symbols(self):
         return self.__symbols
 
+    def from_tensor(self, v):
+        n1 = self.__n_hidden ** 2
+        n2 = n1 + self.__n_hidden * self.__n_in
+        n3 = n2 + self.__n_hidden * self.__n_out
+        n4 = n3 + self.__n_hidden
+        n5 = n4 + self.__n_out
+
+        W_rec_v = v[0:n1]
+        W_in_v = v[n1:n2]
+        W_out_v = v[n2:n3]
+        b_rec_v = v[n3:n4]
+        b_out_v = v[n4:n5]
+
+        W_rec = W_rec_v.reshape((self.__n_hidden, self.__n_hidden))
+        W_in = W_in_v.reshape((self.__n_hidden, self.__n_in))
+        W_out = W_out_v.reshape((self.__n_out, self.__n_hidden))
+        b_rec = b_rec_v.reshape((self.__n_hidden, 1))
+        b_out = b_out_v.reshape((self.__n_out, 1))
+
+        return RnnVars(self, W_rec, W_in, W_out, b_rec, b_out)
+
     #  should not be used from the outside
     def net_output(self, params: RnnVars, u):
         return self.__net_output(params.W_rec, params.W_in, params.W_out, params.b_rec, params.b_out, u)

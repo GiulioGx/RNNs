@@ -15,6 +15,7 @@ from descentDirectionRule.AlternatingDirections import AlternatingDirections
 from descentDirectionRule.CombinedGradients import CombinedGradients
 from initialization.GaussianInit import GaussianInit
 from initialization.ZeroInit import ZeroInit
+from learningRule.ArmijoStep import ArmijoStep
 from learningRule.ConstantNormalizedStep import ConstantNormalizedStep
 from learningRule.ConstantStep import ConstantStep
 from model.RNN import RNN
@@ -64,23 +65,24 @@ penalty = NullPenalty()
 # dir_rule = SepareteGradient()
 
 combining_rule = SimplexCombination()
+#combining_rule = SimpleSum()
 #combining_rule = EquiangularCombination()
 #combining_rule = DropoutCombination(drop_rate=0.8)
 #combining_rule = MedianCombination()
 dir_rule = CombinedGradients(combining_rule)
 
-dir_rule = AlternatingDirections(dir_rule)
+#dir_rule = AlternatingDirections(dir_rule)
 
 # learning step rule
 # lr_rule = WRecNormalizedStep(0.0001) #0.01
 #lr_rule = ConstantStep(0.01)  # 0.01
-lr_rule = GradientClipping(lr_value=0.01, clip_thr=0.1)  # 0.01
-# lr_rule = ArmijoStep(alpha=0.1, beta=0.1, init_step=1, max_steps=50)
+lr_rule = GradientClipping(lr_value=0.03, clip_thr=0.1)  # 0.01
+#lr_rule = ArmijoStep(alpha=0.5, beta=0.5, init_step=1, max_steps=50)
 
 obj_fnc = ObjectiveFunction(loss_fnc, penalty, 0.1)
 train_rule = TrainingRule(dir_rule, lr_rule)
 
 trainer = NetTrainer(train_rule, obj_fnc, output_dir=out_dir, max_it=10 ** 10,
-                     check_freq=200, bacth_size=20)
+                     check_freq=200, bacth_size=100)
 
 net = trainer.train(task, activation_fnc, output_fnc, n_hidden, init_strategies, seed)
