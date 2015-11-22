@@ -8,8 +8,7 @@ from TrainingRule import TrainingRule
 from combiningRule.DropoutCombination import DropoutCombination
 from combiningRule.EquiangularCombination import EquiangularCombination
 from combiningRule.MedianCombination import MedianCombination
-from combiningRule.NormalizedSum import NormalizedSum
-from combiningRule.SimpleSum import SimpleSum
+from combiningRule.OnesCombination import OnesCombination
 from combiningRule.SimplexCombination import SimplexCombination
 from descentDirectionRule.AlternatingDirections import AlternatingDirections
 from descentDirectionRule.CombinedGradients import CombinedGradients
@@ -19,9 +18,11 @@ from learningRule.ArmijoStep import ArmijoStep
 from learningRule.ConstantNormalizedStep import ConstantNormalizedStep
 from learningRule.ConstantStep import ConstantStep
 from model.RNN import RNN
+from penalty.MeanPenalty import MeanPenalty
 from penalty.NullPenalty import NullPenalty
 from task.AdditionTask import AdditionTask
 from learningRule.GradientClipping import GradientClipping
+from task.MultiplicationTask import MultiplicationTask
 
 __author__ = 'giulio'
 
@@ -39,12 +40,12 @@ print(separator)
 
 # setup
 seed = 13
-task = AdditionTask(144, seed)
+task = MultiplicationTask(144, seed)
 n_hidden = 50
 activation_fnc = Tanh()
 output_fnc = RNN.linear_fnc
 loss_fnc = NetTrainer.squared_error
-out_dir = Configs.output_dir+'addition'
+out_dir = Configs.output_dir+'multiplication'
 
 # init strategy
 std_dev = 0.14  # 0.14 Tanh # 0.21 Relu
@@ -53,7 +54,7 @@ init_strategies = {'W_rec': GaussianInit(0, std_dev), 'W_in': GaussianInit(0, st
                    'b_rec': ZeroInit(), 'b_out': ZeroInit()}
 
 # penalty strategy
-# penalty = MeanPenalty()
+#penalty = MeanPenalty()
 # penalty = ConstantPenalty()
 penalty = NullPenalty()
 
@@ -64,7 +65,7 @@ penalty = NullPenalty()
 # dir_rule = FrozenGradient(penalty)
 # dir_rule = SepareteGradient()
 
-combining_rule = SimplexCombination()
+combining_rule = SimplexCombination(normalize_components=True)
 #combining_rule = SimpleSum()
 #combining_rule = EquiangularCombination()
 #combining_rule = DropoutCombination(drop_rate=0.8)
@@ -79,7 +80,7 @@ dir_rule = CombinedGradients(combining_rule)
 lr_rule = GradientClipping(lr_value=0.03, clip_thr=0.1)  # 0.01
 #lr_rule = ArmijoStep(alpha=0.5, beta=0.5, init_step=1, max_steps=50)
 
-obj_fnc = ObjectiveFunction(loss_fnc, penalty, 0.1)
+obj_fnc = ObjectiveFunction(loss_fnc, penalty, 0.0001)
 train_rule = TrainingRule(dir_rule, lr_rule)
 
 trainer = NetTrainer(train_rule, obj_fnc, output_dir=out_dir, max_it=10 ** 10,

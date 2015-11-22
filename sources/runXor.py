@@ -8,7 +8,7 @@ from TrainingRule import TrainingRule
 from combiningRule.DropoutCombination import DropoutCombination
 from combiningRule.EquiangularCombination import EquiangularCombination
 from combiningRule.MedianCombination import MedianCombination
-from combiningRule.NormalizedSum import NormalizedSum
+from combiningRule.OnesCombination import OnesCombination
 from combiningRule.SimpleSum import SimpleSum
 from combiningRule.SimplexCombination import SimplexCombination
 from descentDirectionRule.CombinedGradients import CombinedGradients

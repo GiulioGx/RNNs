@@ -2,7 +2,7 @@ from theano.tensor.shared_randomstreams import RandomStreams
 
 from Configs import Configs
 from combiningRule.CombiningRule import CombiningRule
-from combiningRule.LinearCombination import LinearCombinationRule
+from combiningRule.LinearCombination import LinearCombination
 import theano.tensor as TT
 import theano as T
 

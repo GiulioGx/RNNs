@@ -1,5 +1,5 @@
 from Configs import Configs
-from combiningRule.SimpleSum import SimpleSum
+from combiningRule.OnesCombination import OnesCombination
 from infos.Info import NullInfo
 from infos.InfoElement import NonPrintableInfoElement, PrintableInfoElement
 from infos.InfoGroup import InfoGroup
@@ -36,7 +36,7 @@ class RnnGradient(SymbolicInfoProducer):
         self.__value = RnnGradient.SeparateCombination(self.__gW_rec_list, self.__gW_in_list,
                                                        self.__gW_out_list, self.__gb_rec_list,
                                                        self.__gb_out_list, self.__l, self.__net,
-                                                       SimpleSum()).value
+                                                       OnesCombination(normalize_components=False)).value
 
         gW_rec_norms = get_norms(self.__gW_rec_list, self.__l)
         gW_in_norms = get_norms(self.__gW_in_list, self.__l)
@@ -50,9 +50,8 @@ class RnnGradient(SymbolicInfoProducer):
 
         self.__info = [gW_rec_norms, gW_in_norms, gW_out_norms, gb_rec_norms, gb_out_norms]
 
-        #grad_dots, dots_matrix = self.__get_angular_infos()
-        #self.__info += [grad_dots, dots_matrix]
-
+        grad_dots = self.__get_angular_infos()
+        self.__info += [grad_dots]
 
     def __get_angular_infos(self):
         values = flatten_list_element([TT.as_tensor_variable(self.__gW_rec_list),
@@ -64,10 +63,10 @@ class RnnGradient(SymbolicInfoProducer):
         G = TT.reshape(H, (H.shape[0], H.shape[1]))
         G = G / G.norm(2, axis=1).reshape((G.shape[0], 1))
 
-        grad_dots = TT.dot(G, self.__value.as_tensor())
-        dots_matrix = TT.dot(G.T, G)
+        grad_dots = TT.dot(G, self.__value.as_tensor()/self.__value.norm())
+        #dots_matrix = TT.dot(G.T, G)
 
-        return grad_dots, dots_matrix
+        return grad_dots
 
     @staticmethod
     def fix(W_list, l):
@@ -97,13 +96,13 @@ class RnnGradient(SymbolicInfoProducer):
                                'b_out': info_symbols[4]}
 
 
-        #grad_dots = NonPrintableInfoElement('grad_temporal_dots', info_symbols[5])
+        grad_dots = NonPrintableInfoElement('grad_temporal_cos', info_symbols[5])
         #dots_matrix = NonPrintableInfoElement('temporal_dots_matrix', info_symbols[6])
         separate_info = NonPrintableInfoElement('separate_norms', separate_norms_dict)
 
-        #info = InfoList(grad_dots, dots_matrix, separate_info)
-        info = separate_info
-        return info, info_symbols[len(separate_norms_dict): len(info_symbols)]
+        info = InfoList(grad_dots, separate_info)
+        #info = separate_info
+        return info, info_symbols[len(separate_norms_dict)+1: len(info_symbols)]
 
     def temporal_combination(self, strategy):  # FIXME
         if self.type == 'togheter':
@@ -170,7 +169,7 @@ class RnnGradient(SymbolicInfoProducer):
             self.__combination = net.from_tensor(combination)
 
             if grad.preserve_norms:
-                self.__combination *= grad.value.norm()
+                self.__combination *= grad.value.norm()/self.__combination.norm()
 
     class SeparateCombination(Combination):
         @property

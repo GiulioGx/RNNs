@@ -1,4 +1,4 @@
-from combiningRule.LinearCombination import LinearCombinationRule
+from combiningRule.LinearCombination import LinearCombination
 from infos.InfoElement import PrintableInfoElement
 from infos.InfoGroup import InfoGroup
 from infos.InfoList import InfoList
@@ -97,7 +97,7 @@ class ObjectiveFunction(object):
         def grad_norm(self):
             return self.__grad_norm
 
-        def grad_combination(self, strategy: LinearCombinationRule):
+        def grad_combination(self, strategy: LinearCombination):
             # separate time steps value
             return self.__grad_symbols.temporal_combination(strategy)
 

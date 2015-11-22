@@ -10,6 +10,7 @@ npz = numpy.load(modelFile)
 norms_dicts = npz['obj_separate_norms']
 check_freq = npz['settings_check_freq']
 length = npz['length']
+temporal_dots = npz['obj_grad_temporal_cos']
 
 sep = '#'*5
 
@@ -24,7 +25,7 @@ x = range(length)
 for i in reversed(x):
     dict = norms_dicts[i]
     keys = sorted(dict.keys())
-    fig, axarr = plt.subplots(len(dict), sharex=True, figsize=(20, 30))
+    fig, axarr = plt.subplots(len(dict)+1, sharex=True, figsize=(20, 30))
 
     j = 0
     for key in keys:
@@ -36,11 +37,16 @@ for i in reversed(x):
         axarr[j].set_yscale('log')
         j += 1
 
+    y = temporal_dots[i]
+    axarr[j].bar(range(len(y)), y, color='r')
+    axarr[j].legend(['temporal_cos'], shadow=True, fancybox=True)
+
     cid = fig.canvas.mpl_connect('key_press_event', on_button_press)
     print(sep)
     print('Press a button to continue...')
     fig.canvas.set_window_title('Gradient norms it: {:07d}'.format(i*check_freq))
     plt.show()
+
 
 
 

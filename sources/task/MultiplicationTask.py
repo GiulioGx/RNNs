@@ -8,7 +8,7 @@ from Configs import Configs
 __author__ = 'giulio'
 
 
-class AdditionTask(Task):
+class MultiplicationTask(Task):
 
     def __init__(self, min_length: int, seed: int):
         self.__min_length = min_length
@@ -16,7 +16,7 @@ class AdditionTask(Task):
         self.__n_out = 1
         self.__rng = numpy.random.RandomState(seed)
 
-        self.__marker_based_task = MarkerBasedTask(self.input_fnc, AdditionTask.output_fnc, self.n_in, self.n_out, min_length, seed)
+        self.__marker_based_task = MarkerBasedTask(self.input_fnc, MultiplicationTask.output_fnc, self.n_in, self.n_out, min_length, seed)
 
     def input_fnc(self, batch_size: int, length: int):
         # random binary inputs (channel 1)
@@ -57,6 +57,6 @@ class AdditionTask(Task):
 if __name__ == '__main__':
     seed = 13
     print('Testing Multiplication task ...')
-    task = AdditionTask(13, seed)
+    task = MultiplicationTask(13, seed)
     batch = task.get_batch(3)
     print(str(batch))
