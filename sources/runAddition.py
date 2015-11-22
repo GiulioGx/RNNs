@@ -40,12 +40,12 @@ print(separator)
 
 # setup
 seed = 13
-task = MultiplicationTask(144, seed)
+task = AdditionTask(144, seed)
 n_hidden = 50
 activation_fnc = Tanh()
 output_fnc = RNN.linear_fnc
 loss_fnc = NetTrainer.squared_error
-out_dir = Configs.output_dir+'multiplication'
+out_dir = Configs.output_dir+'addition'  # FIXME task name
 
 # init strategy
 std_dev = 0.14  # 0.14 Tanh # 0.21 Relu
@@ -65,7 +65,8 @@ penalty = NullPenalty()
 # dir_rule = FrozenGradient(penalty)
 # dir_rule = SepareteGradient()
 
-combining_rule = SimplexCombination(normalize_components=True)
+#combining_rule = SimplexCombination(normalize_components=True)
+combining_rule = OnesCombination(normalize_components=True)
 #combining_rule = SimpleSum()
 #combining_rule = EquiangularCombination()
 #combining_rule = DropoutCombination(drop_rate=0.8)
