@@ -40,12 +40,12 @@ print(separator)
 
 # setup
 seed = 13
-task = AdditionTask(144, seed)
+task = MultiplicationTask(144, seed)
 n_hidden = 50
 activation_fnc = Tanh()
 output_fnc = RNN.linear_fnc
 loss_fnc = NetTrainer.squared_error
-out_dir = Configs.output_dir+'addition'  # FIXME task name
+out_dir = Configs.output_dir+str(task)
 
 # init strategy
 std_dev = 0.14  # 0.14 Tanh # 0.21 Relu
@@ -65,10 +65,10 @@ penalty = NullPenalty()
 # dir_rule = FrozenGradient(penalty)
 # dir_rule = SepareteGradient()
 
-combining_rule = SimplexCombination(normalize_components=True)
+#combining_rule = SimplexCombination(normalize_components=True)
 #combining_rule = OnesCombination(normalize_components=True)
 #combining_rule = SimpleSum()
-#combining_rule = EquiangularCombination()
+combining_rule = EquiangularCombination()
 #combining_rule = DropoutCombination(drop_rate=0.8)
 #combining_rule = MedianCombination()
 dir_rule = CombinedGradients(combining_rule)
@@ -76,7 +76,7 @@ dir_rule = CombinedGradients(combining_rule)
 
 # learning step rule
 # lr_rule = WRecNormalizedStep(0.0001) #0.01
-lr_rule = ConstantNormalizedStep(0.003)  # 0.01
+lr_rule = ConstantNormalizedStep(0.001)  # 0.01
 #lr_rule = GradientClipping(lr_value=0.03, clip_thr=0.1)  # 0.01
 #lr_rule = ArmijoStep(alpha=0.5, beta=0.5, init_step=1, max_steps=50)
 
