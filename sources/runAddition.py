@@ -65,20 +65,19 @@ penalty = NullPenalty()
 # dir_rule = FrozenGradient(penalty)
 # dir_rule = SepareteGradient()
 
-#combining_rule = SimplexCombination(normalize_components=True)
-combining_rule = OnesCombination(normalize_components=True)
+combining_rule = SimplexCombination(normalize_components=True)
+#combining_rule = OnesCombination(normalize_components=True)
 #combining_rule = SimpleSum()
 #combining_rule = EquiangularCombination()
 #combining_rule = DropoutCombination(drop_rate=0.8)
 #combining_rule = MedianCombination()
 dir_rule = CombinedGradients(combining_rule)
-
 #dir_rule = AlternatingDirections(dir_rule)
 
 # learning step rule
 # lr_rule = WRecNormalizedStep(0.0001) #0.01
-#lr_rule = ConstantStep(0.01)  # 0.01
-lr_rule = GradientClipping(lr_value=0.03, clip_thr=0.1)  # 0.01
+lr_rule = ConstantNormalizedStep(0.003)  # 0.01
+#lr_rule = GradientClipping(lr_value=0.03, clip_thr=0.1)  # 0.01
 #lr_rule = ArmijoStep(alpha=0.5, beta=0.5, init_step=1, max_steps=50)
 
 obj_fnc = ObjectiveFunction(loss_fnc, penalty, 0.0001)
