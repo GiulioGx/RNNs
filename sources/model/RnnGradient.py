@@ -170,8 +170,8 @@ class RnnGradient(SymbolicInfoProducer):
             self.__combination = net.from_tensor(combination)
 
             if grad.preserve_norms:
-                self.__combination *= grad.value.norm()/self.__combination.norm()
-                #self.__combination = self.__combination.scale_norms_as(grad.value)
+                #self.__combination *= grad.value.norm()/self.__combination.norm()
+                self.__combination = self.__combination.scale_norms_as(grad.value)
 
     class SeparateCombination(Combination):
         @property

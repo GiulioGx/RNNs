@@ -30,7 +30,7 @@ class MultiplicationTask(Task):
         a = data[p0, numpy.ones((n,), dtype='int32'), numpy.arange(n)]
         b = data[p1, numpy.ones((n,), dtype='int32'), numpy.arange(n)]
 
-        outputs[m-1, 0, :] = (a * b)/2
+        outputs[m-1, 0, :] = (a * b)
 
     def get_batch(self, batch_size: int):
         return self.__marker_based_task.get_batch(batch_size)
