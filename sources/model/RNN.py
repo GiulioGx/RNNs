@@ -67,6 +67,11 @@ class RNN(object):
         return self.__n_out
 
     @property
+    def n_variables(self):
+        return self.__n_out + self.__n_hidden + self.__n_hidden ** 2 \
+               + self.__n_in * self.__n_hidden + self.__n_out * self.__n_hidden
+
+    @property
     def symbols(self):
         return self.__symbols
 
