@@ -17,8 +17,8 @@ __author__ = 'giulio'
 class RnnGradient(SymbolicInfoProducer):
     def __init__(self, params, loss_fnc, u, t):
 
-        self.preserve_norms = True  # FIXME
-        self.type = 'togheter'
+        self.preserve_norms = False  # FIXME
+        self.type = 'separate'
         self.__net = params.net
 
         y, _, W_rec_fixes, W_in_fixes, W_out_fixes, b_rec_fixes, b_out_fixes = params.net.experimental.net_output(

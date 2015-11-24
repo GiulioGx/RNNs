@@ -11,10 +11,8 @@ __author__ = 'giulio'
 
 
 class ObjectiveFunction(object):
-    def __init__(self, loss_fnc, penalty: Penalty = NullPenalty(), penalty_lambda=0.5):
+    def __init__(self, loss_fnc):
         self.__loss_fnc = loss_fnc
-        self.__penalty = penalty
-        self.__penalty_lambda = penalty_lambda
 
     def compile(self, net, params: Variables, u, t):
         return ObjectiveFunction.Symbols(self, net, params, u, t)
@@ -25,14 +23,6 @@ class ObjectiveFunction(object):
     @property
     def loss_fnc(self):
         return self.__loss_fnc
-
-    @property
-    def penalty(self):
-        return self.__penalty
-
-    @property
-    def penalty_lambda(self):
-        return self.__penalty_lambda
 
     class Symbols(SymbolicInfoProducer):
         def __init__(self, obj_fnc, net, params, u, t):
@@ -50,32 +40,22 @@ class ObjectiveFunction(object):
             #loss = loss_fnc(y, t)
 
             loss = self.__grad_symbols.loss_value
-
-            # add penalty
-            self.__penalty_symbols = obj_fnc.penalty.compile(params, net.symbols)
-            penalty_grad = self.__penalty_symbols.penalty_grad
-            penalty_value = self.__penalty_symbols.penalty_value
-
-            loss_grad_norm = self.__grad.norm()
-
-            self.__grad.setW_rec(self.__grad.W_rec + obj_fnc.penalty_lambda * penalty_grad)  # FIXME
-            self.__objective_value = loss + (penalty_value * obj_fnc.penalty_lambda)
+            self.__objective_value = loss
             self.__grad_norm = self.__grad.norm()
 
             # separate
             separate_info = self.__grad_symbols.infos
 
-            self.__infos = self.__penalty_symbols.infos + separate_info + [loss, loss_grad_norm]
+            self.__infos = separate_info + [loss, self.__grad_norm]
 
         def format_infos(self, infos_symbols):
-            penalty_info, infos_symbols = self.__penalty_symbols.format_infos(infos_symbols)
             separate_info, infos_symbols = self.__grad_symbols.format_infos(infos_symbols)
 
             loss_value_info = PrintableInfoElement('value', ':07.3f', infos_symbols[0].item())
             loss_grad_info = PrintableInfoElement('grad', ':07.3f', infos_symbols[1].item())
 
             loss_info = InfoGroup('loss', InfoList(loss_value_info, loss_grad_info))
-            obj_info = InfoGroup('obj', InfoList(loss_info, penalty_info, separate_info))
+            obj_info = InfoGroup('obj', InfoList(loss_info, separate_info))
 
             info = obj_info
 

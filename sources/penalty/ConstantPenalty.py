@@ -12,8 +12,16 @@ __author__ = 'giulio'
 
 
 class ConstantPenalty(Penalty):
+
+    def __init__(self, c=1):
+        self.__c = c
+
+    @property
+    def c(self):
+        return self.__c
+
     class Symbols(Penalty.Symbols):
-        def __init__(self, params, net_symbols):
+        def __init__(self, penalty, params, net_symbols):
             # deriv__a is a matrix n_steps * n_hidden * n_examples
 
             deriv_a = net_symbols.get_deriv_a(params)
@@ -25,7 +33,7 @@ class ConstantPenalty(Penalty):
 
             A = deriv_a_T_wrt_a1(W_rec, mean_deriv_a)
 
-            self.__penalty_value = ((A ** 2).sum() - 1) ** 2
+            self.__penalty_value = ((A ** 2).sum() - penalty.c) ** 2
             self.__penalty_grad = TT.grad(self.__penalty_value, [W_rec], consider_constant=[deriv_a])[0]
 
             self.__infos = [self.__penalty_value, norm(self.__penalty_grad)]
@@ -49,10 +57,10 @@ class ConstantPenalty(Penalty):
             return self.__infos
 
     def compile(self, params: Variables, net_symbols):
-        return ConstantPenalty.Symbols(params, net_symbols)
+        return ConstantPenalty.Symbols(self, params, net_symbols)
 
     @property
     def infos(self):
-        return SimpleDescription('constant_penalty')
+        return InfoGroup('constant_penalty', InfoList(PrintableInfoElement('c', ':2.2f', self.__c)))
 
 
