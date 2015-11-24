@@ -1,4 +1,3 @@
-from Configs import Configs
 from combiningRule.OnesCombination import OnesCombination
 from infos.Info import NullInfo
 from infos.InfoElement import NonPrintableInfoElement, PrintableInfoElement
@@ -8,7 +7,6 @@ from infos.SymbolicInfoProducer import SymbolicInfoProducer
 import theano.tensor as TT
 import theano as T
 from model.Combination import Combination
-import model
 from theanoUtils import get_norms, as_vector, flatten_list_element, cos_between_dirs
 
 __author__ = 'giulio'
@@ -170,8 +168,8 @@ class RnnGradient(SymbolicInfoProducer):
             self.__combination = net.from_tensor(combination)
 
             if grad.preserve_norms:
-                #self.__combination *= grad.value.norm()/self.__combination.norm()
-                self.__combination = self.__combination.scale_norms_as(grad.value)
+                self.__combination *= grad.value.norm()/self.__combination.norm()
+                #self.__combination = self.__combination.scale_norms_as(grad.value)
 
     class SeparateCombination(Combination):
         @property
