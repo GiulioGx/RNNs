@@ -91,6 +91,6 @@ avg_rule = FixedAveraging(t=7)
 train_rule = TrainingRule(dir_rule, lr_rule, avg_rule)
 
 trainer = NetTrainer(train_rule, obj_fnc, output_dir=out_dir, max_it=10 ** 10,
-                     check_freq=200, bacth_size=100)
+                     check_freq=200, bacth_size=20)
 
 net = trainer.train(task, activation_fnc, output_fnc, n_hidden, init_strategies, seed)
