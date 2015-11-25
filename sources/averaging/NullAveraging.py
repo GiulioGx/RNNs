@@ -4,7 +4,6 @@ from model import Variables
 
 
 class NullAveraging(AveragingRule):
-
     def compile(self, net, update_params: Variables):
         return NullAveraging.Symbols(update_params)
 
@@ -13,9 +12,7 @@ class NullAveraging(AveragingRule):
         return NullInfo()
 
     class Symbols(AveragingRule.Symbols):
-
-        def __init__(self, update_params:Variables):
-
+        def __init__(self, update_params: Variables):
             self.__avg_vars = update_params
 
         @property

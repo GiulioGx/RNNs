@@ -22,6 +22,8 @@ class FixedAveraging(AveragingRule):
         return FixedAveraging.Symbols(self, net, update_params)
 
     class Symbols(AveragingRule.Symbols):
+
+        @property
         def infos(self):
             return []
 
