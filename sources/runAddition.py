@@ -6,6 +6,7 @@ from NetTrainer import NetTrainer
 from ObjectiveFunction import ObjectiveFunction
 from TrainingRule import TrainingRule
 from averaging.FixedAveraging import FixedAveraging
+from averaging.NullAveraging import NullAveraging
 from combiningRule.DropoutCombination import DropoutCombination
 from combiningRule.EquiangularCombination import EquiangularCombination
 from combiningRule.MedianCombination import MedianCombination
@@ -86,7 +87,8 @@ lr_rule = GradientClipping(lr_value=0.03, clip_thr=0.1)  # 0.01
 
 obj_fnc = ObjectiveFunction(loss_fnc)
 
-avg_rule = FixedAveraging(t=7)
+#avg_rule = FixedAveraging(t=7)
+avg_rule = NullAveraging()
 
 train_rule = TrainingRule(dir_rule, lr_rule, avg_rule)
 

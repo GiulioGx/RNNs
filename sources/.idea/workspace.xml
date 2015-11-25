@@ -21,10 +21,10 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="FixedAveraging.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="FixedAveraging.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/averaging/FixedAveraging.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.2020202">
+            <state vertical-scroll-proportion="0.0">
               <caret line="10" column="13" selection-start-line="10" selection-start-column="13" selection-end-line="10" selection-end-column="13" />
               <folding>
                 <element signature="e#0#26#0" expanded="true" />
@@ -67,11 +67,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="runAddition.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="runAddition.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/runAddition.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="89" column="0" selection-start-line="89" selection-start-column="0" selection-end-line="89" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.7373737">
+              <caret line="90" column="26" selection-start-line="90" selection-start-column="26" selection-end-line="90" selection-end-column="26" />
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
               </folding>
@@ -173,9 +173,9 @@
         <option value="$PROJECT_DIR$/model/Variables.py" />
         <option value="$PROJECT_DIR$/averaging/NullAverage.py" />
         <option value="$PROJECT_DIR$/TrainingRule.py" />
-        <option value="$PROJECT_DIR$/runAddition.py" />
         <option value="$PROJECT_DIR$/averaging/NullAveraging.py" />
         <option value="$PROJECT_DIR$/averaging/FixedAveraging.py" />
+        <option value="$PROJECT_DIR$/runAddition.py" />
       </list>
     </option>
   </component>
@@ -1047,16 +1047,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/runAddition.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="89" column="0" selection-start-line="89" selection-start-column="0" selection-end-line="89" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#13#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/averaging/AveragingRule.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1079,10 +1069,20 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/averaging/FixedAveraging.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.2020202">
+        <state vertical-scroll-proportion="0.0">
           <caret line="10" column="13" selection-start-line="10" selection-start-column="13" selection-end-line="10" selection-end-column="13" />
           <folding>
             <element signature="e#0#26#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/runAddition.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.7373737">
+          <caret line="90" column="26" selection-start-line="90" selection-start-column="26" selection-end-line="90" selection-end-column="26" />
+          <folding>
+            <element signature="e#0#13#0" expanded="true" />
           </folding>
         </state>
       </provider>
