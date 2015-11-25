@@ -8,6 +8,7 @@ from model import Variables
 
 
 class FixedAveraging(AveragingRule):
+    @property
     def infos(self):
         return PrintableInfoElement('t', ':02d', self.__t)
 
