@@ -88,11 +88,11 @@ class RNN(object):
         b_rec_v = v[n3:n4]
         b_out_v = v[n4:n5]
 
-        W_rec = W_rec_v.reshape((self.__n_hidden, self.__n_hidden))
-        W_in = W_in_v.reshape((self.__n_hidden, self.__n_in))
-        W_out = W_out_v.reshape((self.__n_out, self.__n_hidden))
-        b_rec = b_rec_v.reshape((self.__n_hidden, 1))
-        b_out = b_out_v.reshape((self.__n_out, 1))
+        W_rec = TT.unbroadcast(W_rec_v.reshape((self.__n_hidden, self.__n_hidden), ndim=2), 0, 1)
+        W_in = TT.unbroadcast(W_in_v.reshape((self.__n_hidden, self.__n_in), ndim=2), 0, 1)
+        W_out = TT.unbroadcast(W_out_v.reshape((self.__n_out, self.__n_hidden), ndim=2), 0, 1)
+        b_rec = TT.addbroadcast(TT.unbroadcast(b_rec_v.reshape((self.__n_hidden, 1)), 0), 1)
+        b_out = TT.addbroadcast(TT.unbroadcast(b_out_v.reshape((self.__n_out, 1)), 0), 1)
 
         return RnnVars(self, W_rec, W_in, W_out, b_rec, b_out)
 
@@ -273,3 +273,10 @@ class RNN(object):
         @property
         def current_params(self):
             return self.__current_params
+
+        @property  # XXX
+        def get_numeric_vector(self):
+            return numpy.reshape(
+                numpy.concatenate((self.__W_rec.get_value().flatten(), self.__W_in.get_value().flatten(),
+                                   self.__W_out.get_value().flatten(), self.__b_rec.get_value().flatten(),
+                                   self.__b_out.get_value().flatten())), (self.__net.n_variables, 1)).astype(dtype=Configs.floatType)

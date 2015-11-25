@@ -130,7 +130,7 @@ class NetTrainer(object):
             logging.warning('Maximum number of iterations reached, stopping training...')
         elif best_error <= self.__stop_error_thresh / 100:
             logging.info('Training succeded, validation error below the given threshold({:.2%})'.format(
-                self.__stop_error_thresh * 100))
+                self.__stop_error_thresh / 100))
         logging.info('Elapsed time: {:2.2f} min'.format((end_time - start_time) / 60))
         return net
 

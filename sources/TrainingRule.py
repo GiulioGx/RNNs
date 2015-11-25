@@ -1,4 +1,6 @@
 import theano as T
+
+from averaging.FixedAveraging import FixedAveraging
 from descentDirectionRule import DescentDirectionRule
 from infos.InfoGroup import InfoGroup
 from infos.InfoList import InfoList
@@ -49,10 +51,19 @@ class TrainingRule(SimpleInfoProducer):
             output_list = self.__obj_symbols.infos + lr_infos + dir_infos
 
             new_params = net_symbols.current_params + (self.__dir_symbols.direction * lr)
+
+            # averaging
+            avg = FixedAveraging(t=7)
+            avg_symbols = avg.compile(net)
+            new_params, avg_updates = avg_symbols.apply_average(new_params)
+
+            train_updates = net_symbols.current_params.update_dictionary(new_params)
+            train_updates += avg_updates
+
             self.__step = T.function([net_symbols.u, net_symbols.t], output_list,
                                      allow_input_downcast='true',
                                      on_unused_input='warn',
-                                     updates=net_symbols.current_params.update_dictionary(new_params),
+                                     updates=train_updates,
                                      name='train_step')
 
         def step(self, inputs, outputs):
