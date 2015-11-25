@@ -87,8 +87,8 @@ lr_rule = GradientClipping(lr_value=0.01, clip_thr=0.1)  # 0.01
 
 obj_fnc = ObjectiveFunction(loss_fnc)
 
-#avg_rule = FixedAveraging(t=7)
-avg_rule = NullAveraging()
+avg_rule = FixedAveraging(t=7)
+#avg_rule = NullAveraging()
 
 train_rule = TrainingRule(dir_rule, lr_rule, avg_rule)
 
