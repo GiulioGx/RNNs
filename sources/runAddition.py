@@ -5,6 +5,7 @@ from Configs import Configs
 from NetTrainer import NetTrainer
 from ObjectiveFunction import ObjectiveFunction
 from TrainingRule import TrainingRule
+from averaging.FixedAveraging import FixedAveraging
 from combiningRule.DropoutCombination import DropoutCombination
 from combiningRule.EquiangularCombination import EquiangularCombination
 from combiningRule.MedianCombination import MedianCombination
@@ -84,7 +85,10 @@ lr_rule = GradientClipping(lr_value=0.03, clip_thr=0.1)  # 0.01
 #lr_rule = ArmijoStep(alpha=0.5, beta=0.5, init_step=1, max_steps=50)
 
 obj_fnc = ObjectiveFunction(loss_fnc)
-train_rule = TrainingRule(dir_rule, lr_rule)
+
+avg_rule = FixedAveraging(t=7)
+
+train_rule = TrainingRule(dir_rule, lr_rule, avg_rule)
 
 trainer = NetTrainer(train_rule, obj_fnc, output_dir=out_dir, max_it=10 ** 10,
                      check_freq=200, bacth_size=100)

@@ -121,7 +121,7 @@ class RnnVars(Variables):
     def net(self):
         return self.__net
 
-    def update_dictionary(self, other):
+    def update_list(self, other):
         return [
             (self.__W_rec, other.W_rec),
             (self.__W_in, other.W_in),

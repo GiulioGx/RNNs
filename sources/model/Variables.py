@@ -48,7 +48,7 @@ class Variables(object):
         """returns the output of the network parametrized with the variables this class represents """
 
     @abc.abstractmethod
-    def update_dictionary(self, other):
+    def update_list(self, other):
         """returns the update dictionary for a theano function"""
 
     @abc.abstractmethod
