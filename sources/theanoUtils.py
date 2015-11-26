@@ -57,7 +57,7 @@ def is_inf_or_nan(number):
 
 
 def is_not_trustworthy(norm_v):
-    return TT.or_(norm_v < 0, TT.or_(norm_v > 1e10, norm_v < 1e-10))  # FIXME aggiustare in base a floatType
+    return TT.or_(norm_v < 0, TT.or_(norm_v > 1e10, norm_v < 1e-20))  # FIXME aggiustare in base a floatType
 
 
 def fix_vector(v):

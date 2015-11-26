@@ -56,9 +56,8 @@ class RnnGradient(SymbolicInfoProducer):
             norm_v = TT.switch(condition, 0., norm_v)
             return v_fixed, norm_v
 
-        values, _ = T.scan(g, sequences=[],
+        values, _ = T.scan(g, sequences=[TT.as_tensor_variable(grad_list)],
                            outputs_info=[None, None],
-                           non_sequences=[TT.as_tensor_variable(grad_list)[l - 1]],  # / TT.cast(l, Configs.floatType)],
                            name='norms_and_fix_scan',
                            n_steps=l)
         return values[0], values[1]

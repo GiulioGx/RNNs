@@ -5,8 +5,9 @@ from Configs import Configs
 from NetTrainer import NetTrainer
 from ObjectiveFunction import ObjectiveFunction
 from TrainingRule import TrainingRule
-from averaging.FixedAveraging import FixedAveraging
-from averaging.NullAveraging import NullAveraging
+from task.XorTask import XorTask
+from updateRule.FixedAveraging import FixedAveraging
+from updateRule.SimpleUpdate import SimpleUdpate
 from combiningRule.DropoutCombination import DropoutCombination
 from combiningRule.EquiangularCombination import EquiangularCombination
 from combiningRule.MedianCombination import MedianCombination
@@ -44,7 +45,7 @@ print(separator)
 
 # setup
 seed = 13
-task = MultiplicationTask(144, seed)
+task = XorTask(144, seed)
 n_hidden = 50
 activation_fnc = Tanh()
 output_fnc = RNN.linear_fnc
@@ -82,15 +83,15 @@ dir_rule = CombinedGradients(combining_rule)
 # learning step rule
 # lr_rule = WRecNormalizedStep(0.0001) #0.01
 #lr_rule = ConstantNormalizedStep(0.001)  # 0.01
-lr_rule = GradientClipping(lr_value=0.03, clip_thr=0.1)  # 0.01
+lr_rule = GradientClipping(lr_value=0.01, clip_thr=0.1)  # 0.01
 #lr_rule = ArmijoStep(alpha=0.5, beta=0.5, init_step=1, max_steps=50)
 
 obj_fnc = ObjectiveFunction(loss_fnc)
 
 #avg_rule = FixedAveraging(t=7)
-avg_rule = NullAveraging()
+update_rule = SimpleUdpate()
 
-train_rule = TrainingRule(dir_rule, lr_rule, avg_rule)
+train_rule = TrainingRule(dir_rule, lr_rule, update_rule)
 
 trainer = NetTrainer(train_rule, obj_fnc, output_dir=out_dir, max_it=10 ** 10,
                      check_freq=200, bacth_size=20)
