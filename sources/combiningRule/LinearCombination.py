@@ -7,7 +7,7 @@ from combiningRule.CombiningRule import CombiningRule
 from infos.Info import NullInfo
 from infos.InfoElement import PrintableInfoElement
 from infos.InfoList import InfoList
-from theanoUtils import norm, is_not_real
+from theanoUtils import norm, is_inf_or_nan, is_not_trustworthy
 
 __author__ = 'giulio'
 
@@ -70,12 +70,13 @@ class LinearCombination(CombiningRule):
             if rule.normalize_components:
                 norm_G = G.norm(2, axis=1).reshape((G.shape[0], 1))
                 G = G / TT.switch(norm_G > 0, norm_G, 1)
+                #G = G * TT.switch(is_not_trustworthy(norm_G), 0, 1./norm_G)  # FIXME mettere in un punto meliore
 
             self.__grads_combinantions = TT.dot(G.T, coefficients)
 
         def __step(self, v, alpha, acc):
             norm_fac_v = self.__g(v)
-            return TT.switch(TT.or_(TT.or_(is_not_real(norm_fac_v), norm_fac_v <= 0), is_not_real(alpha)), acc,
+            return TT.switch(TT.or_(TT.or_(is_inf_or_nan(norm_fac_v), norm_fac_v <= 0), is_inf_or_nan(alpha)), acc,
                              (v * alpha) / norm_fac_v + acc), norm_fac_v
 
     @abc.abstractmethod

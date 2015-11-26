@@ -52,8 +52,17 @@ def get_dir_between_2_dirs(c1, c2, cos):
     return mid_dir
 
 
-def is_not_real(v):
-    return TT.or_(TT.isnan(v), TT.isinf(v))
+def is_inf_or_nan(number):
+    return TT.or_(TT.isnan(number), TT.isinf(number))
+
+
+def is_not_trustworthy(norm_v):
+    return TT.or_(norm_v < 0, TT.or_(norm_v > 1e10, norm_v < 1e-10))  # FIXME aggiustare in base a floatType
+
+
+def fix_vector(v):
+    norm_v = v.norm(2)
+    return TT.switch(TT.or_(is_inf_or_nan(norm_v), is_not_trustworthy(norm_v)), TT.zeros_like(v), v)
 
 
 def normalize(vector, norm_type=2):

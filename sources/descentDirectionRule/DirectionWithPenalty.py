@@ -8,7 +8,7 @@ from infos.SymbolicInfoProducer import SymbolicInfoProducer
 from penalty import Penalty
 import theano.tensor as TT
 
-from theanoUtils import is_not_real
+from theanoUtils import is_inf_or_nan
 
 __author__ = 'giulio'
 
@@ -51,7 +51,7 @@ class DirectionWithPenalty(DescentDirectionRule):
             penalty_grad = self.__penalty_symbols.penalty_grad
 
             direction = self.__dir_symbols.direction
-            add_term = TT.switch(is_not_real(penalty_grad.norm(2)), TT.alloc(0.),
+            add_term = TT.switch(is_inf_or_nan(penalty_grad.norm(2)), TT.alloc(0.),
                                  rule.penalty_lambda * (-penalty_grad) / (penalty_grad.norm(2)))
             direction.setW_rec(direction.W_rec + add_term)  # FIXME
             self.__direction = direction

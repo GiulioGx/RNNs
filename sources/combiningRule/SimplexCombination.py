@@ -2,7 +2,7 @@ from Configs import Configs
 from combiningRule.LinearCombination import LinearCombination
 from infos.InfoElement import SimpleDescription
 from infos.InfoGroup import InfoGroup
-from theanoUtils import norm, is_not_real, normalize
+from theanoUtils import norm, is_inf_or_nan, normalize
 import theano.tensor as TT
 from theano.tensor.shared_randomstreams import RandomStreams
 

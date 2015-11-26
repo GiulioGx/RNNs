@@ -58,3 +58,4 @@ class Variables(object):
     @abc.abstractproperty
     def net(self):
         """returns the networks this 'Variables' class parametrizes"""
+

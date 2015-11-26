@@ -4,7 +4,7 @@ import theano.tensor as TT
 import theano as T
 from infos.InfoElement import SimpleDescription
 from infos.InfoGroup import InfoGroup
-from theanoUtils import norm, is_not_real, normalize
+from theanoUtils import norm, is_inf_or_nan, normalize
 
 __author__ = 'giulio'
 

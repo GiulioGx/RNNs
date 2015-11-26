@@ -7,7 +7,7 @@ from infos.SymbolicInfoProducer import SymbolicInfoProducer
 import theano.tensor as TT
 import theano as T
 from model.Combination import Combination
-from theanoUtils import get_norms, as_vector, flatten_list_element, cos_between_dirs
+from theanoUtils import get_norms, as_vector, flatten_list_element, cos_between_dirs, is_inf_or_nan, is_not_trustworthy
 
 __author__ = 'giulio'
 
@@ -25,23 +25,17 @@ class RnnGradient(SymbolicInfoProducer):
 
         self.__l = u.shape[0]
 
-        self.__gW_rec_list = T.grad(self.__loss, W_rec_fixes)
-        self.__gW_in_list = T.grad(self.__loss, W_in_fixes)
-        self.__gW_out_list = T.grad(self.__loss, W_out_fixes)
-        self.__gb_rec_list = T.grad(self.__loss, b_rec_fixes)
-        self.__gb_out_list = T.grad(self.__loss, b_out_fixes)
+        self.__gW_rec_list, gW_rec_norms = RnnGradient.__get_norms_and_fix(T.grad(self.__loss, W_rec_fixes), self.__l)
+        self.__gW_in_list, gW_in_norms = RnnGradient.__get_norms_and_fix(T.grad(self.__loss, W_in_fixes), self.__l)
+        self.__gW_out_list, gW_out_norms = RnnGradient.__get_norms_and_fix(T.grad(self.__loss, W_out_fixes), self.__l)
+        self.__gb_rec_list, gb_rec_norms = RnnGradient.__get_norms_and_fix(T.grad(self.__loss, b_rec_fixes), self.__l)
+        self.__gb_out_list, gb_out_norms = RnnGradient.__get_norms_and_fix(T.grad(self.__loss, b_out_fixes), self.__l)
 
         self.__value = 0  # FIXME obrobrio
         self.__value = RnnGradient.SeparateCombination(self.__gW_rec_list, self.__gW_in_list,
                                                        self.__gW_out_list, self.__gb_rec_list,
                                                        self.__gb_out_list, self.__l, self.__net,
                                                        OnesCombination(normalize_components=False), self).value
-
-        gW_rec_norms = get_norms(self.__gW_rec_list, self.__l)
-        gW_in_norms = get_norms(self.__gW_in_list, self.__l)
-        gW_out_norms = get_norms(self.__gW_out_list, self.__l)
-        gb_rec_norms = get_norms(self.__gb_rec_list, self.__l)
-        gb_out_norms = get_norms(self.__gb_out_list, self.__l)
 
         # FIXME (add some option or control to do or not to do this op)
         # self.__gW_out_list = self._fix(self.__gW_out_list, self.__l)
@@ -51,6 +45,23 @@ class RnnGradient(SymbolicInfoProducer):
 
         grad_dots = self.__get_angular_infos()
         self.__info += [grad_dots]
+
+    @staticmethod
+    def __get_norms_and_fix(grad_list, l):
+
+        def g(v):
+            norm_v = v.norm(2)
+            condition = TT.or_(is_inf_or_nan(norm_v), is_not_trustworthy(norm_v))
+            v_fixed = TT.switch(condition, TT.zeros_like(v), v)
+            norm_v = TT.switch(condition, 0., norm_v)
+            return v_fixed, norm_v
+
+        values, _ = T.scan(g, sequences=[],
+                           outputs_info=[None, None],
+                           non_sequences=[TT.as_tensor_variable(grad_list)[l - 1]],  # / TT.cast(l, Configs.floatType)],
+                           name='norms_and_fix_scan',
+                           n_steps=l)
+        return values[0], values[1]
 
     def __get_angular_infos(self):
         values = flatten_list_element([TT.as_tensor_variable(self.__gW_rec_list),
