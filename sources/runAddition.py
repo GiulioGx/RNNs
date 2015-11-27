@@ -10,6 +10,7 @@ from lossFunctions.HingeLoss import HingeLoss
 from lossFunctions.SquaredError import SquaredError
 from task.XorTask import XorTask
 from updateRule.FixedAveraging import FixedAveraging
+from updateRule.Momentum import Momentum
 from updateRule.SimpleUpdate import SimpleUdpate
 from combiningRule.DropoutCombination import DropoutCombination
 from combiningRule.EquiangularCombination import EquiangularCombination
@@ -48,11 +49,11 @@ print(separator)
 
 # setup
 seed = 13
-task = XorTask(144, seed)
+task = MultiplicationTask(144, seed)
 n_hidden = 50
 activation_fnc = Tanh()
-output_fnc = RNN.logistic
-loss_fnc = CrossEntropy()
+output_fnc = RNN.linear_fnc
+loss_fnc = SquaredError()
 out_dir = Configs.output_dir+str(task)
 
 # init strategy
@@ -91,8 +92,9 @@ lr_rule = GradientClipping(lr_value=0.01, clip_thr=0.1)  # 0.01
 
 obj_fnc = ObjectiveFunction(loss_fnc)
 
-#avg_rule = FixedAveraging(t=7)
-update_rule = SimpleUdpate()
+#update_rule = FixedAveraging(t=7)
+#update_rule = SimpleUdpate()
+update_rule = Momentum(gamma=0.3)
 
 train_rule = TrainingRule(dir_rule, lr_rule, update_rule)
 

@@ -30,7 +30,7 @@ class Momentum(UpdateRule):
         def __init__(self, rule, net, net_symbols, lr_symbols: LearningStepRule.Symbols,
                      dir_symbols: DescentDirectionRule.Symbols):
             self.__v = T.shared(numpy.zeros((net.n_variables, 1),
-                                            dtype=Configs.floatType), broadcastable=(False, False))
+                                            dtype=Configs.floatType), broadcastable=(False, True))
 
             v = net.from_tensor(self.__v) * rule.gamma + (dir_symbols.direction * lr_symbols.learning_rate)
             updated_params = v + net_symbols.current_params
