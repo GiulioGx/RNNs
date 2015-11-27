@@ -5,6 +5,7 @@ from Configs import Configs
 from NetTrainer import NetTrainer
 from ObjectiveFunction import ObjectiveFunction
 from TrainingRule import TrainingRule
+from lossFunctions.CrossEntropy import CrossEntropy
 from lossFunctions.HingeLoss import HingeLoss
 from lossFunctions.SquaredError import SquaredError
 from task.XorTask import XorTask
@@ -47,11 +48,11 @@ print(separator)
 
 # setup
 seed = 13
-task = MultiplicationTask(144, seed)
+task = XorTask(144, seed)
 n_hidden = 50
 activation_fnc = Tanh()
-output_fnc = RNN.linear_fnc
-loss_fnc = SquaredError()
+output_fnc = RNN.logistic
+loss_fnc = CrossEntropy()
 out_dir = Configs.output_dir+str(task)
 
 # init strategy
@@ -85,7 +86,7 @@ dir_rule = CombinedGradients(combining_rule)
 # learning step rule
 # lr_rule = WRecNormalizedStep(0.0001) #0.01
 #lr_rule = ConstantNormalizedStep(0.001)  # 0.01
-lr_rule = GradientClipping(lr_value=0.02, clip_thr=0.1)  # 0.01
+lr_rule = GradientClipping(lr_value=0.01, clip_thr=0.1)  # 0.01
 #lr_rule = ArmijoStep(alpha=0.5, beta=0.5, init_step=1, max_steps=50)
 
 obj_fnc = ObjectiveFunction(loss_fnc)

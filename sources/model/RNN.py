@@ -188,6 +188,10 @@ class RNN(object):
     def linear_fnc(y):
         return y
 
+    @staticmethod
+    def logistic(y):
+        return 1. / (1. + TT.exp(-y))
+
     # @staticmethod
     # def softmax(y):
     #     e_y = TT.exp(y - y.max(axis=0))
