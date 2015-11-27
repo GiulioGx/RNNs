@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 __author__ = 'giulio'
 
-modelFile = '/home/giulio/RNNs/models/mul_task, min_length: 144/model.npz'
+modelFile = '/home/giulio/RNNs/models/xor_task, min_length: 144/model.npz'
 #modelFile = '/home/giulio/model_octopus.npz'
 #modelFile = '/home/giulio/RNNs/models/old/model_add.npz'
 npz = numpy.load(modelFile)
@@ -20,7 +20,7 @@ def on_button_press(event):
 
 
 x = range(length)
-x = reversed(x)
+#x = reversed(x)
 
 for i in x:
     dict = norms_dicts[i]

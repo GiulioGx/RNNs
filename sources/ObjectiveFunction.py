@@ -3,6 +3,7 @@ from infos.InfoElement import PrintableInfoElement
 from infos.InfoGroup import InfoGroup
 from infos.InfoList import InfoList
 from infos.SymbolicInfoProducer import SymbolicInfoProducer
+from lossFunctions import LossFunction
 from model.Variables import Variables
 from penalty.NullPenalty import NullPenalty
 from penalty.Penalty import Penalty
@@ -11,14 +12,14 @@ __author__ = 'giulio'
 
 
 class ObjectiveFunction(object):
-    def __init__(self, loss_fnc):
+    def __init__(self, loss_fnc: LossFunction):
         self.__loss_fnc = loss_fnc
 
     def compile(self, net, params: Variables, u, t):
         return ObjectiveFunction.Symbols(self, net, params, u, t)
 
     def loss(self, y, t):  # loss without penalty
-        return self.__loss_fnc(y, t)
+        return self.__loss_fnc.value(y, t)
 
     @property
     def loss_fnc(self):

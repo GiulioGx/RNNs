@@ -166,10 +166,6 @@ class NetTrainer(object):
         info = InfoList(it_info, val_info, rho_info, train_info, time_info)
         return info
 
-    # predefined loss functions
-    @staticmethod
-    def squared_error(y, t):
-        return ((t[-1:, :, :] - y[-1:, :, :]) ** 2).sum(axis=0).mean()
 
         # @staticmethod
         # def cross_entropy(y, t):

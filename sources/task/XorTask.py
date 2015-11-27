@@ -1,16 +1,15 @@
 import numpy
-
 from infos.InfoElement import SimpleDescription, PrintableInfoElement
 from infos.InfoList import InfoList
 from task.MarkerBasedTask import MarkerBasedTask
 from task.Task import Task
 from Configs import Configs
+import theano.tensor as TT
 
 __author__ = 'giulio'
 
 
 class XorTask(Task):
-
     def __init__(self, min_length: int, seed: int):
         self.__min_length = min_length
         self.__n_in = 2
@@ -32,10 +31,11 @@ class XorTask(Task):
         a = data[p0, numpy.ones((n,), dtype='int32'), numpy.arange(n)].astype('int32')
         b = data[p1, numpy.ones((n,), dtype='int32'), numpy.arange(n)].astype('int32')
 
-        outputs[m - 1, 0, :] = numpy.bitwise_xor(a, b).astype(Configs.floatType)
+        outputs[m - 1, 0, :] = -1. + 2. * numpy.bitwise_xor(a, b).astype(Configs.floatType)  # output in [-1,1]
 
-    def error_fnc(self, t, y):
-        return (abs(t[-1:, :, :] - y[-1:, :, :]).sum(axis=0) > .2).mean()
+    def error_fnc(self, t, y):  # FIXME moveme somewhere
+        # return (abs(t[-1:, :, :] - y[-1:, :, :]).sum(axis=0) > .2).mean()
+        return TT.switch(TT.sgn(t[-1, 0, :] * y[-1, 0, :]) > 0, 0, 1).mean()
 
     def get_batch(self, batch_size: int):
         return self.__marker_based_task.get_batch(batch_size)
@@ -54,9 +54,6 @@ class XorTask(Task):
     @property
     def infos(self):
         return InfoList(SimpleDescription('xor_task'), PrintableInfoElement('min_length', ':d', self.__min_length))
-
-
-
 
 
 if __name__ == '__main__':

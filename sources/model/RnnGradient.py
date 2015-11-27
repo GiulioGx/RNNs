@@ -21,7 +21,7 @@ class RnnGradient(SymbolicInfoProducer):
 
         y, _, W_rec_fixes, W_in_fixes, W_out_fixes, b_rec_fixes, b_out_fixes = params.net.experimental.net_output(
             params, u)
-        self.__loss = loss_fnc(y, t)
+        self.__loss = loss_fnc.value(y, t)
 
         self.__l = u.shape[0]
 
