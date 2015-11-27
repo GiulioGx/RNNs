@@ -20,7 +20,7 @@ def on_button_press(event):
 
 
 x = range(length)
-#x = reversed(x)
+x = reversed(x)
 
 for i in x:
     dict = norms_dicts[i]
