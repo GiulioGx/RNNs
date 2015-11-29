@@ -6,17 +6,17 @@ from lossFunctions.HingeLoss import HingeLoss
 from model import RNN
 from task.XorTask import XorTask
 import theano as T
-
+import numpy
 seed = 15
 print('Testing XOR task ...')
 task = XorTask(22, seed)
-batch = task.get_batch(3)
+batch = task.get_batch(5)
 print(str(batch))
 
 n_hidden = 50
 activation_fnc = Tanh()
-output_fnc = RNN.logistic
-loss_fnc = CrossEntropy()
+output_fnc = RNN.linear_fnc
+loss_fnc = HingeLoss()
 # init strategy
 std_dev = 0.14  # 0.14 Tanh # 0.21 Relu
 init_strategies = {'W_rec': GaussianInit(0, std_dev), 'W_in': GaussianInit(0, std_dev),
@@ -38,5 +38,6 @@ loss_and_error = T.function([u, t], [error, loss, y], name='loss_and_error_fnc')
 
 valid_error, valid_loss, y = loss_and_error(batch.inputs, batch.outputs)
 
+print(y.shape)
 print('y:', y[-1, :, :])
 print(valid_error, valid_loss)

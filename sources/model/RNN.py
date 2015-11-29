@@ -45,11 +45,11 @@ class RNN(object):
         b_rec = init_strategies['b_rec'].init_matrix((self.__n_hidden, 1), Configs.floatType)
         b_out = init_strategies['b_out'].init_matrix((self.__n_out, 1), Configs.floatType)
 
-        # build symbols
-        self.__symbols = RNN.Symbols(self, W_rec, W_in, W_out, b_rec, b_out)
-
         # experimental
         self.experimental = RNN.Experimental(self)
+
+        # build symbols
+        self.__symbols = RNN.Symbols(self, W_rec, W_in, W_out, b_rec, b_out)
 
         # define visible functions
         self.net_output_shared = T.function([self.__symbols.u], self.__symbols.y_shared, name='net_output_shared_fun')
@@ -192,6 +192,10 @@ class RNN(object):
     def logistic(y):
         return 1. / (1. + TT.exp(-y))
 
+    @staticmethod
+    def softmax(y):
+        return TT.nnet.softmax(y)
+
     # @staticmethod
     # def softmax(y):
     #     e_y = TT.exp(y - y.max(axis=0))
@@ -265,6 +269,7 @@ class RNN(object):
 
             # output of the net
             self.y, self.deriv_a = net.net_output(self.__current_params, self.u)
+            #self.y, self.deriv_a, *_ = net.experimental.net_output(self.__current_params, self.u)
             self.y_shared, self.deriv_a_shared = T.clone([self.y, self.deriv_a],
                                                          replace={W_rec: self.__W_rec, W_in: self.__W_in,
                                                                   W_out: self.__W_out, b_rec: self.__b_rec,

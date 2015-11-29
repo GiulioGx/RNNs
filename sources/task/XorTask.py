@@ -31,14 +31,14 @@ class XorTask(Task):
         a = data[p0, numpy.ones((n,), dtype='int32'), numpy.arange(n)].astype('int32')
         b = data[p1, numpy.ones((n,), dtype='int32'), numpy.arange(n)].astype('int32')
 
-        outputs[m - 1, 0, :] = numpy.bitwise_xor(a, b).astype(Configs.floatType)  # output in [-1,1]  #-1. + 2. *
+        outputs[m - 1, 0, :] = -1. + 2. * numpy.bitwise_xor(a, b).astype(Configs.floatType)  # output in [-1,1]  #-1. + 2. *
 
     def error_fnc(self, t, y):  # FIXME moveme somewhere
         # return (abs(t[-1:, :, :] - y[-1:, :, :]).sum(axis=0) > .2).mean()
-        #return TT.switch(TT.sgn(t[-1, 0, :] * y[-1, 0, :]) > 0, 0, 1).mean()
-        a = -1. + 2. * t[-1, 0, :]  # FIXME
-        b = -1. + 2. * y[-1, 0, :]
-        return TT.switch(TT.sgn(a * b) > 0, 0, 1).mean()
+        return TT.switch(TT.sgn(t[-1, 0, :] * y[-1, 0, :]) > 0, 0, 1).mean()
+        #a = -1. + 2. * t[-1, 0, :]  # FIXME
+        #b = -1. + 2. * y[-1, 0, :]
+        #return TT.switch(TT.sgn(a * b) > 0, 0, 1).mean()
 
 
     def get_batch(self, batch_size: int):
