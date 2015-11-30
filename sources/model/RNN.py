@@ -194,8 +194,8 @@ class RNN(object):
 
     @staticmethod
     def softmax(y):
-        return TT.nnet.softmax(y)
-
+        return TT.nnet.softmax(y.T).T
+    # alternatively
     # @staticmethod
     # def softmax(y):
     #     e_y = TT.exp(y - y.max(axis=0))

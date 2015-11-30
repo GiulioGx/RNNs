@@ -70,6 +70,6 @@ class TemporalOrderTask(Task):
 if __name__ == '__main__':
     seed = 13
     print('Testing Temporal Order task ...')
-    task = TemporalOrderTask(22, seed)
+    task = TemporalOrderTask(25, seed)
     batch = task.get_batch(3)
     print(str(batch))
