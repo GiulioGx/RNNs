@@ -47,6 +47,7 @@ class NetTrainer(object):
                                                                                 self.__validation_set_size),
                                                            PrintableInfoElement('stop_error_thresh', ':f',
                                                                                 self.__stop_error_thresh),
+                                                           self.__obj_fnc.infos
                                                            ))
 
     def _train(self, task, net):

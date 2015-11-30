@@ -10,4 +10,4 @@ class CrossEntropy(LossFunction):
         # return (-t[-1, 0, :] * TT.log(y[-1, 0, :]) - (1. - t[-1, 0, :]) * TT.log(1. - y[-1, 0, :])).mean()  # FIXME
 
     def infos(self):
-        return SimpleDescription('cross_entropy')
+        return SimpleDescription('cross_entropy_loss')

@@ -8,4 +8,4 @@ class SquaredError(LossFunction):
         return ((t[-1:, :, :] - y[-1:, :, :]) ** 2).sum(axis=0).mean()
 
     def infos(self):
-        return SimpleDescription('squared_error')
+        return SimpleDescription('squared_error_loss')

@@ -2,6 +2,7 @@ from combiningRule.LinearCombination import LinearCombination
 from infos.InfoElement import PrintableInfoElement
 from infos.InfoGroup import InfoGroup
 from infos.InfoList import InfoList
+from infos.SimpleInfoProducer import SimpleInfoProducer
 from infos.SymbolicInfoProducer import SymbolicInfoProducer
 from lossFunctions import LossFunction
 from model.Variables import Variables
@@ -11,7 +12,12 @@ from penalty.Penalty import Penalty
 __author__ = 'giulio'
 
 
-class ObjectiveFunction(object):
+class ObjectiveFunction(SimpleInfoProducer):
+
+    @property
+    def infos(self):
+        return self.__loss_fnc.infos
+
     def __init__(self, loss_fnc: LossFunction):
         self.__loss_fnc = loss_fnc
 
