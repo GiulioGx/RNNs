@@ -9,5 +9,6 @@ class HingeLoss(LossFunction):
         s = 1. - t[-1, 0, :] * y[-1, 0, :]  # FIXME
         return TT.switch(s > 0, s, 0).mean()
 
+    @property
     def infos(self):
         return SimpleDescription("hinge_loss")
