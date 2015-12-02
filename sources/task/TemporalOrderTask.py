@@ -19,10 +19,9 @@ class TemporalOrderTask(Task):
         self.__rng = numpy.random.RandomState(seed)
 
     def error_fnc(self, t, y):  # FIXME moveme somewhere
-        return TT.neq(TT.argmax(y, axis=1), TT.argmax(t, axis=1)).mean()
+        return TT.neq(TT.argmax(y[-1, :, :], axis=0), TT.argmax(t[-1, :, :], axis=0)).mean()
 
     def get_batch(self, batch_size: int):
-
         length = self.__min_length
 
         inputs = numpy.zeros((length, self.__n_in, batch_size), dtype=Configs.floatType)
