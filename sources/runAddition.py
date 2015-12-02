@@ -10,6 +10,7 @@ from lossFunctions.HingeLoss import HingeLoss
 from lossFunctions.SquaredError import SquaredError
 from task.TemporalOrderTask import TemporalOrderTask
 from task.XorTask import XorTask
+from task.XorTaskHot import XorTaskHot
 from updateRule.FixedAveraging import FixedAveraging
 from updateRule.Momentum import Momentum
 from updateRule.SimpleUpdate import SimpleUdpate
@@ -50,7 +51,7 @@ print(separator)
 
 # setup
 seed = 13
-task = TemporalOrderTask(144, seed)
+task = XorTaskHot(144, seed)
 n_hidden = 50
 activation_fnc = Tanh()
 output_fnc = RNN.softmax

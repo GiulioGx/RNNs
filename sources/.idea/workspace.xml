@@ -25,7 +25,7 @@
         <entry file="file://$PROJECT_DIR$/task/TemporalOrderTask.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="46" column="0" selection-start-line="46" selection-start-column="0" selection-end-line="46" selection-end-column="0" />
+              <caret line="21" column="39" selection-start-line="21" selection-start-column="0" selection-end-line="22" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -34,11 +34,21 @@
       <file leaf-file-name="runAddition.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/runAddition.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.51582277">
-              <caret line="94" column="0" selection-start-line="94" selection-start-column="0" selection-end-line="94" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.7436709">
+              <caret line="55" column="23" selection-start-line="55" selection-start-column="23" selection-end-line="55" selection-end-column="23" />
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="XorTaskHot.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/task/XorTaskHot.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="65" column="22" selection-start-line="65" selection-start-column="22" selection-end-line="65" selection-end-column="22" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -67,31 +77,21 @@
           </provider>
         </entry>
       </file>
+      <file leaf-file-name="XorTask.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/task/XorTask.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="57" column="13" selection-start-line="0" selection-start-column="0" selection-end-line="68" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="plot_norms_interactive.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/plotUtils/plot_norms_interactive.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
               <caret line="5" column="52" selection-start-line="5" selection-start-column="52" selection-end-line="5" selection-end-column="52" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="XorTask.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/task/XorTask.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="44" column="61" selection-start-line="44" selection-start-column="61" selection-end-line="44" selection-end-column="61" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="SquaredError.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lossFunctions/SquaredError.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="9" column="13" selection-start-line="9" selection-start-column="13" selection-end-line="9" selection-end-column="13" />
               <folding />
             </state>
           </provider>
@@ -139,7 +139,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/descentDirectionRule/DescentDirectionRule.py" />
         <option value="$PROJECT_DIR$/learningRule/LearningRule.py" />
         <option value="$PROJECT_DIR$/test/testDot.py" />
         <option value="$PROJECT_DIR$/model/RnnVars.py" />
@@ -189,6 +188,7 @@
         <option value="$PROJECT_DIR$/test/prova.py" />
         <option value="$PROJECT_DIR$/plotUtils/plot_norms_interactive.py" />
         <option value="$PROJECT_DIR$/task/TemporalOrderTask.py" />
+        <option value="$PROJECT_DIR$/task/XorTaskHot.py" />
         <option value="$PROJECT_DIR$/runAddition.py" />
       </list>
     </option>
@@ -378,7 +378,7 @@
       <recent name="$PROJECT_DIR$/descentDirectionRule" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.plot_norms_interactive">
+  <component name="RunManager" selected="Python.XorTaskHot">
     <configuration default="false" name="plot_norms_interactive" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -413,23 +413,6 @@
       <option name="SHOW_COMMAND_LINE" value="false" />
       <method />
     </configuration>
-    <configuration default="false" name="testXor" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="sources" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test/testXor.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <method />
-    </configuration>
     <configuration default="false" name="TemporalOrderTask" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -460,6 +443,23 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="sources" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test/prova.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <method />
+    </configuration>
+    <configuration default="false" name="XorTaskHot" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/task" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="sources" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/task/XorTaskHot.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <method />
@@ -661,17 +661,17 @@
       <item index="3" class="java.lang.String" itemvalue="Python.plot_stats" />
       <item index="4" class="java.lang.String" itemvalue="Python.plot_norms_interactive" />
       <item index="5" class="java.lang.String" itemvalue="Python.XorTask" />
-      <item index="6" class="java.lang.String" itemvalue="Python.testXor" />
-      <item index="7" class="java.lang.String" itemvalue="Python.TemporalOrderTask" />
-      <item index="8" class="java.lang.String" itemvalue="Python.prova" />
+      <item index="6" class="java.lang.String" itemvalue="Python.TemporalOrderTask" />
+      <item index="7" class="java.lang.String" itemvalue="Python.prova" />
+      <item index="8" class="java.lang.String" itemvalue="Python.XorTaskHot" />
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Python.plot_norms_interactive" />
-        <item index="1" class="java.lang.String" itemvalue="Python.prova" />
-        <item index="2" class="java.lang.String" itemvalue="Python.XorTask" />
-        <item index="3" class="java.lang.String" itemvalue="Python.TemporalOrderTask" />
-        <item index="4" class="java.lang.String" itemvalue="Python.testXor" />
+        <item index="0" class="java.lang.String" itemvalue="Python.XorTaskHot" />
+        <item index="1" class="java.lang.String" itemvalue="Python.XorTask" />
+        <item index="2" class="java.lang.String" itemvalue="Python.plot_norms_interactive" />
+        <item index="3" class="java.lang.String" itemvalue="Python.prova" />
+        <item index="4" class="java.lang.String" itemvalue="Python.TemporalOrderTask" />
       </list>
     </recent_temporary>
   </component>
@@ -744,13 +744,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/combiningRule/SimplexCombination.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="23" column="13" selection-start-line="23" selection-start-column="13" selection-end-line="23" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/learningRule/ArmijoStep.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1032,14 +1025,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="39" column="12" selection-start-line="39" selection-start-column="7" selection-end-line="39" selection-end-column="37" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/task/XorTask.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="44" column="61" selection-start-line="44" selection-start-column="61" selection-end-line="44" selection-end-column="61" />
-          <folding />
+          <folding>
+            <element signature="e#0#28#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1103,18 +1091,34 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/task/XorTask.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="57" column="13" selection-start-line="0" selection-start-column="0" selection-end-line="68" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/task/TemporalOrderTask.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="46" column="0" selection-start-line="46" selection-start-column="0" selection-end-line="46" selection-end-column="0" />
+          <caret line="21" column="39" selection-start-line="21" selection-start-column="0" selection-end-line="22" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/task/XorTaskHot.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="65" column="22" selection-start-line="65" selection-start-column="22" selection-end-line="65" selection-end-column="22" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/runAddition.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.51582277">
-          <caret line="94" column="0" selection-start-line="94" selection-start-column="0" selection-end-line="94" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.7436709">
+          <caret line="55" column="23" selection-start-line="55" selection-start-column="23" selection-end-line="55" selection-end-column="23" />
           <folding>
             <element signature="e#0#13#0" expanded="true" />
           </folding>
