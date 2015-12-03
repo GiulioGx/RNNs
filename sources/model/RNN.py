@@ -1,8 +1,9 @@
 import os
+import pickle
 import numpy
 import theano as T
 import theano.tensor as TT
-from ActivationFunction import Tanh
+from ActivationFunction import Tanh, ActivationFunction
 from Configs import Configs
 from Statistics import Statistics
 from infos.Info import Info
@@ -13,6 +14,7 @@ from initialization.GaussianInit import GaussianInit
 from initialization.GivenValueInit import GivenValueInit
 from initialization.ZeroInit import ZeroInit
 from model.RnnVars import RnnVars
+from output_fncs import OutputFunction
 
 __author__ = 'giulio'
 
@@ -21,7 +23,7 @@ class RNN(object):
     deafult_init_strategies = {'W_rec': GaussianInit(), 'W_in': GaussianInit(), 'W_out': GaussianInit(),
                                'b_rec': ZeroInit(), 'b_out': ZeroInit()}
 
-    def __init__(self, activation_fnc, output_fnc, n_hidden, n_in, n_out, init_strategies: deafult_init_strategies,
+    def __init__(self, activation_fnc: ActivationFunction, output_fnc: OutputFunction, n_hidden, n_in, n_out, init_strategies: deafult_init_strategies,
                  seed=Configs.seed):
         # topology
         self.__n_hidden = n_hidden
@@ -127,15 +129,15 @@ class RNN(object):
     #     return self.__output_fnc(TT.dot(self.__W_out, h[-1]) + self.__b_out)
 
     def y_t(self, h_t, W_out, b_out):
-        return self.__output_fnc(TT.dot(W_out, h_t) + b_out)
+        return self.__output_fnc.value(TT.dot(W_out, h_t) + b_out)
 
     @property
     def spectral_radius(self):
         return numpy.max(abs(numpy.linalg.eigvals(self.symbols.current_params.W_rec.get_value())))
 
     @staticmethod
-    def load_model(filename):
-        npz = numpy.load(filename)
+    def load_model(save_dir):
+        npz = numpy.load(save_dir + '/model.npz')
 
         W_rec = npz["W_rec"]
         W_in = npz["W_in"]
@@ -147,8 +149,8 @@ class RNN(object):
         n_in = npz["net_n_in"].item()
         n_out = npz["net_n_out"].item()
 
-        activation_fnc = Tanh()  # FIXME XXX
-        output_fnc = RNN.linear_fnc
+        pickle_file = save_dir + '/model.pkl'
+        activation_fnc, output_fnc = pickle.load(open(pickle_file, 'rb'))
 
         init_strategies = {'W_rec': GivenValueInit(W_rec), 'W_in': GivenValueInit(W_in), 'W_out': GivenValueInit(W_out),
                            'b_rec': GivenValueInit(b_rec), 'b_out': GivenValueInit(b_out)}
@@ -165,10 +167,11 @@ class RNN(object):
                                   PrintableInfoElement('activation_fnc', '', self.__activation_fnc)
                                   ))
 
-    def save_model(self, filename: str, stats: Statistics, train_info: Info):
+    def save_model(self, save_dir: str, stats: Statistics, train_info: Info):
         """saves the model with statistics to file"""
 
-        os.makedirs(os.path.dirname(filename), exist_ok=True)
+        # os.path.dirname
+        os.makedirs(save_dir, exist_ok=True)
 
         net_info_dict = self.info.dictionary
         stat_info_dict = stats.dictionary
@@ -181,25 +184,10 @@ class RNN(object):
         stat_info_dict.update(d)
         stat_info_dict.update(train_info.dictionary)
         stat_info_dict.update(net_info_dict)
-        numpy.savez(filename + '.npz', **stat_info_dict)
+        numpy.savez(save_dir + '/model.npz', **stat_info_dict)
 
-    # predefined output functions
-    @staticmethod
-    def linear_fnc(y):
-        return y
-
-    @staticmethod
-    def logistic(y):
-        return 1. / (1. + TT.exp(-y))
-
-    @staticmethod
-    def softmax(y):
-        return TT.nnet.softmax(y.T).T
-    # alternatively
-    # @staticmethod
-    # def softmax(y):
-    #     e_y = TT.exp(y - y.max(axis=0))
-    #     return e_y / e_y.sum(axis=0)
+        pickfile = open(save_dir+'/model.pkl', "wb")
+        pickle.dump([self.__activation_fnc, self.__output_fnc], pickfile)
 
     class Experimental:  # FIXME XXX
         def __init__(self, net):
@@ -269,7 +257,7 @@ class RNN(object):
 
             # output of the net
             self.y, self.deriv_a = net.net_output(self.__current_params, self.u)
-            #self.y, self.deriv_a, *_ = net.experimental.net_output(self.__current_params, self.u)
+            # self.y, self.deriv_a, *_ = net.experimental.net_output(self.__current_params, self.u)
             self.y_shared, self.deriv_a_shared = T.clone([self.y, self.deriv_a],
                                                          replace={W_rec: self.__W_rec, W_in: self.__W_in,
                                                                   W_out: self.__W_out, b_rec: self.__b_rec,
@@ -288,4 +276,5 @@ class RNN(object):
             return numpy.reshape(
                 numpy.concatenate((self.__W_rec.get_value().flatten(), self.__W_in.get_value().flatten(),
                                    self.__W_out.get_value().flatten(), self.__b_rec.get_value().flatten(),
-                                   self.__b_out.get_value().flatten())), (self.__net.n_variables, 1)).astype(dtype=Configs.floatType)
+                                   self.__b_out.get_value().flatten())), (self.__net.n_variables, 1)).astype(
+                dtype=Configs.floatType)

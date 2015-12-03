@@ -31,12 +31,7 @@ class NetTrainer(object):
         self.__check_freq = check_freq
         self.__output_dir = output_dir
 
-        # logging
-        log_filename = self.__output_dir + '/train.log'
-        if os.path.exists(log_filename):
-            os.remove(log_filename)
-        os.makedirs(output_dir, exist_ok=True)
-        logging.basicConfig(filename=log_filename, level=logging.INFO, format='%(levelname)s:%(message)s')
+        self.__log_filename = self.__output_dir + '/train.log'
 
         # build training setting info
         self.__training_settings_info = InfoGroup('settings',
@@ -117,8 +112,7 @@ class NetTrainer(object):
                                                 batch_time, eval_time)
                 logging.info(info)
                 stats.update(info, i, total_elapsed_time)
-                model_filename = self.__output_dir + '/model'
-                net.save_model(model_filename, stats, self.__training_settings_info)
+                net.save_model(self.__output_dir, stats, self.__training_settings_info)
 
                 batch_start_time = time.time()
                 if error_occured:
@@ -135,7 +129,15 @@ class NetTrainer(object):
         logging.info('Elapsed time: {:2.2f} min'.format((end_time - start_time) / 60))
         return net
 
+    def __start_logger(self):
+        os.makedirs(self.__output_dir, exist_ok=True)
+        logging.basicConfig(filename=self.__log_filename, level=logging.INFO, format='%(levelname)s:%(message)s')
+
     def train(self, task, activation_fnc, output_fnc, n_hidden, init_strategies=RNN.deafult_init_strategies, seed=13):
+
+        if os.path.exists(self.__log_filename):
+            os.remove(self.__log_filename)
+        self.__start_logger()
 
         # configure network
         logging.info('Compiling theano functions for the net...')
@@ -144,6 +146,8 @@ class NetTrainer(object):
         return self._train(task, net)
 
     def resume_training(self, task, net):  # TODO load statistics too
+        self.__start_logger()
+        logging.info('Resuming training...')
         return self._train(task, net)
 
     @staticmethod
@@ -166,8 +170,3 @@ class NetTrainer(object):
 
         info = InfoList(it_info, val_info, rho_info, train_info, time_info)
         return info
-
-
-        # @staticmethod
-        # def cross_entropy(y, t):
-        #     return -(t[-1, :, :] * TT.log(y[-1, :, :])).sum(axis=0).mean()

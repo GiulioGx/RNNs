@@ -58,7 +58,7 @@ class XorTaskHot(Task):
 
     @property
     def infos(self):
-        return InfoList(SimpleDescription('xor_task'), PrintableInfoElement('min_length', ':d', self.__min_length))
+        return InfoList(SimpleDescription('xor_task_hot'), PrintableInfoElement('min_length', ':d', self.__min_length))
 
 
 if __name__ == '__main__':

@@ -8,6 +8,8 @@ from TrainingRule import TrainingRule
 from lossFunctions.CrossEntropy import CrossEntropy
 from lossFunctions.HingeLoss import HingeLoss
 from lossFunctions.SquaredError import SquaredError
+from output_fncs.Softmax import Softmax
+from output_fncs.Linear import Linear
 from task.TemporalOrderTask import TemporalOrderTask
 from task.XorTask import XorTask
 from task.XorTaskHot import XorTaskHot
@@ -54,7 +56,7 @@ seed = 13
 task = XorTaskHot(144, seed)
 n_hidden = 50
 activation_fnc = Tanh()
-output_fnc = RNN.softmax
+output_fnc = Softmax()
 loss_fnc = CrossEntropy()
 out_dir = Configs.output_dir+str(task)
 
@@ -77,7 +79,7 @@ init_strategies = {'W_rec': GaussianInit(0, std_dev), 'W_in': GaussianInit(0, st
 # dir_rule = SepareteGradient()
 
 #combining_rule = OnesCombination(normalize_components=False)
-combining_rule = SimplexCombination(normalize_components=True)
+combining_rule = OnesCombination(normalize_components=True)
 #combining_rule = SimpleSum()
 #combining_rule = EquiangularCombination()
 #combining_rule = DropoutCombination(drop_rate=0.8)
@@ -104,3 +106,6 @@ trainer = NetTrainer(train_rule, obj_fnc, output_dir=out_dir, max_it=10 ** 10,
                      check_freq=200, bacth_size=100)
 
 net = trainer.train(task, activation_fnc, output_fnc, n_hidden, init_strategies, seed)
+
+#net = RNN.load_model(out_dir)
+#net = trainer.resume_training(task, net)
