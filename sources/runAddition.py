@@ -5,6 +5,7 @@ from Configs import Configs
 from NetTrainer import NetTrainer
 from ObjectiveFunction import ObjectiveFunction
 from TrainingRule import TrainingRule
+from descentDirectionRule.DropoutDirection import DropoutDirection
 from lossFunctions.CrossEntropy import CrossEntropy
 from lossFunctions.HingeLoss import HingeLoss
 from lossFunctions.SquaredError import SquaredError
@@ -85,6 +86,7 @@ combining_rule = OnesCombination(normalize_components=True)
 #combining_rule = DropoutCombination(drop_rate=0.8)
 #combining_rule = MedianCombination()
 dir_rule = CombinedGradients(combining_rule)
+dir_rule = DropoutDirection(dir_rule, drop_rate=0.1)
 #dir_rule = DirectionWithPenalty(direction_rule=dir_rule, penalty=penalty, penalty_lambda=1)
 #dir_rule = AlternatingDirections(dir_rule)
 
