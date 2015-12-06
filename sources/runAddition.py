@@ -111,7 +111,7 @@ trainer = NetTrainer(train_rule, obj_fnc, output_dir=out_dir, max_it=10 ** 10,
 #dataset = Dataset.no_valid_dataset_from_task(size=1000, task=task)
 dataset = InfiniteDataset(task=task, validation_size=10 ** 4)
 
-#net = trainer.train(dataset, activation_fnc, output_fnc, n_hidden, init_strategies, seed)
+net = trainer.train(dataset, activation_fnc, output_fnc, n_hidden, init_strategies, seed)
 
 #net = RNN.load_model(out_dir)
 #net = trainer.resume_training(dataset, net)
