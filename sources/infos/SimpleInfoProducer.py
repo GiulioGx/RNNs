@@ -9,3 +9,6 @@ class SimpleInfoProducer(object):
     @abc.abstractproperty
     def infos(self):
         """return infos about itself"""
+
+    def __str__(self):
+        return str(self.infos)

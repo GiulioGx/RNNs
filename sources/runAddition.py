@@ -11,6 +11,7 @@ from lossFunctions.HingeLoss import HingeLoss
 from lossFunctions.SquaredError import SquaredError
 from output_fncs.Softmax import Softmax
 from output_fncs.Linear import Linear
+from task.Dataset import Dataset, InfiniteDataset
 from task.TemporalOrderTask import TemporalOrderTask
 from task.XorTask import XorTask
 from task.XorTaskHot import XorTaskHot
@@ -62,7 +63,7 @@ loss_fnc = CrossEntropy()
 out_dir = Configs.output_dir+str(task)
 
 # init strategy
-std_dev = 0.18  # 0.14 Tanh # 0.21 Relu
+std_dev = 0.14  # 0.14 Tanh # 0.21 Relu
 init_strategies = {'W_rec': GaussianInit(0, std_dev), 'W_in': GaussianInit(0, std_dev),
                    'W_out': GaussianInit(0, std_dev),
                    'b_rec': ZeroInit(), 'b_out': ZeroInit()}
@@ -80,7 +81,7 @@ init_strategies = {'W_rec': GaussianInit(0, std_dev), 'W_in': GaussianInit(0, st
 # dir_rule = SepareteGradient()
 
 #combining_rule = OnesCombination(normalize_components=False)
-combining_rule = OnesCombination(normalize_components=False)
+combining_rule = OnesCombination(normalize_components=True)
 #combining_rule = SimpleSum()
 #combining_rule = EquiangularCombination()
 #combining_rule = DropoutCombination(drop_rate=0.8)
@@ -93,7 +94,7 @@ dir_rule = CombinedGradients(combining_rule)
 # learning step rule
 # lr_rule = WRecNormalizedStep(0.0001) #0.01
 #lr_rule = ConstantNormalizedStep(0.001)  # 0.01
-lr_rule = GradientClipping(lr_value=0.02, clip_thr=0.1)  # 0.01
+lr_rule = GradientClipping(lr_value=0.01, clip_thr=0.05)  # 0.01
 #lr_rule = ArmijoStep(alpha=0.5, beta=0.5, init_step=1, max_steps=50)
 
 obj_fnc = ObjectiveFunction(loss_fnc)
@@ -105,9 +106,12 @@ update_rule = SimpleUdpate()
 train_rule = TrainingRule(dir_rule, lr_rule, update_rule)
 
 trainer = NetTrainer(train_rule, obj_fnc, output_dir=out_dir, max_it=10 ** 10,
-                     check_freq=200, bacth_size=100)
+                     check_freq=200, bacth_size=500)
 
-net = trainer.train(task, activation_fnc, output_fnc, n_hidden, init_strategies, seed)
+#dataset = Dataset.no_valid_dataset_from_task(size=1000, task=task)
+dataset = InfiniteDataset(task=task, validation_size=10 ** 4)
+
+#net = trainer.train(dataset, activation_fnc, output_fnc, n_hidden, init_strategies, seed)
 
 #net = RNN.load_model(out_dir)
-#net = trainer.resume_training(task, net)
+#net = trainer.resume_training(dataset, net)

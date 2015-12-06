@@ -13,6 +13,13 @@ class Batch:
         self.__inputs = inputs
         self.__outputs = outputs
 
+    def __getitem__(self, item):
+        return Batch(self.__inputs[item], self.__outputs[item])
+
+    @property
+    def sequences_dims(self):
+        return self.__inputs.shape[1], self.outputs.shape[1]
+
     @property
     def outputs(self):
         return self.__outputs

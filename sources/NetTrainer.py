@@ -6,6 +6,7 @@ import numpy
 import theano as T
 from numpy.linalg import LinAlgError
 
+from ActivationFunction import ActivationFunction
 from ObjectiveFunction import ObjectiveFunction
 from Statistics import Statistics
 from TrainingRule import TrainingRule
@@ -13,20 +14,20 @@ from infos.InfoElement import PrintableInfoElement
 from infos.InfoGroup import InfoGroup
 from infos.InfoList import InfoList
 from model.RNN import RNN
+from output_fncs.OutputFunction import OutputFunction
+from task.Dataset import Dataset
 
 __author__ = 'giulio'
 
 
 class NetTrainer(object):
     def __init__(self, training_rule: TrainingRule, obj_fnc: ObjectiveFunction, max_it=10 ** 5, bacth_size=100,
-                 validation_set_size=10 ** 4,
                  stop_error_thresh=0.01, check_freq=50, output_dir='.'):
 
         self.__training_rule = training_rule
         self.__obj_fnc = obj_fnc
         self.__max_it = max_it
         self.__batch_size = bacth_size
-        self.__validation_set_size = validation_set_size
         self.__stop_error_thresh = stop_error_thresh
         self.__check_freq = check_freq
         self.__output_dir = output_dir
@@ -38,17 +39,15 @@ class NetTrainer(object):
                                                   InfoList(PrintableInfoElement('max_it', ':d', self.__max_it),
                                                            PrintableInfoElement('check_freq', ':d', self.__check_freq),
                                                            PrintableInfoElement('batch_size', ':d', self.__batch_size),
-                                                           PrintableInfoElement('validation_set_size', ':d',
-                                                                                self.__validation_set_size),
                                                            PrintableInfoElement('stop_error_thresh', ':f',
                                                                                 self.__stop_error_thresh),
                                                            self.__obj_fnc.infos
                                                            ))
 
-    def _train(self, task, net):
+    def _train(self, dataset: Dataset, net):
         # add task description to infos
         self.__training_settings_info = InfoList(self.__training_settings_info,
-                                                 PrintableInfoElement('task', '', str(task)))
+                                                 PrintableInfoElement('task', '', str(dataset)))
 
         # compile symbols
         logging.info('Compiling theano functions for the training step...')
@@ -59,7 +58,7 @@ class NetTrainer(object):
         u = net.symbols.u
         t = net.symbols.t
         y = net.symbols.y_shared
-        error = task.error_fnc(y, t)
+        error = dataset.computer_error(y, t)
         loss = self.__obj_fnc.loss(y, t)
         self.__loss_and_error = T.function([u, t], [error, loss], name='loss_and_error_fnc')
 
@@ -67,7 +66,7 @@ class NetTrainer(object):
         stats = Statistics(self.__max_it, self.__check_freq)
 
         logging.info('Generating validation set ...')
-        validation_set = task.get_batch(self.__validation_set_size)
+        validation_set = dataset.validation_set
         logging.info('... Done')
 
         logging.info(str(net.info))
@@ -83,7 +82,7 @@ class NetTrainer(object):
         best_error = 100
         while i < self.__max_it and best_error > self.__stop_error_thresh / 100 and (not error_occured):
 
-            batch = task.get_batch(self.__batch_size)
+            batch = dataset.get_train_batch(self.__batch_size)
             train_info = train_step.step(batch.inputs, batch.outputs)
 
             if i % self.__check_freq == 0:
@@ -133,7 +132,7 @@ class NetTrainer(object):
         os.makedirs(self.__output_dir, exist_ok=True)
         logging.basicConfig(filename=self.__log_filename, level=logging.INFO, format='%(levelname)s:%(message)s')
 
-    def train(self, task, activation_fnc, output_fnc, n_hidden, init_strategies=RNN.deafult_init_strategies, seed=13):
+    def train(self, dataset: Dataset, activation_fnc:ActivationFunction, output_fnc:OutputFunction, n_hidden: int, init_strategies=RNN.deafult_init_strategies, seed:int=13):
 
         if os.path.exists(self.__log_filename):
             os.remove(self.__log_filename)
@@ -141,14 +140,14 @@ class NetTrainer(object):
 
         # configure network
         logging.info('Compiling theano functions for the net...')
-        net = RNN(activation_fnc, output_fnc, n_hidden, task.n_in, task.n_out, init_strategies, seed)
+        net = RNN(activation_fnc, output_fnc, n_hidden, dataset.n_in, dataset.n_out, init_strategies, seed)
         logging.info('...Done')
-        return self._train(task, net)
+        return self._train(dataset, net)
 
-    def resume_training(self, task, net):  # TODO load statistics too
+    def resume_training(self, dataset: Dataset, net):  # TODO load statistics too
         self.__start_logger()
         logging.info('Resuming training...')
-        return self._train(task, net)
+        return self._train(dataset, net)
 
     @staticmethod
     def __build_infos(train_info, i, valid_loss, valid_error, best_error, rho, batch_time, eval_time):

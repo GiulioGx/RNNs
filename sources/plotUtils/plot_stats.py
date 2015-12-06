@@ -3,7 +3,7 @@ import numpy
 
 __author__ = 'giulio'
 
-modelFile = '/home/giulio/RNNs/models/addition_equi_01/model.npz'
+modelFile = '/home/giulio/RNNs/models/completed/temporal_order, min_length: 144/model.npz'
 #modelFile = '/home/giulio/model_octopus.npz'
 
 # load npz archive
@@ -12,11 +12,14 @@ npz = numpy.load(modelFile)
 
 # choose what and how to display it
 valid_error = {'label': 'validation_error_curr', 'legend': 'validation error', 'color': 'r', 'scale': 'linear'}
+valid_loss = {'label': 'validation_loss', 'legend': 'validation loss', 'color': 'm', 'scale': 'linear'}
 dir_norm = {'label': 'dir_norm', 'legend': 'dir norm', 'color': 'm', 'scale': 'log'}
 grad_dot = {'label': 'grad_dot', 'legend': 'gradient dot', 'color': 'b', 'scale': 'linear'}
 equi_cos = {'label': 'W_rec_equi_cos', 'legend': 'equi_cos', 'color': 'b', 'scale': 'linear'}
+rho = {'label': 'rho', 'legend': 'W_rec spetral radius', 'color': 'r', 'scale': 'linear'}
 
-measures = [valid_error, dir_norm, equi_cos]
+
+measures = [valid_error, valid_loss, dir_norm, rho]
 
 # compute x-axis points
 check_freq = npz['settings_check_freq']
