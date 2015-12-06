@@ -55,11 +55,11 @@ print(separator)
 
 # setup
 seed = 13
-task = XorTaskHot(144, seed)
-n_hidden = 100
+task = AdditionTask(144, seed)
+n_hidden = 50
 activation_fnc = Tanh()
-output_fnc = Softmax()
-loss_fnc = CrossEntropy()
+output_fnc = Linear()
+loss_fnc = SquaredError()
 out_dir = Configs.output_dir+str(task)
 
 # init strategy
@@ -94,9 +94,8 @@ dir_rule = CombinedGradients(combining_rule)
 # learning step rule
 # lr_rule = WRecNormalizedStep(0.0001) #0.01
 #lr_rule = ConstantNormalizedStep(0.001)  # 0.01
-lr_rule = GradientClipping(lr_value=0.01, clip_thr=0.05)  # 0.01
-#lr_rule = ArmijoStep(alpha=0.5, beta=0.5, init_step=1, max_steps=50)
-
+#lr_rule = GradientClipping(lr_value=0.01, clip_thr=0.05)  # 0.01
+lr_rule = ArmijoStep(alpha=0.5, beta=0.1, init_step=1, max_steps=50)
 obj_fnc = ObjectiveFunction(loss_fnc)
 
 #update_rule = FixedAveraging(t=7)
@@ -106,10 +105,10 @@ update_rule = SimpleUdpate()
 train_rule = TrainingRule(dir_rule, lr_rule, update_rule)
 
 trainer = NetTrainer(train_rule, obj_fnc, output_dir=out_dir, max_it=10 ** 10,
-                     check_freq=200, bacth_size=500)
+                     check_freq=20, bacth_size=1000)
 
-#dataset = Dataset.no_valid_dataset_from_task(size=1000, task=task)
-dataset = InfiniteDataset(task=task, validation_size=10 ** 4)
+dataset = Dataset.no_valid_dataset_from_task(size=1000, task=task)
+#dataset = InfiniteDataset(task=task, validation_size=10 ** 4)
 
 net = trainer.train(dataset, activation_fnc, output_fnc, n_hidden, init_strategies, seed)
 
