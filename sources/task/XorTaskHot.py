@@ -62,7 +62,7 @@ class XorTaskHot(Task):
 
 
 if __name__ == '__main__':
-    seed = 13
+    seed = 65
     print('Testing XOR task ...')
     task = XorTaskHot(22, seed)
     batch = task.get_batch(3)

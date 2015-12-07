@@ -55,7 +55,7 @@ print(separator)
 
 # setup
 seed = 13
-task = AdditionTask(144, seed)
+task = XorTaskHot(144, seed)
 n_hidden = 50
 activation_fnc = Relu()
 output_fnc = Linear()
@@ -105,7 +105,7 @@ update_rule = SimpleUdpate()
 train_rule = TrainingRule(dir_rule, lr_rule, update_rule)
 
 trainer = NetTrainer(train_rule, obj_fnc, output_dir=out_dir, max_it=10 ** 10,
-                     check_freq=50, bacth_size=100)
+                     check_freq=50, bacth_size=1000)
 
 #dataset = Dataset.no_valid_dataset_from_task(size=1000, task=task)
 dataset = InfiniteDataset(task=task, validation_size=10 ** 4)
