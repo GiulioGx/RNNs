@@ -55,15 +55,15 @@ print(separator)
 
 # setup
 seed = 13
-task = XorTaskHot(144, seed)
+task = XorTask(144, seed)
 n_hidden = 50
 activation_fnc = Relu()
 output_fnc = Linear()
-loss_fnc = SquaredError()
+loss_fnc = HingeLoss()
 out_dir = Configs.output_dir+str(task)
 
 # init strategy
-std_dev = 0.18  # 0.14 Tanh # 0.21 Relu
+std_dev = 0.19  # 0.14 Tanh # 0.21 Relu
 init_strategies = {'W_rec': GaussianInit(0, std_dev), 'W_in': GaussianInit(0, std_dev),
                    'W_out': GaussianInit(0, std_dev),
                    'b_rec': ZeroInit(), 'b_out': ZeroInit()}
@@ -105,12 +105,13 @@ update_rule = SimpleUdpate()
 train_rule = TrainingRule(dir_rule, lr_rule, update_rule)
 
 trainer = NetTrainer(train_rule, obj_fnc, output_dir=out_dir, max_it=10 ** 10,
-                     check_freq=50, bacth_size=1000)
+                     check_freq=20, bacth_size=1000)
 
 #dataset = Dataset.no_valid_dataset_from_task(size=1000, task=task)
 dataset = InfiniteDataset(task=task, validation_size=10 ** 4)
 
 net = trainer.train(dataset, activation_fnc, output_fnc, n_hidden, init_strategies, seed)
 
+#resume training
 #net = RNN.load_model(out_dir)
 #net = trainer.resume_training(dataset, net)
