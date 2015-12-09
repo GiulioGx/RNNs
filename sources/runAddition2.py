@@ -94,7 +94,7 @@ dir_rule = CombinedGradients(combining_rule)
 # learning step rule
 # lr_rule = WRecNormalizedStep(0.0001) #0.01
 #lr_rule = ConstantNormalizedStep(0.001)  # 0.01
-lr_rule = GradientClipping(lr_value=0.001, clip_thr=0.1)  # 0.01
+lr_rule = GradientClipping(lr_value=0.01, clip_thr=0.1)  # 0.01
 #lr_rule = ArmijoStep(alpha=0.5, beta=0.1, init_step=1, max_steps=50)
 obj_fnc = ObjectiveFunction(loss_fnc)
 
@@ -105,13 +105,13 @@ update_rule = SimpleUdpate()
 train_rule = TrainingRule(dir_rule, lr_rule, update_rule)
 
 trainer = NetTrainer(train_rule, obj_fnc, output_dir=out_dir, max_it=10 ** 10,
-                     check_freq=20, bacth_size=1000)
+                     check_freq=50, bacth_size=1000)
 
 #dataset = Dataset.no_valid_dataset_from_task(size=1000, task=task)
 dataset = InfiniteDataset(task=task, validation_size=10 ** 4)
 
-net = trainer.train(dataset, activation_fnc, output_fnc, n_hidden, init_strategies, seed)
+#net = trainer.train(dataset, activation_fnc, output_fnc, n_hidden, init_strategies, seed)
 
 #resume training
-#net = RNN.load_model(out_dir)
-#net = trainer.resume_training(dataset, net)
+net = RNN.load_model(out_dir)
+net = trainer.resume_training(dataset, net)
