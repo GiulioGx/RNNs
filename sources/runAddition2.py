@@ -55,11 +55,11 @@ print(separator)
 
 # setup
 seed = 13
-task = XorTask(144, seed)
+task = XorTask(44, seed)
 n_hidden = 50
 activation_fnc = Relu()
 output_fnc = Linear()
-loss_fnc = HingeLoss()
+loss_fnc = SquaredError()
 out_dir = Configs.output_dir+str(task)
 
 # init strategy

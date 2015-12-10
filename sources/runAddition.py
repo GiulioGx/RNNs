@@ -56,7 +56,7 @@ print(separator)
 # setup
 seed = 13
 task = XorTask(144, seed)
-n_hidden = 50
+n_hidden = 100
 activation_fnc = Relu()
 output_fnc = Linear()
 loss_fnc = HingeLoss()
@@ -81,7 +81,7 @@ init_strategies = {'W_rec': GaussianInit(0, std_dev), 'W_in': GaussianInit(0, st
 # dir_rule = SepareteGradient()
 
 #combining_rule = OnesCombination(normalize_components=False)
-combining_rule = SimplexCombination(normalize_components=True)
+combining_rule = OnesCombination(normalize_components=True)
 #combining_rule = SimpleSum()
 #combining_rule = EquiangularCombination()
 #combining_rule = DropoutCombination(drop_rate=0.8)

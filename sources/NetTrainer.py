@@ -15,6 +15,7 @@ from infos.InfoGroup import InfoGroup
 from infos.InfoList import InfoList
 from model.RNN import RNN
 from output_fncs.OutputFunction import OutputFunction
+from task.BatchPolicer import RepetitaPolicer
 from task.Dataset import Dataset
 
 __author__ = 'giulio'
@@ -65,6 +66,9 @@ class NetTrainer(object):
         # training statistics
         stats = Statistics(self.__max_it, self.__check_freq)
 
+        # policer #TODO se funziona mettere a pulito
+        policer = RepetitaPolicer(dataset=dataset, batch_size=self.__batch_size)
+
         logging.info('Generating validation set ...')
         validation_set = dataset.validation_set
         logging.info('... Done')
@@ -83,6 +87,7 @@ class NetTrainer(object):
         while i < self.__max_it and best_error > self.__stop_error_thresh / 100 and (not error_occured):
 
             batch = dataset.get_train_batch(self.__batch_size)
+            #batch = policer.get_train_batch()
             train_info = train_step.step(batch.inputs, batch.outputs)
 
             if i % self.__check_freq == 0:
