@@ -63,7 +63,7 @@ loss_fnc = HingeLoss()
 out_dir = Configs.output_dir+str(task)
 
 # init strategy
-std_dev = 0.17  # 0.14 Tanh # 0.21 Relu
+std_dev = 0.16  # 0.14 Tanh # 0.21 Relu
 init_strategies = {'W_rec': GaussianInit(0, std_dev), 'W_in': GaussianInit(0, std_dev),
                    'W_out': GaussianInit(0, std_dev),
                    'b_rec': ZeroInit(), 'b_out': ZeroInit()}
