@@ -55,7 +55,7 @@ print(separator)
 
 # setup
 seed = 13
-task = XorTask(144, seed)
+task = XorTask(44, seed)
 n_hidden = 100
 activation_fnc = Relu()
 output_fnc = Linear()
