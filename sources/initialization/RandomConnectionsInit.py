@@ -28,7 +28,6 @@ class RandomConnectionsInit(MatrixInit):
         unit_indexes = numpy.repeat(numpy.arange(n_units), self.__n_connections_per_unit)
 
         non_zero_connections_indexes = numpy.zeros((self.__n_connections_per_unit * n_units,), dtype='int64')
-        print(non_zero_connections_indexes.shape)
         for i in range(n_units):
             non_zero_connections_indexes[i * self.__n_connections_per_unit:(i + 1) * self.__n_connections_per_unit] = self.__rng.choice(
                 numpy.arange(n_connections),
