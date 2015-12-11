@@ -55,7 +55,7 @@ print(separator)
 
 # setup
 seed = 13
-task = XorTask(88, seed)
+task = XorTask(66, seed)
 n_hidden = 100
 activation_fnc = Tanh()
 output_fnc = Linear()
@@ -63,7 +63,7 @@ loss_fnc = HingeLoss()
 out_dir = Configs.output_dir+str(task)
 
 # init strategy
-std_dev = 0.10  # 0.14 Tanh # 0.21 Relu
+std_dev = 0.8  # 0.14 Tanh # 0.21 Relu
 init_strategies = {'W_rec': GaussianInit(0, std_dev), 'W_in': GaussianInit(0, std_dev),
                    'W_out': GaussianInit(0, std_dev),
                    'b_rec': ZeroInit(), 'b_out': ZeroInit()}
