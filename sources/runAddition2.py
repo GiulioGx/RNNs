@@ -6,6 +6,7 @@ from NetTrainer import NetTrainer
 from ObjectiveFunction import ObjectiveFunction
 from TrainingRule import TrainingRule
 from descentDirectionRule.DropoutDirection import DropoutDirection
+from initialization.RandomConnectionsInit import RandomConnectionsInit
 from lossFunctions.CrossEntropy import CrossEntropy
 from lossFunctions.HingeLoss import HingeLoss
 from lossFunctions.SquaredError import SquaredError
@@ -57,21 +58,27 @@ print(separator)
 seed = 13
 task = XorTask(144, seed)
 n_hidden = 100
-activation_fnc = Relu()
+activation_fnc = Tanh()
 output_fnc = Linear()
 loss_fnc = HingeLoss()
-out_dir = Configs.output_dir+str(task)
+out_dir = Configs.output_dir + str(task)
 
 # init strategy
-std_dev = 0.16  # 0.14 Tanh # 0.21 Relu
-init_strategies = {'W_rec': GaussianInit(0, std_dev), 'W_in': GaussianInit(0, std_dev),
-                   'W_out': GaussianInit(0, std_dev),
+# std_dev = 0.16  # 0.14 Tanh # 0.21 Relu
+# init_strategies = {'W_rec': GaussianInit(0, std_dev), 'W_in': GaussianInit(0, std_dev),
+#                    'W_out': GaussianInit(0, std_dev),
+#                    'b_rec': ZeroInit(), 'b_out': ZeroInit()}
+
+# HF init
+init_strategies = {'W_rec': RandomConnectionsInit(n_connections_per_unit=15, std_dev=1. / 15, columnwise=True),
+                   'W_in': RandomConnectionsInit(n_connections_per_unit=15, std_dev=1., columnwise=False),
+                   'W_out': RandomConnectionsInit(n_connections_per_unit=15, std_dev=1. / 15, columnwise=True),
                    'b_rec': ZeroInit(), 'b_out': ZeroInit()}
 
 # penalty strategy
-#penalty = MeanPenalty()
-#penalty = ConstantPenalty(c=5)
-#penalty = MeanPenalty()
+# penalty = MeanPenalty()
+# penalty = ConstantPenalty(c=5)
+# penalty = MeanPenalty()
 
 # direction strategy
 # dir_rule = AntiGradient()
@@ -80,38 +87,39 @@ init_strategies = {'W_rec': GaussianInit(0, std_dev), 'W_in': GaussianInit(0, st
 # dir_rule = FrozenGradient(penalty)
 # dir_rule = SepareteGradient()
 
-#combining_rule = OnesCombination(normalize_components=False)
-combining_rule = OnesCombination(normalize_components=True)
-#combining_rule = SimpleSum()
-#combining_rule = EquiangularCombination()
-#combining_rule = DropoutCombination(drop_rate=0.8)
-#combining_rule = MedianCombination()
+# combining_rule = OnesCombination(normalize_components=False)
+combining_rule = OnesCombination(normalize_components=False)
+# combining_rule = SimpleSum()
+# combining_rule = EquiangularCombination()
+# combining_rule = DropoutCombination(drop_rate=0.8)
+# combining_rule = MedianCombination()
 dir_rule = CombinedGradients(combining_rule)
-#dir_rule = DropoutDirection(dir_rule, drop_rate=0.1)
-#dir_rule = DirectionWithPenalty(direction_rule=dir_rule, penalty=penalty, penalty_lambda=1)
-#dir_rule = AlternatingDirections(dir_rule)
+# dir_rule = DropoutDirection(dir_rule, drop_rate=0.1)
+# dir_rule = DirectionWithPenalty(direction_rule=dir_rule, penalty=penalty, penalty_lambda=1)
+# dir_rule = AlternatingDirections(dir_rule)
 
 # learning step rule
 # lr_rule = WRecNormalizedStep(0.0001) #0.01
-#lr_rule = ConstantNormalizedStep(0.001)  # 0.01
+#lr_rule = ConstantStep(0.001)
+# lr_rule = ConstantNormalizedStep(0.001)  # 0.01
 lr_rule = GradientClipping(lr_value=0.01, clip_thr=0.1)  # 0.01
-#lr_rule = ArmijoStep(alpha=0.5, beta=0.1, init_step=1, max_steps=50)
+# lr_rule = ArmijoStep(alpha=0.3, beta=0.1, init_step=0.1, max_steps=50)
 obj_fnc = ObjectiveFunction(loss_fnc)
 
-#update_rule = FixedAveraging(t=7)
+# update_rule = FixedAveraging(t=7)
 update_rule = SimpleUdpate()
-#update_rule = Momentum(gamma=0.3)
+# update_rule = Momentum(gamma=0.3)
 
 train_rule = TrainingRule(dir_rule, lr_rule, update_rule)
 
 trainer = NetTrainer(train_rule, obj_fnc, output_dir=out_dir, max_it=10 ** 10,
-                     check_freq=50, bacth_size=1000)
+                     check_freq=50, bacth_size=100)
 
-#dataset = Dataset.no_valid_dataset_from_task(size=1000, task=task)
+# dataset = Dataset.no_valid_dataset_from_task(size=1000, task=task)
 dataset = InfiniteDataset(task=task, validation_size=10 ** 4)
 
 net = trainer.train(dataset, activation_fnc, output_fnc, n_hidden, init_strategies, seed)
 
-#resume training
-#net = RNN.load_model(out_dir)
-#net = trainer.resume_training(dataset, net)
+# resume training
+# net = RNN.load_model(out_dir)
+# net = trainer.resume_training(dataset, net)
