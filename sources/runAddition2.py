@@ -71,8 +71,8 @@ out_dir = Configs.output_dir + str(task)
 
 # HF init
 init_strategies = {'W_rec': RandomConnectionsInit(n_connections_per_unit=15, std_dev=1. / 15, columnwise=True),
-                   'W_in': RandomConnectionsInit(n_connections_per_unit=15, std_dev=1., columnwise=False),
-                   'W_out': RandomConnectionsInit(n_connections_per_unit=15, std_dev=1. / 15, columnwise=True),
+                   'W_in': RandomConnectionsInit(n_connections_per_unit=15, std_dev=1., columnwise=True),
+                   'W_out': RandomConnectionsInit(n_connections_per_unit=15, std_dev=1. / 15, columnwise=False),
                    'b_rec': ZeroInit(), 'b_out': ZeroInit()}
 
 # penalty strategy
