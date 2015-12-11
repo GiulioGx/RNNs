@@ -34,7 +34,6 @@ class RandomConnectionsInit(MatrixInit):
                 size=(self.__n_connections_per_unit,), replace=False
                 )
 
-        print(type(non_zero_connections_indexes[0]))
         non_zero_connections_values = self.__rng.normal(size=(n_units * self.__n_connections_per_unit,),
                                                         scale=self.__std_dev, loc=self.__mean)
 
