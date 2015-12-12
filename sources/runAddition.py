@@ -6,6 +6,9 @@ from NetTrainer import NetTrainer
 from ObjectiveFunction import ObjectiveFunction
 from TrainingRule import TrainingRule
 from descentDirectionRule.DropoutDirection import DropoutDirection
+from initialization.EyeInit import EyeInit
+from initialization.OrtoghonalInit import OrtoghonalInit
+from initialization.UniformInit import UniformInit
 from lossFunctions.CrossEntropy import CrossEntropy
 from lossFunctions.HingeLoss import HingeLoss
 from lossFunctions.SquaredError import SquaredError
@@ -55,7 +58,7 @@ print(separator)
 
 # setup
 seed = 13
-task = XorTask(66, seed)
+task = XorTask(144, seed)
 n_hidden = 100
 activation_fnc = Tanh()
 output_fnc = Linear()
@@ -63,9 +66,14 @@ loss_fnc = HingeLoss()
 out_dir = Configs.output_dir+str(task)
 
 # init strategy
-std_dev = 0.08  # 0.14 Tanh # 0.21 Relu
-init_strategies = {'W_rec': GaussianInit(0, std_dev), 'W_in': GaussianInit(0, std_dev),
-                   'W_out': GaussianInit(0, std_dev),
+std_dev = 0.11  # 0.14 Tanh # 0.21 Relu
+mean = 0
+init_strategies = {'W_rec': GaussianInit(mean, std_dev), 'W_in': GaussianInit(mean, 0.01),
+                   'W_out': GaussianInit(mean, std_dev),
+                   'b_rec': ZeroInit(), 'b_out': ZeroInit()}
+scale= 1
+init_strategies = {'W_rec': GaussianInit(mean, std_dev), 'W_in': UniformInit(0, 0.01),
+                   'W_out': GaussianInit(mean, std_dev),
                    'b_rec': ZeroInit(), 'b_out': ZeroInit()}
 
 # penalty strategy

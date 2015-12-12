@@ -1,4 +1,5 @@
 import theano
+from math import sqrt
 
 from ActivationFunction import Tanh, Relu
 from Configs import Configs
@@ -6,6 +7,7 @@ from NetTrainer import NetTrainer
 from ObjectiveFunction import ObjectiveFunction
 from TrainingRule import TrainingRule
 from descentDirectionRule.DropoutDirection import DropoutDirection
+from initialization.ConstantInit import ConstantInit
 from initialization.RandomConnectionsInit import RandomConnectionsInit
 from lossFunctions.CrossEntropy import CrossEntropy
 from lossFunctions.HingeLoss import HingeLoss
@@ -56,11 +58,11 @@ print(separator)
 
 # setup
 seed = 13
-task = XorTask(144, seed)
+task = XorTaskHot(144, seed)
 n_hidden = 100
 activation_fnc = Tanh()
-output_fnc = Linear()
-loss_fnc = HingeLoss()
+output_fnc = Softmax()
+loss_fnc = CrossEntropy()
 out_dir = Configs.output_dir + str(task)
 
 # init strategy
@@ -70,10 +72,13 @@ out_dir = Configs.output_dir + str(task)
 #                    'b_rec': ZeroInit(), 'b_out': ZeroInit()}
 
 # HF init
-init_strategies = {'W_rec': RandomConnectionsInit(n_connections_per_unit=15, std_dev=1. / 15, columnwise=True),
-                   'W_in': RandomConnectionsInit(n_connections_per_unit=15, std_dev=1., columnwise=True),
-                   'W_out': RandomConnectionsInit(n_connections_per_unit=15, std_dev=1. / 15, columnwise=False),
-                   'b_rec': ZeroInit(), 'b_out': ZeroInit()}
+bias_value = 0.5
+n_conns = 25
+std_dev = sqrt(0.15)
+init_strategies = {'W_rec': RandomConnectionsInit(n_connections_per_unit=n_conns, std_dev=std_dev, columnwise=False),
+                   'W_in': RandomConnectionsInit(n_connections_per_unit=n_conns, std_dev=1., columnwise=True),
+                   'W_out': RandomConnectionsInit(n_connections_per_unit=n_conns, std_dev=std_dev, columnwise=False),
+                   'b_rec': ConstantInit(bias_value), 'b_out': ConstantInit(bias_value)}
 
 # penalty strategy
 # penalty = MeanPenalty()
