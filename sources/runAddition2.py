@@ -74,9 +74,9 @@ out_dir = Configs.output_dir + str(task)
 # HF init
 bias_value = 0.5
 n_conns = 25
-std_dev = sqrt(0.15)
+std_dev = sqrt(0.12)
 init_strategies = {'W_rec': RandomConnectionsInit(n_connections_per_unit=n_conns, std_dev=std_dev, columnwise=False),
-                   'W_in': RandomConnectionsInit(n_connections_per_unit=n_conns, std_dev=1., columnwise=True),
+                   'W_in': RandomConnectionsInit(n_connections_per_unit=n_conns, std_dev=0.1, columnwise=True),
                    'W_out': RandomConnectionsInit(n_connections_per_unit=n_conns, std_dev=std_dev, columnwise=False),
                    'b_rec': ConstantInit(bias_value), 'b_out': ConstantInit(bias_value)}
 
@@ -118,7 +118,7 @@ update_rule = SimpleUdpate()
 train_rule = TrainingRule(dir_rule, lr_rule, update_rule)
 
 trainer = NetTrainer(train_rule, obj_fnc, output_dir=out_dir, max_it=10 ** 10,
-                     check_freq=50, bacth_size=1000)
+                     check_freq=50, bacth_size=100)
 
 # dataset = Dataset.no_valid_dataset_from_task(size=1000, task=task)
 dataset = InfiniteDataset(task=task, validation_size=10 ** 4)
