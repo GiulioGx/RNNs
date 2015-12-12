@@ -118,7 +118,7 @@ update_rule = SimpleUdpate()
 train_rule = TrainingRule(dir_rule, lr_rule, update_rule)
 
 trainer = NetTrainer(train_rule, obj_fnc, output_dir=out_dir, max_it=10 ** 10,
-                     check_freq=50, bacth_size=100)
+                     check_freq=50, bacth_size=1000)
 
 # dataset = Dataset.no_valid_dataset_from_task(size=1000, task=task)
 dataset = InfiniteDataset(task=task, validation_size=10 ** 4)
