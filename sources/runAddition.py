@@ -1,4 +1,5 @@
 import theano
+from math import sqrt
 
 from ActivationFunction import Tanh, Relu
 from Configs import Configs
@@ -6,8 +7,10 @@ from NetTrainer import NetTrainer
 from ObjectiveFunction import ObjectiveFunction
 from TrainingRule import TrainingRule
 from descentDirectionRule.DropoutDirection import DropoutDirection
+from initialization.ConstantInit import ConstantInit
 from initialization.EyeInit import EyeInit
 from initialization.OrtoghonalInit import OrtoghonalInit
+from initialization.RandomConnectionsInit import RandomConnectionsInit
 from initialization.UniformInit import UniformInit
 from lossFunctions.CrossEntropy import CrossEntropy
 from lossFunctions.HingeLoss import HingeLoss
@@ -71,10 +74,14 @@ mean = 0
 init_strategies = {'W_rec': GaussianInit(mean, std_dev), 'W_in': GaussianInit(mean, 0.01),
                    'W_out': GaussianInit(mean, std_dev),
                    'b_rec': ZeroInit(), 'b_out': ZeroInit()}
-scale= 1
-init_strategies = {'W_rec': GaussianInit(mean, std_dev), 'W_in': UniformInit(0, 0.01),
-                   'W_out': GaussianInit(mean, std_dev),
-                   'b_rec': ZeroInit(), 'b_out': ZeroInit()}
+# HF init
+bias_value = 0.5
+n_conns = 25
+std_dev = sqrt(0.12)
+init_strategies = {'W_rec': RandomConnectionsInit(n_connections_per_unit=n_conns, std_dev=std_dev, columnwise=False),
+                   'W_in': RandomConnectionsInit(n_connections_per_unit=n_conns, std_dev=0.1, columnwise=True),
+                   'W_out': RandomConnectionsInit(n_connections_per_unit=n_conns, std_dev=std_dev, columnwise=False),
+                   'b_rec': ConstantInit(bias_value), 'b_out': ConstantInit(bias_value)}
 
 # penalty strategy
 #penalty = MeanPenalty()
@@ -89,7 +96,7 @@ init_strategies = {'W_rec': GaussianInit(mean, std_dev), 'W_in': UniformInit(0, 
 # dir_rule = SepareteGradient()
 
 #combining_rule = OnesCombination(normalize_components=False)
-combining_rule = OnesCombination(normalize_components=True)
+combining_rule = SimplexCombination(normalize_components=True)
 #combining_rule = SimpleSum()
 #combining_rule = EquiangularCombination()
 #combining_rule = DropoutCombination(drop_rate=0.8)

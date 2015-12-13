@@ -93,7 +93,7 @@ init_strategies = {'W_rec': RandomConnectionsInit(n_connections_per_unit=n_conns
 # dir_rule = SepareteGradient()
 
 # combining_rule = OnesCombination(normalize_components=False)
-combining_rule = OnesCombination(normalize_components=True)
+combining_rule = SimplexCombination(normalize_components=True)
 # combining_rule = SimpleSum()
 # combining_rule = EquiangularCombination()
 # combining_rule = DropoutCombination(drop_rate=0.8)
