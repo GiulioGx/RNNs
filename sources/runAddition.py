@@ -61,27 +61,27 @@ print(separator)
 
 # setup
 seed = 13
-task = XorTask(144, seed)
+task = AdditionTask(144, seed)
 n_hidden = 100
 activation_fnc = Tanh()
 output_fnc = Linear()
-loss_fnc = HingeLoss()
+loss_fnc = SquaredError()
 out_dir = Configs.output_dir+str(task)
 
 # init strategy
-std_dev = 0.11  # 0.14 Tanh # 0.21 Relu
+std_dev = 0.10  # 0.14 Tanh # 0.21 Relu
 mean = 0
 init_strategies = {'W_rec': GaussianInit(mean, std_dev), 'W_in': GaussianInit(mean, 0.01),
                    'W_out': GaussianInit(mean, std_dev),
                    'b_rec': ZeroInit(), 'b_out': ZeroInit()}
-# HF init
-bias_value = 0.5
-n_conns = 25
-std_dev = sqrt(0.12)
-init_strategies = {'W_rec': RandomConnectionsInit(n_connections_per_unit=n_conns, std_dev=std_dev, columnwise=False),
-                   'W_in': RandomConnectionsInit(n_connections_per_unit=n_conns, std_dev=0.1, columnwise=True),
-                   'W_out': RandomConnectionsInit(n_connections_per_unit=n_conns, std_dev=std_dev, columnwise=False),
-                   'b_rec': ConstantInit(bias_value), 'b_out': ConstantInit(bias_value)}
+# # HF init
+# bias_value = 0.5
+# n_conns = 25
+# std_dev = sqrt(0.12)
+# init_strategies = {'W_rec': RandomConnectionsInit(n_connections_per_unit=n_conns, std_dev=std_dev, columnwise=False),
+#                    'W_in': RandomConnectionsInit(n_connections_per_unit=n_conns, std_dev=0.1, columnwise=True),
+#                    'W_out': RandomConnectionsInit(n_connections_per_unit=n_conns, std_dev=std_dev, columnwise=False),
+#                    'b_rec': ConstantInit(bias_value), 'b_out': ConstantInit(bias_value)}
 
 # penalty strategy
 #penalty = MeanPenalty()
