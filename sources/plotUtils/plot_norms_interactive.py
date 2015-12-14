@@ -35,7 +35,8 @@ for i in x:
         print(y)
         axarr[j].bar(range(len(y)), y)
         axarr[j].legend([key], shadow=True, fancybox=True)
-        axarr[j].set_yscale('log')
+        if any(y > 0):
+            axarr[j].set_yscale('log')
         j += 1
 
     y = temporal_dots[i]
