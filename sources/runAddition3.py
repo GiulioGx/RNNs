@@ -73,7 +73,7 @@ std_dev = 0.14  # 0.14 Tanh # 0.21 Relu
 mean = 0
 n_conns = 45
 bias_value = 0
-init_strategies = {'W_rec': RandomConnectionsInit(n_connections_per_unit=n_conns, std_dev=std_dev, columnwise=False), 'W_in': GaussianInit(mean, 0.01),
+init_strategies = {'W_rec': RandomConnectionsInit(n_connections_per_unit=n_conns, std_dev=std_dev, columnwise=False), 'W_in': RandomConnectionsInit(n_connections_per_unit=n_conns, std_dev=0.1, columnwise=True),
                    'W_out': GaussianInit(mean, std_dev),
                    'b_rec': ConstantInit(bias_value), 'b_out': ConstantInit(bias_value)}
 # # HF init
