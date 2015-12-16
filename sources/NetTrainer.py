@@ -67,7 +67,7 @@ class NetTrainer(object):
         stats = Statistics(self.__max_it, self.__check_freq)
 
         # policer #TODO se funziona mettere a pulito
-        policer = RepetitaPolicer(dataset=dataset, batch_size=self.__batch_size)
+        policer = RepetitaPolicer(dataset=dataset, batch_size=self.__batch_size, n_repetitions=100, block_size=1000)
 
         logging.info('Generating validation set ...')
         validation_set = dataset.validation_set
@@ -86,8 +86,8 @@ class NetTrainer(object):
         best_error = 100
         while i < self.__max_it and best_error > self.__stop_error_thresh / 100 and (not error_occured):
 
-            batch = dataset.get_train_batch(self.__batch_size)
-            #batch = policer.get_train_batch()
+            #batch = dataset.get_train_batch(self.__batch_size)
+            batch = policer.get_train_batch()
             train_info = train_step.step(batch.inputs, batch.outputs)
 
             if i % self.__check_freq == 0:

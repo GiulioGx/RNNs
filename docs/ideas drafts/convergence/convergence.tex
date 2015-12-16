@@ -50,7 +50,7 @@ Consider the stochastic optimization problem
 	\label{eq:stochastic_prob}
 \end{equation}
 where $\vec{\xi} \in \Omega \subset \mathbb{R}^d$ is a random vector.
-Suppose $f(\cdot)$ is continuous, strongly convex and there exists a compact level set of $f(\cdot)$, hence (\ref{eq:stochastic_prob}) has a unique optimal solution $\vec{x}_*$. Let also $L$ be the Lipschitz constant of $\nabla f(\cdot)$.
+Suppose $f(\cdot)$ is continuous, strongly convex and there exists a compact level set of $f(\cdot)$, hence (\ref{eq:stochastic_prob}) has a unique optimal solution $\vec{x}_*$. Let also $L$ be the Lipschitz constant of $\nabla f$.
 We make the following two assumptions:
 \begin{itemize}
 	\item	It is possible to generate independent identically distributed samples of $\vec{\xi}$
@@ -128,7 +128,27 @@ Hence from (\ref{eq:aj_rec_2}) follows
 \begin{equation}
 	a_{j+1} \leq (1-2\bar{c}\gamma_j)a_j + \frac{1}{2}\gamma_j2M^2.
 \end{equation}
-From here on the proof follows as in the standard case with $c(1-\frac{\mu L}{c})$ in place of $c$.
+
+Choosing the stepsizes as $\gamma_j = \frac{\beta}{j}$ for some constant $\beta>\frac{1}{2\bar{c}}$ we get
+\begin{equation}
+		a_{j+1} \leq (1-2\bar{c}\gamma_j)a_j + \frac{1}{2}\frac{\beta^22M^2}{j^2}.
+\end{equation}
+It follows by induction that
+\begin{equation}
+	\mathbb{E}[\norm{\vec{x}_j - \vec{x}_*}^2_2] = 2a_j\leq \frac{Q(\beta)}{j},
+\end{equation}
+where 
+\begin{equation}
+	Q(\beta) = max\left\{\frac{\beta^2M^2}{2\bar{c}-1},\norm{\vec{x}_1 - \vec{x}_*}^2_2 \right\}.
+\end{equation}
+Hence, since
+\begin{equation}
+	f(\vec{x})\leq f(\vec{x}_*) + \frac{1}{2}L\norm{\vec{x} - \vec{x}_*}^2_2, \quad \forall \vec{x} \in \mathbb{R}^n,
+\end{equation}
+we obtain
+\begin{equation}
+	\mathbb{E}[f(\vec{x}_j)-f(\vec{x}_*)] \leq \frac{1}{2} L \mathbb{E}[\norm{\vec{x}_j - \vec{x}_*}^2_2] \leq \frac{1}{2}LQ(\beta)
+\end{equation}
 
 \paragraph{Descent direction condition} Condition \ref{eq:angular_condition} can be further elaborated.
 Let $\cos\theta_j$ be the angle between $\nabla f(\vec{x}_j)$ and $g(\vec{x}_j)$ and $\norm{g(\vec{x}_j)} = \alpha_j \norm{\nabla f(\vec{x}_j)}$ for some $\alpha_j>0$.
