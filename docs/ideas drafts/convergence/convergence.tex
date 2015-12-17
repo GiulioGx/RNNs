@@ -54,7 +54,7 @@ Suppose $f(\cdot)$ is continuous, strongly convex (with constant $c$) and there 
 We make the following two assumptions:
 \begin{itemize}
 	\item	It is possible to generate independent identically distributed samples of $\vec{\xi}$
-	\item There exists an oracle which, for a given point $(\vec{x}, \vec{\xi})$ return a stochastic descent direction $D(\vec{x}, \vec{\xi})$ such that $d(\vec{x})\defeq\mathbb{E}[D(\vec{x}, \vec{\xi})]$ satisfies:
+	\item There exists an oracle which, for a given point $(\vec{x}, \vec{\xi})$ return a stochastic direction $D(\vec{x}, \vec{\xi})$ such that $d(\vec{x})\defeq\mathbb{E}[D(\vec{x}, \vec{\xi})]$ satisfies:
 	\begin{equation}
 	-(\vec{x}-\vec{x}_*)^T (\nabla f(\vec{x}) -g(\vec{x})) \geq -\mu L \norm{\vec{x}_j-\vec{x}_*}^2_2\quad \forall \vec{x} \in \mathbb{R}^n,
 	\label{eq:angular_condition}
@@ -110,7 +110,7 @@ Inequalities (\ref{eq:optimality}) and (\ref{eq:strong_convexity}) implies
 \begin{equation}
 	(\vec{x}-\vec{x}_*)^T \nabla f(\vec{x}) \geq c \norm{\vec{x}-\vec{x}_*}^2_2 \quad \vec{x} \in \mathbb{R}^n.
 \end{equation}
-Adding and subtracting the descent direction $g(\vec{x})$ we get
+Adding and subtracting the direction $g(\vec{x})$ we get
 \begin{equation}
 	(\vec{x}-\vec{x}_*)^T (\nabla f(\vec{x}) -g(\vec{x}) +g(\vec{x})) \geq c \norm{\vec{x}-\vec{x}_*}^2_2,
 \end{equation}
@@ -151,7 +151,7 @@ we obtain
 	\mathbb{E}[f(\vec{x}_j)-f(\vec{x}_*)] \leq \frac{1}{2} L \mathbb{E}[\norm{\vec{x}_j - \vec{x}_*}^2_2] \leq \frac{1}{2}LQ(\beta)
 \end{equation}
 
-\paragraph{Sufficient descent direction condition} Assumption \ref{eq:angular_condition} can be further elaborated.
+\paragraph{Sufficient stochastic direction condition} Assumption \ref{eq:angular_condition} can be further elaborated.
 Let $\theta$ be the angle between $\nabla f(\vec{x})$ and $g(\vec{x})$ and $\norm{g(\vec{x})} = \alpha \norm{\nabla f(\vec{x})}$ for some $\alpha>0$.
 Then,
 \begin{align}
