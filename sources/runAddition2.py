@@ -71,13 +71,14 @@ out_dir = Configs.output_dir + str(task)
 #                    'W_out': GaussianInit(0, std_dev),
 #                    'b_rec': ZeroInit(), 'b_out': ZeroInit()}
 
-# HF init
-bias_value = 0.5
-n_conns = 25
-std_dev = sqrt(0.12)
+# init strategy
+std_dev = 0.15  # 0.14 Tanh # 0.21 Relu
+mean = 0
+n_conns = 60
+bias_value = 0
 init_strategies = {'W_rec': RandomConnectionsInit(n_connections_per_unit=n_conns, std_dev=std_dev, columnwise=False),
-                   'W_in': RandomConnectionsInit(n_connections_per_unit=n_conns, std_dev=0.1, columnwise=True),
-                   'W_out': RandomConnectionsInit(n_connections_per_unit=n_conns, std_dev=std_dev, columnwise=False),
+                   'W_in': RandomConnectionsInit(n_connections_per_unit=n_conns, std_dev=0.12, columnwise=True),
+                   'W_out': GaussianInit(mean, std_dev),
                    'b_rec': ConstantInit(bias_value), 'b_out': ConstantInit(bias_value)}
 
 # penalty strategy
@@ -105,7 +106,7 @@ dir_rule = CombinedGradients(combining_rule)
 
 # learning step rule
 # lr_rule = WRecNormalizedStep(0.0001) #0.01
-#lr_rule = ConstantStep(0.001)
+# lr_rule = ConstantStep(0.001)
 # lr_rule = ConstantNormalizedStep(0.001)  # 0.01
 lr_rule = GradientClipping(lr_value=0.01, clip_thr=0.1)  # 0.01
 # lr_rule = ArmijoStep(alpha=0.3, beta=0.1, init_step=0.1, max_steps=50)

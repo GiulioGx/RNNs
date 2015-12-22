@@ -61,8 +61,8 @@ class XorTask(Task):
 
 
 if __name__ == '__main__':
-    seed = 13
+    seed = 132
     print('Testing XOR task ...')
-    task = XorTask(22, seed)
-    batch = task.get_batch(3)
+    task = XorTask(144, seed)
+    batch = task.get_batch(1)
     print(str(batch))

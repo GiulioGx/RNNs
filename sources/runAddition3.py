@@ -73,7 +73,7 @@ std_dev = 0.14  # 0.14 Tanh # 0.21 Relu
 mean = 0
 n_conns = 45
 bias_value = 0
-init_strategies = {'W_rec': RandomConnectionsInit(n_connections_per_unit=n_conns, std_dev=std_dev, columnwise=False), 'W_in': RandomConnectionsInit(n_connections_per_unit=n_conns, std_dev=0.1, columnwise=True),
+init_strategies = {'W_rec': RandomConnectionsInit(n_connections_per_unit=n_conns, std_dev=std_dev, columnwise=False), 'W_in': RandomConnectionsInit(n_connections_per_unit=n_conns, std_dev=0.12, columnwise=True),
                    'W_out': GaussianInit(mean, std_dev),
                    'b_rec': ConstantInit(bias_value), 'b_out': ConstantInit(bias_value)}
 # # HF init
@@ -111,7 +111,7 @@ dir_rule = CombinedGradients(combining_rule)
 # learning step rule
 # lr_rule = WRecNormalizedStep(0.0001) #0.01
 #lr_rule = ConstantNormalizedStep(0.001)  # 0.01
-lr_rule = GradientClipping(lr_value=0.001, clip_thr=0.1)  # 0.01
+lr_rule = GradientClipping(lr_value=0.01, clip_thr=0.1)  # 0.01
 #lr_rule = ArmijoStep(alpha=0.5, beta=0.1, init_step=1, max_steps=50)
 obj_fnc = ObjectiveFunction(loss_fnc)
 

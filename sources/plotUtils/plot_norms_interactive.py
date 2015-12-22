@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 __author__ = 'giulio'
 
 #modelFile = '/home/giulio/RNNs/models/add_task, min_length: 144/model.npz'
-modelFile = '/home/giulio/RNNs/models/xor_task, min_length: 144/model.npz'
+modelFile = '/home/giulio/RNNs/models/xor_task_hot, min_length: 144/model.npz'
 #modelFile = '/home/giulio/model_octopus.npz'
 #modelFile = '/home/giulio/RNNs/models/completed/temporal_order, min_length: 144/model.npz'
 npz = numpy.load(modelFile)
@@ -12,9 +12,11 @@ norms_dicts = npz['obj_separate_norms']
 check_freq = npz['settings_check_freq']
 length = npz['length']
 temporal_dots = npz['obj_grad_temporal_cos']
-#variance = npz['variance']
+variance = npz['grad_variance']
 
 sep = '#'*5
+
+print('shape',variance.shape)
 
 
 def on_button_press(event):
@@ -22,7 +24,7 @@ def on_button_press(event):
 
 
 x = range(length)
-x = reversed(x)
+#x = reversed(x)
 
 for i in x:
     dict = norms_dicts[i]
@@ -43,17 +45,23 @@ for i in x:
     y = temporal_dots[i]
     axarr[j].bar(range(len(y)), y, color='r')
     axarr[j].legend(['temporal_cos'], shadow=True, fancybox=True)
-    j+=1
 
-    # y = variance[i]
-    # axarr[j].bar(range(len(y)), y, color='m')
-    # axarr[j].legend(['variance'], shadow=True, fancybox=True)
 
     cid = fig.canvas.mpl_connect('key_press_event', on_button_press)
     print(sep)
     print('Press a button to continue...')
     fig.canvas.set_window_title('Gradient norms it: {:07d}'.format(i*check_freq))
+
+
+    fig, axarr = plt.subplots(1, sharex=True, figsize=(20, 30))
+    y = variance[i]
+    axarr.bar(range(len(y)), y, color='m')
+    axarr.legend(['variance'], shadow=True, fancybox=True)
+    fig.canvas.set_window_title('grad_variance: {:07d}'.format(i*check_freq))
+
+
     plt.show()
+
 
 
 
