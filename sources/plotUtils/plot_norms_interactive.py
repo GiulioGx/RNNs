@@ -12,6 +12,7 @@ norms_dicts = npz['obj_separate_norms']
 check_freq = npz['settings_check_freq']
 length = npz['length']
 temporal_dots = npz['obj_grad_temporal_cos']
+#variance = npz['variance']
 
 sep = '#'*5
 
@@ -42,6 +43,11 @@ for i in x:
     y = temporal_dots[i]
     axarr[j].bar(range(len(y)), y, color='r')
     axarr[j].legend(['temporal_cos'], shadow=True, fancybox=True)
+    j+=1
+
+    # y = variance[i]
+    # axarr[j].bar(range(len(y)), y, color='m')
+    # axarr[j].legend(['variance'], shadow=True, fancybox=True)
 
     cid = fig.canvas.mpl_connect('key_press_event', on_button_press)
     print(sep)

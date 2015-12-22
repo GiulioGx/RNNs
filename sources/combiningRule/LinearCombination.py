@@ -5,7 +5,7 @@ import theano.tensor as TT
 from Configs import Configs
 from combiningRule.CombiningRule import CombiningRule
 from infos.Info import NullInfo
-from infos.InfoElement import PrintableInfoElement
+from infos.InfoElement import PrintableInfoElement, NonPrintableInfoElement
 from infos.InfoList import InfoList
 from theanoUtils import norm, is_inf_or_nan, is_not_trustworthy
 
@@ -35,7 +35,8 @@ class LinearCombination(CombiningRule):
             return self.__infos
 
         def format_infos(self, infos):
-            return NullInfo(), infos
+            variance = NonPrintableInfoElement('grad_variance', infos[0])
+            return InfoList(variance), infos[1:]
 
         @property
         def combination(self):
@@ -71,6 +72,11 @@ class LinearCombination(CombiningRule):
                 norm_G = G.norm(2, axis=1).reshape((G.shape[0], 1))
                 G = G / TT.switch(norm_G > 0, norm_G, 1)
                 #G = G * TT.switch(is_not_trustworthy(norm_G), 0, 1./norm_G)  # FIXME mettere in un punto meliore
+
+            # statistics
+            mean_G = G.mean(axis=0)
+            self.__variance = ((G-mean_G)**2).sum(axis=0)
+            self.__infos = [self.__variance]
 
             self.__grads_combinantions = TT.dot(G.T, coefficients)
 
