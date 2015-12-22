@@ -61,17 +61,17 @@ print(separator)
 
 # setup
 seed = 13
-task = AdditionTask(144, seed)
+task = XorTaskHot(144, seed)
 n_hidden = 100
 activation_fnc = Tanh()
-output_fnc = Linear()
-loss_fnc = SquaredError()
+output_fnc = Softmax()
+loss_fnc = CrossEntropy()
 out_dir = Configs.output_dir+str(task)
 
 # init strategy
-std_dev = 0.10  # 0.14 Tanh # 0.21 Relu
+std_dev = 0.12  # 0.14 Tanh # 0.21 Relu
 mean = 0
-init_strategies = {'W_rec': GaussianInit(mean, std_dev), 'W_in': GaussianInit(mean, 0.01),
+init_strategies = {'W_rec': GaussianInit(mean, std_dev), 'W_in': GaussianInit(mean, std_dev),
                    'W_out': GaussianInit(mean, std_dev),
                    'b_rec': ZeroInit(), 'b_out': ZeroInit()}
 # # HF init

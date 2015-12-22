@@ -16,8 +16,6 @@ variance = npz['grad_variance']
 
 sep = '#'*5
 
-print('shape',variance.shape)
-
 
 def on_button_press(event):
     plt.close("all")
@@ -52,13 +50,11 @@ for i in x:
     print('Press a button to continue...')
     fig.canvas.set_window_title('Gradient norms it: {:07d}'.format(i*check_freq))
 
-
     fig, axarr = plt.subplots(1, sharex=True, figsize=(20, 30))
     y = variance[i]
     axarr.bar(range(len(y)), y, color='m')
     axarr.legend(['variance'], shadow=True, fancybox=True)
     fig.canvas.set_window_title('grad_variance: {:07d}'.format(i*check_freq))
-
 
     plt.show()
 
