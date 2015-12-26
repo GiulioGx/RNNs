@@ -61,7 +61,7 @@ print(separator)
 
 # setup
 seed = 13
-task = XorTaskHot(144, seed)
+task = XorTaskHot(70, seed)
 n_hidden = 100
 activation_fnc = Tanh()
 output_fnc = Softmax()
@@ -71,9 +71,9 @@ out_dir = Configs.output_dir+str(task)
 # init strategy
 std_dev = 0.12  # 0.14 Tanh # 0.21 Relu
 mean = 0
-init_strategies = {'W_rec': GaussianInit(mean, std_dev), 'W_in': GaussianInit(mean, std_dev),
-                   'W_out': GaussianInit(mean, std_dev),
-                   'b_rec': ZeroInit(), 'b_out': ZeroInit()}
+init_strategies = {'W_rec': GaussianInit(mean, std_dev), 'W_in': GaussianInit(mean, 0.1),
+                   'W_out': GaussianInit(mean, 0.1),
+                   'b_rec': ConstantInit(-0.2), 'b_out': ZeroInit()}
 # # HF init
 # bias_value = 0.5
 # n_conns = 25
@@ -109,7 +109,7 @@ dir_rule = CombinedGradients(combining_rule)
 # learning step rule
 # lr_rule = WRecNormalizedStep(0.0001) #0.01
 #lr_rule = ConstantNormalizedStep(0.001)  # 0.01
-lr_rule = GradientClipping(lr_value=0.01, clip_thr=0.1)  # 0.01
+lr_rule = GradientClipping(lr_value=0.01, clip_thr=1)  # 0.01
 #lr_rule = ArmijoStep(alpha=0.5, beta=0.1, init_step=1, max_steps=50)
 obj_fnc = ObjectiveFunction(loss_fnc)
 
