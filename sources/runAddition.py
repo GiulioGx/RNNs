@@ -61,7 +61,7 @@ print(separator)
 
 # setup
 seed = 13
-task = XorTaskHot(144, seed)
+task = XorTaskHot(70, seed)
 n_hidden = 100
 activation_fnc = Tanh()
 output_fnc = Softmax()
@@ -73,7 +73,7 @@ std_dev = 0.14  # 0.14 Tanh # 0.21 Relu
 mean = 0
 init_strategies = {'W_rec': GaussianInit(mean, std_dev), 'W_in': GaussianInit(mean, 0.1),
                    'W_out': GaussianInit(mean, 0.1),
-                   'b_rec': ConstantInit(-0.2), 'b_out': ZeroInit()}
+                   'b_rec': ConstantInit(-0.1), 'b_out': ZeroInit()}
 # # HF init
 # bias_value = 0.5
 # n_conns = 25
