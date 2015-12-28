@@ -19,8 +19,8 @@ class RnnGradient(SymbolicInfoProducer):
         self.type = 'togheter'
         self.__net = params.net
 
-        y, _, W_rec_fixes, W_in_fixes, W_out_fixes, b_rec_fixes, b_out_fixes = params.net.experimental.net_output(
-            params, u)
+        y, _, _, W_rec_fixes, W_in_fixes, W_out_fixes, b_rec_fixes, b_out_fixes = params.net.experimental.net_output(
+                params, u)
         self.__loss = loss_fnc.value(y, t)
 
         self.__l = u.shape[0]
@@ -72,8 +72,8 @@ class RnnGradient(SymbolicInfoProducer):
         G = TT.reshape(H, (H.shape[0], H.shape[1]))
         G = G / G.norm(2, axis=1).reshape((G.shape[0], 1))
 
-        grad_dots = TT.dot(G, self.__value.as_tensor()/self.__value.norm())
-        #dots_matrix = TT.dot(G.T, G)
+        grad_dots = TT.dot(G, self.__value.as_tensor() / self.__value.norm())
+        # dots_matrix = TT.dot(G.T, G)
 
         return grad_dots
 
@@ -104,14 +104,13 @@ class RnnGradient(SymbolicInfoProducer):
                                'b_rec': info_symbols[3],
                                'b_out': info_symbols[4]}
 
-
         grad_dots = NonPrintableInfoElement('grad_temporal_cos', info_symbols[5])
-        #dots_matrix = NonPrintableInfoElement('temporal_dots_matrix', info_symbols[6])
+        # dots_matrix = NonPrintableInfoElement('temporal_dots_matrix', info_symbols[6])
         separate_info = NonPrintableInfoElement('separate_norms', separate_norms_dict)
 
         info = InfoList(grad_dots, separate_info)
-        #info = separate_info
-        return info, info_symbols[len(separate_norms_dict)+1: len(info_symbols)]
+        # info = separate_info
+        return info, info_symbols[len(separate_norms_dict) + 1: len(info_symbols)]
 
     def temporal_combination(self, strategy):  # FIXME
         if self.type == 'togheter':
@@ -178,8 +177,8 @@ class RnnGradient(SymbolicInfoProducer):
             self.__combination = net.from_tensor(combination)
 
             if grad.preserve_norms:
-                self.__combination *= grad.value.norm()/self.__combination.norm()
-                #self.__combination = self.__combination.scale_norms_as(grad.value)
+                self.__combination *= grad.value.norm() / self.__combination.norm()
+                # self.__combination = self.__combination.scale_norms_as(grad.value)
 
     class SeparateCombination(Combination):
         @property
@@ -210,7 +209,7 @@ class RnnGradient(SymbolicInfoProducer):
             self.__combination = net.from_tensor(flattened)
 
             if grad.preserve_norms and grad.value != 0:  # FIXME
-                #self.__combination *= grad.value.norm()/self.__combination.norm()
+                # self.__combination *= grad.value.norm()/self.__combination.norm()
                 self.__combination = self.__combination.scale_norms_as(grad.value)
 
     class FairCombination(Combination):  # FIXME come la merda
@@ -307,7 +306,7 @@ class RnnGradient(SymbolicInfoProducer):
             # normalize combination
             partial_norm = TT.sqrt((grad.value.W_rec ** 2).sum() + (grad.value.W_in ** 2).sum() +
                                    (
-                                   grad.value.b_rec ** 2).sum())  # + (grad.value.W_out ** 2).sum() + (grad.value.b_out**2).sum())
+                                       grad.value.b_rec ** 2).sum())  # + (grad.value.W_out ** 2).sum() + (grad.value.b_out**2).sum())
             combination *= partial_norm
 
             n1 = net.n_hidden ** 2

@@ -98,7 +98,9 @@ class RNN(object):
 
         return RnnVars(self, W_rec, W_in, W_out, b_rec, b_out)
 
-    #  should not be used from the outside
+    def net_ouput_numpy(self, u): # TODO names Theano T
+        return self.__symbols .net_output_numpy(u)
+
     def net_output(self, params: RnnVars, u):
         return self.__net_output(params.W_rec, params.W_in, params.W_out, params.b_rec, params.b_out, u)
 
@@ -110,9 +112,10 @@ class RNN(object):
                            outputs_info=[h_m1, None, None],
                            non_sequences=[W_rec, W_in, W_out, b_rec, b_out],
                            name='net_output_scan')
+        h = values[0]
         y = values[1]
         deriv_a = values[2]
-        return y, deriv_a
+        return y, deriv_a, h
 
     def net_output_t(self, u_t, h_tm1, W_rec, W_in, W_out, b_rec, b_out):
         h_t, deriv_a_t = self.h_t(u_t, h_tm1, W_rec, W_in, b_rec)
@@ -221,9 +224,10 @@ class RNN(object):
                                non_sequences=[],
                                name='separate_matrices_net_output_scan',
                                n_steps=u.shape[0])
+            h = values[0]
             y = values[1]
             deriv_a = values[2]
-            return y, deriv_a, W_rec_fixes, W_in_fixes, W_out_fixes, b_rec_fixes, b_out_fixes
+            return y, deriv_a, h, W_rec_fixes, W_in_fixes, W_out_fixes, b_rec_fixes, b_out_fixes
 
         def __net_output_t(self, u_t, W_rec_fixes, W_in_fixes, W_out_fixes, b_rec_fixes, b_out_fixes, h_tm1):
             h_t, deriv_a_t = self.__net.h_t(u_t, h_tm1, W_rec_fixes, W_in_fixes, b_rec_fixes)
@@ -256,12 +260,15 @@ class RNN(object):
             self.t = TT.tensor3(name='t')  # target tensor
 
             # output of the net
-            self.y, self.deriv_a = net.net_output(self.__current_params, self.u)
+            self.y, self.deriv_a, h = net.net_output(self.__current_params, self.u)
             # self.y, self.deriv_a, *_ = net.experimental.net_output(self.__current_params, self.u)
-            self.y_shared, self.deriv_a_shared = T.clone([self.y, self.deriv_a],
+            self.y_shared, self.deriv_a_shared, self.h_shared = T.clone([self.y, self.deriv_a, h],
                                                          replace={W_rec: self.__W_rec, W_in: self.__W_in,
                                                                   W_out: self.__W_out, b_rec: self.__b_rec,
                                                                   b_out: self.__b_out})
+
+            # compile numpy output function
+            self.net_output_numpy = T.function([self.u], [self.y_shared, self.h_shared])
 
         def get_deriv_a(self, params):
             _, deriv_a = self.__net.net_output(params, self.u)

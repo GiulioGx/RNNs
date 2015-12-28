@@ -69,11 +69,11 @@ loss_fnc = CrossEntropy()
 out_dir = Configs.output_dir+str(task)
 
 # init strategy
-std_dev = 0.14  # 0.14 Tanh # 0.21 Relu
+std_dev = 0.11  # 0.14 Tanh # 0.21 Relu
 mean = 0
-init_strategies = {'W_rec': GaussianInit(mean, std_dev), 'W_in': GaussianInit(mean, 0.1),
+init_strategies = {'W_rec': GaussianInit(mean, std_dev), 'W_in': ConstantInit(0.1),
                    'W_out': GaussianInit(mean, 0.1),
-                   'b_rec': ConstantInit(-0.5), 'b_out': ZeroInit()}
+                   'b_rec': ConstantInit(+0.3), 'b_out': ZeroInit()}
 # # HF init
 # bias_value = 0.5
 # n_conns = 25
