@@ -69,7 +69,7 @@ loss_fnc = CrossEntropy()
 out_dir = Configs.output_dir+str(task)
 
 # init strategy
-std_dev = 0.12  # 0.14 Tanh # 0.21 Relu
+std_dev = 0.14  # 0.14 Tanh # 0.21 Relu
 mean = 0
 init_strategies = {'W_rec': GaussianInit(mean, std_dev), 'W_in': GaussianInit(mean, 0.1),
                    'W_out': GaussianInit(mean, 0.1),
