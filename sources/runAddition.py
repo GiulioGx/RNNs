@@ -65,8 +65,8 @@ print(separator)
 # network setup
 std_dev = 0.14  # 0.14 Tanh # 0.21 Relu
 mean = 0
-net_initializer = RnnInitializer(W_rec_init=GaussianInit(mean=mean, std_var=std_dev), W_in_init=GaussianInit(mean=mean, std_var=0.1),
-                                 W_out_init=GaussianInit(mean=mean, std_var=0.1), b_rec_init=ConstantInit(0),
+net_initializer = RnnInitializer(W_rec_init=GaussianInit(mean=mean, std_dev=std_dev), W_in_init=GaussianInit(mean=mean, std_dev=0.1),
+                                 W_out_init=GaussianInit(mean=mean, std_dev=0.1), b_rec_init=ConstantInit(0),
                                  b_out_init=ConstantInit(0), activation_fnc=Tanh(), output_fnc=Linear(), n_hidden=100)
 
 # setup
@@ -114,9 +114,9 @@ lr_rule = GradientClipping(lr_value=0.01, clip_thr=0.1)  # 0.01
 # lr_rule = ArmijoStep(alpha=0.5, beta=0.1, init_step=1, max_steps=50)
 obj_fnc = ObjectiveFunction(loss_fnc)
 
-# update_rule = FixedAveraging(t=7)
+update_rule = FixedAveraging(t=10)
 #update_rule = SimpleUdpate()
-update_rule = Momentum(gamma=0.3)
+#update_rule = Momentum(gamma=0.3)
 
 train_rule = TrainingRule(dir_rule, lr_rule, update_rule)
 
