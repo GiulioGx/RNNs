@@ -10,25 +10,21 @@ from infos.Info import Info
 from infos.InfoElement import PrintableInfoElement
 from infos.InfoGroup import InfoGroup
 from infos.InfoList import InfoList
-from initialization.GaussianInit import GaussianInit
-from initialization.GivenValueInit import GivenValueInit
-from initialization.ZeroInit import ZeroInit
 from model.RnnVars import RnnVars
 from output_fncs import OutputFunction
 
 __author__ = 'giulio'
 
 
-class RNN(object):
-    deafult_init_strategies = {'W_rec': GaussianInit(), 'W_in': GaussianInit(), 'W_out': GaussianInit(),
-                               'b_rec': ZeroInit(), 'b_out': ZeroInit()}
-
-    def __init__(self, activation_fnc: ActivationFunction, output_fnc: OutputFunction, n_hidden, n_in, n_out, init_strategies: deafult_init_strategies,
+class Rnn(object):
+    def __init__(self, W_rec, W_in, W_out, b_rec, b_out, activation_fnc: ActivationFunction, output_fnc: OutputFunction,
                  seed=Configs.seed):
         # topology
-        self.__n_hidden = n_hidden
-        self.__n_in = n_in
-        self.__n_out = n_out
+        self.__n_hidden = W_rec.shape[0]
+        self.__n_in = W_in.shape[1]
+        self.__n_out = W_out.shape[0]
+
+        # TODO add assertion shape
 
         # activation functions
         self.__activation_fnc = activation_fnc
@@ -39,19 +35,11 @@ class RNN(object):
         # random generator
         self.__rng = numpy.random.RandomState(seed)
 
-        W_rec = init_strategies['W_rec'].init_matrix((self.__n_hidden, self.__n_hidden), Configs.floatType)
-        W_in = init_strategies['W_in'].init_matrix((self.__n_hidden, self.__n_in), Configs.floatType)
-        W_out = init_strategies['W_out'].init_matrix((self.__n_out, self.__n_hidden), Configs.floatType)
-
-        # init biases
-        b_rec = init_strategies['b_rec'].init_matrix((self.__n_hidden, 1), Configs.floatType)
-        b_out = init_strategies['b_out'].init_matrix((self.__n_out, 1), Configs.floatType)
-
         # experimental
-        self.experimental = RNN.Experimental(self)
+        self.experimental = Rnn.Experimental(self)
 
         # build symbols
-        self.__symbols = RNN.Symbols(self, W_rec, W_in, W_out, b_rec, b_out)
+        self.__symbols = Rnn.Symbols(self, W_rec, W_in, W_out, b_rec, b_out)
 
         # define visible functions
         self.net_output_shared = T.function([self.__symbols.u], self.__symbols.y_shared, name='net_output_shared_fun')
@@ -98,8 +86,8 @@ class RNN(object):
 
         return RnnVars(self, W_rec, W_in, W_out, b_rec, b_out)
 
-    def net_ouput_numpy(self, u): # TODO names Theano T
-        return self.__symbols .net_output_numpy(u)
+    def net_ouput_numpy(self, u):  # TODO names Theano T
+        return self.__symbols.net_output_numpy(u)
 
     def net_output(self, params: RnnVars, u):
         return self.__net_output(params.W_rec, params.W_in, params.W_out, params.b_rec, params.b_out, u)
@@ -140,6 +128,7 @@ class RNN(object):
 
     @staticmethod
     def load_model(save_dir):
+        # TODO add assertions
         npz = numpy.load(save_dir + '/model.npz')
 
         W_rec = npz["W_rec"]
@@ -148,17 +137,11 @@ class RNN(object):
         b_rec = npz["b_rec"]
         b_out = npz["b_out"]
 
-        n_hidden = npz["net_n_hidden"].item()
-        n_in = npz["net_n_in"].item()
-        n_out = npz["net_n_out"].item()
-
         pickle_file = save_dir + '/model.pkl'
         activation_fnc, output_fnc = pickle.load(open(pickle_file, 'rb'))
 
-        init_strategies = {'W_rec': GivenValueInit(W_rec), 'W_in': GivenValueInit(W_in), 'W_out': GivenValueInit(W_out),
-                           'b_rec': GivenValueInit(b_rec), 'b_out': GivenValueInit(b_out)}
-
-        return RNN(activation_fnc, output_fnc, n_hidden, n_in, n_out, init_strategies)
+        return Rnn(W_rec=W_rec, W_in=W_in, W_out=W_out, b_rec=b_rec, b_out=b_out, activation_fnc=activation_fnc,
+                   output_fnc=output_fnc)
 
     @property
     def info(self):
@@ -167,6 +150,7 @@ class RNN(object):
                                   PrintableInfoElement('n_hidden', ':d', self.__n_hidden),
                                   PrintableInfoElement('n_in', ':d', self.__n_in),
                                   PrintableInfoElement('n_out', ':d', self.__n_out),
+                                  PrintableInfoElement('output_fnc', '', self.__output_fnc),
                                   PrintableInfoElement('activation_fnc', '', self.__activation_fnc)
                                   ))
 
@@ -189,7 +173,7 @@ class RNN(object):
         stat_info_dict.update(net_info_dict)
         numpy.savez(save_dir + '/model.npz', **stat_info_dict)
 
-        pickfile = open(save_dir+'/model.pkl', "wb")
+        pickfile = open(save_dir + '/model.pkl', "wb")
         pickle.dump([self.__activation_fnc, self.__output_fnc], pickfile)
 
     class Experimental:  # FIXME XXX
@@ -263,15 +247,16 @@ class RNN(object):
             self.y, self.deriv_a, h = net.net_output(self.__current_params, self.u)
             # self.y, self.deriv_a, *_ = net.experimental.net_output(self.__current_params, self.u)
             self.y_shared, self.deriv_a_shared, self.h_shared = T.clone([self.y, self.deriv_a, h],
-                                                         replace={W_rec: self.__W_rec, W_in: self.__W_in,
-                                                                  W_out: self.__W_out, b_rec: self.__b_rec,
-                                                                  b_out: self.__b_out})
+                                                                        replace={W_rec: self.__W_rec, W_in: self.__W_in,
+                                                                                 W_out: self.__W_out,
+                                                                                 b_rec: self.__b_rec,
+                                                                                 b_out: self.__b_out})
 
             # compile numpy output function
             self.net_output_numpy = T.function([self.u], [self.y_shared, self.h_shared])
 
         def get_deriv_a(self, params):
-            _, deriv_a = self.__net.net_output(params, self.u)
+            _, _, deriv_a = self.__net.net_output(params, self.u)
             return deriv_a
 
         @property
@@ -281,7 +266,7 @@ class RNN(object):
         @property  # XXX
         def get_numeric_vector(self):
             return numpy.reshape(
-                numpy.concatenate((self.__W_rec.get_value().flatten(), self.__W_in.get_value().flatten(),
-                                   self.__W_out.get_value().flatten(), self.__b_rec.get_value().flatten(),
-                                   self.__b_out.get_value().flatten())), (self.__net.n_variables, 1)).astype(
-                dtype=Configs.floatType)
+                    numpy.concatenate((self.__W_rec.get_value().flatten(), self.__W_in.get_value().flatten(),
+                                       self.__W_out.get_value().flatten(), self.__b_rec.get_value().flatten(),
+                                       self.__b_out.get_value().flatten())), (self.__net.n_variables, 1)).astype(
+                    dtype=Configs.floatType)

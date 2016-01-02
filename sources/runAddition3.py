@@ -37,7 +37,7 @@ from initialization.ZeroInit import ZeroInit
 from learningRule.ArmijoStep import ArmijoStep
 from learningRule.ConstantNormalizedStep import ConstantNormalizedStep
 from learningRule.ConstantStep import ConstantStep
-from model.RNN import RNN
+from model.Rnn import Rnn
 from penalty.ConstantPenalty import ConstantPenalty
 from penalty.MeanPenalty import MeanPenalty
 from penalty.NullPenalty import NullPenalty

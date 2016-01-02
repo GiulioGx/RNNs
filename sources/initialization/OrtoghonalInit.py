@@ -1,4 +1,5 @@
 from Configs import Configs
+from infos.InfoElement import SimpleDescription
 from initialization.MatrixInit import MatrixInit
 import numpy
 
@@ -17,5 +18,9 @@ class OrtoghonalInit(MatrixInit):
         # TODO assert size
         values = self.__rng.uniform(size=size)
         u, _, _ = numpy.linalg.svd(values)
-        u = u * self.__scale
+        u *= self.__scale
         return u.astype(dtype)
+
+    @property
+    def infos(self):
+        return SimpleDescription('ortoghonal init strategy')

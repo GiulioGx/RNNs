@@ -13,7 +13,8 @@ from TrainingRule import TrainingRule
 from infos.InfoElement import PrintableInfoElement
 from infos.InfoGroup import InfoGroup
 from infos.InfoList import InfoList
-from model.RNN import RNN
+from model.Rnn import Rnn
+from model.RnnInitializer import RnnInitializer
 from output_fncs.OutputFunction import OutputFunction
 from task.BatchPolicer import RepetitaPolicer
 from task.Dataset import Dataset
@@ -137,16 +138,18 @@ class NetTrainer(object):
         os.makedirs(self.__output_dir, exist_ok=True)
         logging.basicConfig(filename=self.__log_filename, level=logging.INFO, format='%(levelname)s:%(message)s')
 
-    def train(self, dataset: Dataset, activation_fnc:ActivationFunction, output_fnc:OutputFunction, n_hidden: int, init_strategies=RNN.deafult_init_strategies, seed:int=13):
+    def train(self, dataset: Dataset, net_initializer:RnnInitializer, seed:int=13):
 
         if os.path.exists(self.__log_filename):
             os.remove(self.__log_filename)
         self.__start_logger()
 
         # configure network
-        logging.info('Compiling theano functions for the net...')
-        net = RNN(activation_fnc, output_fnc, n_hidden, dataset.n_in, dataset.n_out, init_strategies, seed)
+        logging.info('Initializing the net and compiling theano functions for the net...')
+        net = net_initializer.init_net(n_in=dataset.n_in, n_out=dataset.n_out)
         logging.info('...Done')
+        logging.info(str(net_initializer.infos))
+
         return self._train(dataset, net)
 
     def resume_training(self, dataset: Dataset, net):  # TODO load statistics too

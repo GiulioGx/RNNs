@@ -11,10 +11,13 @@ from initialization.ConstantInit import ConstantInit
 from initialization.EyeInit import EyeInit
 from initialization.OrtoghonalInit import OrtoghonalInit
 from initialization.RandomConnectionsInit import RandomConnectionsInit
+from initialization.SimplexInit import SimplexInit
 from initialization.UniformInit import UniformInit
 from lossFunctions.CrossEntropy import CrossEntropy
 from lossFunctions.HingeLoss import HingeLoss
+from lossFunctions.NullLoss import NullLoss
 from lossFunctions.SquaredError import SquaredError
+from model.RnnInitializer import RnnInitializer
 from output_fncs.Softmax import Softmax
 from output_fncs.Linear import Linear
 from task.Dataset import Dataset, InfiniteDataset
@@ -37,7 +40,7 @@ from initialization.ZeroInit import ZeroInit
 from learningRule.ArmijoStep import ArmijoStep
 from learningRule.ConstantNormalizedStep import ConstantNormalizedStep
 from learningRule.ConstantStep import ConstantStep
-from model.RNN import RNN
+from model.Rnn import Rnn
 from penalty.ConstantPenalty import ConstantPenalty
 from penalty.MeanPenalty import MeanPenalty
 from penalty.NullPenalty import NullPenalty
@@ -59,21 +62,19 @@ print('device: ' + device)
 print('floatType: ' + floatX)
 print(separator)
 
+# network setup
+std_dev = 0.14  # 0.14 Tanh # 0.21 Relu
+mean = 0
+net_initializer = RnnInitializer(W_rec_init=UniformInit(low=-0.5, high=0.5), W_in_init=SimplexInit(columnwise=False),
+                                 W_out_init=SimplexInit(columnwise=False), b_rec_init=ConstantInit(0),
+                                 b_out_init=ConstantInit(0), activation_fnc=Tanh(), output_fnc=Softmax(), n_hidden=100)
+
 # setup
 seed = 13
 task = XorTaskHot(80, seed)
-n_hidden = 100
-activation_fnc = Tanh()
-output_fnc = Softmax()
+out_dir = Configs.output_dir + str(task)
 loss_fnc = CrossEntropy()
-out_dir = Configs.output_dir+str(task)
 
-# init strategy
-std_dev = 0.11  # 0.14 Tanh # 0.21 Relu
-mean = 0
-init_strategies = {'W_rec': GaussianInit(mean, std_dev), 'W_in': ConstantInit(0.1),
-                   'W_out': GaussianInit(mean, 0.1),
-                   'b_rec': ConstantInit(+0.3), 'b_out': ZeroInit()}
 # # HF init
 # bias_value = 0.5
 # n_conns = 25
@@ -84,9 +85,9 @@ init_strategies = {'W_rec': GaussianInit(mean, std_dev), 'W_in': ConstantInit(0.
 #                    'b_rec': ConstantInit(bias_value), 'b_out': ConstantInit(bias_value)}
 
 # penalty strategy
-#penalty = MeanPenalty()
-#penalty = ConstantPenalty(c=5)
-#penalty = MeanPenalty()
+# penalty = MeanPenalty()
+penalty = ConstantPenalty(c=5)
+# penalty = MeanPenalty()
 
 # direction strategy
 # dir_rule = AntiGradient()
@@ -95,37 +96,37 @@ init_strategies = {'W_rec': GaussianInit(mean, std_dev), 'W_in': ConstantInit(0.
 # dir_rule = FrozenGradient(penalty)
 # dir_rule = SepareteGradient()
 
-#combining_rule = OnesCombination(normalize_components=False)
+# combining_rule = OnesCombination(normalize_components=False)
 combining_rule = SimplexCombination(normalize_components=True)
-#combining_rule = SimpleSum()
-#combining_rule = EquiangularCombination()
-#combining_rule = DropoutCombination(drop_rate=0.8)
-#combining_rule = MedianCombination()
+# combining_rule = SimpleSum()
+# combining_rule = EquiangularCombination()
+# combining_rule = DropoutCombination(drop_rate=0.8)
+# combining_rule = MedianCombination()
 dir_rule = CombinedGradients(combining_rule)
-#dir_rule = DropoutDirection(dir_rule, drop_rate=0.1)
-#dir_rule = DirectionWithPenalty(direction_rule=dir_rule, penalty=penalty, penalty_lambda=1)
-#dir_rule = AlternatingDirections(dir_rule)
+# dir_rule = DropoutDirection(dir_rule, drop_rate=0.1)
+# dir_rule = DirectionWithPenalty(direction_rule=dir_rule, penalty=penalty, penalty_lambda=1)
+# dir_rule = AlternatingDirections(dir_rule)
 
 # learning step rule
 # lr_rule = WRecNormalizedStep(0.0001) #0.01
-#lr_rule = ConstantNormalizedStep(0.001)  # 0.01
+# lr_rule = ConstantNormalizedStep(0.001)  # 0.01
 lr_rule = GradientClipping(lr_value=0.01, clip_thr=0.1)  # 0.01
-#lr_rule = ArmijoStep(alpha=0.5, beta=0.1, init_step=1, max_steps=50)
+# lr_rule = ArmijoStep(alpha=0.5, beta=0.1, init_step=1, max_steps=50)
 obj_fnc = ObjectiveFunction(loss_fnc)
 
-#update_rule = FixedAveraging(t=7)
+# update_rule = FixedAveraging(t=7)
 update_rule = SimpleUdpate()
-#update_rule = Momentum(gamma=0.3)
+# update_rule = Momentum(gamma=0.3)
 
 train_rule = TrainingRule(dir_rule, lr_rule, update_rule)
 
 trainer = NetTrainer(train_rule, obj_fnc, output_dir=out_dir, max_it=10 ** 10,
                      check_freq=200, bacth_size=100)
 
-#dataset = Dataset.no_valid_dataset_from_task(size=1000, task=task)
+# dataset = Dataset.no_valid_dataset_from_task(size=1000, task=task)
 dataset = InfiniteDataset(task=task, validation_size=10 ** 4)
 
-net = trainer.train(dataset, activation_fnc, output_fnc, n_hidden, init_strategies, seed)
+net = trainer.train(dataset, net_initializer, seed)
 
-#net = RNN.load_model(out_dir)
-#net = trainer.resume_training(dataset, net)
+# net = RNN.load_model(out_dir)
+# net = trainer.resume_training(dataset, net)

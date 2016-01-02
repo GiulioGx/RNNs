@@ -1,4 +1,5 @@
 from Configs import Configs
+from infos.InfoElement import SimpleDescription
 from initialization.MatrixInit import MatrixInit
 import numpy
 
@@ -18,4 +19,8 @@ class UniformInit(MatrixInit):
 
         w = numpy.asarray(self.__rng.uniform(size=size, low=self.__low, high=self.__high), dtype=dtype)
         return w
+
+    @property
+    def infos(self):
+        return SimpleDescription('uniform init strategy')
 

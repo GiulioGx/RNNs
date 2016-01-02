@@ -36,7 +36,7 @@ class AdditionTask(Task):
         return self.__marker_based_task.get_batch(batch_size)
 
     def error_fnc(self, t, y):
-        return (((t[-1:, :, :] - y[-1:, :, :]) ** 2).sum(axis=0) > .04).mean()
+        return (((t[-1, :, :] - y[-1, :, :]) ** 2).sum(axis=0) > .04).mean()
 
     def __str__(self):
         return str(self.infos)
