@@ -15,7 +15,7 @@ class OrtoghonalInit(MatrixInit):
         self.__scale = scale
 
     def init_matrix(self, size, dtype):
-        # TODO assert size
+        assert (size[0] == size[1])
         values = self.__rng.uniform(size=size)
         u, _, _ = numpy.linalg.svd(values)
         u *= self.__scale

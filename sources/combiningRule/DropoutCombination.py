@@ -28,7 +28,8 @@ class DropoutCombination(CombiningRule):
         return self.__drop_rate
 
     def generate_coeff(self, size):
-        return self.__srng.choice(size=size, a=[0, 1], replace=True, p=[self.drop_rate, 1 - self.__drop_rate], dtype=Configs.floatType)
+        return self.__srng.choice(size=size, a=[0, 1], replace=True, p=[self.drop_rate, 1 - self.__drop_rate],
+                                  dtype=Configs.floatType)
 
     def compile(self, vector_list, n):
         return DropoutCombination.Symbols(self, vector_list, n)

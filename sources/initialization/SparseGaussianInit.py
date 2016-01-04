@@ -1,12 +1,17 @@
 from Configs import Configs
+from infos.InfoElement import PrintableInfoElement
+from infos.InfoGroup import InfoGroup
+from infos.InfoList import InfoList
 from initialization.MatrixInit import MatrixInit
 import numpy
 
 __author__ = 'giulio'
 
 
-class RandomConnectionsInit(MatrixInit):
-    def __init__(self, n_connections_per_unit: int, std_dev: float, mean: float=0., columnwise: bool = True,
+class SparseGaussianInit(MatrixInit):
+    """initialization strategy used by HessianFree optimization technique """
+
+    def __init__(self, n_connections_per_unit: int, std_dev: float, mean: float = 0., columnwise: bool = True,
                  seed=Configs.seed):
         # random generator
         self.__rng = numpy.random.RandomState(seed)
@@ -29,10 +34,11 @@ class RandomConnectionsInit(MatrixInit):
 
         non_zero_connections_indexes = numpy.zeros((self.__n_connections_per_unit * n_units,), dtype='int64')
         for i in range(n_units):
-            non_zero_connections_indexes[i * self.__n_connections_per_unit:(i + 1) * self.__n_connections_per_unit] = self.__rng.choice(
-                numpy.arange(n_connections),
-                size=(self.__n_connections_per_unit,), replace=False
-                )
+            non_zero_connections_indexes[
+            i * self.__n_connections_per_unit:(i + 1) * self.__n_connections_per_unit] = self.__rng.choice(
+                    numpy.arange(n_connections),
+                    size=(self.__n_connections_per_unit,), replace=False
+            )
 
         non_zero_connections_values = self.__rng.normal(size=(n_units * self.__n_connections_per_unit,),
                                                         scale=self.__std_dev, loc=self.__mean)
@@ -43,3 +49,9 @@ class RandomConnectionsInit(MatrixInit):
             return w
         else:
             return numpy.transpose(w)
+
+    @property
+    def infos(self):
+        return InfoGroup('sparse gaussian init strategy', InfoList(PrintableInfoElement('mean', ':2.2f', self.__mean),
+                                                                     PrintableInfoElement('std_dev', ':2.2f',
+                                                                                          self.__std_dev)))

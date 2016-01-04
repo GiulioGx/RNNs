@@ -6,8 +6,8 @@ import theano.tensor as TT
 class HingeLoss(LossFunction):
 
     def value(self, y, t):
-        s = 1. - t[-1, 0, :] * y[-1, 0, :]  # FIXME
-        return TT.switch(s > 0, s, 0).mean()
+        s = 1. - t[:, 0, :] * y[:, 0, :]  # defined only for one output unit
+        return TT.switch(s > 0, s, 0).mean(axis=1).sum()
 
     @property
     def infos(self):

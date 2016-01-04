@@ -1,3 +1,4 @@
+from infos.InfoElement import SimpleDescription
 from initialization.MatrixInit import MatrixInit
 
 
@@ -8,7 +9,11 @@ class GivenValueInit(MatrixInit):
     def init_matrix(self, size, dtype):
         if self.__value.shape != size:
             raise ValueError(
-                'given size is incorrect: trying to initialize a matrix of shape {} with a matrix of shape {}'.format(
-                    size, self.__value.shape))
+                    'given size is incorrect: trying to initialize a matrix '
+                    'of shape {} with a matrix of shape {}'.format(size, self.__value.shape))
         else:
             return self.__value
+
+    @property
+    def infos(self):
+        return SimpleDescription('user defined input')

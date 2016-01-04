@@ -6,7 +6,7 @@ from infos.SimpleInfoProducer import SimpleInfoProducer
 __author__ = 'giulio'
 
 
-class MatrixInit(SimpleInfoProducer): # TODO add infos in subclasses
+class MatrixInit(SimpleInfoProducer):
     __metaclass__ = abc.ABCMeta
 
     @abc.abstractmethod

@@ -8,7 +8,7 @@ from task.XorTaskHot import XorTaskHot
 import numpy
 
 seed = 678
-task = XorTaskHot(80, seed)
+task = XorTaskHot(144, seed)
 out_dir = Configs.output_dir + str(task)
 net = Rnn.load_model(out_dir)
 

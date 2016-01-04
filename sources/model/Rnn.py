@@ -19,12 +19,16 @@ __author__ = 'giulio'
 class Rnn(object):
     def __init__(self, W_rec, W_in, W_out, b_rec, b_out, activation_fnc: ActivationFunction, output_fnc: OutputFunction,
                  seed=Configs.seed):
+
+        assert (W_rec.shape[0] == W_rec.shape[1])
+        assert (W_in.shape[0] == W_rec.shape[1])
+        assert (b_rec.shape[0] == W_rec.shape[0])
+        assert (b_out.shape[0] == W_out.shape[0])
+
         # topology
         self.__n_hidden = W_rec.shape[0]
         self.__n_in = W_in.shape[1]
         self.__n_out = W_out.shape[0]
-
-        # TODO add assertion shape
 
         # activation functions
         self.__activation_fnc = activation_fnc
@@ -128,7 +132,6 @@ class Rnn(object):
 
     @staticmethod
     def load_model(save_dir):
-        # TODO add assertions
         npz = numpy.load(save_dir + '/model.npz')
 
         W_rec = npz["W_rec"]

@@ -1,5 +1,7 @@
 from Configs import Configs
-from infos.InfoElement import SimpleDescription
+from infos.InfoElement import SimpleDescription, PrintableInfoElement
+from infos.InfoGroup import InfoGroup
+from infos.InfoList import InfoList
 from initialization.MatrixInit import MatrixInit
 import numpy
 
@@ -22,5 +24,6 @@ class UniformInit(MatrixInit):
 
     @property
     def infos(self):
-        return SimpleDescription('uniform init strategy')
+                return InfoGroup('uniform init strategy', InfoList(PrintableInfoElement('low', ':2.2f', self.__low),
+                                                            PrintableInfoElement('high', ':2.2f', self.__high)))
 
