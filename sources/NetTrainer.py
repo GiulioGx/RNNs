@@ -23,13 +23,13 @@ __author__ = 'giulio'
 
 
 class NetTrainer(object):
-    def __init__(self, training_rule: TrainingRule, obj_fnc: ObjectiveFunction, max_it=10 ** 5, bacth_size=100,
+    def __init__(self, training_rule: TrainingRule, obj_fnc: ObjectiveFunction, max_it=10 ** 5, batch_size=100,
                  stop_error_thresh=0.01, check_freq=50, output_dir='.'):
 
         self.__training_rule = training_rule
         self.__obj_fnc = obj_fnc
         self.__max_it = max_it
-        self.__batch_size = bacth_size
+        self.__batch_size = batch_size
         self.__stop_error_thresh = stop_error_thresh
         self.__check_freq = check_freq
         self.__output_dir = output_dir

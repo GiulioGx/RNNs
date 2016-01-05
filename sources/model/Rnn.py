@@ -17,9 +17,8 @@ __author__ = 'giulio'
 
 
 class Rnn(object):
-    def __init__(self, W_rec, W_in, W_out, b_rec, b_out, activation_fnc: ActivationFunction, output_fnc: OutputFunction,
-                 seed=Configs.seed):
-
+    def __init__(self, W_rec, W_in, W_out, b_rec, b_out, activation_fnc: ActivationFunction,
+                 output_fnc: OutputFunction):
         assert (W_rec.shape[0] == W_rec.shape[1])
         assert (W_in.shape[0] == W_rec.shape[1])
         assert (b_rec.shape[0] == W_rec.shape[0])
@@ -35,9 +34,6 @@ class Rnn(object):
 
         # output function
         self.__output_fnc = output_fnc
-
-        # random generator
-        self.__rng = numpy.random.RandomState(seed)
 
         # experimental
         self.experimental = Rnn.Experimental(self)
@@ -266,7 +262,7 @@ class Rnn(object):
         def current_params(self):
             return self.__current_params
 
-        @property  # XXX
+        @property  # XXX probably to remove
         def get_numeric_vector(self):
             return numpy.reshape(
                     numpy.concatenate((self.__W_rec.get_value().flatten(), self.__W_in.get_value().flatten(),

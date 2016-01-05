@@ -7,7 +7,7 @@ from infos.SymbolicInfoProducer import SymbolicInfoProducer
 import theano.tensor as TT
 import theano as T
 from model.Combination import Combination
-from theanoUtils import get_norms, as_vector, flatten_list_element, cos_between_dirs, is_inf_or_nan, is_not_trustworthy
+from theanoUtils import as_vector, flatten_list_element, cos_between_dirs, is_inf_or_nan, is_not_trustworthy
 
 __author__ = 'giulio'
 
@@ -74,11 +74,10 @@ class RnnGradient(SymbolicInfoProducer):
 
         grad_dots = TT.dot(G, self.__value.as_tensor() / self.__value.norm())
         # dots_matrix = TT.dot(G.T, G)
-
         return grad_dots
 
     @staticmethod
-    def fix(W_list, l):
+    def fix(W_list, l):  # XXX probably to remove
         """aggiusta le cose quando la loss è colcolata solo sull'ultimo step"""
         values, _ = T.scan(lambda w: w, sequences=[],
                            outputs_info=[None],

@@ -1,16 +1,10 @@
+import theano.tensor as TT
 from theano.tensor.shared_randomstreams import RandomStreams
 
 from Configs import Configs
 from combiningRule.CombiningRule import CombiningRule
-from combiningRule.LinearCombination import LinearCombination
-import theano.tensor as TT
-import theano as T
-
 from infos.Info import NullInfo
-from infos.InfoElement import SimpleDescription, PrintableInfoElement
-from infos.InfoGroup import InfoGroup
-from infos.InfoList import InfoList
-from theanoUtils import norm
+from infos.InfoElement import SimpleDescription
 
 __author__ = 'giulio'
 

@@ -15,7 +15,6 @@ class Statistics(object):
 
     def update(self, info: Info, it, elapsed_time):
 
-        j = it / self.__check_freq
         self.__current_it = it
         self.__actual_length += 1
         self.__elapsed_time = elapsed_time
