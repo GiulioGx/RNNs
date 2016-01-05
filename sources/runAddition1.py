@@ -65,15 +65,15 @@ print(separator)
 # network setup
 std_dev = 0.14  # 0.14 Tanh # 0.21 Relu
 mean = 0
-net_initializer = RnnInitializer(W_rec_init=UniformInit(low=-0.33, high=0.33), W_in_init=GaussianInit(mean=mean, std_dev = 0.1),
+net_initializer = RnnInitializer(W_rec_init=GaussianInit(mean=mean, std_dev=std_dev), W_in_init=GaussianInit(mean=mean, std_dev = 0.1),
                                  W_out_init=GaussianInit(mean=mean, std_dev=0.1), b_rec_init=ConstantInit(0),
-                                 b_out_init=ConstantInit(0), activation_fnc=Tanh(), output_fnc=Softmax(), n_hidden=100)
+                                 b_out_init=ConstantInit(0), activation_fnc=Tanh(), output_fnc=Linear(), n_hidden=100)
 
 # setup
 seed = 13
-task = XorTaskHot(144, seed)
+task = AdditionTask(144, seed)
 out_dir = Configs.output_dir + str(task)
-loss_fnc = CrossEntropy()
+loss_fnc = SquaredError()
 
 # # HF init
 # bias_value = 0.5
@@ -110,13 +110,13 @@ dir_rule = CombinedGradients(combining_rule)
 # learning step rule
 # lr_rule = WRecNormalizedStep(0.0001) #0.01
 # lr_rule = ConstantNormalizedStep(0.001)  # 0.01
-lr_rule = GradientClipping(lr_value=0.01, clip_thr=0.1)  # 0.01
+lr_rule = GradientClipping(lr_value=0.03, clip_thr=0.1)  # 0.01
 # lr_rule = ArmijoStep(alpha=0.5, beta=0.1, init_step=1, max_steps=50)
 obj_fnc = ObjectiveFunction(loss_fnc)
 
-# update_rule = FixedAveraging(t=7)
+update_rule = FixedAveraging(t=10)
 #update_rule = SimpleUdpate()
-update_rule = Momentum(gamma=0.1)
+#update_rule = Momentum(gamma=0.1)
 
 train_rule = TrainingRule(dir_rule, lr_rule, update_rule)
 
