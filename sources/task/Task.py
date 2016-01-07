@@ -1,6 +1,7 @@
 import abc
 
 from infos.SimpleInfoProducer import SimpleInfoProducer
+from task import Batch
 
 __author__ = 'giulio'
 
@@ -9,7 +10,7 @@ class Task(SimpleInfoProducer):
     __metaclass__ = abc.ABCMeta
 
     @abc.abstractmethod
-    def get_batch(self, batch_size: int):
+    def get_batch(self, batch_size: int)->Batch:
         """return a batch of 'batch_size' training examples """
         return
 

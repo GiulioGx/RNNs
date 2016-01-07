@@ -126,6 +126,16 @@ class Rnn(object):
     def spectral_radius(self):
         return numpy.max(abs(numpy.linalg.eigvals(self.symbols.current_params.W_rec.get_value())))
 
+    def reconfigure_network(self, W_out, output_fnc: OutputFunction):
+
+        W_rec = self.__symbols.W_rec_value
+        W_in = self.__symbols.W_in_value
+        b_rec = self.__symbols.b_rec_value
+        b_out = self.__symbols.b_out_value
+
+        return Rnn(W_rec=W_rec, W_in=W_in, W_out=W_out, b_rec=b_rec, b_out=b_out, activation_fnc=self.__activation_fnc,
+                   output_fnc=output_fnc)
+
     @staticmethod
     def load_model(save_dir):
         npz = numpy.load(save_dir + '/model.npz')
@@ -269,3 +279,25 @@ class Rnn(object):
                                        self.__W_out.get_value().flatten(), self.__b_rec.get_value().flatten(),
                                        self.__b_out.get_value().flatten())), (self.__net.n_variables, 1)).astype(
                     dtype=Configs.floatType)
+
+        @property
+        def W_rec_value(self):
+            return self.__W_rec.get_value()
+
+        @property
+        def W_in_value(self):
+            return self.__W_in.get_value()
+
+        @property
+        def W_out_value(self):
+            return self.__W_out.get_value()
+
+        @property
+        def b_rec_value(self):
+            return self.__b_rec.get_value()
+
+        @property
+        def b_out_value(self):
+            return self.__b_out.get_value()
+
+
