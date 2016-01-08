@@ -125,7 +125,7 @@ update_rule = FixedAveraging(t=10)
 
 train_rule = TrainingRule(dir_rule, lr_rule, update_rule)
 
-trainer = NetTrainer(train_rule, obj_fnc, output_dir=out_dir, max_it=20000,
+trainer = NetTrainer(train_rule, obj_fnc, output_dir=out_dir, max_it=50000,
                      check_freq=200, batch_size=100)
 
 # dataset = Dataset.no_valid_dataset_from_task(size=1000, task=task)
