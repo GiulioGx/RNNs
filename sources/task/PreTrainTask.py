@@ -29,7 +29,7 @@ class PreTrainTask(Task): # XXX per ora funziona solo se hanno le stesse unità 
         return Batch(batch.inputs, new_targets)
 
     def error_fnc(self, t, y):  # not really relevant for this task
-        return (((t[:, :, :] - y[:, :, :]) ** 2).sum(axis=1) > .04).mean().mean()
+        return ((abs(t[-1, :, :] - y[-1, :, :])).sum(axis=0) > .04).mean()
 
     @property
     def n_in(self):
