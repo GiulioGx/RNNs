@@ -63,26 +63,29 @@ print('floatType: ' + floatX)
 print(separator)
 
 # network setup
-std_dev = 0.14  # 0.14 Tanh # 0.21 Relu
-mean = 0
-net_initializer = RnnInitializer(W_rec_init=UniformInit(low=-0.33, high=0.33), W_in_init=GaussianInit(mean=mean, std_dev = 0.1),
-                                 W_out_init=GaussianInit(mean=mean, std_dev=0.1), b_rec_init=ConstantInit(0),
-                                 b_out_init=ConstantInit(0), activation_fnc=Tanh(), output_fnc=Softmax(), n_hidden=100)
+# std_dev = 0.14  # 0.14 Tanh # 0.21 Relu
+# mean = 0
+# net_initializer = RnnInitializer(W_rec_init=GaussianInit(mean=mean, std_dev=std_dev), W_in_init=GaussianInit(mean=mean, std_dev = 0.1),
+#                                  W_out_init=GaussianInit(mean=mean, std_dev=0.1), b_rec_init=ConstantInit(0),
+#                                  b_out_init=ConstantInit(0), activation_fnc=Tanh(), output_fnc=Linear(), n_hidden=100)
 
 # setup
 seed = 13
-task = XorTaskHot(144, seed)
+task = AdditionTask(144, seed)
 out_dir = Configs.output_dir + str(task)
-loss_fnc = CrossEntropy()
+loss_fnc = SquaredError()
 
 # # HF init
-# bias_value = 0.5
-# n_conns = 25
-# std_dev = sqrt(0.12)
-# init_strategies = {'W_rec': RandomConnectionsInit(n_connections_per_unit=n_conns, std_dev=std_dev, columnwise=False),
-#                    'W_in': RandomConnectionsInit(n_connections_per_unit=n_conns, std_dev=0.1, columnwise=True),
-#                    'W_out': RandomConnectionsInit(n_connections_per_unit=n_conns, std_dev=std_dev, columnwise=False),
-#                    'b_rec': ConstantInit(bias_value), 'b_out': ConstantInit(bias_value)}
+bias_value = 0.5
+n_conns = 20
+std_dev = sqrt(0.14)
+#std_dev = 0.14
+net_initializer = RnnInitializer(
+    W_rec_init=SparseGaussianInit(n_connections_per_unit=n_conns, std_dev=std_dev, columnwise=False),
+    W_in_init=SparseGaussianInit(n_connections_per_unit=n_conns, std_dev=1, columnwise=True),
+    W_out_init=SparseGaussianInit(n_connections_per_unit=n_conns, std_dev=std_dev, columnwise=False),
+    b_rec_init=GaussianInit(mean=0, std_dev=std_dev),
+    b_out_init=GaussianInit(mean=0, std_dev=std_dev), activation_fnc=Tanh(), output_fnc=Linear(), n_hidden=100)
 
 # penalty strategy
 # penalty = MeanPenalty()
@@ -114,13 +117,13 @@ lr_rule = GradientClipping(lr_value=0.01, clip_thr=0.1)  # 0.01
 # lr_rule = ArmijoStep(alpha=0.5, beta=0.1, init_step=1, max_steps=50)
 obj_fnc = ObjectiveFunction(loss_fnc)
 
-# update_rule = FixedAveraging(t=7)
-#update_rule = SimpleUdpate()
-update_rule = Momentum(gamma=0.1)
+update_rule = FixedAveraging(t=5)
+# update_rule = SimpleUdpate()
+# update_rule = Momentum(gamma=0.1)
 
 train_rule = TrainingRule(dir_rule, lr_rule, update_rule)
 
-trainer = NetTrainer(train_rule, obj_fnc, output_dir=out_dir, max_it=10**10,
+trainer = NetTrainer(train_rule, obj_fnc, output_dir=out_dir, max_it=10 ** 10,
                      check_freq=200, batch_size=100)
 
 # dataset = Dataset.no_valid_dataset_from_task(size=1000, task=task)

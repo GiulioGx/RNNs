@@ -1,0 +1,56 @@
+ 
+\begin{frame}{The model}
+	
+\begin{block}{RNN}
+	Given an input sequences $\{\vec{u}\}_{t=1,...,T}$, with $ \vec{u}_t \in \mathbb{R}^p$, the output sequence of a RNN $\{\vec{y}\}_{t=1,...,T}$, with $\vec{y}_t \in \mathbb{R}^o$,  is defined by the following:
+\begin{align}
+		&\vec{y}^t \defeq F(W^{out}\cdot\vec{a}^t + \vec{b}^{out})\\
+		&\vec{a}^t \defeq W^{rec}\cdot\vec{h}^{t-1}+W^{in}\cdot\vec{u}^t+\vec{b}^{rec}\\
+		&\vec{h}^t \defeq  \sigma(\vec{a}^t) \\
+		&\vec{h}^0 \defeq \overrightarrow{0},
+\end{align}
+where $\sigma(\cdot):\mathbb{R}\rightarrow\mathbb{R}$ is a non linear function applied element-wise called activation function.
+\end{block}
+\end{frame}
+
+\begin{frame}{The optimization problem}
+Given a dataset $D$:
+\begin{equation}
+D\defeq\{\{\overline{\vec{u}}^{(i)}\}_{t=1,...,T}, \overline{\vec{u}}^{(i)}_t \in \mathbb{R}^p, \{\overline{\vec{y}}^{(i)}\}_{t=1,...,T}, \overline{\vec{y}}^{(i)}_t \in \mathbb{R}^o;  i=1,...,N\}
+\end{equation}
+we define a loss function $L_D:\mathbb{R}^N \rightarrow \mathbb{R}_{\geq 0}$ over $D$  as
+\begin{equation}
+L_D(\vec{x})\defeq\frac{1}{N}\sum_{i=1}^N \sum_{t=1}^T L_t(\overline{\vec{y}}_t^{(i)},\vec{y}_t^{(i)}(\vec{x})),
+\end{equation}
+where $L_t(\cdot, \cdot)$ is an arbitrary loss function for the time step $t$.
+The problem is \begin{equation}
+\min_{\vec{x}\in \mathbb{R}^N} L_D(\vec{x})
+\end{equation}
+\end{frame}
+
+\begin{frame}{Stochastic gradient descent (SGD)}
+SGD is the standard framework in most of the applications.
+\begin{algorithm}[H]
+	\KwData{\\
+		\Indp
+		$D=\{\pair{\vec{u}^{(i)}}{\vec{y}^{(i)}}\}$: training set\\
+		$\vec{x}_0$: candidate solution \\
+		$m$: size of each minibatch\\
+	}
+	
+	\KwResult{\\
+		\Indp $\vec{x}$: solution
+	}
+	\BlankLine
+	
+	$\vec{x} \gets \vec{x}_0$\\
+	\While{stop criterion}{
+		
+		$I$ $\gets$ select $m$ training example $\in D$  \\
+		$\alpha \gets$ compute learning rate \\
+		$\vec{x} \gets \vec{x} - \alpha \nabla_{\vec{x}} L(\vec{x}; \pair{\vec{u}^{(i)}}{\vec{y}^{(i)}}, i\in I)$\\
+	}
+	\caption{Stochastic gradient descent}
+	\label{algo:sgd}
+\end{algorithm}	
+\end{frame}

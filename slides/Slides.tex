@@ -1,0 +1,116 @@
+\documentclass[xcolor=dvipsnames,10pt]{beamer}
+
+\usepackage{tikz}
+\usetikzlibrary{arrows}
+\usepackage{verbatim}
+\usepackage[active,tightpage]{preview}
+\setlength\PreviewBorder{5pt}%
+
+\mode<presentation>
+
+\usepackage{beamerthemesplit}
+\usepackage[UKenglish]{babel}
+\usepackage{cite}
+\usepackage{listings}
+\usepackage{latexsym}
+\usepackage[utf8]{inputenc}
+\usepackage{multirow}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage[noend]{algpseudocode}
+\usepackage[ruled,noline,linesnumbered, slide]{algorithm2e}
+\usepackage{pgf}
+\usepackage{tikz}
+\usetikzlibrary{automata,arrows,decorations.pathreplacing}
+\usetikzlibrary{positioning}
+\usepackage{epstopdf}
+
+%%Notation:
+
+%%vectors
+\renewcommand{\vec}[1]{\boldsymbol{#1}}
+%%sets
+\newcommand{\set}[1]{\mathcal{#1}}
+%%matrixes
+\newcommand{\mat}[1]{#1}
+%%norm
+\newcommand{\norm}[1]{\left\Vert #1 \right\Vert}
+%%defeq
+\newcommand{\defeq}{\triangleq}
+%%
+\newcommand{\net}[1]{\mathrm{#1}}
+%% pair<x,y>
+\newcommand{\pair}[2]{\langle#1,#2\rangle}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{sansmathaccent}
+\pdfmapfile{+sansmathaccent.map}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\graphicspath{ {./images/} }
+
+
+\usecolortheme[named=MidnightBlue]{structure}
+
+%Warsaw Dresden Singapore Copenhagen Madrid AnnArbor
+\usetheme{Warsaw}
+\setbeamercovered{transparent}
+\setbeamercolor{lowercolor}{fg=white , bg=MidnightBlue}
+\setbeamertemplate{blocks}[rounded][shadow=true]
+\setbeamertemplate{items}[default]
+\setbeamertemplate{navigation symbols}{}
+
+\def\hilite<#1>{%
+\temporal<#1>{\color{lightgray}}{\color{black}}%
+{\color{black}}}
+
+\usetitlepagetemplate{
+  \begin{center}
+
+    \begin{beamerboxesrounded}[lower=lowercolor, shadow=true]{}
+     \begin{center}
+    \normalsize{Recurrent neural networks}
+     \end{center}
+    \end{beamerboxesrounded}
+    \vspace{3em}
+    Giulio Galvan
+    
+  \end{center}
+}
+
+\title[Recurrent neural network]{}
+\author{Giulio Galvan}
+\date{\today}
+
+\newcommand*\oldmacro{}%
+\let\oldmacro\insertshorttitle%
+\renewcommand*\insertshorttitle{%
+  \oldmacro\hfill%
+  \insertframenumber\,/\,\inserttotalframenumber}
+
+\begin{document}
+
+\frame{\titlepage}
+\section{Introduction}
+\input{model}
+\section{The vanishing gradient problem}
+\input{vanishing_prob}
+\section{Solution proposal}
+\input{solution}
+\section{Open issues}
+\input{issues}
+
+\begin{frame}
+   \begin{center}
+    \begin{beamerboxesrounded}[lower=lowercolor, shadow=true]{}
+     \begin{center}
+    \normalsize{The end}
+     \end{center}
+    \end{beamerboxesrounded}
+  \end{center}
+\end{frame} 
+
+\end{document} 
