@@ -25,16 +25,24 @@
 \headcommand {\beamer@framepages {11}{11}}
 \headcommand {\slideentry {2}{0}{6}{12/12}{}{0}}
 \headcommand {\beamer@framepages {12}{12}}
-\headcommand {\sectionentry {3}{Solution proposal}{13}{Solution proposal}{0}}
+\headcommand {\sectionentry {3}{Solutions}{13}{Solutions}{0}}
 \headcommand {\beamer@sectionpages {5}{12}}
 \headcommand {\beamer@subsectionpages {5}{12}}
-\headcommand {\sectionentry {4}{Open issues}{13}{Open issues}{0}}
-\headcommand {\beamer@sectionpages {13}{12}}
-\headcommand {\beamer@subsectionpages {13}{12}}
-\headcommand {\slideentry {4}{0}{1}{13/13}{}{0}}
-\headcommand {\beamer@framepages {13}{13}}
-\headcommand {\beamer@partpages {1}{13}}
-\headcommand {\beamer@subsectionpages {13}{13}}
-\headcommand {\beamer@sectionpages {13}{13}}
-\headcommand {\beamer@documentpages {13}}
-\headcommand {\def \inserttotalframenumber {11}}
+\headcommand {\slideentry {3}{0}{1}{13/16}{}{0}}
+\headcommand {\beamer@framepages {13}{16}}
+\headcommand {\slideentry {3}{0}{2}{17/17}{}{0}}
+\headcommand {\beamer@framepages {17}{17}}
+\headcommand {\sectionentry {4}{Open issues}{18}{Open issues}{0}}
+\headcommand {\beamer@sectionpages {13}{17}}
+\headcommand {\beamer@subsectionpages {13}{17}}
+\headcommand {\slideentry {4}{0}{1}{18/18}{}{0}}
+\headcommand {\beamer@framepages {18}{18}}
+\headcommand {\slideentry {4}{0}{2}{19/19}{}{0}}
+\headcommand {\beamer@framepages {19}{19}}
+\headcommand {\slideentry {4}{0}{3}{20/20}{}{0}}
+\headcommand {\beamer@framepages {20}{20}}
+\headcommand {\beamer@partpages {1}{20}}
+\headcommand {\beamer@subsectionpages {18}{20}}
+\headcommand {\beamer@sectionpages {18}{20}}
+\headcommand {\beamer@documentpages {20}}
+\headcommand {\def \inserttotalframenumber {15}}

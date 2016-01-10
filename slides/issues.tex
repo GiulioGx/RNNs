@@ -1,1 +1,26 @@
  
+\begin{frame}{Open Issues: Initialization}
+	
+	\begin{itemize}
+		\item Some tasks, like the XOR one, are still "unresolved" (even for the other approaches). They cannot be solved with high probability (varying the seed)
+		\item it seems to be an \textbf{initialization} matter
+	\end{itemize}
+	
+	Popular strategies for initialization are:
+	\begin{itemize}
+		\item "small random weights", usually drawn from Gaussian distribution with zero mean. 
+		\item "reservoir initialization"
+		\item sparse gaussian initialization, only some weights are actually sampled from a Gaussian the other are zero. (Used by HF)
+	\end{itemize}
+	
+\end{frame}
+
+\begin{frame}{Open Issues: Learning rate}
+	
+	\begin{itemize}	
+		\item 	the \textbf{learning rate} is usually tuned by hand, there is no convergence theory for SGD in the non convex case
+		\item  some \textbf{momentum} or \textbf{averaging} technique often yield better convergence time, again tuned by hand
+	\end{itemize}
+	
+
+\end{frame}

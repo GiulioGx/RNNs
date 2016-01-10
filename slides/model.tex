@@ -48,7 +48,7 @@ SGD is the standard framework in most of the applications.
 		
 		$I$ $\gets$ select $m$ training example $\in D$  \\
 		$\alpha \gets$ compute learning rate \\
-		$\vec{x} \gets \vec{x} - \alpha \nabla_{\vec{x}} L(\vec{x}; \pair{\vec{u}^{(i)}}{\vec{y}^{(i)}}, i\in I)$\\
+		$\vec{x} \gets \vec{x} - \alpha \sum_{ i\in I}\nabla_{\vec{x}} L(\vec{x}; \pair{\vec{u}^{(i)}}{\vec{y}^{(i)}})$\\
 	}
 	\caption{Stochastic gradient descent}
 	\label{algo:sgd}

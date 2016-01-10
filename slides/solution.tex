@@ -1,1 +1,46 @@
- 
+\begin{frame}{Existent solutions}
+	
+	\pause
+	\begin{itemize}
+		\item Long short-term memory (LSTM). Hochreiter, Schmidhuber (1997)
+			\begin{itemize}
+				\item the network structure is modified with specialized "memory cells"
+				\item a truncated version of back-propagation is employed
+			\end{itemize}
+		\pause
+		\item Hessian-Free optimization (HF). Martens (2010)
+		\begin{itemize}
+			\item a second order method
+			\item a "cheap" approximation of the Hessian is employed
+			\item the quadratic sub-problem is solved through conjugate gradient + structural damping
+		\end{itemize}
+		\pause
+		\item Pascanu, Bengio (2013)
+		\begin{itemize}
+			\item a first order method
+			\item uses a penalty to deal with the vanishing gradient problem
+		\end{itemize}
+	\end{itemize}
+	
+\end{frame}
+
+\begin{frame}{A new proposal}
+\begin{itemize}
+	\item use the structure of the gradient to compute a descent direction which does not suffer from the vanishing gradient problem
+	
+	\item normalize the temporal components
+	\begin{equation}
+	d(\vec{x}) = \sum_{t=1}^T \frac{\nabla L_{|t}(\vec{x})}{\norm{\nabla L_{|t}(\vec{x})}}
+	\end{equation}
+	
+	\item add some randomness for robustness:
+		\begin{equation}
+		d(\vec{x}) = \sum_{t=1}^T \beta_t\frac{\nabla L_{|t}(\vec{x})}{\norm{\nabla L_{|t}(\vec{x})}},
+		\end{equation}
+		
+		with $\sum_{t=1}^T\beta_t=1, \beta_t>0$
+\end{itemize}
+
+
+
+\end{frame}
