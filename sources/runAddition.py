@@ -117,7 +117,7 @@ lr_rule = GradientClipping(lr_value=0.03, clip_thr=0.1)  # 0.01
 # lr_rule = ArmijoStep(alpha=0.5, beta=0.1, init_step=1, max_steps=50)
 obj_fnc = ObjectiveFunction(loss_fnc)
 
-update_rule = FixedAveraging(t=5)
+update_rule = FixedAveraging(t=10)
 # update_rule = SimpleUdpate()
 #update_rule = Momentum(gamma=0.1)
 
