@@ -24,8 +24,8 @@
       <file leaf-file-name="runAddition.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/runAddition.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.5302548">
-              <caret line="77" column="11" selection-start-line="77" selection-start-column="11" selection-end-line="77" selection-end-column="11" />
+            <state vertical-scroll-proportion="0.816879">
+              <caret line="120" column="30" selection-start-line="120" selection-start-column="30" selection-end-line="120" selection-end-column="30" />
               <folding />
             </state>
           </provider>
@@ -181,13 +181,13 @@
         <option value="$PROJECT_DIR$/plotUtils/plot_norms_interactive.py" />
         <option value="$PROJECT_DIR$/Statistics.py" />
         <option value="$PROJECT_DIR$/plotUtils/plot_stats.py" />
-        <option value="$PROJECT_DIR$/runAddition.py" />
         <option value="$PROJECT_DIR$/model/Rnn.py" />
         <option value="$PROJECT_DIR$/SGDTrainer.py" />
         <option value="$PROJECT_DIR$/theanoUtils.py" />
         <option value="$PROJECT_DIR$/task/MarkerBasedTask.py" />
         <option value="$PROJECT_DIR$/testModels.py" />
         <option value="$PROJECT_DIR$/task/AdditionTask.py" />
+        <option value="$PROJECT_DIR$/runAddition.py" />
       </list>
     </option>
   </component>
@@ -1114,8 +1114,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/runAddition.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.5302548">
-          <caret line="77" column="11" selection-start-line="77" selection-start-column="11" selection-end-line="77" selection-end-column="11" />
+        <state vertical-scroll-proportion="0.816879">
+          <caret line="120" column="30" selection-start-line="120" selection-start-column="30" selection-end-line="120" selection-end-column="30" />
           <folding />
         </state>
       </provider>
