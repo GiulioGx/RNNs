@@ -3,7 +3,7 @@ import numpy
 
 __author__ = 'giulio'
 
-modelFile = '/home/giulio/RNNs/models/completed/100 hidden/add_task, min_length: 144_average/model.npz'
+modelFile = '/home/giulio/RNNs/models/add_task, min_length: 144/stats.npz'
 #modelFile = '/home/giulio/model_octopus.npz'
 
 # load npz archive

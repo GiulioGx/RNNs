@@ -3,7 +3,7 @@ from math import sqrt
 
 from ActivationFunction import Tanh, Relu
 from Configs import Configs
-from NetTrainer import NetTrainer
+from SGDTrainer import SGDTrainer
 from ObjectiveFunction import ObjectiveFunction
 from TrainingRule import TrainingRule
 from descentDirectionRule.DropoutDirection import DropoutDirection

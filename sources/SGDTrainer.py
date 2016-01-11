@@ -22,7 +22,7 @@ from task.Dataset import Dataset
 __author__ = 'giulio'
 
 
-class NetTrainer(object):
+class SGDTrainer(object):
     def __init__(self, training_rule: TrainingRule, obj_fnc: ObjectiveFunction, max_it=10 ** 5, batch_size=100,
                  stop_error_thresh=0.01, check_freq=50, output_dir='.'):
 
@@ -65,7 +65,7 @@ class NetTrainer(object):
         self.__loss_and_error = T.function([u, t], [error, loss], name='loss_and_error_fnc')
 
         # training statistics
-        stats = Statistics(self.__max_it, self.__check_freq)
+        stats = Statistics(self.__max_it, self.__check_freq, self.__training_settings_info, net.info)
 
         # policer #TODO se funziona mettere a pulito
         policer = RepetitaPolicer(dataset=dataset, batch_size=self.__batch_size, n_repetitions=100, block_size=1000)
@@ -106,6 +106,8 @@ class NetTrainer(object):
 
                 if valid_error < best_error:
                     best_error = valid_error
+                    net.save_model(self.__output_dir+'/best_model')
+
 
                 batch_end_time = time.time()
                 total_elapsed_time = batch_end_time - start_time
@@ -113,11 +115,12 @@ class NetTrainer(object):
                 eval_time = time.time() - eval_start_time
                 batch_time = batch_end_time - batch_start_time
 
-                info = NetTrainer.__build_infos(train_info, i, valid_loss, valid_error, best_error, rho,
+                info = SGDTrainer.__build_infos(train_info, i, valid_loss, valid_error, best_error, rho,
                                                 batch_time, eval_time)
                 logging.info(info)
                 stats.update(info, i, total_elapsed_time)
-                net.save_model(self.__output_dir, stats, self.__training_settings_info)
+                net.save_model(self.__output_dir+'/current_model')
+                stats.save(self.__output_dir+'/stats')
 
                 batch_start_time = time.time()
                 if error_occured:

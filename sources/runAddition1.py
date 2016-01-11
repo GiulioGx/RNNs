@@ -3,7 +3,7 @@ from math import sqrt
 
 from ActivationFunction import Tanh, Relu
 from Configs import Configs
-from NetTrainer import NetTrainer
+from SGDTrainer import SGDTrainer
 from ObjectiveFunction import ObjectiveFunction
 from TrainingRule import TrainingRule
 from descentDirectionRule.DropoutDirection import DropoutDirection
@@ -120,7 +120,7 @@ update_rule = FixedAveraging(t=5)
 
 train_rule = TrainingRule(dir_rule, lr_rule, update_rule)
 
-trainer = NetTrainer(train_rule, obj_fnc, output_dir=out_dir, max_it=10**10,
+trainer = SGDTrainer(train_rule, obj_fnc, output_dir=out_dir, max_it=10 ** 10,
                      check_freq=200, batch_size=100)
 
 # dataset = Dataset.no_valid_dataset_from_task(size=1000, task=task)

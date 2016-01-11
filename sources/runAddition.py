@@ -3,7 +3,7 @@ from math import sqrt
 
 from ActivationFunction import Tanh, Relu
 from Configs import Configs
-from NetTrainer import NetTrainer
+from SGDTrainer import SGDTrainer
 from ObjectiveFunction import ObjectiveFunction
 from TrainingRule import TrainingRule
 from descentDirectionRule.DropoutDirection import DropoutDirection
@@ -77,15 +77,15 @@ loss_fnc = SquaredError()
 
 # # HF init
 bias_value = 0.5
-n_conns = 20
+n_conns = 25
 std_dev = sqrt(0.14)
 #std_dev = 0.14
 net_initializer = RnnInitializer(
     W_rec_init=SparseGaussianInit(n_connections_per_unit=n_conns, std_dev=std_dev, columnwise=False),
     W_in_init=SparseGaussianInit(n_connections_per_unit=n_conns, std_dev=1, columnwise=True),
     W_out_init=SparseGaussianInit(n_connections_per_unit=n_conns, std_dev=std_dev, columnwise=False),
-    b_rec_init=GaussianInit(mean=0, std_dev=std_dev),
-    b_out_init=GaussianInit(mean=0, std_dev=std_dev), activation_fnc=Tanh(), output_fnc=Linear(), n_hidden=100)
+    b_rec_init=ConstantInit(0),
+    b_out_init=ConstantInit(0), activation_fnc=Tanh(), output_fnc=Linear(), n_hidden=100)
 
 # penalty strategy
 # penalty = MeanPenalty()
@@ -113,17 +113,17 @@ dir_rule = CombinedGradients(combining_rule)
 # learning step rule
 # lr_rule = WRecNormalizedStep(0.0001) #0.01
 # lr_rule = ConstantNormalizedStep(0.001)  # 0.01
-lr_rule = GradientClipping(lr_value=0.01, clip_thr=0.1)  # 0.01
+lr_rule = GradientClipping(lr_value=0.03, clip_thr=0.1)  # 0.01
 # lr_rule = ArmijoStep(alpha=0.5, beta=0.1, init_step=1, max_steps=50)
 obj_fnc = ObjectiveFunction(loss_fnc)
 
-update_rule = FixedAveraging(t=5)
+#update_rule = FixedAveraging(t=5)
 # update_rule = SimpleUdpate()
-# update_rule = Momentum(gamma=0.1)
+update_rule = Momentum(gamma=0.1)
 
 train_rule = TrainingRule(dir_rule, lr_rule, update_rule)
 
-trainer = NetTrainer(train_rule, obj_fnc, output_dir=out_dir, max_it=10 ** 10,
+trainer = SGDTrainer(train_rule, obj_fnc, output_dir=out_dir, max_it=10 ** 10,
                      check_freq=200, batch_size=100)
 
 # dataset = Dataset.no_valid_dataset_from_task(size=1000, task=task)
@@ -131,5 +131,5 @@ dataset = InfiniteDataset(task=task, validation_size=10 ** 4)
 
 net = trainer.train(dataset, net_initializer, seed)
 
-# net = RNN.load_model(out_dir)
+# net = RNN.load_model(out_dir+'/current_model.npz')
 # net = trainer.resume_training(dataset, net)

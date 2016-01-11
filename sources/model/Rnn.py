@@ -137,8 +137,8 @@ class Rnn(object):
                    output_fnc=output_fnc)
 
     @staticmethod
-    def load_model(save_dir):
-        npz = numpy.load(save_dir + '/model.npz')
+    def load_model(filename):
+        npz = numpy.load(filename)
 
         W_rec = npz["W_rec"]
         W_in = npz["W_in"]
@@ -146,7 +146,8 @@ class Rnn(object):
         b_rec = npz["b_rec"]
         b_out = npz["b_out"]
 
-        pickle_file = save_dir + '/model.pkl'
+        filename, file_extension = os.path.splitext(filename)
+        pickle_file = filename + '.pkl'
         activation_fnc, output_fnc = pickle.load(open(pickle_file, 'rb'))
 
         return Rnn(W_rec=W_rec, W_in=W_in, W_out=W_out, b_rec=b_rec, b_out=b_out, activation_fnc=activation_fnc,
@@ -163,26 +164,22 @@ class Rnn(object):
                                   PrintableInfoElement('activation_fnc', '', self.__activation_fnc)
                                   ))
 
-    def save_model(self, save_dir: str, stats: Statistics, train_info: Info):
+    def save_model(self, filename: str):
         """saves the model with statistics to file"""
 
         # os.path.dirname
-        os.makedirs(save_dir, exist_ok=True)
+        npz_file = filename+'.npz'
+        os.makedirs(os.path.dirname(npz_file), exist_ok=True)
 
-        net_info_dict = self.info.dictionary
-        stat_info_dict = stats.dictionary
         d = dict(W_rec=self.__symbols.current_params.W_rec.get_value(),
                  W_in=self.__symbols.current_params.W_in.get_value(),
                  W_out=self.__symbols.current_params.W_out.get_value(),
                  b_rec=self.__symbols.current_params.b_rec.get_value(),
                  b_out=self.__symbols.current_params.b_out.get_value())
 
-        stat_info_dict.update(d)
-        stat_info_dict.update(train_info.dictionary)
-        stat_info_dict.update(net_info_dict)
-        numpy.savez(save_dir + '/model.npz', **stat_info_dict)
+        numpy.savez(npz_file, **d)
 
-        pickfile = open(save_dir + '/model.pkl', "wb")
+        pickfile = open(filename + '.pkl', "wb")
         pickle.dump([self.__activation_fnc, self.__output_fnc], pickfile)
 
     class Experimental:  # FIXME XXX
