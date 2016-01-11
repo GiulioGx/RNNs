@@ -63,11 +63,11 @@ print('floatType: ' + floatX)
 print(separator)
 
 # network setup
-# std_dev = 0.14  # 0.14 Tanh # 0.21 Relu
-# mean = 0
-# net_initializer = RnnInitializer(W_rec_init=GaussianInit(mean=mean, std_dev=std_dev), W_in_init=GaussianInit(mean=mean, std_dev = 0.1),
-#                                  W_out_init=GaussianInit(mean=mean, std_dev=0.1), b_rec_init=ConstantInit(0),
-#                                  b_out_init=ConstantInit(0), activation_fnc=Tanh(), output_fnc=Linear(), n_hidden=100)
+std_dev = 0.14  # 0.14 Tanh # 0.21 Relu
+mean = 0
+net_initializer = RnnInitializer(W_rec_init=GaussianInit(mean=mean, std_dev=std_dev), W_in_init=GaussianInit(mean=mean, std_dev = 0.1),
+                                 W_out_init=GaussianInit(mean=mean, std_dev=0.1), b_rec_init=ConstantInit(0),
+                                 b_out_init=ConstantInit(0), activation_fnc=Tanh(), output_fnc=Linear(), n_hidden=100)
 
 # setup
 seed = 13
@@ -80,12 +80,12 @@ bias_value = 0.5
 n_conns = 25
 std_dev = sqrt(0.14)
 #std_dev = 0.14
-net_initializer = RnnInitializer(
-    W_rec_init=SparseGaussianInit(n_connections_per_unit=n_conns, std_dev=std_dev, columnwise=False),
-    W_in_init=SparseGaussianInit(n_connections_per_unit=n_conns, std_dev=1, columnwise=True),
-    W_out_init=SparseGaussianInit(n_connections_per_unit=n_conns, std_dev=std_dev, columnwise=False),
-    b_rec_init=ConstantInit(0),
-    b_out_init=ConstantInit(0), activation_fnc=Tanh(), output_fnc=Linear(), n_hidden=100)
+# net_initializer = RnnInitializer(
+#     W_rec_init=SparseGaussianInit(n_connections_per_unit=n_conns, std_dev=std_dev, columnwise=False),
+#     W_in_init=SparseGaussianInit(n_connections_per_unit=n_conns, std_dev=1, columnwise=True),
+#     W_out_init=SparseGaussianInit(n_connections_per_unit=n_conns, std_dev=std_dev, columnwise=False),
+#     b_rec_init=ConstantInit(0),
+#     b_out_init=ConstantInit(0), activation_fnc=Tanh(), output_fnc=Linear(), n_hidden=100)
 
 # penalty strategy
 # penalty = MeanPenalty()
@@ -100,7 +100,7 @@ penalty = ConstantPenalty(c=5)
 # dir_rule = SepareteGradient()
 
 # combining_rule = OnesCombination(normalize_components=False)
-combining_rule = SimplexCombination(normalize_components=True)
+combining_rule = OnesCombination(normalize_components=True)
 # combining_rule = SimpleSum()
 # combining_rule = EquiangularCombination()
 # combining_rule = DropoutCombination(drop_rate=0.8)
