@@ -63,11 +63,11 @@ print('floatType: ' + floatX)
 print(separator)
 
 # network setup
-std_dev = 0.14  # 0.14 Tanh # 0.21 Relu
-mean = 0
-net_initializer = RnnInitializer(W_rec_init=GaussianInit(mean=mean, std_dev=std_dev), W_in_init=GaussianInit(mean=mean, std_dev = 0.1),
-                                 W_out_init=GaussianInit(mean=mean, std_dev=0.1), b_rec_init=ConstantInit(0),
-                                 b_out_init=ConstantInit(0), activation_fnc=Tanh(), output_fnc=Linear(), n_hidden=100)
+# std_dev = 0.14  # 0.14 Tanh # 0.21 Relu
+# mean = 0
+# net_initializer = RnnInitializer(W_rec_init=GaussianInit(mean=mean, std_dev=std_dev), W_in_init=GaussianInit(mean=mean, std_dev = 0.1),
+#                                  W_out_init=GaussianInit(mean=mean, std_dev=0.1), b_rec_init=ConstantInit(0),
+#                                  b_out_init=ConstantInit(0), activation_fnc=Tanh(), output_fnc=Linear(), n_hidden=100)
 
 # setup
 seed = 13
@@ -80,16 +80,16 @@ bias_value = 0.5
 n_conns = 25
 std_dev = sqrt(0.14)
 #std_dev = 0.14
-# net_initializer = RnnInitializer(
-#     W_rec_init=SparseGaussianInit(n_connections_per_unit=n_conns, std_dev=std_dev, columnwise=False),
-#     W_in_init=SparseGaussianInit(n_connections_per_unit=n_conns, std_dev=1, columnwise=True),
-#     W_out_init=SparseGaussianInit(n_connections_per_unit=n_conns, std_dev=std_dev, columnwise=False),
-#     b_rec_init=ConstantInit(0),
-#     b_out_init=ConstantInit(0), activation_fnc=Tanh(), output_fnc=Linear(), n_hidden=100)
+net_initializer = RnnInitializer(
+    W_rec_init=SparseGaussianInit(n_connections_per_unit=n_conns, std_dev=std_dev, columnwise=False),
+    W_in_init=SparseGaussianInit(n_connections_per_unit=n_conns, std_dev=1, columnwise=True),
+    W_out_init=SparseGaussianInit(n_connections_per_unit=n_conns, std_dev=std_dev, columnwise=False),
+    b_rec_init=ConstantInit(0),
+    b_out_init=ConstantInit(0), activation_fnc=Tanh(), output_fnc=Linear(), n_hidden=100)
 
 # penalty strategy
 # penalty = MeanPenalty()
-penalty = ConstantPenalty(c=5)
+#penalty = ConstantPenalty(c=5)
 # penalty = MeanPenalty()
 
 # direction strategy
@@ -100,7 +100,7 @@ penalty = ConstantPenalty(c=5)
 # dir_rule = SepareteGradient()
 
 # combining_rule = OnesCombination(normalize_components=False)
-combining_rule = OnesCombination(normalize_components=True)
+combining_rule = SimplexCombination(normalize_components=True)
 # combining_rule = SimpleSum()
 # combining_rule = EquiangularCombination()
 # combining_rule = DropoutCombination(drop_rate=0.8)
@@ -124,7 +124,7 @@ update_rule = FixedAveraging(t=10)
 train_rule = TrainingRule(dir_rule, lr_rule, update_rule)
 
 trainer = SGDTrainer(train_rule, obj_fnc, output_dir=out_dir, max_it=10 ** 10,
-                     check_freq=200, batch_size=100)
+                     check_freq=200, batch_size=100, stop_error_thresh=0.1)
 
 # dataset = Dataset.no_valid_dataset_from_task(size=1000, task=task)
 dataset = InfiniteDataset(task=task, validation_size=10 ** 4)
