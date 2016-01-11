@@ -88,3 +88,4 @@ def flatten_list_element(list_of_tensor_variables, l):
                        name='as_vector_combinations_scan',
                        n_steps=l)
     return values
+

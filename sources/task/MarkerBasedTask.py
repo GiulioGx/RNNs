@@ -32,7 +32,7 @@ class MarkerBasedTask:
         inputs[p0, numpy.zeros((batch_size,), dtype='int32'), numpy.arange(batch_size)] = 1
         inputs[p1, numpy.zeros((batch_size,), dtype='int32'), numpy.arange(batch_size)] = 1
         # random inputs (channel 1)
-        inputs[:, 1, :] = self.__input_fnc(batch_size, length) # FIXME 1
+        inputs[:, 1, :] = self.__input_fnc(batch_size, length)  # FIXME 1
 
         # outputs
         self.__output_fnc(inputs, outputs, p0, p1)

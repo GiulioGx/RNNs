@@ -108,7 +108,6 @@ class SGDTrainer(object):
                     best_error = valid_error
                     net.save_model(self.__output_dir+'/best_model')
 
-
                 batch_end_time = time.time()
                 total_elapsed_time = batch_end_time - start_time
 
