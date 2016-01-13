@@ -8,6 +8,7 @@ from ObjectiveFunction import ObjectiveFunction
 from TrainingRule import TrainingRule
 from descentDirectionRule.DropoutDirection import DropoutDirection
 from initialization.ConstantInit import ConstantInit
+from initialization.EsnInit import EsnInit
 from initialization.EyeInit import EyeInit
 from initialization.OrtoghonalInit import OrtoghonalInit
 from initialization.SparseGaussianInit import SparseGaussianInit
@@ -62,17 +63,15 @@ print('device: ' + device)
 print('floatType: ' + floatX)
 print(separator)
 
-seed = 134335
-
-
 # network setup
 std_dev = 0.14  # 0.14 Tanh # 0.21 Relu
 mean = 0
-net_initializer = RnnInitializer(W_rec_init=GaussianInit(mean=mean, std_dev=std_dev, seed=seed), W_in_init=GaussianInit(mean=mean, std_dev = 0.1, seed=seed),
-                                 W_out_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed), b_rec_init=ConstantInit(0),
+net_initializer = RnnInitializer(W_rec_init=EsnInit(scale=1.5, sparsity=0.5), W_in_init=GaussianInit(mean=mean, std_dev = 0.1),
+                                 W_out_init=GaussianInit(mean=mean, std_dev=0.1), b_rec_init=ConstantInit(0),
                                  b_out_init=ConstantInit(0), activation_fnc=Tanh(), output_fnc=Linear(), n_hidden=100)
 
 # setup
+seed = 13
 task = AdditionTask(144, seed)
 out_dir = Configs.output_dir + str(task)
 loss_fnc = SquaredError()
@@ -99,7 +98,7 @@ loss_fnc = SquaredError()
 # dir_rule = SepareteGradient()
 
 # combining_rule = OnesCombination(normalize_components=False)
-combining_rule = SimplexCombination(normalize_components=True, seed=seed)
+combining_rule = SimplexCombination(normalize_components=True)
 # combining_rule = SimpleSum()
 # combining_rule = EquiangularCombination()
 # combining_rule = DropoutCombination(drop_rate=0.8)
