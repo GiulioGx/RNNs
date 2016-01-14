@@ -12,11 +12,13 @@
 \headcommand {\beamer@framepages {4}{4}}
 \headcommand {\slideentry {1}{0}{4}{5/5}{}{0}}
 \headcommand {\beamer@framepages {5}{5}}
-\headcommand {\sectionentry {2}{The vanishing gradient problem}{6}{The vanishing gradient problem}{0}}
-\headcommand {\beamer@sectionpages {2}{5}}
-\headcommand {\beamer@subsectionpages {2}{5}}
-\headcommand {\slideentry {2}{0}{1}{6/8}{}{0}}
-\headcommand {\beamer@framepages {6}{8}}
+\headcommand {\slideentry {1}{0}{5}{6/6}{}{0}}
+\headcommand {\beamer@framepages {6}{6}}
+\headcommand {\sectionentry {2}{The vanishing gradient problem}{7}{The vanishing gradient problem}{0}}
+\headcommand {\beamer@sectionpages {2}{6}}
+\headcommand {\beamer@subsectionpages {2}{6}}
+\headcommand {\slideentry {2}{0}{1}{7/8}{}{0}}
+\headcommand {\beamer@framepages {7}{8}}
 \headcommand {\slideentry {2}{0}{2}{9/9}{}{0}}
 \headcommand {\beamer@framepages {9}{9}}
 \headcommand {\slideentry {2}{0}{3}{10/10}{}{0}}
@@ -30,31 +32,31 @@
 \headcommand {\slideentry {2}{0}{7}{14/14}{}{0}}
 \headcommand {\beamer@framepages {14}{14}}
 \headcommand {\sectionentry {3}{Solutions}{15}{Solutions}{0}}
-\headcommand {\beamer@sectionpages {6}{14}}
-\headcommand {\beamer@subsectionpages {6}{14}}
-\headcommand {\slideentry {3}{0}{1}{15/18}{}{0}}
-\headcommand {\beamer@framepages {15}{18}}
-\headcommand {\slideentry {3}{0}{2}{19/19}{}{0}}
+\headcommand {\beamer@sectionpages {7}{14}}
+\headcommand {\beamer@subsectionpages {7}{14}}
+\headcommand {\slideentry {3}{0}{1}{15/17}{}{0}}
+\headcommand {\beamer@framepages {15}{17}}
+\headcommand {\slideentry {3}{0}{2}{18/18}{}{0}}
+\headcommand {\beamer@framepages {18}{18}}
+\headcommand {\slideentry {3}{0}{3}{19/19}{}{0}}
 \headcommand {\beamer@framepages {19}{19}}
-\headcommand {\slideentry {3}{0}{3}{20/20}{}{0}}
+\headcommand {\slideentry {3}{0}{4}{20/20}{}{0}}
 \headcommand {\beamer@framepages {20}{20}}
-\headcommand {\slideentry {3}{0}{4}{21/21}{}{0}}
+\headcommand {\slideentry {3}{0}{5}{21/21}{}{0}}
 \headcommand {\beamer@framepages {21}{21}}
-\headcommand {\slideentry {3}{0}{5}{22/22}{}{0}}
+\headcommand {\sectionentry {4}{Open issues}{22}{Open issues}{0}}
+\headcommand {\beamer@sectionpages {15}{21}}
+\headcommand {\beamer@subsectionpages {15}{21}}
+\headcommand {\slideentry {4}{0}{1}{22/22}{}{0}}
 \headcommand {\beamer@framepages {22}{22}}
-\headcommand {\sectionentry {4}{Open issues}{23}{Open issues}{0}}
-\headcommand {\beamer@sectionpages {15}{22}}
-\headcommand {\beamer@subsectionpages {15}{22}}
-\headcommand {\slideentry {4}{0}{1}{23/23}{}{0}}
+\headcommand {\slideentry {4}{0}{2}{23/23}{}{0}}
 \headcommand {\beamer@framepages {23}{23}}
-\headcommand {\slideentry {4}{0}{2}{24/24}{}{0}}
+\headcommand {\slideentry {5}{0}{1}{24/24}{}{0}}
 \headcommand {\beamer@framepages {24}{24}}
-\headcommand {\slideentry {5}{0}{1}{25/25}{}{0}}
-\headcommand {\beamer@framepages {25}{25}}
-\headcommand {\slideentry {5}{0}{1}{25/26}{}{0}}
-\headcommand {\beamer@framepages {25}{26}}
-\headcommand {\beamer@partpages {1}{26}}
-\headcommand {\beamer@subsectionpages {25}{26}}
-\headcommand {\beamer@sectionpages {25}{26}}
-\headcommand {\beamer@documentpages {26}}
-\headcommand {\def \inserttotalframenumber {21}}
+\headcommand {\slideentry {5}{0}{1}{24/25}{}{0}}
+\headcommand {\beamer@framepages {24}{25}}
+\headcommand {\beamer@partpages {1}{25}}
+\headcommand {\beamer@subsectionpages {24}{25}}
+\headcommand {\beamer@sectionpages {24}{25}}
+\headcommand {\beamer@documentpages {25}}
+\headcommand {\def \inserttotalframenumber {22}}

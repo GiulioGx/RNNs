@@ -1,5 +1,5 @@
 import theano.tensor as TT
-from model.RnnGradient import RnnGradient
+from model.RNNGradient import RnnGradient
 from model.Variables import Variables
 from theanoUtils import norm, as_vector, norm2
 

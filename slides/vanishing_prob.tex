@@ -16,16 +16,15 @@ The predicted output should be the sum of the two one marked positions (1.1).
 \pause
 \vspace{1em}
 \begin{block}{Why is this a difficult problem?}
-	\pause
 	Because of it's long time dependencies.
 \end{block}
 
 \end{frame}
 
 \begin{frame}{Gradient}
-	Consider a $\net{RNN}=\langle\set{W},\set{B},\sigma(\cdot),F(\cdot)\rangle$. Let $L_t:\mathbb{R}^o \times \mathbb{R}^o \rightarrow \mathbb{R}$ a loss function and  $g_t(\cdot):\mathbb{R}^{\mathcal{N}(\set{W})+\mathcal{N}(\set{B})} \rightarrow \mathbb{R}$ be the function defined by
-	$$g_t(\set{W},\set{B}) \triangleq L_t(F(\vec{y}^t(\set{W},\set{B})))$$
-	and $$g(\set{W},\set{B}) \triangleq \sum_{t=1}^T g_t(\set{W},\set{B})$$
+	Let $L_t(\bar{\vec{u}}, \bar{\vec{y}})$ the loss function for the time step $t$ and  $g_t(\vec{x}): \mathbb{R}$ be the function defined by
+	$$g_t(\vec{x}) \triangleq L_t(F(\vec{y}^t(\vec{\bar{\vec{u}};x}),\bar{\vec{y}}_t ))$$
+	and $$g(\vec{x}) \triangleq \sum_{t=1}^T g_t(\vec{x})$$
 	
 	
 	\begin{align}
@@ -34,8 +33,6 @@ The predicted output should be the sum of the two one marked positions (1.1).
 	\end{align}
 \end{frame}
 \begin{frame}
-
-	Let's see how to compute $\frac{\partial \vec{a}^t}{\partial \mat{W}^{rec}}$.
 	
 	Let's consider a single output unit $u$, and a weight $w_{lj}$, we have
 	
@@ -168,12 +165,8 @@ The predicted output should be the sum of the two one marked positions (1.1).
 	\end{bmatrix}
 	\end{equation}
 	
-	\begin{equation}
-	\triangleq \mat{\Delta}^{tk}
-	\end{equation}
-	
 	\begin{align}
-	\mat{\Delta}^{tk} &= \mat{\Delta}^{t(k+1)} \cdot diag(\sigma'(\vec{a}^k)) \cdot \mat{W}^{rec} \\
+	\frac{\partial \vec{a}^t}{\partial \vec{a}^k} &= \frac{\partial \vec{a}^t}{\partial \vec{a}^{k+1}} \cdot diag(\sigma'(\vec{a}^k)) \cdot \mat{W}^{rec} \\
 	&= \prod_{i=t-1}^{k} diag(\sigma'(\vec{a}^i)) \cdot \mat{W}^{rec}
 	\label{rnn_delta}.
 	\end{align}

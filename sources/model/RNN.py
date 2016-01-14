@@ -10,7 +10,7 @@ from infos.Info import Info
 from infos.InfoElement import PrintableInfoElement
 from infos.InfoGroup import InfoGroup
 from infos.InfoList import InfoList
-from model.RnnVars import RnnVars
+from model.RNNVars import RnnVars
 from output_fncs import OutputFunction
 
 __author__ = 'giulio'

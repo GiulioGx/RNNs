@@ -1,11 +1,10 @@
 \begin{frame}{Existent solutions}
 	
-	\pause
 	\begin{itemize}
-		\item Long short-term memory (LSTM). Hochreiter, Schmidhuber (1997) \cite{lstm}
+		\item Long short-term memory (LSTM). Hochreiter, Schmidhuber (1997)\cite{lstm}
 			\begin{itemize}
 				\item the network structure is modified with specialized "memory cells"
-				\item a truncated version of back-propagation is employed
+				\item a truncated version of back-propagation is employed (but works also without it)
 			\end{itemize}
 		\pause
 		\item Hessian-Free optimization (HF). Martens (2010) \cite{hessianFree}
@@ -129,20 +128,23 @@
 
 
 \begin{frame}{A new proposal}
+	The idea is to use the structure of the gradient to compute a "descent" direction which does not suffer from the vanishing gradient problem
 \begin{itemize}
-	\item use the structure of the gradient to compute a descent direction which does not suffer from the vanishing gradient problem
-	
 	\item normalize the temporal components
 	\begin{equation}
-	d(\vec{x}) = \sum_{t=1}^T \frac{\nabla L_{|t}(\vec{x})}{\norm{\nabla L_{|t}(\vec{x})}}
+	g_t(\vec{x}) = \frac{\nabla L_{|t}(\vec{x})}{\norm{\nabla L_{|t}(\vec{x})}}.
 	\end{equation}
 	
-	\item add some randomness for robustness:
+	\item combine the normalized gradients in a simplex:
 		\begin{equation}
-		d(\vec{x}) = \sum_{t=1}^T \beta_t\frac{\nabla L_{|t}(\vec{x})}{\norm{\nabla L_{|t}(\vec{x})}},
+		g(\vec{x}) = \sum_{t=1}^T \beta_t \cdot g_t(\vec{x})
 		\end{equation}
 		
-		with $\sum_{t=1}^T\beta_t=1, \beta_t>0$
+		with $\sum_{t=1}^T\beta_t=1, \beta_t>0$ (randomly picked at each iteration).
+	\item exploit the gradient norm:
+	\begin{equation}
+			d(\vec{x}) = \norm{\nabla L (\vec{x})}\frac{g(\vec{x})}{\norm{g(\vec{x})}}
+	\end{equation}
 \end{itemize}
 
 

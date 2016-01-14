@@ -18,7 +18,7 @@ from lossFunctions.FullSquaredError import FullSquaredError
 from lossFunctions.HingeLoss import HingeLoss
 from lossFunctions.NullLoss import NullLoss
 from lossFunctions.SquaredError import SquaredError
-from model.RnnInitializer import RnnInitializer
+from model.RNNInitializer import RnnInitializer
 from output_fncs.Softmax import Softmax
 from output_fncs.Linear import Linear
 from task.Dataset import Dataset, InfiniteDataset
@@ -42,7 +42,7 @@ from initialization.ZeroInit import ZeroInit
 from learningRule.ArmijoStep import ArmijoStep
 from learningRule.ConstantNormalizedStep import ConstantNormalizedStep
 from learningRule.ConstantStep import ConstantStep
-from model.Rnn import Rnn
+from model.RNN import Rnn
 from penalty.ConstantPenalty import ConstantPenalty
 from penalty.MeanPenalty import MeanPenalty
 from penalty.NullPenalty import NullPenalty

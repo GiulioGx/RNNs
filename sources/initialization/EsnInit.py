@@ -8,7 +8,7 @@ from infos.InfoList import InfoList
 from initialization.MatrixInit import MatrixInit
 
 
-# https://github.com/wqren/RNN-theano/blob/master/utils/initialization.py
+# taken from https://github.com/wqren/RNN-theano/blob/master/utils/initialization.py
 
 class EsnInit(MatrixInit):
     def __init__(self, scale=0.5, sparsity=0.9, seed=Configs.seed):

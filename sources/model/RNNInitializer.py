@@ -5,7 +5,7 @@ from infos.InfoList import InfoList
 from infos.SimpleInfoProducer import SimpleInfoProducer
 from initialization.GaussianInit import GaussianInit
 from initialization.MatrixInit import MatrixInit
-from model.Rnn import Rnn
+from model.RNN import Rnn
 from output_fncs import OutputFunction
 from output_fncs.Linear import Linear
 

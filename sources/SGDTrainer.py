@@ -13,8 +13,8 @@ from TrainingRule import TrainingRule
 from infos.InfoElement import PrintableInfoElement
 from infos.InfoGroup import InfoGroup
 from infos.InfoList import InfoList
-from model.Rnn import Rnn
-from model.RnnInitializer import RnnInitializer
+from model.RNN import Rnn
+from model.RNNInitializer import RnnInitializer
 from output_fncs.OutputFunction import OutputFunction
 from task.BatchPolicer import RepetitaPolicer
 from task.Dataset import Dataset
