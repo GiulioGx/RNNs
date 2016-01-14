@@ -3,8 +3,8 @@ import matplotlib.pyplot as plt
 
 __author__ = 'giulio'
 
-modelFile = '/home/giulio/RNNs/models/completed/100 hidden/add_task, min_length: 144_average/model.npz'
-#modelFile = '/home/giulio/RNNs/models/add_task, min_length: 144/stats.npz'
+#modelFile = '/home/giulio/RNNs/models/completed/100 hidden/add_task, min_length: 144_average/model.npz'
+modelFile = '/home/giulio/RNNs/models/add_task, min_length: 144/stats.npz'
 #modelFile = '/home/giulio/model_octopus.npz'
 #modelFile = '/home/giulio/RNNs/models/completed/temporal_order, min_length: 144/model.npz'
 npz = numpy.load(modelFile)
@@ -21,10 +21,9 @@ def on_button_press(event):
 
 
 x = range(length)
-#x = reversed(x)
+x = reversed(x)
 
 for i in x:
-    i+=int(42200/200)
     dict = norms_dicts[i]
     keys = sorted(dict.keys())
     fig, axarr = plt.subplots(len(dict)+1, sharex=True, figsize=(20, 30))

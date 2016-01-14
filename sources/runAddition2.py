@@ -70,7 +70,7 @@ std_dev = 0.14  # 0.14 Tanh # 0.21 Relu
 mean = 0
 net_initializer = RnnInitializer(W_rec_init=GaussianInit(mean=mean, std_dev=std_dev, seed=seed), W_in_init=GaussianInit(mean=mean, std_dev = 0.1, seed=seed),
                                  W_out_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed), b_rec_init=ConstantInit(0),
-                                 b_out_init=ConstantInit(0), activation_fnc=Tanh(), output_fnc=Linear(), n_hidden=50)
+                                 b_out_init=ConstantInit(0), activation_fnc=Tanh(), output_fnc=Linear(), n_hidden=100)
 
 # setup
 task = AdditionTask(144, seed)
