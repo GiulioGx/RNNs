@@ -66,7 +66,7 @@ seed = 14
 
 
 # network setup
-std_dev = 0.14  # 0.14 Tanh # 0.21 Relu
+std_dev = 0.15  # 0.14 Tanh # 0.21 Relu
 mean = 0
 net_initializer = RnnInitializer(W_rec_init=GaussianInit(mean=mean, std_dev=std_dev, seed=seed), W_in_init=GaussianInit(mean=mean, std_dev = 0.1, seed=seed),
                                  W_out_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed), b_rec_init=ConstantInit(0),
