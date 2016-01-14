@@ -137,7 +137,7 @@ class Rnn(object):
                    output_fnc=output_fnc)
 
     @staticmethod
-    def load_model(filename):
+    def load_model(filename, activation_fnc: ActivationFunction = None, output_fnc: OutputFunction = None):
         npz = numpy.load(filename)
 
         W_rec = npz["W_rec"]
@@ -148,7 +148,11 @@ class Rnn(object):
 
         filename, file_extension = os.path.splitext(filename)
         pickle_file = filename + '.pkl'
-        activation_fnc, output_fnc = pickle.load(open(pickle_file, 'rb'))
+        activation_fnc_pkl, output_fnc_pkl = pickle.load(open(pickle_file, 'rb'))
+        if activation_fnc is None:
+            activation_fnc = activation_fnc_pkl
+        if output_fnc is None:
+            output_fnc = output_fnc_pkl
 
         return Rnn(W_rec=W_rec, W_in=W_in, W_out=W_out, b_rec=b_rec, b_out=b_out, activation_fnc=activation_fnc,
                    output_fnc=output_fnc)
@@ -168,7 +172,7 @@ class Rnn(object):
         """saves the model with statistics to file"""
 
         # os.path.dirname
-        npz_file = filename+'.npz'
+        npz_file = filename + '.npz'
         os.makedirs(os.path.dirname(npz_file), exist_ok=True)
 
         d = dict(W_rec=self.__symbols.current_params.W_rec.get_value(),
@@ -296,5 +300,3 @@ class Rnn(object):
         @property
         def b_out_value(self):
             return self.__b_out.get_value()
-
-

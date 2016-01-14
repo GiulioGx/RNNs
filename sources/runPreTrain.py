@@ -73,7 +73,7 @@ net_initializer = RnnInitializer(W_rec_init=GaussianInit(mean=mean, std_dev=std_
 
 # setup
 seed = 13
-orig_task = XorTaskHot(144, seed)
+orig_task = AdditionTask(144, seed)
 pre_train_task = PreTrainTask(orig_task)
 
 out_dir = Configs.output_dir + str(orig_task)+'_pretraining'
@@ -135,8 +135,8 @@ net = trainer.train(dataset, net_initializer, seed)
 
 # training
 init = GaussianInit(mean=mean, std_dev=std_dev)
-W_out = init.init_matrix((2, 100), dtype='float32')  # FIXME
-net = net.reconfigure_network(W_out, output_fnc=Softmax())
+W_out = init.init_matrix((1, 100), dtype='float32')  # FIXME
+net = net.reconfigure_network(W_out, output_fnc=Linear())
 
 obj_fnc = ObjectiveFunction(CrossEntropy())
 out_dir = Configs.output_dir + str(orig_task)

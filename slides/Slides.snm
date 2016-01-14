@@ -1,3 +1,7 @@
 \beamer@slide {algo:sgd}{4}
-\beamer@slide {rnn_unfolding}{8}
-\beamer@slide {eq:temporalComponent}{10}
+\beamer@slide {sum_over_time}{10}
+\beamer@slide {deriv_arcs_rnn}{11}
+\beamer@slide {rnn_delta}{12}
+\beamer@slide {eq:temporalComponent}{13}
+\beamer@slide {rnn_unfolding}{19}
+\beamer@slide {algo:gradClipping}{24}

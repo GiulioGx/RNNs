@@ -8,9 +8,9 @@
 	
 	Popular strategies for initialization are:
 	\begin{itemize}
-		\item "small random weights", usually drawn from Gaussian distribution with zero mean. 
-		\item "reservoir initialization"
-		\item sparse gaussian initialization, only some weights are actually sampled from a Gaussian the other are zero. (Used by HF)
+		\item "small random weights", usually drawn from gaussian or uniform distribution with zero mean. 
+		\item sparse initialization: only some weights are actually sampled from a distribution, the other are zero. (Used by HF)
+		\item ESN-like initialization
 	\end{itemize}
 	
 \end{frame}
@@ -19,6 +19,14 @@
 	
 	\begin{itemize}	
 		\item 	the \textbf{learning rate} is usually tuned by hand, there is no convergence theory for SGD in the non convex case
+		\item a \textbf{gradient clipping} technique is often employed:
+		\begin{algorithm}[H]
+			$\vec{g} \gets \nabla_{\vec{x}} L$\\
+			\If{$\norm{\vec{g}} \geq threshold $}{$\vec{g} \gets \frac{threshold}{\norm{\vec{g}}} \vec{g}$}
+			\caption{Gradient clipping}
+			\label{algo:gradClipping}
+		\end{algorithm}
+		
 		\item  some \textbf{momentum} or \textbf{averaging} technique often yield better convergence time, again tuned by hand
 	\end{itemize}
 	

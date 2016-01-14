@@ -1,7 +1,9 @@
 import abc
+import numpy
 
 from infos.InfoElement import SimpleDescription
 from infos.SimpleInfoProducer import SimpleInfoProducer
+
 
 __author__ = 'giulio'
 
@@ -16,3 +18,8 @@ class MatrixInit(SimpleInfoProducer):
     @property
     def infos(self):
         return SimpleDescription('No description available')
+
+    @staticmethod
+    def spectral_radius(w):
+        return numpy.max(numpy.abs(numpy.linalg.eigvals(w)))
+

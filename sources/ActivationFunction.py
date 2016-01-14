@@ -45,4 +45,15 @@ class Tanh(ActivationFunction):
     def __str__(self):
         return 'tanh'
 
+
+class Identity(ActivationFunction):
+    def f(self, x):
+        return x
+
+    def grad_f(self, x):
+        return TT.ones_like(x) # XXX
+
+    def __str__(self):
+        return 'identity'
+
 # TODO sigmoid

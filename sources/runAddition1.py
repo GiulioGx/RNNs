@@ -1,7 +1,7 @@
 import theano
 from math import sqrt
 
-from ActivationFunction import Tanh, Relu
+from ActivationFunction import Tanh, Relu, Identity
 from Configs import Configs
 from SGDTrainer import SGDTrainer
 from ObjectiveFunction import ObjectiveFunction
@@ -12,6 +12,7 @@ from initialization.EyeInit import EyeInit
 from initialization.OrtoghonalInit import OrtoghonalInit
 from initialization.SparseGaussianInit import SparseGaussianInit
 from initialization.SimplexInit import SimplexInit
+from initialization.SpectralInit import SpectralInit
 from initialization.UniformInit import UniformInit
 from lossFunctions.CrossEntropy import CrossEntropy
 from lossFunctions.HingeLoss import HingeLoss
@@ -62,15 +63,20 @@ print('device: ' + device)
 print('floatType: ' + floatX)
 print(separator)
 
-seed = 134335
-
+seed = 13
 
 # network setup
-std_dev = 0.14  # 0.14 Tanh # 0.21 Relu
+
+activation_fnc = Tanh()
+output_fnc = Linear()
+
+std_dev = 0.5  # 0.14 Tanh # 0.21 Relu
 mean = 0
-net_initializer = RnnInitializer(W_rec_init=GaussianInit(mean=mean, std_dev=std_dev, seed=seed), W_in_init=GaussianInit(mean=mean, std_dev = 0.1, seed=seed),
-                                 W_out_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed), b_rec_init=ConstantInit(0),
-                                 b_out_init=ConstantInit(0), activation_fnc=Tanh(), output_fnc=Linear(), n_hidden=50)
+net_initializer = RnnInitializer(
+    W_rec_init=SpectralInit(matrix_init=GaussianInit(mean=mean, std_dev=std_dev, seed=seed), rho=1.2),
+    W_in_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed),
+    W_out_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed), b_rec_init=ConstantInit(0),
+    b_out_init=ConstantInit(0), activation_fnc=activation_fnc, output_fnc=output_fnc, n_hidden=100)
 
 # setup
 task = AdditionTask(144, seed)
@@ -88,7 +94,7 @@ loss_fnc = SquaredError()
 
 # penalty strategy
 # penalty = MeanPenalty()
-#penalty = ConstantPenalty(c=5)
+# penalty = ConstantPenalty(c=5)
 # penalty = MeanPenalty()
 
 # direction strategy
@@ -118,7 +124,7 @@ obj_fnc = ObjectiveFunction(loss_fnc)
 
 update_rule = FixedAveraging(t=10)
 # update_rule = SimpleUdpate()
-#update_rule = Momentum(gamma=0.1)
+# update_rule = Momentum(gamma=0.1)
 
 train_rule = TrainingRule(dir_rule, lr_rule, update_rule)
 
@@ -130,5 +136,5 @@ dataset = InfiniteDataset(task=task, validation_size=10 ** 4)
 
 net = trainer.train(dataset, net_initializer, seed)
 
-# net = RNN.load_model(out_dir+'/current_model.npz')
+# net = Rnn.load_model(out_dir+'/current_model.npz', activation_fnc=activation_fnc, output_fnc=output_fnc)
 # net = trainer.resume_training(dataset, net)

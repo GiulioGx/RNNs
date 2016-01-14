@@ -8,9 +8,10 @@
 
 \mode<presentation>
 
+%\usepackage[hidelinks]{hyperref}
 \usepackage{beamerthemesplit}
 \usepackage[UKenglish]{babel}
-\usepackage{cite}
+%\usepackage{cite}
 \usepackage{listings}
 \usepackage{latexsym}
 \usepackage[utf8]{inputenc}
@@ -103,14 +104,10 @@
 \section{Open issues}
 \input{issues}
 
-\begin{frame}
-   \begin{center}
-    \begin{beamerboxesrounded}[lower=lowercolor, shadow=true]{}
-     \begin{center}
-    \normalsize{The end}
-     \end{center}
-    \end{beamerboxesrounded}
-  \end{center}
-\end{frame} 
+\section{}
+\begin{frame}[allowframebreaks]{References}
+	\bibliographystyle{ieee}
+	\bibliography{biblio}
+\end{frame}
 
 \end{document} 

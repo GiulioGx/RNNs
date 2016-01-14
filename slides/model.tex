@@ -29,7 +29,6 @@ The problem is \begin{equation}
 \end{frame}
 
 \begin{frame}{Stochastic gradient descent (SGD)}
-SGD is the standard framework in most of the applications.
 \begin{algorithm}[H]
 	\KwData{\\
 		\Indp
@@ -53,4 +52,12 @@ SGD is the standard framework in most of the applications.
 	\caption{Stochastic gradient descent}
 	\label{algo:sgd}
 \end{algorithm}	
+\end{frame}
+
+\begin{frame}{Stochastic gradient descent (SGD)}
+	\begin{itemize}
+		\item Nemirovski (2009)\cite{Nemirovski}: proof of convergence in the convex case
+		\item there are no theoretical guarantees in the non-convex case 
+		\item in practice it always works: SGD is the standard framework in most of neural networks applications.
+	\end{itemize}
 \end{frame}

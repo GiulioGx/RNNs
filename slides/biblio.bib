@@ -1,0 +1,505 @@
+###############
+BACKPROPAGATION
+
+@incollection{Rumelhart86,
+ author = {Rumelhart, D. E. and Hinton, G. E. and Williams, R. J.},
+ chapter = {Learning Internal Representations by Error Propagation},
+ title = {Parallel Distributed Processing: Explorations in the Microstructure of Cognition, Vol. 1},
+ editor = {Rumelhart, David E. and McClelland, James L. and PDP Research Group, CORPORATE},
+ year = {1986},
+ isbn = {0-262-68053-X},
+ pages = {318--362},
+ numpages = {45},
+ url = {http://dl.acm.org/citation.cfm?id=104279.104293},
+ acmid = {104293},
+ publisher = {MIT Press},
+ address = {Cambridge, MA, USA},
+} 
+
+@article{Williams90anefficient,
+    author = {Ronald J. Williams and Jing Peng},
+    title = {An Efficient Gradient-Based Algorithm for On-Line Training of Recurrent Network Trajectories},
+    journal = {Neural Computation},
+    year = {1990},
+    volume = {2},
+    pages = {490--501}
+}
+
+
+###############
+ON EXPRESSIVENESS
+
+##FFNN
+@article{Hornik89,
+ author = {Hornik, K. and Stinchcombe, M. and White, H.},
+ title = {Multilayer Feedforward Networks Are Universal Approximators},
+ journal = {Neural Netw.},
+ issue_date = {1989},
+ volume = {2},
+ number = {5},
+ month = jul,
+ year = {1989},
+ issn = {0893-6080},
+ pages = {359--366},
+ numpages = {8},
+ url = {http://dx.doi.org/10.1016/0893-6080(89)90020-8},
+ doi = {10.1016/0893-6080(89)90020-8},
+ acmid = {70408},
+ publisher = {Elsevier Science Ltd.},
+ address = {Oxford, UK, UK},
+}
+
+
+
+@article{Scarselli98,
+ author = {Scarselli, Franco and Tsoi, Ah Chung},
+ title = {Universal Approximation Using Feedforward Neural Networks: A Survey of Some Existing Methods, and Some New Results},
+ journal = {Neural Netw.},
+ issue_date = {Jan. 1998},
+ volume = {11},
+ number = {1},
+ month = jan,
+ year = {1998},
+ issn = {0893-6080},
+ pages = {15--37},
+ numpages = {23},
+ url = {http://dx.doi.org/10.1016/S0893-6080(97)00097-X},
+ doi = {10.1016/S0893-6080(97)00097-X},
+ acmid = {284805},
+ publisher = {Elsevier Science Ltd.},
+ address = {Oxford, UK, UK},
+ keywords = {approximation by neural networks, approximation of polynomials, constructive approximation, feed-forward neural networks, multilayer neural networks, radial basis functions, universal approximation},
+} 
+
+##TURING
+
+@misc{Hyotyniemi96turingmachines,
+    author = {Heikki Hyotyniemi},
+    title = {Turing Machines are Recurrent Neural Networks},
+    year = {1996}
+}
+
+@article{Siegelmann91turingcomputability,
+    author = {Hava T. Siegelmann and Eduardo D. Sontag},
+    title = {Turing Computability With Neural Nets},
+    journal = {Applied Mathematics Letters},
+    year = {1991},
+    volume = {4},
+    pages = {77--80}
+}
+
+###############
+ON LEARNING
+
+@article{lstm,
+ author = {Hochreiter, Sepp and Schmidhuber, J\"{u}rgen},
+ title = {Long Short-Term Memory},
+ journal = {Neural Comput.},
+ issue_date = {November 15, 1997},
+ volume = {9},
+ number = {8},
+ month = nov,
+ year = {1997},
+ issn = {0899-7667},
+ pages = {1735--1780},
+ numpages = {46},
+ url = {http://dx.doi.org/10.1162/neco.1997.9.8.1735},
+ doi = {10.1162/neco.1997.9.8.1735},
+ acmid = {1246450},
+ publisher = {MIT Press},
+ address = {Cambridge, MA, USA},
+} 
+
+@article{lstmGraves,
+  added-at = {2013-12-10T00:00:00.000+0100},
+  author = {Graves, Alex},
+  biburl = {http://www.bibsonomy.org/bibtex/2d3697b979a78e10841dcc7eaa1998466/dblp},
+  ee = {http://arxiv.org/abs/1308.0850},
+  interhash = {ec0258df377a752ce87a6f7c59dea06d},
+  intrahash = {d3697b979a78e10841dcc7eaa1998466},
+  journal = {CoRR},
+  keywords = {dblp},
+  timestamp = {2013-12-11T11:35:04.000+0100},
+  title = {Generating Sequences With Recurrent Neural Networks.},
+  url = {http://dblp.uni-trier.de/db/journals/corr/corr1308.html#Graves13},
+  volume = {abs/1308.0850},
+  year = 2013
+}
+
+@inproceedings{gru,
+  author    = {Kyunghyun Cho and
+               Bart van Merrienboer and
+               {\c{C}}aglar G{\"{u}}l{\c{c}}ehre and
+               Dzmitry Bahdanau and
+               Fethi Bougares and
+               Holger Schwenk and
+               Yoshua Bengio},
+  title     = {Learning Phrase Representations using {RNN} Encoder-Decoder for Statistical
+               Machine Translation},
+  booktitle = {Proceedings of the 2014 Conference on Empirical Methods in Natural
+               Language Processing, {EMNLP} 2014, October 25-29, 2014, Doha, Qatar,
+               {A} meeting of SIGDAT, a Special Interest Group of the {ACL}},
+  pages     = {1724--1734},
+  year      = {2014},
+  url       = {http://aclweb.org/anthology/D/D14/D14-1179.pdf},
+  timestamp = {Sat, 15 Nov 2014 14:45:18 +0100},
+  biburl    = {http://dblp.uni-trier.de/rec/bib/conf/emnlp/ChoMGBBSB14},
+  bibsource = {dblp computer science bibliography, http://dblp.org}
+}
+
+@article{gru_lstm_empirical,
+  author    = {Junyoung Chung and
+               {\c{C}}aglar G{\"{u}}l{\c{c}}ehre and
+               KyungHyun Cho and
+               Yoshua Bengio},
+  title     = {Empirical Evaluation of Gated Recurrent Neural Networks on Sequence
+               Modeling},
+  journal   = {CoRR},
+  volume    = {abs/1412.3555},
+  year      = {2014},
+  url       = {http://arxiv.org/abs/1412.3555},
+  timestamp = {Thu, 01 Jan 2015 19:51:08 +0100},
+  biburl    = {http://dblp.uni-trier.de/rec/bib/journals/corr/ChungGCB14},
+  bibsource = {dblp computer science bibliography, http://dblp.org}
+}
+
+@misc{learningIsDifficult,
+    author = {Yoshua Bengio and Patrice Simard and Paolo Frasconi},
+    title = {Learning Long-Term Dependencies with Gradient Descent is Difficult},
+    year = {}
+}
+
+@article{learningToExecute,
+  author    = {Wojciech Zaremba and
+               Ilya Sutskever},
+  title     = {Learning to Execute},
+  journal   = {CoRR},
+  volume    = {abs/1410.4615},
+  year      = {2014},
+  url       = {http://arxiv.org/abs/1410.4615},
+  timestamp = {Sun, 02 Nov 2014 11:25:59 +0100},
+  biburl    = {http://dblp.uni-trier.de/rec/bib/journals/corr/ZarembaS14},
+  bibsource = {dblp computer science bibliography, http://dblp.org}
+}
+
+
+@inproceedings{curriculumLearning,
+ author = {Bengio, Yoshua and Louradour, J{\'e}r\^{o}me and Collobert, Ronan and Weston, Jason},
+ title = {Curriculum Learning},
+ booktitle = {Proceedings of the 26th Annual International Conference on Machine Learning},
+ series = {ICML '09},
+ year = {2009},
+ isbn = {978-1-60558-516-1},
+ location = {Montreal, Quebec, Canada},
+ pages = {41--48},
+ numpages = {8},
+ url = {http://doi.acm.org/10.1145/1553374.1553380},
+ doi = {10.1145/1553374.1553380},
+ acmid = {1553380},
+ publisher = {ACM},
+ address = {New York, NY, USA},
+} 
+
+@article{gatedFeedback,
+  author    = {Junyoung Chung and
+               {\c{C}}aglar G{\"{u}}l{\c{c}}ehre and
+               KyungHyun Cho and
+               Yoshua Bengio},
+  title     = {Gated Feedback Recurrent Neural Networks},
+  journal   = {CoRR},
+  volume    = {abs/1502.02367},
+  year      = {2015},
+  url       = {http://arxiv.org/abs/1502.02367},
+  timestamp = {Mon, 02 Mar 2015 14:17:34 +0100},
+  biburl    = {http://dblp.uni-trier.de/rec/bib/journals/corr/ChungGCB15},
+  bibsource = {dblp computer science bibliography, http://dblp.org}
+}
+
+@inproceedings{pascanu,
+  author    = {Razvan Pascanu and
+               Tomas Mikolov and
+               Yoshua Bengio},
+  title     = {On the difficulty of training recurrent neural networks},
+  booktitle = {Proceedings of the 30th International Conference on Machine Learning,
+               {ICML} 2013, Atlanta, GA, USA, 16-21 June 2013},
+  pages     = {1310--1318},
+  year      = {2013},
+  url       = {http://jmlr.org/proceedings/papers/v28/pascanu13.html},
+  timestamp = {Thu, 11 Sep 2014 07:28:55 +0200},
+  biburl    = {http://dblp.uni-trier.de/rec/bib/conf/icml/PascanuMB13},
+  bibsource = {dblp computer science bibliography, http://dblp.org}
+}
+
+@incollection{hessianFree,
+ author    = {James Martens and
+               Ilya Sutskever},
+  editor    = {Gr{\'{e}}goire Montavon and
+               Genevieve B. Orr and
+               Klaus{-}Robert M{\"{u}}ller},
+  title     = {Training Deep and Recurrent Networks with Hessian-Free Optimization},
+  booktitle = {Neural Networks: Tricks of the Trade - Second Edition},
+  series    = {Lecture Notes in Computer Science},
+  volume    = {7700},
+  pages     = {479--535},
+  publisher = {Springer},
+  year      = {2012},
+  url       = {http://dx.doi.org/10.1007/978-3-642-35289-8_27},
+  doi       = {10.1007/978-3-642-35289-8_27},
+  timestamp = {Mon, 09 Sep 2013 18:53:44 +0200},
+  biburl    = {http://dblp.uni-trier.de/rec/bib/series/lncs/MartensS12},
+  bibsource = {dblp computer science bibliography, http://dblp.org}
+}
+
+@article{gaussNewtonMatrix,
+  author    = {Nicol N. Schraudolph},
+  title     = {Fast Curvature Matrix-Vector Products for Second-Order Gradient Descent},
+  journal   = {Neural Computation},
+  volume    = {14},
+  number    = {7},
+  pages     = {1723--1738},
+  year      = {2002},
+  url       = {http://dx.doi.org/10.1162/08997660260028683},
+  doi       = {10.1162/08997660260028683},
+  timestamp = {Thu, 17 Nov 2011 16:24:23 +0100},
+  biburl    = {http://dblp.uni-trier.de/rec/bib/journals/neco/Schraudolph02},
+  bibsource = {dblp computer science bibliography, http://dblp.org}
+}
+
+@phdthesis{clippingMikolov,
+  author = {Tom{\'{a}}{\v{s}} Mikolov},
+  title = {Statistical Language Models Based on Neural Networks},
+  pages = {129},
+  year = {2012},
+  location = {Brno, CZ},
+  language = {english},
+  url = {http://www.fit.vutbr.cz/research/view_pub.php?id=10158}
+}
+
+@inproceedings{architectureMutations,
+  author    = {Rafal J{\'{o}}zefowicz and
+               Wojciech Zaremba and
+               Ilya Sutskever},
+  editor    = {Francis R. Bach and
+               David M. Blei},
+  title     = {An Empirical Exploration of Recurrent Network Architectures},
+  booktitle = {Proceedings of the 32nd International Conference on Machine Learning,
+               {ICML} 2015, Lille, France, 6-11 July 2015},
+  series    = {{JMLR} Proceedings},
+  volume    = {37},
+  pages     = {2342--2350},
+  publisher = {JMLR.org},
+  year      = {2015},
+  url       = {http://jmlr.org/proceedings/papers/v37/jozefowicz15.html},
+  timestamp = {Sun, 05 Jul 2015 19:10:23 +0200},
+  biburl    = {http://dblp2.uni-trier.de/rec/bib/conf/icml/JozefowiczZS15},
+  bibsource = {dblp computer science bibliography, http://dblp.org}
+}
+
+@article{reservoirSummary,
+  author    = {Mantas Lukosevicius and
+               Herbert Jaeger},
+  title     = {Reservoir computing approaches to recurrent neural network training},
+  journal   = {Computer Science Review},
+  volume    = {3},
+  number    = {3},
+  pages     = {127--149},
+  year      = {2009},
+  url       = {http://dx.doi.org/10.1016/j.cosrev.2009.03.005},
+  doi       = {10.1016/j.cosrev.2009.03.005},
+  timestamp = {Mon, 09 Nov 2009 12:40:52 +0100},
+  biburl    = {http://dblp.uni-trier.de/rec/bib/journals/csr/LukoseviciusJ09},
+  bibsource = {dblp computer science bibliography, http://dblp.org}
+}
+
+@article{liquidStateMachines,
+  author	= {W. Maass and T. Natschlaeger and H. Markram},
+  title		= {Real-time Computing Without Stable States: A New Framework
+		  for Neural Computation Based on Perturbations},
+  journal	= {Neural Computation},
+  volume	= 14,
+  number	= 11,
+  pages		= {2531-2560},
+  year		= 2002
+}
+
+@article{echoStateNetworks,
+ author = {Luko\v{s}evi\v{c}ius, Mantas and Jaeger, Herbert},
+ title = {Survey: Reservoir Computing Approaches to Recurrent Neural Network Training},
+ journal = {Comput. Sci. Rev.},
+ issue_date = {August, 2009},
+ volume = {3},
+ number = {3},
+ month = aug,
+ year = {2009},
+ issn = {1574-0137},
+ pages = {127--149},
+ numpages = {23},
+ url = {http://dx.doi.org/10.1016/j.cosrev.2009.03.005},
+ doi = {10.1016/j.cosrev.2009.03.005},
+ acmid = {2296036},
+ publisher = {Elsevier Science Publishers B. V.},
+ address = {Amsterdam, The Netherlands, The Netherlands},
+}
+
+
+@inproceedings{advancesInOptimizingRnns,
+  author    = {Yoshua Bengio and
+               Nicolas Boulanger{-}Lewandowski and
+               Razvan Pascanu},
+  title     = {Advances in optimizing recurrent networks},
+  booktitle = {{IEEE} International Conference on Acoustics, Speech and Signal Processing,
+               {ICASSP} 2013, Vancouver, BC, Canada, May 26-31, 2013},
+  pages     = {8624--8628},
+  publisher = {{IEEE}},
+  year      = {2013},
+  url       = {http://dx.doi.org/10.1109/ICASSP.2013.6639349},
+  doi       = {10.1109/ICASSP.2013.6639349},
+  timestamp = {Sat, 02 Nov 2013 16:17:16 +0100},
+  biburl    = {http://dblp.uni-trier.de/rec/bib/conf/icassp/BengioBP13},
+  bibsource = {dblp computer science bibliography, http://dblp.org}
+}
+
+@article{scrn,
+  author    = {Tomas Mikolov and
+               Armand Joulin and
+               Sumit Chopra and
+               Micha{\"{e}}l Mathieu and
+               Marc'Aurelio Ranzato},
+  title     = {Learning Longer Memory in Recurrent Neural Networks},
+  journal   = {CoRR},
+  volume    = {abs/1412.7753},
+  year      = {2014},
+  url       = {http://arxiv.org/abs/1412.7753},
+  timestamp = {Thu, 01 Jan 2015 19:51:08 +0100},
+  biburl    = {http://dblp.uni-trier.de/rec/bib/journals/corr/MikolovJCMR14},
+  bibsource = {dblp computer science bibliography, http://dblp.org}
+}
+
+@article{leakyIntegratorUnits,
+  author    = {Herbert Jaeger and
+               Mantas Lukosevicius and
+               Dan Popovici and
+               Udo Siewert},
+  title     = {Optimization and applications of echo state networks with leaky- integrator
+               neurons},
+  journal   = {Neural Networks},
+  volume    = {20},
+  number    = {3},
+  pages     = {335--352},
+  year      = {2007},
+  url       = {http://dx.doi.org/10.1016/j.neunet.2007.04.016},
+  doi       = {10.1016/j.neunet.2007.04.016},
+  timestamp = {Fri, 21 Sep 2007 13:57:52 +0200},
+  biburl    = {http://dblp.uni-trier.de/rec/bib/journals/nn/JaegerLPS07},
+  bibsource = {dblp computer science bibliography, http://dblp.org}
+}
+
+@inproceedings{nesterovAndInitialization,
+  author    = {Ilya Sutskever and
+               James Martens and
+               George E. Dahl and
+               Geoffrey E. Hinton},
+  title     = {On the importance of initialization and momentum in deep learning},
+  booktitle = {Proceedings of the 30th International Conference on Machine Learning,
+               {ICML} 2013, Atlanta, GA, USA, 16-21 June 2013},
+  series    = {{JMLR} Proceedings},
+  volume    = {28},
+  pages     = {1139--1147},
+  publisher = {JMLR.org},
+  year      = {2013},
+  url       = {http://jmlr.org/proceedings/papers/v28/sutskever13.html},
+  timestamp = {Thu, 11 Sep 2014 07:28:55 +0200},
+  biburl    = {http://dblp.uni-trier.de/rec/bib/conf/icml/SutskeverMDH13},
+  bibsource = {dblp computer science bibliography, http://dblp.org}
+}
+
+@article{momentum,
+title = "Some methods of speeding up the convergence of iteration methods",
+journal = "USSR Computational Mathematics and Mathematical Physics",
+volume = "4",
+number = "5",
+pages = "1 - 17",
+year = "1964",
+note = "",
+issn = "0041-5553",
+doi = "http://dx.doi.org/10.1016/0041-5553(64)90137-5",
+url = "http://www.sciencedirect.com/science/article/pii/0041555364901375",
+author = "B.T. Polyak",
+}
+
+@article{nesterov,
+    author = {Nesterov, Yurii},
+    citeulike-article-id = {9501961},
+    citeulike-linkout-0 = {http://www.core.ucl.ac.be/\~{}nesterov/Research/Papers/DAN83.pdf},
+    journal = {Soviet Mathematics Doklady},
+    pages = {372--376},
+    posted-at = {2011-07-04 10:29:10},
+    priority = {2},
+    title = {{A method of solving a convex programming problem with convergence rate O(1/sqr(k))}},
+    url = {http://www.core.ucl.ac.be/\~{}nesterov/Research/Papers/DAN83.pdf},
+    volume = {27},
+    year = {1983}
+}
+
+@article{dropoutRNNs,
+  author    = {Wojciech Zaremba and
+               Ilya Sutskever and
+               Oriol Vinyals},
+  title     = {Recurrent Neural Network Regularization},
+  journal   = {CoRR},
+  volume    = {abs/1409.2329},
+  year      = {2014},
+  url       = {http://arxiv.org/abs/1409.2329},
+  timestamp = {Wed, 01 Oct 2014 15:00:04 +0200},
+  biburl    = {http://dblp.uni-trier.de/rec/bib/journals/corr/ZarembaSV14},
+  bibsource = {dblp computer science bibliography, http://dblp.org}
+}
+
+@article{dropout,
+  author    = {Nitish Srivastava and
+               Geoffrey E. Hinton and
+               Alex Krizhevsky and
+               Ilya Sutskever and
+               Ruslan Salakhutdinov},
+  title     = {Dropout: a simple way to prevent neural networks from overfitting},
+  journal   = {Journal of Machine Learning Research},
+  volume    = {15},
+  number    = {1},
+  pages     = {1929--1958},
+  year      = {2014},
+  url       = {http://dl.acm.org/citation.cfm?id=2670313},
+  timestamp = {Sun, 05 Oct 2014 12:54:58 +0200},
+  biburl    = {http://dblp.uni-trier.de/rec/bib/journals/jmlr/SrivastavaHKSS14},
+  bibsource = {dblp computer science bibliography, http://dblp.org}
+}
+
+@article{dropoutBayer,
+  author    = {Justin Bayer and
+               Christian Osendorfer and
+               Nutan Chen and
+               Sebastian Urban and
+               Patrick van der Smagt},
+  title     = {On Fast Dropout and its Applicability to Recurrent Networks},
+  journal   = {CoRR},
+  volume    = {abs/1311.0701},
+  year      = {2013},
+  url       = {http://arxiv.org/abs/1311.0701},
+  timestamp = {Tue, 03 Dec 2013 15:04:24 +0100},
+  biburl    = {http://dblp.uni-trier.de/rec/bib/journals/corr/BayerOCUS13},
+  bibsource = {dblp computer science bibliography, http://dblp.org}
+}
+
+#### STOCHASTIC
+
+@article{Nemirovski,
+  author    = {Arkadi Nemirovski and
+               Anatoli Juditsky and
+               Guanghui Lan and
+               Alexander Shapiro},
+  title     = {Robust Stochastic Approximation Approach to Stochastic Programming},
+  journal   = {{SIAM} Journal on Optimization},
+  volume    = {19},
+  number    = {4},
+  pages     = {1574--1609},
+  year      = {2009}
+}
