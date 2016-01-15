@@ -55,10 +55,10 @@ Suppose $f(\cdot)$ is continuous, strongly convex (with constant $c$) and there 
 	\item	It is possible to generate independent identically distributed samples of $\vec{\xi}$
 	\item There exists an oracle which, for a given point $(\vec{x}, \vec{\xi})$ returns a stochastic direction $D(\vec{x}, \vec{\xi})$ such that $d(\vec{x})\defeq\mathbb{E}[D(\vec{x}, \vec{\xi})]$ satisfies:
 	\begin{equation}
-	-(\vec{x}-\vec{x}_*)^T (f^{\prime} -g(\vec{x})) \geq -\mu  \norm{\vec{x}-\vec{x}_*}^2_2\quad \text{ for some } f^\prime \in \partial f(\vec{x}),
+	-(\vec{x}-\vec{x}_*)^T (f^{\prime} -g(\vec{x})) \geq -\mu L \norm{\vec{x}-\vec{x}_*}^2_2\quad \text{ for some } f^\prime \in \partial f(\vec{x}),
 	\label{eq:angular_condition}
 	\end{equation}
-	for some $\mu \in (0,c) $.
+	for some $\mu \in (0,\frac{c}{L}) $, $L$ is some chosen positive constant.
 \end{itemize}
 Consider the algorithm defined by
 \begin{equation}
@@ -121,10 +121,10 @@ which can be rewritten as
 From assumption (\ref{eq:angular_condition}), taking expectations of both side of (\ref{eq:angular_inequality}) we obtain
 \begin{align}
 \mathbb{E}[(\vec{x}_j-\vec{x}_*)^T g(\vec{x}_j)] &\geq c \mathbb{E}[\norm{\vec{x}_j-\vec{x}_*}^2_2)] - \mathbb{E}[(\vec{x}_j-\vec{x}_*)^T (f_j^\prime -g(\vec{x}_j))]\\
- &\geq c(1-\frac{\mu }{c}) \mathbb{E}[\norm{\vec{x}_j-\vec{x}_*}^2_2)]\\
+ &\geq c(1-\frac{\mu L}{c}) \mathbb{E}[\norm{\vec{x}_j-\vec{x}_*}^2_2)]\\
  & = 2\bar{c}a_j,
 \end{align}
-with $\bar{c}=c(1-\frac{\mu }{c})$ and $f_j^\prime \in \partial f(\vec{x}_j)$.
+with $\bar{c}=c(1-\frac{\mu L }{c})$ and $f_j^\prime \in \partial f(\vec{x}_j)$.
 Hence from (\ref{eq:aj_rec_2}) follows 
 \begin{equation}
 	a_{j+1} \leq (1-2\bar{c}\gamma_j)a_j + \frac{1}{2}\gamma_j^2M^2.
@@ -159,18 +159,16 @@ then
 \end{align}
 Hence
 \begin{align}
-	(\vec{x}-\vec{x}_*)^T (\nabla f(\vec{x}) -g(\vec{x})) &\leq \norm{\vec{x}-\vec{x}_*} \norm{\nabla f(\vec{x}) -g(\vec{x})}\\
+	(\vec{x}-\vec{x}_*)^T (f^\prime -g(\vec{x})) &\leq \norm{\vec{x}-\vec{x}_*} \norm{f^\prime -g(\vec{x})}\\
 	&= \norm{\vec{x}-\vec{x}_*} \norm{f^\prime}(1+\alpha_j^2-2\alpha_j \cos\theta_j)^{\frac{1}{2}}
 \end{align}
+Assume
+\begin{equation}
+\norm{f^\prime}_2\leq L \norm{\vec{x}-\vec{x}_*}_2.
+\label{eq:lipschitz continuity}
+\end{equation}
+Note that equation (\ref{eq:lipschitz continuity}) resolves simply to Lipschitz continuity in the differentiable case.
 A sufficient condition is thus
-\begin{equation}
-\norm{f^\prime}(1+\alpha_j^2-2\alpha_j \cos\theta_j)^{\frac{1}{2}} \leq \mu \norm{\vec{x}-\vec{x}_*}
-\end{equation}
-In the smooth case, since $\nabla f(\vec{x}_*)=0$, using Lipschitz continuity of $\nabla f$ (with constant L) we get
-\begin{equation}
-	\norm{\nabla f(\vec{x}_j)-g(\vec{x})} \leq L\norm{\vec{x}-\vec{x}_*} (1+\alpha^2-2\alpha \cos\theta)^{\frac{1}{2}}
-\end{equation}
-Hence a sufficient condition for assumption \ref{eq:angular_condition} to hold is
 \begin{equation}
 	1+\alpha^2-2\alpha \cos\theta_j\leq (\frac{\mu}{L})^2
 \end{equation}

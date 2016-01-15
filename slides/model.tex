@@ -1,8 +1,8 @@
  
 \begin{frame}{The model}
 	
-\begin{block}{RNN}
-	Given an input sequences $\{\vec{u}\}_{t=1,...,T}$, with $ \vec{u}_t \in \mathbb{R}^p$, the output sequence of a RNN $\{\vec{y}\}_{t=1,...,T}$, with $\vec{y}_t \in \mathbb{R}^o$,  is defined by the following:
+\begin{block}{Def: RNN}
+	Given an input sequence $\{\vec{u}\}_{t=1,...,T}$, with $ \vec{u}_t \in \mathbb{R}^p$, the output sequence of a RNN $\{\vec{y}\}_{t=1,...,T}$, with $\vec{y}_t \in \mathbb{R}^o$,  is defined by the following:
 \begin{align}
 		&\vec{y}^t \defeq F(W^{out}\cdot\vec{a}^t + \vec{b}^{out})\\
 		&\vec{a}^t \defeq W^{rec}\cdot\vec{h}^{t-1}+W^{in}\cdot\vec{u}^t+\vec{b}^{rec}\\
@@ -89,14 +89,32 @@ Given a dataset $D$:
 \begin{equation}
 D\defeq\{\{\overline{\vec{u}}^{(i)}\}_{t=1,...,T}, \overline{\vec{u}}^{(i)}_t \in \mathbb{R}^p, \{\overline{\vec{y}}^{(i)}\}_{t=1,...,T}, \overline{\vec{y}}^{(i)}_t \in \mathbb{R}^o;  i=1,...,N\}
 \end{equation}
-we define a loss function $L_D:\mathbb{R}^N \rightarrow \mathbb{R}_{\geq 0}$ over $D$  as
+we define a loss function $L_D(\vec{x})$ over $D$  as
 \begin{equation}
 L_D(\vec{x})\defeq\frac{1}{N}\sum_{i=1}^N \sum_{t=1}^T L_t(\overline{\vec{y}}_t^{(i)},\vec{y}_t^{(i)}(\vec{x})),
 \end{equation}
-where $L_t(\cdot, \cdot)$ is an arbitrary loss function for the time step $t$.
+where $L_t(\cdot, \cdot)$ is an arbitrary loss function for the time step $t$ and $\vec{x}$ represents all the parameters of the network.
 The problem is \begin{equation}
-\min_{\vec{x}\in \mathbb{R}^N} L_D(\vec{x})
+\min_{\vec{x}} L_D(\vec{x})
 \end{equation}
+\end{frame}
+
+\begin{frame}{Examples of loss functions}
+
+	\begin{itemize}
+		\item mean squared error (for regression tasks)
+		\begin{equation}
+			L(\vec{y}, \vec{t}) = \frac{1}{M}\sum_{i=1}^M (y_i-t_i)^2
+		\end{equation}
+		\item hinge loss (for binary classification)
+		\begin{equation}
+			L(y, t) = \max(0,1-t\cdot y )
+		\end{equation}
+		\item cross entropy (for multi-class classification)
+		\begin{equation}
+						L(\vec{y}, \vec{t}) = -\frac{1}{M}\sum_{i=1}^M \log(y_i)\cdot t_i
+		\end{equation}
+	\end{itemize}
 \end{frame}
 
 \begin{frame}{Stochastic gradient descent (SGD)}

@@ -12,7 +12,7 @@ An input sequence:
 \end{tabular}
 
 \vspace{1em}
-The predicted output should be the sum of the two one marked positions (1.1). 
+The predicted output should be the sum of the two one-marked positions (1.1). 
 \pause
 \vspace{1em}
 \begin{block}{Why is this a difficult problem?}
@@ -171,13 +171,13 @@ The predicted output should be the sum of the two one marked positions (1.1).
 	\label{rnn_delta}.
 	\end{align}
 	
-	The derivatives with respect to the other variables are computed in a similar fashion
+	The derivatives with respect to the other variables are computed in a similar fashion.
 
 	
 \end{frame}
 
 
-\begin{frame}{Vanishing gradient: an upper bound}
+\begin{frame}{Vanishing gradient: a sufficient condition}
 	\begin{equation}
 	\frac{\partial \vec{a}^t}{\partial \vec{a}^k} = \prod_{i=t-1}^{k}  diag(\sigma'(\vec{a}^i)) \cdot \mat{W}^{rec}.
 	\label{eq:temporalComponent}

@@ -2,15 +2,15 @@
 \begin{frame}{Open Issues: Initialization}
 	
 	\begin{itemize}
-		\item Some tasks, like the XOR one, are still "unresolved" (even for the other approaches). They cannot be solved with high probability (varying the seed)
+		\item Some tasks, like the XOR one, are still "unresolved" (even for the other approaches). They cannot be solved with most of the seeds used for the initialization
 		\item it seems to be an \textbf{initialization} matter
 	\end{itemize}
 	
 	Popular strategies for initialization are:
 	\begin{itemize}
-		\item "small random weights", usually drawn from gaussian or uniform distribution with zero mean. 
-		\item sparse initialization: only some weights are actually sampled from a distribution, the other are zero. (Used by HF)
-		\item ESN-like initialization ...TODO
+		\item "small random weights", usually drawn from gaussian or uniform distribution with zero mean (Pascanu). 
+		\item sparse initialization: only some weights are actually sampled from a distribution, the other are set to zero (HF).
+		\item ESN-like initialization.
 	\end{itemize}
 	
 \end{frame}

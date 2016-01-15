@@ -1,6 +1,8 @@
 import theano
 from math import sqrt
 
+from sympy.logic.boolalg import Xor
+
 from ActivationFunction import Tanh, Relu, Identity
 from Configs import Configs
 from SGDTrainer import SGDTrainer
@@ -68,7 +70,7 @@ seed = 13
 # network setup
 
 activation_fnc = Tanh()
-output_fnc = Linear()
+output_fnc = Softmax()
 
 std_dev = 0.5  # 0.14 Tanh # 0.21 Relu
 mean = 0
@@ -79,9 +81,9 @@ net_initializer = RnnInitializer(
     b_out_init=ConstantInit(0), activation_fnc=activation_fnc, output_fnc=output_fnc, n_hidden=100)
 
 # setup
-task = AdditionTask(144, seed)
+task = XorTaskHot(144, seed)
 out_dir = Configs.output_dir + str(task)
-loss_fnc = SquaredError()
+loss_fnc = CrossEntropy()
 
 # # HF init
 # bias_value = 0.5
