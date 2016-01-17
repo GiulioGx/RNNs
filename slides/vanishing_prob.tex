@@ -1,3 +1,4 @@
+\subsection{The addition task}
 \begin{frame}{A pathological problem example}
 
 
@@ -20,15 +21,15 @@ The predicted output should be the sum of the two one-marked positions (1.1).
 \end{block}
 
 \end{frame}
-
+\subsection{Gradient calculus}
 \begin{frame}{Gradient}
 	Let $L_t(\bar{\vec{u}}, \bar{\vec{y}})$ the loss function for the time step $t$ and  $g_t(\vec{x}): \mathbb{R}$ be the function defined by
-	$$g_t(\vec{x}) \triangleq L_t(F(\vec{y}^t(\vec{\bar{\vec{u}};x}),\bar{\vec{y}}_t ))$$
+	$$g_t(\vec{x}) \triangleq L_t(F(\vec{z}^t(\vec{\bar{\vec{u}};x}),\bar{\vec{y}}_t ))$$
 	and $$g(\vec{x}) \triangleq \sum_{t=1}^T g_t(\vec{x})$$
 	
 	
 	\begin{align}
-	\frac{\partial g}{\partial \mat{W}^{rec}} &= \sum_{t=1}^T \nabla L_t^T \cdot J(F) \cdot \frac{\partial \vec{y}^t}{\partial \vec{a}^t} \cdot \frac{\partial \vec{a}^t}{\partial \mat{W}^{rec}}\\
+	\frac{\partial g}{\partial \mat{W}^{rec}} &= \sum_{t=1}^T \nabla L_t^T \cdot J(F) \cdot \frac{\partial \vec{z}^t}{\partial \vec{a}^t} \cdot \frac{\partial \vec{a}^t}{\partial \mat{W}^{rec}}\\
 	&= \sum_{t=1}^T\frac{\partial g_t}{\partial \vec{a}^t} \cdot \frac{\partial \vec{a}^t}{\partial \mat{W^{rec}}}
 	\end{align}
 \end{frame}
@@ -176,7 +177,7 @@ The predicted output should be the sum of the two one-marked positions (1.1).
 	
 \end{frame}
 
-
+\subsection{A sufficient condition}
 \begin{frame}{Vanishing gradient: a sufficient condition}
 	\begin{equation}
 	\frac{\partial \vec{a}^t}{\partial \vec{a}^k} = \prod_{i=t-1}^{k}  diag(\sigma'(\vec{a}^i)) \cdot \mat{W}^{rec}.
@@ -194,7 +195,7 @@ The predicted output should be the sum of the two one-marked positions (1.1).
 	\end{equation}
 \end{frame}
 \begin{frame}
-	Since $\mat{U}$ and $\mat{V}$ are orthogonal matrix, hence $$\norm{\mat{U}}_2=\norm{\mat{V}^T}_2 = 1,$$ and $$\norm{diag(\lambda_1, \lambda_2,...,\lambda_r)}_2 \leq \lambda_{max},$$ we get
+	Since $\mat{U}$ and $\mat{V}$ are orthogonal matrix, hence $$\norm{\mat{U}}_2=\norm{\mat{V}^T}_2 = 1,$$ and $$\norm{diag(\lambda_1, \lambda_2,...,\lambda_r)}_2 = \lambda_{max},$$ we get
 	\begin{align}
 	\norm{\frac{\partial \vec{a}^t}{\partial \vec{a}^k}}_2 &= \norm{ (\prod_{i=t-1}^{k} diag(\sigma'(\vec{a}^i)) \cdot \mat{S}\cdot \mat{D} \cdot \mat{V}^T)}_2\\
 	&\leq (\sigma'_{max} \cdot \mu_{max})^{t-k-1}

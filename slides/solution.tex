@@ -1,3 +1,4 @@
+\subsection{Existent solutions survey}
 \begin{frame}{Existent solutions}
 	
 	\begin{itemize}
@@ -23,6 +24,7 @@
 	
 \end{frame}
 
+\subsection{A new proposal}
 \begin{frame}{Understanding the gradient structure: unfolding}
 	\tikzstyle{rnn_style}=[->,shorten >=1pt,auto,node distance=1.5cm,
 	thick,
@@ -111,12 +113,13 @@
 	\end{figure}
 \end{frame}
 
+
 \begin{frame}{Understanding the gradient structure}
 	It's easy to see that
 	\begin{equation}
 	\nabla L(\vec{x}) = \sum_{t=1}^T \nabla L_{|t}(\vec{x}),
 	\end{equation}
-	where $\nabla L_{|t}$ is the gradient computed imagining to replicate all variables for each time step and taking the derivatives w.r.t the variables for the th-step 
+	where $\nabla L_{|t}$ is the gradient computed imagining to replicate all the variables for each time step and taking the derivatives w.r.t. the variables for step $t$ 
 \end{frame}
 
 \begin{frame}{Temporal gradient norms: an illustration}
