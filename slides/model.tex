@@ -111,15 +111,15 @@ The problem is \begin{equation}
 	\begin{itemize}
 		\item Regression: mean squared error, linear output
 		\begin{equation}
-			L(\vec{y}, \vec{t}) = \frac{1}{M}\sum_{i=1}^M (y_i-t_i)^2; \quad F(\vec{y}) = \vec{y}
+			L(\vec{y}, \vec{t}) = \frac{1}{M}\sum_{i=1}^M (y_i-t_i)^2, \quad F(\vec{y}) = \vec{y}.
 		\end{equation}
 		\item Binary classification: hinge loss, linear output
 		\begin{equation}
-			L(y, t) = \max(0,1-t\cdot y ); \quad F(y) = y
+			L(y, t) = \max(0,1-t\cdot y ), \quad F(y) = y.
 		\end{equation}
 		\item Multi-way classification: cross entropy loss, softmax output
 		\begin{equation}
-						L(\vec{y}, \vec{t}) = -\frac{1}{M}\sum_{i=1}^M \log(y_i)\cdot t_i; \quad F(y_j) = \frac{e^{y_j}}{\sum_{i=1}^M e^{y_i}}
+						L(\vec{y}, \vec{t}) = -\frac{1}{M}\sum_{i=1}^M \log(y_i)\cdot t_i, \quad F(y_j) = \frac{e^{y_j}}{\sum_{i=1}^M e^{y_i}}.
 		\end{equation}
 	\end{itemize}
 \end{frame}
@@ -130,7 +130,7 @@ The problem is \begin{equation}
 		\Indp
 		$D=\{\pair{\vec{u}^{(i)}}{\vec{y}^{(i)}}\}$: training set\\
 		$\vec{x}_0$: candidate solution \\
-		$m$: size of each minibatch\\
+		$m$: size of each mini-batch\\
 	}
 	
 	\KwResult{\\
