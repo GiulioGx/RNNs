@@ -41,9 +41,9 @@ class LinearCombination(CombiningRule):
         def combination(self):
             return self.__grads_combinantions
 
-        def __init__(self, rule, vector_list, n):
+        def __init__(self, rule, H, n):
             self.__infos = []
-            coefficients = rule.get_linear_coefficients(vector_list, n)
+            coefficients = rule.get_linear_coefficients(H, n)
 
             # scan implementation
             # if rule.normalize_components:
@@ -64,13 +64,11 @@ class LinearCombination(CombiningRule):
             # self.__grads_combinantions = grads_combinantions[-1]
 
             # matrix implementation
-            H = TT.as_tensor_variable(vector_list[0:n])
-            G = TT.reshape(H, (H.shape[0], H.shape[1]))
-
+            G = H
             if rule.normalize_components:
-                norm_G = G.norm(2, axis=1).reshape((G.shape[0], 1))
-                G = G / TT.switch(norm_G > 0, norm_G, 1)
-                #G = G * TT.switch(is_not_trustworthy(norm_G), 0, 1./norm_G)  # FIXME mettere in un punto meliore
+                norm_G = H.norm(2, axis=1).reshape((H.shape[0], 1))
+                # G = G / TT.switch(norm_G > 0, norm_G, 1)
+                G = H / TT.switch(is_not_trustworthy(norm_G), 1, norm_G)
 
             self.__grads_combinantions = TT.dot(G.T, coefficients)
 

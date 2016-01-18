@@ -12,6 +12,7 @@ from descentDirectionRule.DropoutDirection import DropoutDirection
 from initialization.ConstantInit import ConstantInit
 from initialization.EyeInit import EyeInit
 from initialization.OrtoghonalInit import OrtoghonalInit
+from initialization.SVDInit import SVDInit
 from initialization.SparseGaussianInit import SparseGaussianInit
 from initialization.SimplexInit import SimplexInit
 from initialization.SpectralInit import SpectralInit
@@ -70,20 +71,20 @@ seed = 13
 # network setup
 
 activation_fnc = Tanh()
-output_fnc = Softmax()
+output_fnc = Linear()
 
-std_dev = 0.3  # 0.14 Tanh # 0.21 Relu
+std_dev = 0.1  # 0.14 Tanh # 0.21 Relu
 mean = 0
 net_initializer = RnnInitializer(
-    W_rec_init=SpectralInit(matrix_init=GaussianInit(mean=mean, std_dev=std_dev, seed=seed), rho=1.5),
+    W_rec_init=SpectralInit(matrix_init=GaussianInit(mean=mean, std_dev=std_dev, seed=seed), rho=1.1),
     W_in_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed),
     W_out_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed), b_rec_init=ConstantInit(0),
     b_out_init=ConstantInit(0), activation_fnc=activation_fnc, output_fnc=output_fnc, n_hidden=100)
 
 # setup
-task = XorTaskHot(144, seed)
+task = AdditionTask(144, seed)
 out_dir = Configs.output_dir + str(task)
-loss_fnc = CrossEntropy()
+loss_fnc = SquaredError()
 
 # # HF init
 # bias_value = 0.5
