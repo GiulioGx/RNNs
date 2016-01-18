@@ -12,6 +12,7 @@ from initialization.EyeInit import EyeInit
 from initialization.OrtoghonalInit import OrtoghonalInit
 from initialization.SparseGaussianInit import SparseGaussianInit
 from initialization.SimplexInit import SimplexInit
+from initialization.SpectralInit import SpectralInit
 from initialization.UniformInit import UniformInit
 from lossFunctions.CrossEntropy import CrossEntropy
 from lossFunctions.FullSquaredError import FullSquaredError
@@ -67,7 +68,7 @@ print(separator)
 # network setup
 std_dev = 0.14  # 0.14 Tanh # 0.21 Relu
 mean = 0
-net_initializer = RnnInitializer(W_rec_init=GaussianInit(mean=mean, std_dev=std_dev), W_in_init=GaussianInit(mean=mean, std_dev = 0.1),
+net_initializer = RnnInitializer(W_rec_init=SpectralInit(GaussianInit(mean=mean, std_dev=std_dev), rho=1.1), W_in_init=GaussianInit(mean=mean, std_dev = 0.1),
                                  W_out_init=GaussianInit(mean=mean, std_dev=0.1), b_rec_init=ConstantInit(0),
                                  b_out_init=ConstantInit(0), activation_fnc=Tanh(), output_fnc=Linear(), n_hidden=100)
 
@@ -115,7 +116,7 @@ dir_rule = CombinedGradients(combining_rule)
 # learning step rule
 # lr_rule = WRecNormalizedStep(0.0001) #0.01
 # lr_rule = ConstantNormalizedStep(0.001)  # 0.01
-lr_rule = GradientClipping(lr_value=0.03, clip_thr=0.1)  # 0.01
+lr_rule = GradientClipping(lr_value=0.01, clip_thr=0.1)  # 0.01
 # lr_rule = ArmijoStep(alpha=0.5, beta=0.1, init_step=1, max_steps=50)
 obj_fnc = ObjectiveFunction(loss_fnc)
 
@@ -125,7 +126,7 @@ update_rule = FixedAveraging(t=10)
 
 train_rule = TrainingRule(dir_rule, lr_rule, update_rule)
 
-trainer = SGDTrainer(train_rule, obj_fnc, output_dir=out_dir, max_it=50000,
+trainer = SGDTrainer(train_rule, obj_fnc, output_dir=out_dir, max_it=10000,
                      check_freq=200, batch_size=100)
 
 # dataset = Dataset.no_valid_dataset_from_task(size=1000, task=task)

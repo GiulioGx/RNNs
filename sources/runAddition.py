@@ -12,6 +12,7 @@ from initialization.EyeInit import EyeInit
 from initialization.OrtoghonalInit import OrtoghonalInit
 from initialization.SparseGaussianInit import SparseGaussianInit
 from initialization.SimplexInit import SimplexInit
+from initialization.SpectralInit import SpectralInit
 from initialization.UniformInit import UniformInit
 from lossFunctions.CrossEntropy import CrossEntropy
 from lossFunctions.HingeLoss import HingeLoss
@@ -76,12 +77,12 @@ out_dir = Configs.output_dir + str(task)
 loss_fnc = SquaredError()
 
 # # HF init
-bias_value = 0.5
-n_conns = 25
-std_dev = sqrt(0.14)
+bias_value = 0
+n_conns = 15
+std_dev = 0.1
 #std_dev = 0.14
 net_initializer = RnnInitializer(
-    W_rec_init=SparseGaussianInit(n_connections_per_unit=n_conns, std_dev=std_dev, columnwise=False),
+    W_rec_init=SpectralInit(SparseGaussianInit(n_connections_per_unit=n_conns, std_dev=std_dev, columnwise=False), rho=1.1),
     W_in_init=SparseGaussianInit(n_connections_per_unit=n_conns, std_dev=1, columnwise=True),
     W_out_init=SparseGaussianInit(n_connections_per_unit=n_conns, std_dev=std_dev, columnwise=False),
     b_rec_init=ConstantInit(0),
@@ -113,7 +114,7 @@ dir_rule = CombinedGradients(combining_rule)
 # learning step rule
 # lr_rule = WRecNormalizedStep(0.0001) #0.01
 # lr_rule = ConstantNormalizedStep(0.001)  # 0.01
-lr_rule = GradientClipping(lr_value=0.03, clip_thr=0.1)  # 0.01
+lr_rule = GradientClipping(lr_value=0.001, clip_thr=0.1)  # 0.01
 # lr_rule = ArmijoStep(alpha=0.5, beta=0.1, init_step=1, max_steps=50)
 obj_fnc = ObjectiveFunction(loss_fnc)
 

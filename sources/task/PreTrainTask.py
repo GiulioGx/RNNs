@@ -37,7 +37,7 @@ class PreTrainTask(Task): # XXX per ora funziona solo se hanno le stesse unità 
 
     @property
     def n_out(self):
-        return self.__task.n_out
+        return self.__task.n_in
 
     @property
     def infos(self):

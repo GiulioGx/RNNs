@@ -9,7 +9,7 @@
 		&\vec{z}^t \defeq \mat{W}^{out}\cdot\vec{a}^t + \vec{b}^{out}\\
 		&\vec{a}^t \defeq \mat{W}^{rec}\cdot\vec{h}^{t-1}+\mat{W}^{in}\cdot\vec{u}^t+\vec{b}^{rec}\\
 		&\vec{h}^t \defeq  \sigma(\vec{a}^t) \\
-		&\vec{h}^0 \defeq \overrightarrow{0},
+		&\vec{h}^0 \defeq \vec{0},
 \end{align}
 where $\sigma(\cdot):\mathbb{R}\rightarrow\mathbb{R}$ is a non linear function applied element-wise called \textbf{activation function}, $F(\cdot)$ is called \textbf{output function}. 
 \end{block}
@@ -149,7 +149,7 @@ The problem is \begin{equation}
 	\label{algo:sgd}
 \end{algorithm}	
 \end{frame}
-\begin{frame}{}
+\begin{frame}{Convergence of SDG}
 	\begin{itemize}
 		\item Nemirovski (2009)\cite{Nemirovski}: proof of convergence in the convex case
 		\item there are no theoretical guarantees in the non-convex case 
