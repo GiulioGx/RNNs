@@ -3,6 +3,7 @@ from combiningRule.CombiningRule import CombiningRule
 from descentDirectionRule.DescentDirectionRule import DescentDirectionRule
 from infos.InfoElement import PrintableInfoElement, SimpleDescription
 from infos.InfoList import InfoList
+import theano.tensor as TT
 
 __author__ = 'giulio'
 
@@ -26,11 +27,13 @@ class CombinedGradients(DescentDirectionRule):
         def __init__(self, rule, net_symbols, obj_symbols: ObjectiveFunction.Symbols):
             self.__combined_grad_symbols = obj_symbols.grad_combination(rule.combining_strategy)
             self.__direction = - self.__combined_grad_symbols.value
+            self.__grad_dot = self.__direction.cos(obj_symbols.grad)
 
+            self.__direction.to_zero_if(self.__grad_dot > -0.4) # XXX
             diff_norm = (-obj_symbols.grad - self.__direction).norm()
 
             self.__infos = self.__combined_grad_symbols.infos + [self.__direction.norm(),
-                                                                 self.__direction.cos(obj_symbols.grad),
+                                                                 self.__grad_dot,
                                                                  diff_norm]
 
         @property

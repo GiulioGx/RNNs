@@ -126,12 +126,11 @@ class Rnn(object):
     def spectral_radius(self):
         return numpy.max(abs(numpy.linalg.eigvals(self.symbols.current_params.W_rec.get_value())))
 
-    def reconfigure_network(self, W_out, output_fnc: OutputFunction):
+    def reconfigure_network(self, W_out, b_out, output_fnc: OutputFunction):
 
         W_rec = self.__symbols.W_rec_value
         W_in = self.__symbols.W_in_value
         b_rec = self.__symbols.b_rec_value
-        b_out = self.__symbols.b_out_value
 
         return Rnn(W_rec=W_rec, W_in=W_in, W_out=W_out, b_rec=b_rec, b_out=b_out, activation_fnc=self.__activation_fnc,
                    output_fnc=output_fnc)

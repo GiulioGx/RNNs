@@ -162,7 +162,7 @@ class SGDTrainer(object):
     @staticmethod
     def __build_infos(train_info, i, valid_loss, valid_error, best_error, rho, batch_time, eval_time):
 
-        it_info = PrintableInfoElement('iteration', ':07d', i)
+        it_info = PrintableInfoElement('iteration', ':7d', i)
 
         val_loss_info = PrintableInfoElement('loss', ':07.4f', valid_loss)
 

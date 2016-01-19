@@ -19,6 +19,7 @@ from lossFunctions.FullSquaredError import FullSquaredError
 from lossFunctions.HingeLoss import HingeLoss
 from lossFunctions.NullLoss import NullLoss
 from lossFunctions.SquaredError import SquaredError
+from model import RNN
 from model.RNNInitializer import RnnInitializer
 from output_fncs.Softmax import Softmax
 from output_fncs.Linear import Linear
@@ -131,15 +132,18 @@ trainer = SGDTrainer(train_rule, obj_fnc, output_dir=out_dir, max_it=10000,
 
 # dataset = Dataset.no_valid_dataset_from_task(size=1000, task=task)
 dataset = InfiniteDataset(task=pre_train_task, validation_size=10**4)
-net = trainer.train(dataset, net_initializer, seed)
+#net = trainer.train(dataset, net_initializer, seed)
+
+net = Rnn.load_model('/home/giulio/RNNs/models/add_task, min_length: 144_pretraining/current_model.npz')
 
 
 # training
 init = GaussianInit(mean=mean, std_dev=std_dev)
 W_out = init.init_matrix((1, 100), dtype='float32')  # FIXME
-net = net.reconfigure_network(W_out, output_fnc=Linear())
+b_out = init.init_matrix((1, 1), dtype='float32')  # FIXME
+net = net.reconfigure_network(W_out, b_out, output_fnc=Linear())
 
-obj_fnc = ObjectiveFunction(CrossEntropy())
+obj_fnc = ObjectiveFunction(SquaredError())
 out_dir = Configs.output_dir + str(orig_task)
 dataset = InfiniteDataset(task=orig_task, validation_size=10**4)
 trainer = SGDTrainer(train_rule, obj_fnc, output_dir=out_dir, max_it=10 ** 10,

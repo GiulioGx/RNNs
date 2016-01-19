@@ -41,7 +41,7 @@ class TrainingRule(SimpleInfoProducer):
         return self.__lr_rule
 
     @property
-    def avg_rule(self):
+    def update_rule(self):
         return self.__update_rule
 
     class TrainCompiled(object):
@@ -55,7 +55,7 @@ class TrainingRule(SimpleInfoProducer):
             self.__lr_symbols = rule.lr_rule.compile(net, obj_fnc, self.__dir_symbols)
             lr_infos = self.__lr_symbols.infos
 
-            self.__update_symbols = rule.avg_rule.compile(net, net_symbols, self.__lr_symbols, self.__dir_symbols)
+            self.__update_symbols = rule.update_rule.compile(net, net_symbols, self.__lr_symbols, self.__dir_symbols)
             update_info = self.__update_symbols.infos
             updates = self.__update_symbols.update_list
 

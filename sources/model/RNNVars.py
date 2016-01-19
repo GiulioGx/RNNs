@@ -90,6 +90,15 @@ class RnnVars(Variables):
         gb_rec, gb_out = TT.grad(loss, [self.__W_rec, self.__W_in, self.__W_out, self.__b_rec, self.__b_out])
         return RnnVars(self.__net, gW_rec, gW_in, gW_out, gb_rec, gb_out)
 
+    # XXX
+    def to_zero_if(self, condition):
+        self.__W_rec = TT.switch(condition, TT.zeros_like(self.__W_rec), self.__W_rec)
+        self.__W_in = TT.switch(condition, TT.zeros_like(self.__W_in), self.__W_in)
+        self.__W_out = TT.switch(condition, TT.zeros_like(self.__W_out), self.__W_out)
+        self.__b_rec = TT.switch(condition, TT.zeros_like(self.__b_rec), self.__b_rec)
+        self.__b_out= TT.switch(condition, TT.zeros_like(self.__b_out), self.__b_out)
+
+
     def net_output(self, u):
         return self.__net.net_output(self, u)
 
