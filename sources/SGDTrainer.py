@@ -90,20 +90,20 @@ class SGDTrainer(object):
         incremental_hidden = True
         n_hidden_max = 100
         n_hidden_incr = 5
-        n_hidden_incr_freq = 500
+        n_hidden_incr_freq = 1000
 
         while i < self.__max_it and best_error > self.__stop_error_thresh / 100 and (not error_occured):
 
-            if incremental_hidden and (i+1) % n_hidden_incr_freq == 0 and net.n_hidden < n_hidden_max:
-                new_hidden_number = net.n_hidden+n_hidden_incr
+            if incremental_hidden and (i + 1) % n_hidden_incr_freq == 0 and net.n_hidden < n_hidden_max:
+                new_hidden_number = net.n_hidden + n_hidden_incr
                 net.extend_hidden_units(n_hidden=new_hidden_number)
                 logging.info('extending the number of hidden units to {}'.format(new_hidden_number))
 
             batch = dataset.get_train_batch(self.__batch_size)
-            #batch = policer.get_train_batch()
+            # batch = policer.get_train_batch()
             train_info = train_step.step(batch.inputs, batch.outputs)
 
-            if i % self.__check_freq == 0: # FIXME 1st it
+            if i % self.__check_freq == 0:  # FIXME 1st it
                 eval_start_time = time.time()
                 valid_error, valid_loss = self.__loss_and_error(validation_set.inputs, validation_set.outputs)
                 valid_error = valid_error.item()
@@ -118,7 +118,7 @@ class SGDTrainer(object):
 
                 if valid_error < best_error:
                     best_error = valid_error
-                    net.save_model(self.__output_dir+'/best_model')
+                    net.save_model(self.__output_dir + '/best_model')
 
                 batch_end_time = time.time()
                 total_elapsed_time = batch_end_time - start_time
@@ -130,8 +130,8 @@ class SGDTrainer(object):
                                                 batch_time, eval_time)
                 logging.info(info)
                 stats.update(info, i, total_elapsed_time)
-                net.save_model(self.__output_dir+'/current_model')
-                stats.save(self.__output_dir+'/stats')
+                net.save_model(self.__output_dir + '/current_model')
+                stats.save(self.__output_dir + '/stats')
 
                 batch_start_time = time.time()
                 if error_occured:
@@ -144,7 +144,7 @@ class SGDTrainer(object):
             logging.warning('Maximum number of iterations reached, stopping training...')
         elif best_error <= self.__stop_error_thresh / 100:
             logging.info('Training succeded, validation error below the given threshold({:.2%})'.format(
-                self.__stop_error_thresh / 100))
+                    self.__stop_error_thresh / 100))
         logging.info('Elapsed time: {:2.2f} min'.format((end_time - start_time) / 60))
         return net
 
@@ -152,7 +152,7 @@ class SGDTrainer(object):
         os.makedirs(self.__output_dir, exist_ok=True)
         logging.basicConfig(filename=self.__log_filename, level=logging.INFO, format='%(levelname)s:%(message)s')
 
-    def train(self, dataset: Dataset, net_builder:RNNBuilder, seed:int=13):
+    def train(self, dataset: Dataset, net_builder: RNNBuilder, seed: int = 13):
 
         if os.path.exists(self.__log_filename):
             os.remove(self.__log_filename)

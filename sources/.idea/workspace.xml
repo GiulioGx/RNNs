@@ -36,11 +36,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="theanoUtils.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="theanoUtils.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/theanoUtils.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.25477707">
-              <caret line="60" column="23" selection-start-line="60" selection-start-column="23" selection-end-line="60" selection-end-column="23" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="81" column="45" selection-start-line="81" selection-start-column="45" selection-end-line="81" selection-end-column="45" />
               <folding />
             </state>
           </provider>
@@ -106,17 +106,17 @@
         <entry file="file://$PROJECT_DIR$/SGDTrainer.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="99" column="100" selection-start-line="99" selection-start-column="100" selection-end-line="99" selection-end-column="100" />
+              <caret line="86" column="24" selection-start-line="86" selection-start-column="24" selection-end-line="86" selection-end-column="24" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="runAddition2.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="runAddition2.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/runAddition2.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="81" column="25" selection-start-line="0" selection-start-column="0" selection-end-line="138" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.62738854">
+              <caret line="116" column="44" selection-start-line="116" selection-start-column="44" selection-end-line="116" selection-end-column="44" />
               <folding />
             </state>
           </provider>
@@ -188,13 +188,13 @@
         <option value="$PROJECT_DIR$/model/__init__.py" />
         <option value="$PROJECT_DIR$/model/RNNBuilder.py" />
         <option value="$PROJECT_DIR$/model/RNNGradient.py" />
-        <option value="$PROJECT_DIR$/runAddition2.py" />
-        <option value="$PROJECT_DIR$/SGDTrainer.py" />
         <option value="$PROJECT_DIR$/model/RNN.py" />
         <option value="$PROJECT_DIR$/descentDirectionRule/CombinedGradients.py" />
         <option value="$PROJECT_DIR$/updateRule/FixedAveraging.py" />
         <option value="$PROJECT_DIR$/runAddition1.py" />
         <option value="$PROJECT_DIR$/theanoUtils.py" />
+        <option value="$PROJECT_DIR$/SGDTrainer.py" />
+        <option value="$PROJECT_DIR$/runAddition2.py" />
       </list>
     </option>
   </component>
@@ -425,7 +425,7 @@
       <recent name="$PROJECT_DIR$/penalty" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.runAddition2">
+  <component name="RunManager" selected="Python.plot_norms_interactive">
     <configuration default="false" name="plot_norms_interactive" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -714,8 +714,8 @@
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Python.runAddition2" />
-        <item index="1" class="java.lang.String" itemvalue="Python.plot_norms_interactive" />
+        <item index="0" class="java.lang.String" itemvalue="Python.plot_norms_interactive" />
+        <item index="1" class="java.lang.String" itemvalue="Python.runAddition2" />
         <item index="2" class="java.lang.String" itemvalue="Python.runPreTrain" />
         <item index="3" class="java.lang.String" itemvalue="Python.runAddition1" />
         <item index="4" class="java.lang.String" itemvalue="Python.SVDInit" />
@@ -1066,6 +1066,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="26" column="25" selection-start-line="26" selection-start-column="25" selection-end-line="26" selection-end-column="25" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1117,7 +1118,7 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="117" column="20" selection-start-line="117" selection-start-column="20" selection-end-line="117" selection-end-column="20" />
           <folding>
-            <element signature="e#0#26#0" expanded="true" />
+            <element signature="e#0#26#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1142,14 +1143,6 @@
           <folding>
             <element signature="e#0#10#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/SGDTrainer.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="99" column="100" selection-start-line="99" selection-start-column="100" selection-end-line="99" selection-end-column="100" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1189,10 +1182,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/runAddition2.py">
+    <entry file="file://$PROJECT_DIR$/theanoUtils.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="81" column="25" selection-start-line="0" selection-start-column="0" selection-end-line="138" selection-end-column="0" />
+          <caret line="81" column="45" selection-start-line="81" selection-start-column="45" selection-end-line="81" selection-end-column="45" />
           <folding />
         </state>
       </provider>
@@ -1205,10 +1198,18 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/theanoUtils.py">
+    <entry file="file://$PROJECT_DIR$/SGDTrainer.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.25477707">
-          <caret line="60" column="23" selection-start-line="60" selection-start-column="23" selection-end-line="60" selection-end-column="23" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="86" column="24" selection-start-line="86" selection-start-column="24" selection-end-line="86" selection-end-column="24" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/runAddition2.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.62738854">
+          <caret line="116" column="44" selection-start-line="116" selection-start-column="44" selection-end-line="116" selection-end-column="44" />
           <folding />
         </state>
       </provider>
