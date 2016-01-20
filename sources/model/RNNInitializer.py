@@ -1,45 +1,32 @@
-from ActivationFunction import ActivationFunction, Tanh
 from Configs import Configs
 from infos.InfoGroup import InfoGroup
 from infos.InfoList import InfoList
 from infos.SimpleInfoProducer import SimpleInfoProducer
 from initialization.GaussianInit import GaussianInit
 from initialization.MatrixInit import MatrixInit
-from model.RNN import Rnn
-from output_fncs import OutputFunction
-from output_fncs.Linear import Linear
 
 
-class RnnInitializer(SimpleInfoProducer):
+class RNNInitializer(SimpleInfoProducer):
     def __init__(self, W_rec_init: MatrixInit = GaussianInit(), W_in_init: MatrixInit = GaussianInit(),
                  W_out_init: MatrixInit = GaussianInit(), b_rec_init: MatrixInit = GaussianInit(),
-                 b_out_init: MatrixInit = GaussianInit(), n_hidden: int = 100,
-                 activation_fnc: ActivationFunction = Tanh(), output_fnc: OutputFunction = Linear):
+                 b_out_init: MatrixInit = GaussianInit()):
         self.__W_rec_init = W_rec_init
         self.__W_in_init = W_in_init
         self.__W_out_init = W_out_init
         self.__b_rec_init = b_rec_init
         self.__b_out_init = b_out_init
-        self.__n_hidden = n_hidden
-        self.__activation_fnc = activation_fnc
-        self.__output_fnc = output_fnc
 
-    def init_net(self, n_in: int, n_out: int):
+    def generate_variables(self, n_in: int, n_out: int, n_hidden: int):
         # init network matrices
-        W_rec = self.__W_rec_init.init_matrix((self.__n_hidden, self.__n_hidden), Configs.floatType)
-        W_in = self.__W_in_init.init_matrix((self.__n_hidden, n_in), Configs.floatType)
-        W_out = self.__W_out_init.init_matrix((n_out, self.__n_hidden), Configs.floatType)
+        W_rec = self.__W_rec_init.init_matrix((n_hidden, n_hidden), Configs.floatType)
+        W_in = self.__W_in_init.init_matrix((n_hidden, n_in), Configs.floatType)
+        W_out = self.__W_out_init.init_matrix((n_out, n_hidden), Configs.floatType)
 
         # init biases
-        b_rec = self.__b_rec_init.init_matrix((self.__n_hidden, 1), Configs.floatType)
+        b_rec = self.__b_rec_init.init_matrix((n_hidden, 1), Configs.floatType)
         b_out = self.__b_out_init.init_matrix((n_out, 1), Configs.floatType)
-        rnn = Rnn(W_rec=W_rec, W_in=W_in, W_out=W_out, b_rec=b_rec, b_out=b_out, activation_fnc=self.__activation_fnc,
-                  output_fnc=self.__output_fnc)
-        return rnn
 
-    @property
-    def activation_fnc(self):
-        return self.__activation_fnc
+        return W_rec, W_in, W_out, b_rec, b_out
 
     @property
     def infos(self):

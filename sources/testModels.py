@@ -17,7 +17,7 @@ from lossFunctions.CrossEntropy import CrossEntropy
 from lossFunctions.HingeLoss import HingeLoss
 from lossFunctions.NullLoss import NullLoss
 from lossFunctions.SquaredError import SquaredError
-from model.RNNInitializer import RnnInitializer
+from model.RNNBuilder import RNNBuilder
 from output_fncs.Softmax import Softmax
 from output_fncs.Linear import Linear
 from task.Dataset import Dataset, InfiniteDataset
@@ -40,7 +40,7 @@ from initialization.ZeroInit import ZeroInit
 from learningRule.ArmijoStep import ArmijoStep
 from learningRule.ConstantNormalizedStep import ConstantNormalizedStep
 from learningRule.ConstantStep import ConstantStep
-from model.RNN import Rnn
+from model.RNN import RNN
 from penalty.ConstantPenalty import ConstantPenalty
 from penalty.MeanPenalty import MeanPenalty
 from penalty.NullPenalty import NullPenalty
@@ -59,7 +59,7 @@ task = AdditionTask(144, seed)
 out_dir = '/home/giulio/snoopy2models/' + str(task)+'/model.npz'
 task = AdditionTask(144, seed)
 
-net = Rnn.load_model(out_dir)
+net = RNN.load_model(out_dir)
 
 batch = task.get_batch(5)
 

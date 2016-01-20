@@ -18,7 +18,7 @@ from lossFunctions.CrossEntropy import CrossEntropy
 from lossFunctions.HingeLoss import HingeLoss
 from lossFunctions.NullLoss import NullLoss
 from lossFunctions.SquaredError import SquaredError
-from model.RNNInitializer import RnnInitializer
+from model.RNNBuilder import RNNBuilder
 from output_fncs.Softmax import Softmax
 from output_fncs.Linear import Linear
 from task.Dataset import Dataset, InfiniteDataset
@@ -41,7 +41,7 @@ from initialization.ZeroInit import ZeroInit
 from learningRule.ArmijoStep import ArmijoStep
 from learningRule.ConstantNormalizedStep import ConstantNormalizedStep
 from learningRule.ConstantStep import ConstantStep
-from model.RNN import Rnn
+from model.RNN import RNN
 from penalty.ConstantPenalty import ConstantPenalty
 from penalty.MeanPenalty import MeanPenalty
 from penalty.NullPenalty import NullPenalty
@@ -81,7 +81,7 @@ bias_value = 0
 n_conns = 15
 std_dev = 0.1
 #std_dev = 0.14
-net_initializer = RnnInitializer(
+net_initializer = RNNBuilder(
     W_rec_init=SpectralInit(SparseGaussianInit(n_connections_per_unit=n_conns, std_dev=std_dev, columnwise=False), rho=1.1),
     W_in_init=SparseGaussianInit(n_connections_per_unit=n_conns, std_dev=1, columnwise=True),
     W_out_init=SparseGaussianInit(n_connections_per_unit=n_conns, std_dev=std_dev, columnwise=False),

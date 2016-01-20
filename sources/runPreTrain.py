@@ -20,7 +20,7 @@ from lossFunctions.HingeLoss import HingeLoss
 from lossFunctions.NullLoss import NullLoss
 from lossFunctions.SquaredError import SquaredError
 from model import RNN
-from model.RNNInitializer import RnnInitializer
+from model.RNNBuilder import RNNBuilder
 from output_fncs.Softmax import Softmax
 from output_fncs.Linear import Linear
 from task.Dataset import Dataset, InfiniteDataset
@@ -44,7 +44,7 @@ from initialization.ZeroInit import ZeroInit
 from learningRule.ArmijoStep import ArmijoStep
 from learningRule.ConstantNormalizedStep import ConstantNormalizedStep
 from learningRule.ConstantStep import ConstantStep
-from model.RNN import Rnn
+from model.RNN import RNN
 from penalty.ConstantPenalty import ConstantPenalty
 from penalty.MeanPenalty import MeanPenalty
 from penalty.NullPenalty import NullPenalty
@@ -69,9 +69,9 @@ print(separator)
 # network setup
 std_dev = 0.14  # 0.14 Tanh # 0.21 Relu
 mean = 0
-net_initializer = RnnInitializer(W_rec_init=SpectralInit(GaussianInit(mean=mean, std_dev=std_dev), rho=1.1), W_in_init=GaussianInit(mean=mean, std_dev = 0.1),
-                                 W_out_init=GaussianInit(mean=mean, std_dev=0.1), b_rec_init=ConstantInit(0),
-                                 b_out_init=ConstantInit(0), activation_fnc=Tanh(), output_fnc=Linear(), n_hidden=100)
+net_initializer = RNNBuilder(W_rec_init=SpectralInit(GaussianInit(mean=mean, std_dev=std_dev), rho=1.1), W_in_init=GaussianInit(mean=mean, std_dev = 0.1),
+                             W_out_init=GaussianInit(mean=mean, std_dev=0.1), b_rec_init=ConstantInit(0),
+                             b_out_init=ConstantInit(0), activation_fnc=Tanh(), output_fnc=Linear(), n_hidden=100)
 
 # setup
 seed = 13
@@ -134,7 +134,7 @@ trainer = SGDTrainer(train_rule, obj_fnc, output_dir=out_dir, max_it=10000,
 dataset = InfiniteDataset(task=pre_train_task, validation_size=10**4)
 #net = trainer.train(dataset, net_initializer, seed)
 
-net = Rnn.load_model('/home/giulio/RNNs/models/add_task, min_length: 144_pretraining/current_model.npz')
+net = RNN.load_model('/home/giulio/RNNs/models/add_task, min_length: 144_pretraining/current_model.npz')
 
 
 # training

@@ -29,7 +29,7 @@ class CombinedGradients(DescentDirectionRule):
             self.__direction = - self.__combined_grad_symbols.value
             self.__grad_dot = self.__direction.cos(obj_symbols.grad)
 
-            self.__direction.to_zero_if(self.__grad_dot > -0.15) # XXX
+            #self.__direction.to_zero_if(self.__grad_dot > -0.15) # XXX
             diff_norm = (-obj_symbols.grad - self.__direction).norm()
 
             self.__infos = self.__combined_grad_symbols.infos + [self.__direction.norm(),

@@ -46,6 +46,8 @@ class FixedAveraging(UpdateRule):
             condition = self.__counter + 1 >= self.__strategy.t - 1
             new_counter = TT.switch(condition, 0, self.__counter + 1)
 
+            # different_shape = TT.neq(self.__acc.shape[0], vec.shape[0]) # TODO supportare cambio dimensione
+
             mean_point = (self.__acc + vec) / TT.cast(self.__strategy.t, dtype=Configs.floatType)
             new_acc = TT.switch(condition, mean_point, self.__acc + vec)
             # new_params_vec = TT.switch(condition, mean_point, vec)

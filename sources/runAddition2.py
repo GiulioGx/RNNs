@@ -19,7 +19,8 @@ from lossFunctions.CrossEntropy import CrossEntropy
 from lossFunctions.HingeLoss import HingeLoss
 from lossFunctions.NullLoss import NullLoss
 from lossFunctions.SquaredError import SquaredError
-from model.RNNInitializer import RnnInitializer
+from model.RNNBuilder import RNNBuilder
+from model.RNNInitializer import RNNInitializer
 from output_fncs.Softmax import Softmax
 from output_fncs.Linear import Linear
 from task.Dataset import Dataset, InfiniteDataset
@@ -42,7 +43,7 @@ from initialization.ZeroInit import ZeroInit
 from learningRule.ArmijoStep import ArmijoStep
 from learningRule.ConstantNormalizedStep import ConstantNormalizedStep
 from learningRule.ConstantStep import ConstantStep
-from model.RNN import Rnn
+from model.RNN import RNN
 from penalty.ConstantPenalty import ConstantPenalty
 from penalty.MeanPenalty import MeanPenalty
 from penalty.NullPenalty import NullPenalty
@@ -66,13 +67,14 @@ print(separator)
 
 seed = 14
 
-
 # network setup
-std_dev = 0.2  # 0.14 Tanh # 0.21 Relu
+std_dev = 0.5  # 0.14 Tanh # 0.21 Relu
 mean = 0
-net_initializer = RnnInitializer(W_rec_init=SpectralInit(GaussianInit(mean=mean, std_dev=std_dev, seed=seed), rho=1.3), W_in_init=GaussianInit(mean=mean, std_dev = 0.1, seed=seed),
+rnn_initializer = RNNInitializer(W_rec_init=SpectralInit(GaussianInit(mean=mean, std_dev=std_dev, seed=seed), rho=1.2),
+                                 W_in_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed),
                                  W_out_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed), b_rec_init=ConstantInit(0),
-                                 b_out_init=ConstantInit(0), activation_fnc=Tanh(), output_fnc=Linear(), n_hidden=10)
+                                 b_out_init=ConstantInit(0))
+net_builder = RNNBuilder(initializer=rnn_initializer, activation_fnc=Tanh(), output_fnc=Linear(), n_hidden=5)
 
 # setup
 task = AdditionTask(144, seed)
@@ -90,7 +92,7 @@ loss_fnc = SquaredError()
 
 # penalty strategy
 # penalty = MeanPenalty()
-#penalty = ConstantPenalty(c=5)
+# penalty = ConstantPenalty(c=5)
 # penalty = MeanPenalty()
 
 # direction strategy
@@ -114,13 +116,13 @@ dir_rule = CombinedGradients(combining_rule)
 # learning step rule
 # lr_rule = WRecNormalizedStep(0.0001) #0.01
 # lr_rule = ConstantNormalizedStep(0.001)  # 0.01
-lr_rule = GradientClipping(lr_value=0.01, clip_thr=0.1)  # 0.01
+lr_rule = GradientClipping(lr_value=0.03, clip_thr=0.1)  # 0.01
 # lr_rule = ArmijoStep(alpha=0.5, beta=0.1, init_step=1, max_steps=50)
 obj_fnc = ObjectiveFunction(loss_fnc)
 
-update_rule = FixedAveraging(t=10)
-#update_rule = SimpleUdpate()
-#update_rule = Momentum(gamma=0.1)
+#update_rule = FixedAveraging(t=10)
+update_rule = SimpleUdpate()
+# update_rule = Momentum(gamma=0.1)
 
 train_rule = TrainingRule(dir_rule, lr_rule, update_rule)
 
@@ -130,7 +132,7 @@ trainer = SGDTrainer(train_rule, obj_fnc, output_dir=out_dir, max_it=10 ** 10,
 # dataset = Dataset.no_valid_dataset_from_task(size=1000, task=task)
 dataset = InfiniteDataset(task=task, validation_size=10 ** 4)
 
-net = trainer.train(dataset, net_initializer, seed)
+net = trainer.train(dataset, net_builder, seed)
 
 # net = RNN.load_model(out_dir+'/current_model.npz')
 # net = trainer.resume_training(dataset, net)

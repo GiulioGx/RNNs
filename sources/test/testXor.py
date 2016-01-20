@@ -3,7 +3,7 @@ from initialization.GaussianInit import GaussianInit
 from initialization.ZeroInit import ZeroInit
 from lossFunctions.CrossEntropy import CrossEntropy
 from lossFunctions.HingeLoss import HingeLoss
-from model import Rnn
+from model import RNN
 from task.XorTask import XorTask
 import theano as T
 import numpy
@@ -15,7 +15,7 @@ print(str(batch))
 
 n_hidden = 50
 activation_fnc = Tanh()
-output_fnc = Rnn.linear_fnc
+output_fnc = RNN.linear_fnc
 loss_fnc = HingeLoss()
 # init strategy
 std_dev = 0.14  # 0.14 Tanh # 0.21 Relu
@@ -24,7 +24,7 @@ init_strategies = {'W_rec': GaussianInit(0, std_dev), 'W_in': GaussianInit(0, st
                    'b_rec': ZeroInit(), 'b_out': ZeroInit()}
 
 
-net = Rnn(activation_fnc, output_fnc, n_hidden, task.n_in, task.n_out, init_strategies, seed)
+net = RNN(activation_fnc, output_fnc, n_hidden, task.n_in, task.n_out, init_strategies, seed)
 
 
 #  loss and error theano fnc

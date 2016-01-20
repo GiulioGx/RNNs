@@ -13,8 +13,8 @@ from TrainingRule import TrainingRule
 from infos.InfoElement import PrintableInfoElement
 from infos.InfoGroup import InfoGroup
 from infos.InfoList import InfoList
-from model.RNN import Rnn
-from model.RNNInitializer import RnnInitializer
+from model.RNN import RNN
+from model.RNNBuilder import RNNBuilder
 from output_fncs.OutputFunction import OutputFunction
 from task.BatchPolicer import RepetitaPolicer
 from task.Dataset import Dataset
@@ -85,13 +85,25 @@ class SGDTrainer(object):
         error_occured = False
         i = 0
         best_error = 100
+
+        # TODO mettere a pulito
+        incremental_hidden = True
+        n_hidden_max = 100
+        n_hidden_incr = 5
+        n_hidden_incr_freq = 500
+
         while i < self.__max_it and best_error > self.__stop_error_thresh / 100 and (not error_occured):
+
+            if incremental_hidden and (i+1) % n_hidden_incr_freq == 0 and net.n_hidden < n_hidden_max:
+                new_hidden_number = net.n_hidden+n_hidden_incr
+                net.extend_hidden_units(n_hidden=new_hidden_number)
+                logging.info('extending the number of hidden units to {}'.format(new_hidden_number))
 
             batch = dataset.get_train_batch(self.__batch_size)
             #batch = policer.get_train_batch()
             train_info = train_step.step(batch.inputs, batch.outputs)
 
-            if i % self.__check_freq == 0:
+            if i % self.__check_freq == 0: # FIXME 1st it
                 eval_start_time = time.time()
                 valid_error, valid_loss = self.__loss_and_error(validation_set.inputs, validation_set.outputs)
                 valid_error = valid_error.item()
@@ -140,7 +152,7 @@ class SGDTrainer(object):
         os.makedirs(self.__output_dir, exist_ok=True)
         logging.basicConfig(filename=self.__log_filename, level=logging.INFO, format='%(levelname)s:%(message)s')
 
-    def train(self, dataset: Dataset, net_initializer:RnnInitializer, seed:int=13):
+    def train(self, dataset: Dataset, net_builder:RNNBuilder, seed:int=13):
 
         if os.path.exists(self.__log_filename):
             os.remove(self.__log_filename)
@@ -148,9 +160,9 @@ class SGDTrainer(object):
 
         # configure network
         logging.info('Initializing the net and compiling theano functions for the net...')
-        net = net_initializer.init_net(n_in=dataset.n_in, n_out=dataset.n_out)
+        net = net_builder.init_net(n_in=dataset.n_in, n_out=dataset.n_out)
         logging.info('...Done')
-        logging.info(str(net_initializer.infos))
+        logging.info(str(net_builder.infos))
 
         return self._train(dataset, net)
 

@@ -3,26 +3,27 @@ import pickle
 import numpy
 import theano as T
 import theano.tensor as TT
-from ActivationFunction import Tanh, ActivationFunction
+from ActivationFunction import ActivationFunction
 from Configs import Configs
-from Statistics import Statistics
-from infos.Info import Info
 from infos.InfoElement import PrintableInfoElement
 from infos.InfoGroup import InfoGroup
 from infos.InfoList import InfoList
+from model.RNNInitializer import RNNInitializer
 from model.RNNVars import RnnVars
 from output_fncs import OutputFunction
 
 __author__ = 'giulio'
 
 
-class Rnn(object):
+class RNN(object):
     def __init__(self, W_rec, W_in, W_out, b_rec, b_out, activation_fnc: ActivationFunction,
-                 output_fnc: OutputFunction):
+                 output_fnc: OutputFunction, variables_initializer: RNNInitializer):
         assert (W_rec.shape[0] == W_rec.shape[1])
         assert (W_in.shape[0] == W_rec.shape[1])
         assert (b_rec.shape[0] == W_rec.shape[0])
         assert (b_out.shape[0] == W_out.shape[0])
+
+        self.__initializer = variables_initializer
 
         # topology
         self.__n_hidden = W_rec.shape[0]
@@ -35,11 +36,8 @@ class Rnn(object):
         # output function
         self.__output_fnc = output_fnc
 
-        # experimental
-        self.experimental = Rnn.Experimental(self)
-
         # build symbols
-        self.__symbols = Rnn.Symbols(self, W_rec, W_in, W_out, b_rec, b_out)
+        self.__symbols = RNN.Symbols(self, W_rec, W_in, W_out, b_rec, b_out)
 
         # define visible functions
         self.net_output_shared = T.function([self.__symbols.u], self.__symbols.y_shared, name='net_output_shared_fun')
@@ -66,10 +64,13 @@ class Rnn(object):
         return self.__symbols
 
     def from_tensor(self, v):
-        n1 = self.__n_hidden ** 2
-        n2 = n1 + self.__n_hidden * self.__n_in
-        n3 = n2 + self.__n_hidden * self.__n_out
-        n4 = n3 + self.__n_hidden
+
+        n_hidden = self.__symbols.n_hidden
+
+        n1 = n_hidden ** 2
+        n2 = n1 + n_hidden * self.__n_in
+        n3 = n2 + n_hidden * self.__n_out
+        n4 = n3 + n_hidden
         n5 = n4 + self.__n_out
 
         W_rec_v = v[0:n1]
@@ -78,10 +79,10 @@ class Rnn(object):
         b_rec_v = v[n3:n4]
         b_out_v = v[n4:n5]
 
-        W_rec = TT.unbroadcast(W_rec_v.reshape((self.__n_hidden, self.__n_hidden), ndim=2), 0, 1)
-        W_in = TT.unbroadcast(W_in_v.reshape((self.__n_hidden, self.__n_in), ndim=2), 0, 1)
-        W_out = TT.unbroadcast(W_out_v.reshape((self.__n_out, self.__n_hidden), ndim=2), 0, 1)
-        b_rec = TT.addbroadcast(TT.unbroadcast(b_rec_v.reshape((self.__n_hidden, 1)), 0), 1)
+        W_rec = TT.unbroadcast(W_rec_v.reshape((n_hidden, n_hidden), ndim=2), 0, 1)
+        W_in = TT.unbroadcast(W_in_v.reshape((n_hidden, self.__n_in), ndim=2), 0, 1)
+        W_out = TT.unbroadcast(W_out_v.reshape((self.__n_out, n_hidden), ndim=2), 0, 1)
+        b_rec = TT.addbroadcast(TT.unbroadcast(b_rec_v.reshape((n_hidden, 1)), 0), 1)
         b_out = TT.addbroadcast(TT.unbroadcast(b_out_v.reshape((self.__n_out, 1)), 0), 1)
 
         return RnnVars(self, W_rec, W_in, W_out, b_rec, b_out)
@@ -89,12 +90,10 @@ class Rnn(object):
     def net_ouput_numpy(self, u):  # TODO names Theano T
         return self.__symbols.net_output_numpy(u)
 
-    def net_output(self, params: RnnVars, u):
-        return self.__net_output(params.W_rec, params.W_in, params.W_out, params.b_rec, params.b_out, u)
+    def net_output(self, params: RnnVars, u, h_m1):
+        return self.__net_output(params.W_rec, params.W_in, params.W_out, params.b_rec, params.b_out, u, h_m1)
 
-    def __net_output(self, W_rec, W_in, W_out, b_rec, b_out, u):
-        n_sequences = u.shape[2]
-        h_m1 = TT.alloc(numpy.array(0., dtype=Configs.floatType), self.__n_hidden, n_sequences)
+    def __net_output(self, W_rec, W_in, W_out, b_rec, b_out, u, h_m1):
 
         values, _ = T.scan(self.net_output_t, sequences=u,
                            outputs_info=[h_m1, None, None],
@@ -115,10 +114,6 @@ class Rnn(object):
         deriv_a = self.__activation_fnc.grad_f(a_t)
         return self.__activation_fnc.f(a_t), deriv_a
 
-    # single output mode
-    # def __y(self, h):
-    #     return self.__output_fnc(TT.dot(self.__W_out, h[-1]) + self.__b_out)
-
     def y_t(self, h_t, W_out, b_out):
         return self.__output_fnc.value(TT.dot(W_out, h_t) + b_out)
 
@@ -132,7 +127,7 @@ class Rnn(object):
         W_in = self.__symbols.W_in_value
         b_rec = self.__symbols.b_rec_value
 
-        return Rnn(W_rec=W_rec, W_in=W_in, W_out=W_out, b_rec=b_rec, b_out=b_out, activation_fnc=self.__activation_fnc,
+        return RNN(W_rec=W_rec, W_in=W_in, W_out=W_out, b_rec=b_rec, b_out=b_out, activation_fnc=self.__activation_fnc,
                    output_fnc=output_fnc)
 
     @staticmethod
@@ -153,7 +148,7 @@ class Rnn(object):
         if output_fnc is None:
             output_fnc = output_fnc_pkl
 
-        return Rnn(W_rec=W_rec, W_in=W_in, W_out=W_out, b_rec=b_rec, b_out=b_out, activation_fnc=activation_fnc,
+        return RNN(W_rec=W_rec, W_in=W_in, W_out=W_out, b_rec=b_rec, b_out=b_out, activation_fnc=activation_fnc,
                    output_fnc=output_fnc)
 
     @property
@@ -185,47 +180,13 @@ class Rnn(object):
         pickfile = open(filename + '.pkl', "wb")
         pickle.dump([self.__activation_fnc, self.__output_fnc], pickfile)
 
-    class Experimental:  # FIXME XXX
-        def __init__(self, net):
-            self.__net = net
-
-        def net_output(self, params: RnnVars, u):
-            return self.__net_output(params.W_rec, params.W_in, params.W_out, params.b_rec, params.b_out, u)
-
-        def __net_output(self, W_rec, W_in, W_out, b_rec, b_out, u):
-            W_rec_fixes = []
-            W_in_fixes = []
-            W_out_fixes = []
-            b_rec_fixes = []
-            b_out_fixes = []
-
-            for i in range(200):  # FIXME max_lenght
-                W_rec_fixes.append(W_rec.clone())
-                W_in_fixes.append(W_in.clone())
-                W_out_fixes.append(W_out.clone())
-                b_rec_fixes.append(b_rec.clone())
-                b_out_fixes.append(b_out.clone())
-
-            n_sequences = u.shape[2]
-            h_m1 = TT.alloc(numpy.array(0., dtype=Configs.floatType), self.__net.n_hidden, n_sequences)
-
-            values, _ = T.scan(self.__net_output_t,
-                               sequences=[u, TT.as_tensor_variable(W_rec_fixes), TT.as_tensor_variable(W_in_fixes),
-                                          TT.as_tensor_variable(W_out_fixes), TT.as_tensor_variable(b_rec_fixes),
-                                          TT.as_tensor_variable(b_out_fixes)],
-                               outputs_info=[h_m1, None, None],
-                               non_sequences=[],
-                               name='separate_matrices_net_output_scan',
-                               n_steps=u.shape[0])
-            h = values[0]
-            y = values[1]
-            deriv_a = values[2]
-            return y, deriv_a, h, W_rec_fixes, W_in_fixes, W_out_fixes, b_rec_fixes, b_out_fixes
-
-        def __net_output_t(self, u_t, W_rec_fixes, W_in_fixes, W_out_fixes, b_rec_fixes, b_out_fixes, h_tm1):
-            h_t, deriv_a_t = self.__net.h_t(u_t, h_tm1, W_rec_fixes, W_in_fixes, b_rec_fixes)
-            y_t = self.__net.y_t(h_t, W_out_fixes, b_out_fixes)
-            return h_t, y_t, deriv_a_t
+    def extend_hidden_units(self, n_hidden: int):
+        if n_hidden < self.n_hidden:
+            raise ValueError(
+                    'new number of hidden units {()} must be bigger than the previous one {()} '.format(n_hidden,
+                                                                                                        self.n_hidden))
+        self.symbols.extend_hidden_units(n_hidden, self.__initializer)
+        self.__n_hidden = n_hidden
 
     class Symbols:
         def __init__(self, net, W_rec, W_in, W_out, b_rec, b_out):
@@ -252,9 +213,13 @@ class Rnn(object):
             self.u = TT.tensor3(name='u')  # input tensor
             self.t = TT.tensor3(name='t')  # target tensor
 
+            n_sequences = self.u.shape[2]  # initial hidden values
+            self.__h_m1 = TT.alloc(numpy.array(0., dtype=Configs.floatType), self.n_hidden, n_sequences)
+            #self.__h_m1 = TT.addbroadcast(TT.alloc(numpy.array(0., dtype=Configs.floatType), n_sequences), 0)
+
             # output of the net
-            self.y, self.deriv_a, h = net.net_output(self.__current_params, self.u)
-            # self.y, self.deriv_a, *_ = net.experimental.net_output(self.__current_params, self.u)
+            self.y, self.deriv_a, h = net.net_output(self.__current_params, self.u, self.__h_m1)
+            #self.y, self.deriv_a, h = net.experimental.net_output(self.__current_params, self.u)
             self.y_shared, self.deriv_a_shared, self.h_shared = T.clone([self.y, self.deriv_a, h],
                                                                         replace={W_rec: self.__W_rec, W_in: self.__W_in,
                                                                                  W_out: self.__W_out,
@@ -264,9 +229,68 @@ class Rnn(object):
             # compile numpy output function
             self.net_output_numpy = T.function([self.u], [self.y_shared, self.h_shared])
 
+            # compile extend step
+            self.__extend_step = T.function([W_rec, W_in, W_out, b_rec, b_out], [],
+                                            allow_input_downcast='true',
+                                            on_unused_input='warn',
+                                            updates=[
+                                                (self.__W_rec, W_rec),
+                                                (self.__W_in, W_in),
+                                                (self.__W_out, W_out),
+                                                (self.__b_rec, TT.addbroadcast(b_rec, 1)),
+                                                (self.__b_out, TT.addbroadcast(b_out, 1))],
+                                            name='extend_step')
+
+        def net_output(self, params: RnnVars, u):
+            return self.__net_output(params.W_rec, params.W_in, params.W_out, params.b_rec, params.b_out, u)
+
+        def __net_output(self, W_rec, W_in, W_out, b_rec, b_out, u):
+            W_rec_fixes = []
+            W_in_fixes = []
+            W_out_fixes = []
+            b_rec_fixes = []
+            b_out_fixes = []
+
+            for i in range(200):  # FIXME max_lenght
+                W_rec_fixes.append(W_rec.clone())
+                W_in_fixes.append(W_in.clone())
+                W_out_fixes.append(W_out.clone())
+                b_rec_fixes.append(b_rec.clone())
+                b_out_fixes.append(b_out.clone())
+
+            values, _ = T.scan(self.__net_output_t,
+                               sequences=[u, TT.as_tensor_variable(W_rec_fixes), TT.as_tensor_variable(W_in_fixes),
+                                          TT.as_tensor_variable(W_out_fixes), TT.as_tensor_variable(b_rec_fixes),
+                                          TT.as_tensor_variable(b_out_fixes)],
+                               outputs_info=[self.__h_m1, None, None],
+                               non_sequences=[],
+                               name='separate_matrices_net_output_scan',
+                               n_steps=u.shape[0])
+            h = values[0]
+            y = values[1]
+            deriv_a = values[2]
+            return y, deriv_a, h, W_rec_fixes, W_in_fixes, W_out_fixes, b_rec_fixes, b_out_fixes
+
+        def __net_output_t(self, u_t, W_rec_fixes, W_in_fixes, W_out_fixes, b_rec_fixes, b_out_fixes, h_tm1):
+            h_t, deriv_a_t = self.__net.h_t(u_t, h_tm1, W_rec_fixes, W_in_fixes, b_rec_fixes)
+            y_t = self.__net.y_t(h_t, W_out_fixes, b_out_fixes)
+            return h_t, y_t, deriv_a_t
+
         def get_deriv_a(self, params):
             _, _, deriv_a = self.__net.net_output(params, self.u)
             return deriv_a
+
+        def extend_hidden_units(self, n_hidden: int, initializer: RNNInitializer):
+            W_rec, W_in, W_out, b_rec, b_out = initializer.generate_variables(n_in=self.__net.n_in,
+                                                                              n_out=self.__net.n_out,
+                                                                              n_hidden=n_hidden)
+            h_prev = self.__net.n_hidden
+            W_rec[0:h_prev, 0:h_prev] = self.__W_rec.get_value()
+            W_in[0:h_prev, :] = self.__W_in.get_value()
+            W_out[:, 0:h_prev] = self.__W_out.get_value()
+            b_rec[0:h_prev, :] = self.__b_rec.get_value()
+
+            self.__extend_step(W_rec, W_in, W_out, b_rec, b_out)
 
         @property
         def current_params(self):
@@ -299,3 +323,11 @@ class Rnn(object):
         @property
         def b_out_value(self):
             return self.__b_out.get_value()
+
+        @property
+        def n_hidden(self):  # XXX
+            return self.__W_rec.shape[0]
+
+        @property
+        def h_m1(self): # XXX
+            return self.__h_m1
