@@ -127,7 +127,7 @@ update_rule = SimpleUdpate()
 train_rule = TrainingRule(dir_rule, lr_rule, update_rule)
 
 trainer = SGDTrainer(train_rule, obj_fnc, output_dir=out_dir, max_it=10 ** 10,
-                     check_freq=200, batch_size=100, stop_error_thresh=0.1)
+                     check_freq=50, batch_size=100, stop_error_thresh=0.1)
 
 # dataset = Dataset.no_valid_dataset_from_task(size=1000, task=task)
 dataset = InfiniteDataset(task=task, validation_size=10 ** 4)
