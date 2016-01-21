@@ -102,7 +102,7 @@ loss_fnc = SquaredError()
 # dir_rule = FrozenGradient(penalty)
 # dir_rule = SepareteGradient()
 
-combining_rule = OnesCombination(normalize_components=False)
+combining_rule = OnesCombination(normalize_components=True)
 # combining_rule = SimplexCombination(normalize_components=True, seed=seed)
 # combining_rule = SimpleSum()
 # combining_rule = EquiangularCombination()

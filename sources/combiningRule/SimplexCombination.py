@@ -24,3 +24,12 @@ class SimplexCombination(LinearCombination):
     @property
     def infos(self):
         return InfoGroup('simplex_combination', super(SimplexCombination, self).infos)
+
+if __name__ == '__main__':
+
+    n = TT.scalar('n', dtype='int32')
+
+    combination = SimplexCombination(seed=14, normalize_components=True)
+
+
+
