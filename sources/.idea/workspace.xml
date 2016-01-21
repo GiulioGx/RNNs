@@ -48,8 +48,8 @@
       <file leaf-file-name="runAddition2.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/runAddition2.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.5732484">
-              <caret line="105" column="68" selection-start-line="105" selection-start-column="68" selection-end-line="105" selection-end-column="68" />
+            <state vertical-scroll-proportion="0.6305733">
+              <caret line="107" column="43" selection-start-line="107" selection-start-column="43" selection-end-line="107" selection-end-column="43" />
               <folding />
             </state>
           </provider>
@@ -349,7 +349,7 @@
       <recent name="$PROJECT_DIR$/penalty" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.merda">
+  <component name="RunManager" selected="Python.runAddition2">
     <configuration default="false" name="plot_norms_interactive" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -638,9 +638,9 @@
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Python.merda" />
-        <item index="1" class="java.lang.String" itemvalue="Python.SimplexCombination" />
-        <item index="2" class="java.lang.String" itemvalue="Python.runAddition2" />
+        <item index="0" class="java.lang.String" itemvalue="Python.runAddition2" />
+        <item index="1" class="java.lang.String" itemvalue="Python.merda" />
+        <item index="2" class="java.lang.String" itemvalue="Python.SimplexCombination" />
         <item index="3" class="java.lang.String" itemvalue="Python.runAddition1" />
         <item index="4" class="java.lang.String" itemvalue="Python.plot_norms_interactive" />
       </list>
@@ -1139,8 +1139,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/runAddition2.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.5732484">
-          <caret line="105" column="68" selection-start-line="105" selection-start-column="68" selection-end-line="105" selection-end-column="68" />
+        <state vertical-scroll-proportion="0.6305733">
+          <caret line="107" column="43" selection-start-line="107" selection-start-column="43" selection-end-line="107" selection-end-column="43" />
           <folding />
         </state>
       </provider>
