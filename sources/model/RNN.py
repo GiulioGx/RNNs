@@ -140,6 +140,8 @@ class RNN(object):
         b_rec = npz["b_rec"]
         b_out = npz["b_out"]
 
+        # TODO pickel variable initializer
+
         filename, file_extension = os.path.splitext(filename)
         pickle_file = filename + '.pkl'
         activation_fnc_pkl, output_fnc_pkl = pickle.load(open(pickle_file, 'rb'))
@@ -149,7 +151,7 @@ class RNN(object):
             output_fnc = output_fnc_pkl
 
         return RNN(W_rec=W_rec, W_in=W_in, W_out=W_out, b_rec=b_rec, b_out=b_out, activation_fnc=activation_fnc,
-                   output_fnc=output_fnc)
+                   output_fnc=output_fnc, variables_initializer=None)
 
     @property
     def info(self):

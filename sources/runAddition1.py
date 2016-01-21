@@ -103,9 +103,9 @@ loss_fnc = SquaredError()
 # dir_rule = SepareteGradient()
 
 # combining_rule = OnesCombination(normalize_components=False)
-combining_rule = SimplexCombination(normalize_components=True, seed=seed)
+#combining_rule = SimplexCombination(normalize_components=True, seed=seed)
 # combining_rule = SimpleSum()
-# combining_rule = EquiangularCombination()
+combining_rule = EquiangularCombination()
 # combining_rule = DropoutCombination(drop_rate=0.8)
 # combining_rule = MedianCombination()
 dir_rule = CombinedGradients(combining_rule)
@@ -132,7 +132,7 @@ trainer = SGDTrainer(train_rule, obj_fnc, output_dir=out_dir, max_it=10 ** 10,
 # dataset = Dataset.no_valid_dataset_from_task(size=1000, task=task)
 dataset = InfiniteDataset(task=task, validation_size=10 ** 4)
 
-net = trainer.train(dataset, net_builder, seed)
+#net = trainer.train(dataset, net_builder, seed)
 
-# net = RNN.load_model(out_dir+'/current_model.npz')
-# net = trainer.resume_training(dataset, net)
+net = RNN.load_model(out_dir+'/current_model.npz')
+net = trainer.resume_training(dataset, net)

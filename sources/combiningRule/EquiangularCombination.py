@@ -17,8 +17,8 @@ class EquiangularCombination(CombiningRule):
     def infos(self):
         return SimpleDescription('equiangular_combination')
 
-    def compile(self, vector_list, n):
-        return EquiangularCombination.Symbols(vector_list, n)
+    def compile(self, H, n):
+        return EquiangularCombination.Symbols(H, n)
 
     class Symbols(CombiningRule.Symbols):
 
@@ -40,19 +40,15 @@ class EquiangularCombination(CombiningRule):
         def equi_cos(self):
             return self.__equi_cos
 
-        def __init__(self, vector_list, n):
-
-            # build G matrix
-            H = TT.as_tensor_variable(vector_list[0:n])
-            G = TT.reshape(H, (H.shape[0], H.shape[1]))
+        def __init__(self, H, n):
 
             # normalize rows
-            G = G / G.norm(2, axis=1).reshape((G.shape[0], 1))
+            G = H / H.norm(2, axis=1).reshape((H.shape[0], 1))
             u = TT.ones((G.shape[0], 1))
 
             # solve problem
-            r = li.qr(G.T, mode='r') # QR factorization
-            #_, r = li.qr(G.T, mode='complete')
+            r = li.qr(G.T, mode='r')  # QR factorization
+            # _, r = li.qr(G.T, mode='complete')
 
             x = sli.solve(r.T, u)
             b = sli.solve(r, x)
