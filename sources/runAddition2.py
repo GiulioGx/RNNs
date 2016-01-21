@@ -114,8 +114,9 @@ dir_rule = CombinedGradients(combining_rule)
 # dir_rule = AlternatingDirections(dir_rule)
 
 # learning step rule
+lr_rule = ConstantStep(0.0001)
 # lr_rule = WRecNormalizedStep(0.0001) #0.01
-lr_rule = ConstantNormalizedStep(0.005)  # 0.01
+# lr_rule = ConstantNormalizedStep(0.005)  # 0.01
 # lr_rule = GradientClipping(lr_value=0.03, clip_thr=0.1)  # 0.01
 # lr_rule = ArmijoStep(alpha=0.5, beta=0.1, init_step=1, max_steps=50)
 obj_fnc = ObjectiveFunction(loss_fnc)
