@@ -25,7 +25,7 @@
         <entry file="file://$PROJECT_DIR$/combiningRule/SimplexCombination.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="29" column="37" selection-start-line="29" selection-start-column="37" selection-end-line="29" selection-end-column="37" />
+              <caret line="8" column="0" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
               <folding>
                 <element signature="e#0#27#0" expanded="true" />
               </folding>
@@ -33,12 +33,14 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="XorTask.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/task/XorTask.py">
+      <file leaf-file-name="merda.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/merda.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="62" column="17" selection-start-line="62" selection-start-column="0" selection-end-line="63" selection-end-column="0" />
-              <folding />
+              <caret line="19" column="0" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
+              <folding>
+                <element signature="e#0#27#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -46,8 +48,8 @@
       <file leaf-file-name="runAddition2.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/runAddition2.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.6019108">
-              <caret line="106" column="30" selection-start-line="106" selection-start-column="30" selection-end-line="106" selection-end-column="30" />
+            <state vertical-scroll-proportion="0.5732484">
+              <caret line="105" column="68" selection-start-line="105" selection-start-column="68" selection-end-line="105" selection-end-column="68" />
               <folding />
             </state>
           </provider>
@@ -65,7 +67,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/initialization/GivenValueInit.py" />
         <option value="$PROJECT_DIR$/initialization/OrtoghonalInit.py" />
         <option value="$PROJECT_DIR$/initialization/RandomConnectionsInit.py" />
         <option value="$PROJECT_DIR$/initialization/SparseGaussianInit.py" />
@@ -115,6 +116,7 @@
         <option value="$PROJECT_DIR$/updateRule/FixedAveraging.py" />
         <option value="$PROJECT_DIR$/theanoMerda" />
         <option value="$PROJECT_DIR$/combiningRule/SimplexCombination.py" />
+        <option value="$PROJECT_DIR$/merda.py" />
         <option value="$PROJECT_DIR$/runAddition2.py" />
       </list>
     </option>
@@ -347,7 +349,7 @@
       <recent name="$PROJECT_DIR$/penalty" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.plot_stats">
+  <component name="RunManager" selected="Python.merda">
     <configuration default="false" name="plot_norms_interactive" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -382,23 +384,6 @@
       <option name="SHOW_COMMAND_LINE" value="false" />
       <method />
     </configuration>
-    <configuration default="false" name="SVDInit" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/initialization" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="sources" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/initialization/SVDInit.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <method />
-    </configuration>
     <configuration default="false" name="runAddition2" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -416,7 +401,24 @@
       <option name="SHOW_COMMAND_LINE" value="false" />
       <method />
     </configuration>
-    <configuration default="false" name="runPreTrain" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration default="false" name="SimplexCombination" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/combiningRule" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="sources" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/combiningRule/SimplexCombination.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <method />
+    </configuration>
+    <configuration default="false" name="merda" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
@@ -428,7 +430,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="sources" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/runPreTrain.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/merda.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <method />
@@ -630,17 +632,17 @@
       <item index="3" class="java.lang.String" itemvalue="Python.plot_stats" />
       <item index="4" class="java.lang.String" itemvalue="Python.plot_norms_interactive" />
       <item index="5" class="java.lang.String" itemvalue="Python.runAddition1" />
-      <item index="6" class="java.lang.String" itemvalue="Python.SVDInit" />
-      <item index="7" class="java.lang.String" itemvalue="Python.runAddition2" />
-      <item index="8" class="java.lang.String" itemvalue="Python.runPreTrain" />
+      <item index="6" class="java.lang.String" itemvalue="Python.runAddition2" />
+      <item index="7" class="java.lang.String" itemvalue="Python.SimplexCombination" />
+      <item index="8" class="java.lang.String" itemvalue="Python.merda" />
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Python.runAddition2" />
-        <item index="1" class="java.lang.String" itemvalue="Python.runAddition1" />
-        <item index="2" class="java.lang.String" itemvalue="Python.plot_norms_interactive" />
-        <item index="3" class="java.lang.String" itemvalue="Python.runPreTrain" />
-        <item index="4" class="java.lang.String" itemvalue="Python.SVDInit" />
+        <item index="0" class="java.lang.String" itemvalue="Python.merda" />
+        <item index="1" class="java.lang.String" itemvalue="Python.SimplexCombination" />
+        <item index="2" class="java.lang.String" itemvalue="Python.runAddition2" />
+        <item index="3" class="java.lang.String" itemvalue="Python.runAddition1" />
+        <item index="4" class="java.lang.String" itemvalue="Python.plot_norms_interactive" />
       </list>
     </recent_temporary>
   </component>
@@ -667,7 +669,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-4" y="0" width="1928" height="1041" extended-state="7" />
+    <frame x="-4" y="0" width="1928" height="1041" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.116204694" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -1118,7 +1120,17 @@
     <entry file="file://$PROJECT_DIR$/combiningRule/SimplexCombination.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="29" column="37" selection-start-line="29" selection-start-column="37" selection-end-line="29" selection-end-column="37" />
+          <caret line="8" column="0" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#27#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/merda.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="19" column="0" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
           <folding>
             <element signature="e#0#27#0" expanded="true" />
           </folding>
@@ -1127,8 +1139,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/runAddition2.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.6019108">
-          <caret line="106" column="30" selection-start-line="106" selection-start-column="30" selection-end-line="106" selection-end-column="30" />
+        <state vertical-scroll-proportion="0.5732484">
+          <caret line="105" column="68" selection-start-line="105" selection-start-column="68" selection-end-line="105" selection-end-column="68" />
           <folding />
         </state>
       </provider>

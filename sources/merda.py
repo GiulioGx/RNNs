@@ -36,7 +36,3 @@ if __name__ == '__main__':
 
     betas_numpy = f(200)
     print('betas', betas_numpy)
-
-
-
-
