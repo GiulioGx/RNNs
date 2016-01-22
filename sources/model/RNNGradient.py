@@ -33,7 +33,7 @@ class RnnGradient(SymbolicInfoProducer):
         gW_rec_norms, gW_in_norms, gW_out_norms, \
             gb_rec_norms, gb_out_norms, self.__H = self.process_temporal_components()
 
-        self.__value = RnnGradient.ToghterCombination(self.__H, self.__l, self.__net,
+        self.__value = RnnGradient.ToghterCombination(self.__H, self.__net,
                                                       OnesCombination(normalize_components=False)).value
 
         G = self.__H / self.__H.norm(2, axis=1).reshape((self.__H.shape[0], 1))
@@ -96,12 +96,12 @@ class RnnGradient(SymbolicInfoProducer):
 
     def temporal_combination(self, strategy):  # FIXME
         if self.type == 'togheter':
-            return RnnGradient.ToghterCombination(self.__H, self.__l, self.__net,
+            return RnnGradient.ToghterCombination(self.__H, self.__net,
                                                   strategy, True, self)
         elif self.type == 'separate':
             return RnnGradient.SeparateCombination(self.__gW_rec_list, self.__gW_in_list,
                                                    self.__gW_out_list, self.__gb_rec_list,
-                                                   self.__gb_out_list, self.__l, self.__net,
+                                                   self.__gb_out_list, self.__net, self.__l,
                                                    strategy, True, self)
 
     class ToghterCombination(Combination):
@@ -117,11 +117,11 @@ class RnnGradient(SymbolicInfoProducer):
         def format_infos(self, infos):
             return self.__combination_symbols.format_infos(infos)
 
-        def __init__(self, H, l, net, strategy, preserve_norm=False, grad=None):
-            self.__combination_symbols = strategy.compile(H, l)
+        def __init__(self, H, net, strategy, preserve_norm=False, grad=None):
+            self.__combination_symbols = strategy.compile(H)
             self.__infos = self.__combination_symbols.infos
-            combination = self.__combination_symbols.combination
-            self.__combination = net.from_tensor(combination)
+            combination_as_vec = self.__combination_symbols.combination
+            self.__combination = net.from_tensor(combination_as_vec)
 
             if preserve_norm:
                 self.__combination *= grad.value.norm() / self.__combination.norm()

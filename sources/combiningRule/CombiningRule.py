@@ -10,8 +10,8 @@ class CombiningRule(SimpleInfoProducer):
     __metaclass__ = abc.ABCMeta
 
     @abc.abstractmethod
-    def compile(self, vector_list, n):
-        """combine the vectors in 'vector_list' in some way"""
+    def compile(self, H):
+        """combine the vectors in 'H' in some way"""
 
     class Symbols(SymbolicInfoProducer):
         __metaclass__ = abc.ABCMeta

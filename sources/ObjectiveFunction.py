@@ -40,6 +40,9 @@ class ObjectiveFunction(SimpleInfoProducer):
             self.__t = t
             self.__params = params
 
+            # XXX REMOVE (?)
+            self.failsafe_grad = self.__params.failsafe_grad(self.__obj_fnc.loss_fnc, self.__u, self.__t)
+
             self.__grad_symbols = self.__params.gradient(self.__obj_fnc.loss_fnc, self.__u, self.__t)
             self.__grad = self.__grad_symbols.value
 

@@ -17,8 +17,8 @@ class EquiangularCombination(CombiningRule):
     def infos(self):
         return SimpleDescription('equiangular_combination')
 
-    def compile(self, H, n):
-        return EquiangularCombination.Symbols(H, n)
+    def compile(self, H):
+        return EquiangularCombination.Symbols(H)
 
     class Symbols(CombiningRule.Symbols):
 
@@ -40,7 +40,7 @@ class EquiangularCombination(CombiningRule):
         def equi_cos(self):
             return self.__equi_cos
 
-        def __init__(self, H, n):
+        def __init__(self, H):
 
             # normalize rows
             G = H / H.norm(2, axis=1).reshape((H.shape[0], 1))

@@ -11,7 +11,8 @@ __author__ = 'giulio'
 
 
 class SimplexCombination(LinearCombination):
-    def get_linear_coefficients(self, vector_list, n):
+    def get_linear_coefficients(self, H):
+        n = H.shape[0]
         u = self.__srng.uniform(low=0, high=1, size=(n, 1))
         # x = TT.exp(1.-u)
         # r = x/x.sum()

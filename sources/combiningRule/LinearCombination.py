@@ -15,8 +15,8 @@ __author__ = 'giulio'
 class LinearCombination(CombiningRule):
     __metaclass__ = abc.ABCMeta
 
-    def compile(self, vector_list, n):
-        return LinearCombination.Symbols(self, vector_list, n)
+    def compile(self, H):
+        return LinearCombination.Symbols(self, H)
 
     def __init__(self, normalize_components: bool = True):
         self.__normalize_components = normalize_components
@@ -41,9 +41,9 @@ class LinearCombination(CombiningRule):
         def combination(self):
             return self.__grads_combinantions
 
-        def __init__(self, rule, H, n):
+        def __init__(self, rule, H):
             self.__infos = []
-            coefficients = rule.get_linear_coefficients(H, n)
+            coefficients = rule.get_linear_coefficients(H)
 
             # scan implementation
             # if rule.normalize_components:
@@ -78,5 +78,5 @@ class LinearCombination(CombiningRule):
                              (v * alpha) / norm_fac_v + acc), norm_fac_v
 
     @abc.abstractmethod
-    def get_linear_coefficients(self, vector_list, n):
+    def get_linear_coefficients(self, H):
         """returns a list of coefficients to be used to combine the first n vectors in 'vector_list' """

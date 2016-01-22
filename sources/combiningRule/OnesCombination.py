@@ -14,7 +14,8 @@ class OnesCombination(LinearCombination):
     def __init__(self, normalize_components: bool = True):
         super().__init__(normalize_components=normalize_components)
 
-    def get_linear_coefficients(self, vector_list, n):
+    def get_linear_coefficients(self, H):
+        n = H.shape[0]
         return TT.ones((n, 1), dtype=Configs.floatType)
 
     @property

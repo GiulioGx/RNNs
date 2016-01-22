@@ -84,8 +84,8 @@ class RnnVars(Variables):
         return RnnGradient(self, loss_fnc, u, t)
 
     def failsafe_grad(self, loss_fnc, u, t):  # FIXME XXX remove me
-        y, _ = self.__net.net_output(self, u)
-        loss = loss_fnc(y, t)
+        y, _, _ = self.__net.net_output(self, u, self.__net.symbols.h_m1)
+        loss = loss_fnc.value(y, t)
         gW_rec, gW_in, gW_out, \
         gb_rec, gb_out = TT.grad(loss, [self.__W_rec, self.__W_in, self.__W_out, self.__b_rec, self.__b_out])
         return RnnVars(self.__net, gW_rec, gW_in, gW_out, gb_rec, gb_out)

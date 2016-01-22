@@ -112,4 +112,5 @@ docs/References/*
 
 #saved model
 models/*
+datasets/*
 
