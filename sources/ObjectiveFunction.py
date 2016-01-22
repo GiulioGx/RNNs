@@ -6,14 +6,11 @@ from infos.SimpleInfoProducer import SimpleInfoProducer
 from infos.SymbolicInfoProducer import SymbolicInfoProducer
 from lossFunctions import LossFunction
 from model.Variables import Variables
-from penalty.NullPenalty import NullPenalty
-from penalty.Penalty import Penalty
 
 __author__ = 'giulio'
 
 
 class ObjectiveFunction(SimpleInfoProducer):
-
     @property
     def infos(self):
         return self.__loss_fnc.infos
@@ -46,8 +43,8 @@ class ObjectiveFunction(SimpleInfoProducer):
             self.__grad_symbols = self.__params.gradient(self.__obj_fnc.loss_fnc, self.__u, self.__t)
             self.__grad = self.__grad_symbols.value
 
-            #y, _ = self.__net.net_output(self, u)
-            #loss = loss_fnc(y, t)
+            # y, _ = self.__net.net_output(self, u)
+            # loss = loss_fnc(y, t)
 
             loss = self.__grad_symbols.loss_value
             self.__objective_value = loss
@@ -90,4 +87,3 @@ class ObjectiveFunction(SimpleInfoProducer):
         def grad_combination(self, strategy: LinearCombination):
             # separate time steps value
             return self.__grad_symbols.temporal_combination(strategy)
-

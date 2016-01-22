@@ -4,7 +4,7 @@ import theano as T
 __author__ = 'giulio'
 
 
-def as_vector(*tensor_list):  # FIXME avoid for loops use scan
+def as_vector(*tensor_list):  # FIXME avoid for loops use scan ?
     l = []
     for t in tensor_list:
         l.append(t.flatten().dimshuffle(0, 'x'))
@@ -15,23 +15,23 @@ def norm2(*tensor_list):
     return as_vector(*tensor_list).norm(2)
 
 
-def norm(*tensor_list):  # FIXME avoid for loops use scan
-    squared_norm = TT.alloc(0.)
-
-    for w in tensor_list:
-        squared_norm = squared_norm + (w ** 2).sum()
-
-    return TT.sqrt(squared_norm)
+# def norm(*tensor_list):  # FIXME avoid for loops use scan ?
+#     squared_norm = TT.alloc(0.)
+#
+#     for w in tensor_list:
+#         squared_norm = squared_norm + (w ** 2).sum()
+#
+#     return TT.sqrt(squared_norm)
 
 
 def cos_between_dirs(d1, d2):
-    return TT.dot(d1.flatten(), d2.flatten()) / (norm(d1) * norm(d2))
+    return TT.dot(d1.flatten(), d2.flatten()) / (d1.norm() * d2.norm())
 
 
 def get_dir_between_2_dirs(c1, c2, cos):
     # normalize inputs
-    dir1 = - c1 / norm(c1)
-    dir2 = - c2 / norm(c2)
+    dir1 = - c1 / c1.norm()
+    dir2 = - c2 / c2.norm()
 
     dot = TT.dot(dir1.flatten(), dir2.flatten())
 
@@ -47,7 +47,7 @@ def get_dir_between_2_dirs(c1, c2, cos):
     alpha = TT.switch(a1 > a2, a1, a2)
 
     mid_dir = c1 + alpha * c2
-    mid_dir = mid_dir / norm(mid_dir)
+    mid_dir = mid_dir / mid_dir.norm()
 
     return mid_dir
 

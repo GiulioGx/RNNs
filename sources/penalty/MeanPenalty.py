@@ -8,7 +8,6 @@ from infos.InfoList import InfoList
 from model.Variables import Variables
 from penalty.Penalty import Penalty
 from penalty.utils import penalty_step
-from theanoUtils import norm
 
 __author__ = 'giulio'
 
@@ -35,7 +34,7 @@ class MeanPenalty(Penalty):
             self.__penalty_value = TT.cast(penalty_value / n_steps, dtype=Configs.floatType)
             self.__penalty_grad = TT.cast(penalty_grad / n_steps, dtype=Configs.floatType)
 
-            self.__infos = [self.__penalty_value, norm(self.__penalty_grad)]
+            self.__infos = [self.__penalty_value, self.__penalty_grad.norm(2)]
 
         @property
         def penalty_grad(self):

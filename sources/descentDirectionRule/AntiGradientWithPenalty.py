@@ -4,7 +4,7 @@ from infos.InfoElement import SimpleDescription
 from infos.InfoList import InfoList
 from penalty.Penalty import Penalty
 from descentDirectionRule.DescentDirectionRule import DescentDirectionRule
-from theanoUtils import norm
+from theanoUtils import norm2
 
 __author__ = 'giulio'
 
@@ -35,7 +35,7 @@ class AntiGradientWithPenalty(DescentDirectionRule):
             # add penalty term
             self.__penalty_symbols = rule.penalty.compile(net_symbols.current_params, net_symbols)
             penalty_grad = self.__penalty_symbols.penalty_grad
-            penalty_grad_norm = norm(penalty_grad)
+            penalty_grad_norm = penalty_grad.norm(2)
 
             self.__direction = obj_symbols.failsafe_grad * (-1)  # FIXME - operator
 

@@ -1,13 +1,12 @@
 from combiningRule.OnesCombination import OnesCombination
 from infos.Info import NullInfo
-from infos.InfoElement import NonPrintableInfoElement, PrintableInfoElement
-from infos.InfoGroup import InfoGroup
+from infos.InfoElement import NonPrintableInfoElement
 from infos.InfoList import InfoList
 from infos.SymbolicInfoProducer import SymbolicInfoProducer
 import theano.tensor as TT
 import theano as T
 from model.Combination import Combination
-from theanoUtils import as_vector, flatten_list_element, cos_between_dirs, is_inf_or_nan, is_not_trustworthy
+from theanoUtils import as_vector, flatten_list_element
 
 __author__ = 'giulio'
 
@@ -87,11 +86,8 @@ class RnnGradient(SymbolicInfoProducer):
                                'b_out': info_symbols[4]}
 
         grad_dots = NonPrintableInfoElement('grad_temporal_cos', info_symbols[5])
-        # dots_matrix = NonPrintableInfoElement('temporal_dots_matrix', info_symbols[6])
         separate_info = NonPrintableInfoElement('separate_norms', separate_norms_dict)
-
         info = InfoList(grad_dots, separate_info)
-        # info = separate_info
         return info, info_symbols[len(separate_norms_dict) + 1: len(info_symbols)]
 
     def temporal_combination(self, strategy):  # FIXME

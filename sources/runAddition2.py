@@ -103,8 +103,8 @@ loss_fnc = SquaredError()
 # dir_rule = FrozenGradient(penalty)
 # dir_rule = SepareteGradient()
 
-combining_rule = OnesCombination(normalize_components=False)
-# combining_rule = SimplexCombination(normalize_components=False, seed=seed)
+# combining_rule = OnesCombination(normalize_components=False)
+combining_rule = SimplexCombination(normalize_components=True, seed=seed)
 # combining_rule = SimpleSum()
 # combining_rule = EquiangularCombination()
 # combining_rule = DropoutCombination(drop_rate=0.8)
@@ -118,8 +118,8 @@ dir_rule = CombinedGradients(combining_rule)
 # learning step rule
 #lr_rule = ConstantStep(0.0001)
 # lr_rule = WRecNormalizedStep(0.0001) #0.01
-# lr_rule = ConstantNormalizedStep(0.005)  # 0.01
-lr_rule = GradientClipping(lr_value=0.01, clip_thr=0.1)  # 0.01
+lr_rule = ConstantNormalizedStep(0.0001)  # 0.01
+#lr_rule = GradientClipping(lr_value=0.01, clip_thr=0.1)  # 0.01
 # lr_rule = ArmijoStep(alpha=0.5, beta=0.1, init_step=1, max_steps=50)
 obj_fnc = ObjectiveFunction(loss_fnc)
 
@@ -130,12 +130,12 @@ update_rule = SimpleUdpate()
 train_rule = TrainingRule(dir_rule, lr_rule, update_rule)
 
 trainer = SGDTrainer(train_rule, obj_fnc, output_dir=out_dir, max_it=10 ** 10,
-                     check_freq=200, batch_size=100, stop_error_thresh=0.1)
+                     check_freq=200, batch_size=20, stop_error_thresh=0.1)
 
 # dataset = Dataset.no_valid_dataset_from_task(size=1000, task=task)
 dataset = InfiniteDataset(task=task, validation_size=10 ** 4)
 
-#net = trainer.train(dataset, net_builder, seed)
+net = trainer.train(dataset, net_builder, seed)
 
-net = RNN.load_model(out_dir+'/best_model.npz')
-net = trainer.resume_training(dataset, net)
+#net = RNN.load_model(out_dir+'/current_model.npz')
+#net = trainer.resume_training(dataset, net)

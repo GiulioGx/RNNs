@@ -1,12 +1,11 @@
 from theano import tensor as TT
 
-from infos.InfoElement import PrintableInfoElement, SimpleDescription
+from infos.InfoElement import PrintableInfoElement
 from infos.InfoGroup import InfoGroup
 from infos.InfoList import InfoList
 from model.Variables import Variables
 from penalty.Penalty import Penalty
 from penalty.utils import deriv_a_T_wrt_a1
-from theanoUtils import norm
 
 __author__ = 'giulio'
 
@@ -36,7 +35,7 @@ class ConstantPenalty(Penalty):
             self.__penalty_value = ((A ** 2).sum() - penalty.c) ** 2
             self.__penalty_grad = TT.grad(self.__penalty_value, [W_rec], consider_constant=[deriv_a])[0]
 
-            self.__infos = [self.__penalty_value, norm(self.__penalty_grad)]
+            self.__infos = [self.__penalty_value, self.__penalty_grad.norm(2)]
 
         @property
         def penalty_grad(self):

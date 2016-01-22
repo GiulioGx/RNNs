@@ -8,7 +8,7 @@ from infos.Info import NullInfo
 from infos.InfoElement import SimpleDescription, PrintableInfoElement
 from infos.InfoGroup import InfoGroup
 from infos.InfoList import InfoList
-from theanoUtils import norm
+from theanoUtils import norm2
 
 __author__ = 'giulio'
 
@@ -31,8 +31,8 @@ class DropoutCombination(CombiningRule):
         return self.__srng.choice(size=size, a=[0, 1], replace=True, p=[self.drop_rate, 1 - self.__drop_rate],
                                   dtype=Configs.floatType)
 
-    def compile(self, vector_list, n):
-        return DropoutCombination.Symbols(self, vector_list, n)
+    def compile(self, H):
+        return DropoutCombination.Symbols(self, H)
 
     class Symbols(CombiningRule.Symbols):
         @property

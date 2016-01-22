@@ -7,7 +7,7 @@ from combiningRule.CombiningRule import CombiningRule
 from infos.Info import NullInfo
 from infos.InfoElement import PrintableInfoElement, NonPrintableInfoElement
 from infos.InfoList import InfoList
-from theanoUtils import norm, is_inf_or_nan, is_not_trustworthy
+from theanoUtils import norm2, is_inf_or_nan, is_not_trustworthy
 
 __author__ = 'giulio'
 
