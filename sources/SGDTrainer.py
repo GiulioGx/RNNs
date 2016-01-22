@@ -90,7 +90,7 @@ class SGDTrainer(object):
         incremental_hidden = True
         n_hidden_max = 100
         n_hidden_incr = 5
-        n_hidden_incr_freq = 1000
+        n_hidden_incr_freq = 2000
 
         while i < self.__max_it and best_error > self.__stop_error_thresh / 100 and (not error_occured):
 

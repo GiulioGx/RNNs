@@ -69,7 +69,7 @@ print(separator)
 seed = 14
 
 # network setup
-std_dev = 0.1  # 0.14 Tanh # 0.21 Relu
+std_dev = 0.01  # 0.14 Tanh # 0.21 Relu
 mean = 0
 rnn_initializer = RNNInitializer(W_rec_init=SpectralInit(GaussianInit(mean=mean, std_dev=std_dev, seed=seed), rho=1.2),
                                  W_in_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed),
