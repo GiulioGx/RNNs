@@ -8,6 +8,7 @@ from Configs import Configs
 from infos.InfoElement import PrintableInfoElement
 from infos.InfoGroup import InfoGroup
 from infos.InfoList import InfoList
+from initialization.MatrixInit import MatrixInit
 from model.RNNInitializer import RNNInitializer
 from model.RNNVars import RnnVars
 from output_fncs import OutputFunction
@@ -217,11 +218,11 @@ class RNN(object):
 
             n_sequences = self.u.shape[2]  # initial hidden values
             self.__h_m1 = TT.alloc(numpy.array(0., dtype=Configs.floatType), self.n_hidden, n_sequences)
-            #self.__h_m1 = TT.addbroadcast(TT.alloc(numpy.array(0., dtype=Configs.floatType), n_sequences), 0)
+            # self.__h_m1 = TT.addbroadcast(TT.alloc(numpy.array(0., dtype=Configs.floatType), n_sequences), 0)
 
             # output of the net
             self.y, self.deriv_a, h = net.net_output(self.__current_params, self.u, self.__h_m1)
-            #self.y, self.deriv_a, h = net.experimental.net_output(self.__current_params, self.u)
+            # self.y, self.deriv_a, h = net.experimental.net_output(self.__current_params, self.u)
             self.y_shared, self.deriv_a_shared, self.h_shared = T.clone([self.y, self.deriv_a, h],
                                                                         replace={W_rec: self.__W_rec, W_in: self.__W_in,
                                                                                  W_out: self.__W_out,
@@ -292,6 +293,9 @@ class RNN(object):
             W_out[:, 0:h_prev] = self.__W_out.get_value()
             b_rec[0:h_prev, :] = self.__b_rec.get_value()
 
+            rho = MatrixInit.spectral_radius(W_rec) # XXX mettere a pulito
+            W_rec = W_rec / rho * 1.2
+
             self.__extend_step(W_rec, W_in, W_out, b_rec, b_out)
 
         @property
@@ -331,5 +335,5 @@ class RNN(object):
             return self.__W_rec.shape[0]
 
         @property
-        def h_m1(self): # XXX
+        def h_m1(self):  # XXX
             return self.__h_m1
