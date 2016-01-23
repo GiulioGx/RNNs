@@ -57,12 +57,11 @@ def is_inf_or_nan(number):
 
 
 def is_not_trustworthy(norm_v):
-
-    lowest_norm = 1e-25
+    lowest_norm = 1e-25  # FOXME aggiustare in base a floatType e dimensionalità v
     negative_norm = (norm_v <= 0)
-    too_close_to_zero =  (norm_v < lowest_norm)
-    #return TT.or_(norm_v < 0, TT.or_(norm_v > 1e10, norm_v < 1e-20))  # FOXME aggiustare in base a floatType e dimensionalità v
-    return too_close_to_zero
+    too_close_to_zero = (norm_v < lowest_norm)
+    # return TT.or_(norm_v < 0, TT.or_(norm_v > 1e10, norm_v < 1e-20))
+    return TT.or_(negative_norm, is_inf_or_nan(norm_v))
 
 
 def fix_vector(v):
@@ -92,4 +91,3 @@ def flatten_list_element(list_of_tensor_variables, l):
                        name='as_vector_combinations_scan',
                        n_steps=l)
     return values
-

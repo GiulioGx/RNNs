@@ -43,12 +43,17 @@ class FixedAveraging(UpdateRule):
 
             vec = updated_params.as_tensor()
 
-            condition = self.__counter + 1 >= self.__strategy.t - 1
-            new_counter = TT.switch(condition, 0, self.__counter + 1)
+            counter_tick = self.__counter + 1 >= self.__strategy.t - 1
+            different_shapes = TT.neq(self.__acc.shape[0], vec.shape[0])
 
-            mean_point = (self.__acc + vec) / TT.cast(self.__strategy.t, dtype=Configs.floatType)
-            new_acc = TT.switch(condition, mean_point, self.__acc + vec)
+            reset_condition = TT.or_(counter_tick, different_shapes)
+
+            reset_point = TT.switch(different_shapes, vec, (self.__acc + vec) / TT.cast(self.__strategy.t, dtype=Configs.floatType))
+
+            new_acc = TT.switch(reset_condition, reset_point, self.__acc + vec)
             # new_params_vec = TT.switch(condition, mean_point, vec)
+
+            new_counter = TT.switch(reset_condition, 0, self.__counter + 1)
 
             self.__update_list = [(self.__counter, new_counter),
                                   (self.__acc, new_acc)] + net_symbols.current_params.update_list(updated_params)

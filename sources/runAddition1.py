@@ -70,7 +70,7 @@ seed = 13
 # network setup
 std_dev = 0.14  # 0.14 Tanh # 0.21 Relu
 mean = 0
-rnn_initializer = RNNInitializer(W_rec_init=SpectralInit(GaussianInit(mean=mean, std_dev=std_dev, seed=seed), rho=1.5),
+rnn_initializer = RNNInitializer(W_rec_init=GaussianInit(mean=mean, std_dev=std_dev, seed=seed),
                                  W_in_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed),
                                  W_out_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed), b_rec_init=ConstantInit(0),
                                  b_out_init=ConstantInit(0))
@@ -103,9 +103,9 @@ loss_fnc = SquaredError()
 # dir_rule = SepareteGradient()
 
 # combining_rule = OnesCombination(normalize_components=False)
-#combining_rule = SimplexCombination(normalize_components=True, seed=seed)
+combining_rule = SimplexCombination(normalize_components=True, seed=seed)
 # combining_rule = SimpleSum()
-combining_rule = EquiangularCombination()
+#combining_rule = EquiangularCombination()
 # combining_rule = DropoutCombination(drop_rate=0.8)
 # combining_rule = MedianCombination()
 dir_rule = CombinedGradients(combining_rule)
@@ -132,7 +132,7 @@ trainer = SGDTrainer(train_rule, obj_fnc, output_dir=out_dir, max_it=10 ** 10,
 # dataset = Dataset.no_valid_dataset_from_task(size=1000, task=task)
 dataset = InfiniteDataset(task=task, validation_size=10 ** 4)
 
-#net = trainer.train(dataset, net_builder, seed)
+net = trainer.train(dataset, net_builder, seed)
 
-net = RNN.load_model(out_dir+'/current_model.npz')
-net = trainer.resume_training(dataset, net)
+#net = RNN.load_model(out_dir+'/current_model.npz')
+#net = trainer.resume_training(dataset, net)
