@@ -87,7 +87,7 @@ class SGDTrainer(object):
         best_error = 100
 
         # TODO mettere a pulito
-        incremental_hidden = False
+        incremental_hidden = True
         n_hidden_max = 100
         n_hidden_incr = 5
         n_hidden_incr_freq = 2000
