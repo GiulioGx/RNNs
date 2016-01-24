@@ -49,15 +49,13 @@ class FixedAveraging2(UpdateRule):
 
             reset_condition = TT.or_(counter_tick, different_shapes)
 
-            # addend = TT.switch(different_shapes, TT.alloc(0.), self.__acc)  # XXX workaround theano shapes
-            #acc_sum = TT.zeros_like(vec)
-            acc_sum = TT.inc_subtensor(vec[0:self.__acc.shape[0]], self.__acc)
+            acc_sum = TT.inc_subtensor(vec[0:self.__acc.shape[0]], self.__acc)   # XXX workaround theano different shapes
             reset_point = ifelse(different_shapes, vec, (acc_sum / TT.cast(self.__strategy.t, dtype=Configs.floatType)))
 
             new_acc = ifelse(reset_condition, reset_point, acc_sum)
             new_params_vec = ifelse(reset_condition, reset_point, vec)
 
-            new_counter = ifelse(reset_condition, TT.alloc(0), self.__counter + 1)
+            new_counter = ifelse(reset_condition, TT.cast(TT.alloc(0), dtype='int64'), self.__counter + 1)  # XXX cast?
 
             self.__update_list = [(self.__counter, new_counter),
                                   (self.__acc, new_acc)] + net_symbols.current_params.update_list(
