@@ -8,6 +8,7 @@ from learningRule.LearningRule import LearningStepRule
 from updateRule.UpdateRule import UpdateRule
 from infos.Info import NullInfo
 from infos.InfoElement import PrintableInfoElement
+from theano.ifelse import ifelse
 
 
 class FixedAveraging(UpdateRule):
@@ -38,21 +39,27 @@ class FixedAveraging(UpdateRule):
                      dir_symbols: DescentDirectionRule.Symbols):
             updated_params = net_symbols.current_params + (dir_symbols.direction * lr_symbols.learning_rate)
             self.__counter = T.shared(0, name='avg_counter')
-            self.__acc = T.shared(net.symbols.get_numeric_vector, name='avg_acc', broadcastable=(False, False))
+            self.__acc = T.shared(net.symbols.get_numeric_vector, name='avg_acc', broadcastable=(False, True))
             self.__strategy = strategy
 
             vec = updated_params.as_tensor()
 
-            condition = self.__counter + 1 >= self.__strategy.t - 1
-            new_counter = TT.switch(condition, 0, self.__counter + 1)
+            counter_tick = self.__counter + 1 >= self.__strategy.t - 1
+            different_shapes = TT.neq(self.__acc.shape[0], vec.shape[0])
 
-            mean_point = (self.__acc + vec) / TT.cast(self.__strategy.t, dtype=Configs.floatType)
-            new_acc = TT.switch(condition, mean_point, self.__acc + vec)
-            # new_params_vec = TT.switch(condition, mean_point, vec)
+            reset_condition = TT.or_(counter_tick, different_shapes)
+
+            acc_sum = TT.inc_subtensor(vec[0:self.__acc.shape[0]], self.__acc)  # XXX workaround theano different shapes
+            reset_point = ifelse(different_shapes, vec, (acc_sum / TT.cast(self.__strategy.t, dtype=Configs.floatType)))
+
+            new_acc = ifelse(reset_condition, reset_point, acc_sum)
+            new_params_vec = ifelse(reset_condition, reset_point, vec)
+
+            new_counter = ifelse(reset_condition, TT.cast(TT.alloc(0), dtype='int64'), self.__counter + 1)  # XXX cast?
 
             self.__update_list = [(self.__counter, new_counter),
-                                  (self.__acc, new_acc)] + net_symbols.current_params.update_list(updated_params)
-            # self.__avg_params = updated_params.net.from_tensor(new_params_vec)
+                                  (self.__acc, new_acc)] + net_symbols.current_params.update_list(
+                    net.from_tensor(new_params_vec))
 
         @property
         def update_list(self):

@@ -24,7 +24,7 @@ from task.Dataset import Dataset, InfiniteDataset
 from task.TemporalOrderTask import TemporalOrderTask
 from task.XorTask import XorTask
 from task.XorTaskHot import XorTaskHot
-from updateRule.FixedAveraging import FixedAveraging
+from updateRule.FixedAveragingOld import FixedAveragingOld
 from updateRule.Momentum import Momentum
 from updateRule.SimpleUpdate import SimpleUdpate
 from combiningRule.DropoutCombination import DropoutCombination
