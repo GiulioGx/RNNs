@@ -4,7 +4,6 @@ from descentDirectionRule.DescentDirectionRule import DescentDirectionRule
 from infos.SimpleInfoProducer import SimpleInfoProducer
 from infos.SymbolicInfoProducer import SymbolicInfoProducer
 from learningRule.LearningRule import LearningStepRule
-from model import Variables
 
 
 class UpdateRule(SimpleInfoProducer):

@@ -1,4 +1,6 @@
 import theano.tensor as TT
+from theano.ifelse import ifelse
+
 from model.RNNGradient import RnnGradient
 from model.Variables import Variables
 from theanoUtils import as_vector, norm2
@@ -87,11 +89,11 @@ class RnnVars(Variables):
 
     # XXX
     def to_zero_if(self, condition):
-        self.__W_rec = TT.switch(condition, TT.zeros_like(self.__W_rec), self.__W_rec)
-        self.__W_in = TT.switch(condition, TT.zeros_like(self.__W_in), self.__W_in)
-        self.__W_out = TT.switch(condition, TT.zeros_like(self.__W_out), self.__W_out)
-        self.__b_rec = TT.switch(condition, TT.zeros_like(self.__b_rec), self.__b_rec)
-        self.__b_out = TT.switch(condition, TT.zeros_like(self.__b_out), self.__b_out)
+        self.__W_rec = ifelse(condition, TT.zeros_like(self.__W_rec), self.__W_rec)
+        self.__W_in = ifelse(condition, TT.zeros_like(self.__W_in), self.__W_in)
+        self.__W_out = ifelse(condition, TT.zeros_like(self.__W_out), self.__W_out)
+        self.__b_rec = ifelse(condition, TT.zeros_like(self.__b_rec), self.__b_rec)
+        self.__b_out = ifelse(condition, TT.zeros_like(self.__b_out), self.__b_out)
 
     def net_output(self, u):
         return self.__net.net_output(self, u)

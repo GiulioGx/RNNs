@@ -1,4 +1,6 @@
 from theano import tensor as TT
+from theano.ifelse import ifelse
+
 from descentDirectionRule.DescentDirectionRule import DescentDirectionRule
 from infos.InfoElement import PrintableInfoElement
 from infos.InfoList import InfoList
@@ -11,7 +13,7 @@ class GradientClipping(LearningStepRule):
     class Symbols(LearningStepRule.Symbols):
         def __init__(self, rule, dir_symbols: DescentDirectionRule.Symbols):
             norm = dir_symbols.direction.norm()
-            self.__learning_rate = TT.switch(norm > rule.clip_thr, rule.clip_thr / norm * rule.lr_value, rule.lr_value)
+            self.__learning_rate = ifelse(norm > rule.clip_thr, rule.clip_thr / norm * rule.lr_value, rule.lr_value)
 
         @property
         def learning_rate(self):
