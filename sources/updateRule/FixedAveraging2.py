@@ -57,7 +57,7 @@ class FixedAveraging2(UpdateRule):
             new_acc = ifelse(reset_condition, reset_point, acc_sum)
             new_params_vec = ifelse(reset_condition, reset_point, vec)
 
-            new_counter = ifelse(reset_condition, 0, self.__counter + 1)
+            new_counter = ifelse(reset_condition, TT.alloc(0), self.__counter + 1)
 
             self.__update_list = [(self.__counter, new_counter),
                                   (self.__acc, new_acc)] + net_symbols.current_params.update_list(
