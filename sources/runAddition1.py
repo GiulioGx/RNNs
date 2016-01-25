@@ -29,6 +29,7 @@ from task.XorTask import XorTask
 from task.XorTaskHot import XorTaskHot
 from updateRule.FixedAveragingOld import FixedAveragingOld
 from updateRule.FixedAveraging import FixedAveraging
+from updateRule.FixedAvgRemove import FixedAvgRemove
 from updateRule.Momentum import Momentum
 from updateRule.SimpleUpdate import SimpleUdpate
 from combiningRule.DropoutCombination import DropoutCombination
@@ -121,7 +122,7 @@ lr_rule = GradientClipping(lr_value=0.03, clip_thr=0.1)  # 0.01
 # lr_rule = ArmijoStep(alpha=0.5, beta=0.1, init_step=1, max_steps=50)
 obj_fnc = ObjectiveFunction(loss_fnc)
 
-update_rule = FixedAveragingOld(t=10)
+update_rule = FixedAvgRemove(t=10)
 #update_rule = SimpleUdpate()
 # update_rule = Momentum(gamma=0.1)
 
