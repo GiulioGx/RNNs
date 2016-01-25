@@ -21,21 +21,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="runAddition2.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/runAddition2.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="79" column="0" selection-start-line="79" selection-start-column="0" selection-end-line="79" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="runAddition1.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="runAddition1.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/runAddition1.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="124" column="29" selection-start-line="124" selection-start-column="29" selection-end-line="124" selection-end-column="29" />
+            <state vertical-scroll-proportion="0.31428573">
+              <caret line="121" column="37" selection-start-line="121" selection-start-column="37" selection-end-line="121" selection-end-column="37" />
               <folding />
             </state>
           </provider>
@@ -71,6 +61,16 @@
           </provider>
         </entry>
       </file>
+      <file leaf-file-name="SGDTrainer.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/SGDTrainer.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="88" column="31" selection-start-line="88" selection-start-column="31" selection-end-line="88" selection-end-column="31" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="testNorm.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/testNorm.py">
           <provider selected="true" editor-type-id="text-editor">
@@ -93,33 +93,31 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="FixedAveraging.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/updateRule/FixedAveraging.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="61" column="50" selection-start-line="61" selection-start-column="36" selection-end-line="61" selection-end-column="50" />
-              <folding>
-                <element signature="e#0#26#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="theanoUtils.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="theanoUtils.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/theanoUtils.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.51428574">
+            <state vertical-scroll-proportion="0.0">
               <caret line="64" column="0" selection-start-line="64" selection-start-column="0" selection-end-line="65" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="SGDTrainer.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/SGDTrainer.py">
+      <file leaf-file-name="CombinedGradients.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/descentDirectionRule/CombinedGradients.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="88" column="31" selection-start-line="88" selection-start-column="31" selection-end-line="88" selection-end-column="31" />
+              <caret line="29" column="49" selection-start-line="29" selection-start-column="49" selection-end-line="29" selection-end-column="49" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="DescentDirectionRule.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/descentDirectionRule/DescentDirectionRule.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -185,9 +183,9 @@
         <option value="$PROJECT_DIR$/SGDTrainer.py" />
         <option value="$PROJECT_DIR$/runAddition2.py" />
         <option value="$PROJECT_DIR$/updateRule/FixedAveragingOld.py" />
-        <option value="$PROJECT_DIR$/runAddition1.py" />
         <option value="$PROJECT_DIR$/learningRule/GradientClipping.py" />
         <option value="$PROJECT_DIR$/theanoUtils.py" />
+        <option value="$PROJECT_DIR$/runAddition1.py" />
       </list>
     </option>
   </component>
@@ -805,13 +803,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/descentDirectionRule/DescentDirectionRule.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/combiningRule/MedianCombination.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -926,6 +917,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#12#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -951,6 +945,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="93" column="83" selection-start-line="93" selection-start-column="83" selection-end-line="93" selection-end-column="83" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1020,14 +1015,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/descentDirectionRule/CombinedGradients.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="29" column="49" selection-start-line="29" selection-start-column="49" selection-end-line="29" selection-end-column="49" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/combiningRule/EquiangularCombination.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1056,14 +1043,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="70" column="56" selection-start-line="70" selection-start-column="56" selection-end-line="70" selection-end-column="56" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/SGDTrainer.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="88" column="31" selection-start-line="88" selection-start-column="31" selection-end-line="88" selection-end-column="31" />
           <folding />
         </state>
       </provider>
@@ -1120,14 +1099,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/runAddition1.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="124" column="29" selection-start-line="124" selection-start-column="29" selection-end-line="124" selection-end-column="29" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/learningRule/GradientClipping.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1138,8 +1109,40 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/theanoUtils.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.51428574">
+        <state vertical-scroll-proportion="0.0">
           <caret line="64" column="0" selection-start-line="64" selection-start-column="0" selection-end-line="65" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/descentDirectionRule/DescentDirectionRule.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/descentDirectionRule/CombinedGradients.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="29" column="49" selection-start-line="29" selection-start-column="49" selection-end-line="29" selection-end-column="49" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/SGDTrainer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="88" column="31" selection-start-line="88" selection-start-column="31" selection-end-line="88" selection-end-column="31" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/runAddition1.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.31428573">
+          <caret line="121" column="37" selection-start-line="121" selection-start-column="37" selection-end-line="121" selection-end-column="37" />
           <folding />
         </state>
       </provider>
