@@ -4,7 +4,7 @@ import theano as T
 __author__ = 'giulio'
 
 
-def as_vector(*tensor_list):  # FIXME avoid for loops use scan ?
+def as_vector(*tensor_list):
     l = []
     for t in tensor_list:
         l.append(t.flatten().dimshuffle(0, 'x'))
@@ -13,15 +13,6 @@ def as_vector(*tensor_list):  # FIXME avoid for loops use scan ?
 
 def norm2(*tensor_list):
     return as_vector(*tensor_list).norm(2)
-
-
-# def norm(*tensor_list):  # FIXME avoid for loops use scan ?
-#     squared_norm = TT.alloc(0.)
-#
-#     for w in tensor_list:
-#         squared_norm = squared_norm + (w ** 2).sum()
-#
-#     return TT.sqrt(squared_norm)
 
 
 def cos_between_dirs(d1, d2):
@@ -61,7 +52,7 @@ def is_not_trustworthy(norm_v):
     negative_norm = (norm_v <= 0)
     too_close_to_zero = (norm_v < lowest_norm)
     # return TT.or_(norm_v < 0, TT.or_(norm_v > 1e10, norm_v < 1e-20))
-    return TT.or_(too_close_to_zero, is_inf_or_nan(norm_v))
+    return TT.or_(negative_norm, is_inf_or_nan(norm_v))
 
 
 def fix_vector(v):

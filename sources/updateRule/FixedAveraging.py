@@ -1,10 +1,17 @@
+import numpy
 import theano.tensor as TT
 import theano as T
+
+from ActivationFunction import Tanh
 from Configs import Configs
 from descentDirectionRule.DescentDirectionRule import DescentDirectionRule
 from infos.InfoGroup import InfoGroup
 from infos.InfoList import InfoList
+from initialization.ConstantInit import ConstantInit
+from learningRule.ConstantStep import ConstantStep
 from learningRule.LearningRule import LearningStepRule
+from model import RNNInitializer, RNNBuilder
+from output_fncs.Linear import Linear
 from updateRule.UpdateRule import UpdateRule
 from infos.Info import NullInfo
 from infos.InfoElement import PrintableInfoElement
@@ -39,7 +46,7 @@ class FixedAveraging(UpdateRule):
                      dir_symbols: DescentDirectionRule.Symbols):
             updated_params = net_symbols.current_params + (dir_symbols.direction * lr_symbols.learning_rate)
             self.__counter = T.shared(0, name='avg_counter')
-            self.__acc = T.shared(net.symbols.get_numeric_vector, name='avg_acc', broadcastable=(False, True))
+            self.__acc = T.shared(net.symbols.numeric_vector, name='avg_acc', broadcastable=(False, True))
             self.__strategy = strategy
 
             vec = updated_params.as_tensor()
@@ -64,3 +71,62 @@ class FixedAveraging(UpdateRule):
         @property
         def update_list(self):
             return self.__update_list
+
+
+if __name__ == '__main__':
+    #  fake descent direction rule
+    class FakeDirection(DescentDirectionRule):
+        def __init__(self, constant_value):
+            self.__constant_value = constant_value
+            return
+
+        def compile(self, net_symbols, obj_symbols):
+            return FakeDirection.Symbols(T.shared(self.__constant_value))
+
+        def infos(self):
+            pass
+
+        class Symbols(DescentDirectionRule.Symbols):
+            def __init__(self, constant_value):
+                self.__value = net.from_tensor(constant_value)
+
+            @property
+            def direction(self):
+                return self.__value
+
+            def format_infos(self, infos):
+                pass
+
+            def infos(self):
+                pass
+
+
+    rnn_initializer = RNNInitializer(W_rec_init=ConstantInit(1),
+                                     W_in_init=ConstantInit(1),
+                                     W_out_init=ConstantInit(1), b_rec_init=ConstantInit(1),
+                                     b_out_init=ConstantInit(1))
+    net_builder = RNNBuilder(initializer=rnn_initializer, activation_fnc=Tanh(), output_fnc=Linear(), n_hidden=5)
+
+    t = 5
+    net = net_builder.init_net(2, 3)
+    n = net.n_variables
+    constant_value = numpy.ones(shape=(n, 1), dtype='float32')
+    descent_rule = FakeDirection(constant_value)
+    update_rule = FixedAveraging(t=t)
+    lr_rule = ConstantStep(lr_value=1)
+    update_symbols = update_rule.compile(net, net.symbols, lr_rule.compile(None, None, None),
+                                         descent_rule.compile(None, None))
+    updates = update_symbols.update_list
+
+    step = T.function([], [],
+                      allow_input_downcast='true',
+                      on_unused_input='warn',
+                      updates=updates,
+                      name='train_step')
+
+    for i in range(t - 1):
+        step()
+
+    print('steps: ', t - 1)
+    print('net variables:\n ', net.symbols.numeric_vector)
+    print('should be: \n', constant_value * 3)

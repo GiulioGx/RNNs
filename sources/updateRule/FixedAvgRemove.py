@@ -38,7 +38,7 @@ class FixedAvgRemove(UpdateRule):
                      dir_symbols: DescentDirectionRule.Symbols):
             updated_params = net_symbols.current_params + (dir_symbols.direction * lr_symbols.learning_rate)
             self.__counter = T.shared(0, name='avg_counter')
-            self.__acc = T.shared(net.symbols.get_numeric_vector, name='avg_acc', broadcastable=(False, False))
+            self.__acc = T.shared(net.symbols.numeric_vector, name='avg_acc', broadcastable=(False, False))
             self.__strategy = strategy
 
             vec = updated_params.as_tensor()

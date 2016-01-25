@@ -216,7 +216,8 @@ class RNN(object):
             self.u = TT.tensor3(name='u')  # input tensor
             self.t = TT.tensor3(name='t')  # target tensor
 
-            n_sequences = self.u.shape[2]  # initial hidden values
+            n_sequences = self.u.shape[2]  # initia
+            # l hidden values
             self.__h_m1 = TT.alloc(numpy.array(0., dtype=Configs.floatType), self.n_hidden, n_sequences)
             # self.__h_m1 = TT.addbroadcast(TT.alloc(numpy.array(0., dtype=Configs.floatType), n_sequences), 0)
 
@@ -303,7 +304,7 @@ class RNN(object):
             return self.__current_params
 
         @property  # XXX probably to remove
-        def get_numeric_vector(self):
+        def numeric_vector(self):
             return numpy.reshape(
                     numpy.concatenate((self.__W_rec.get_value().flatten(), self.__W_in.get_value().flatten(),
                                        self.__W_out.get_value().flatten(), self.__b_rec.get_value().flatten(),
