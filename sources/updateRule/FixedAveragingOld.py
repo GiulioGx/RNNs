@@ -48,10 +48,11 @@ class FixedAveragingOld(UpdateRule):
 
             mean_point = (self.__acc + vec) / TT.cast(self.__strategy.t, dtype=Configs.floatType)
             new_acc = TT.switch(condition, mean_point, self.__acc + vec)
-            # new_params_vec = TT.switch(condition, mean_point, vec)
+            new_params_vec = TT.switch(condition, mean_point, vec)
 
             self.__update_list = [(self.__counter, new_counter),
-                                  (self.__acc, new_acc)] + net_symbols.current_params.update_list(updated_params)
+                                  (self.__acc, new_acc)] + net_symbols.current_params.update_list(
+                net.from_tensor(new_params_vec))
             # self.__avg_params = updated_params.net.from_tensor(new_params_vec)
 
         @property
