@@ -32,8 +32,7 @@ class RnnGradient(SymbolicInfoProducer):
         gW_rec_norms, gW_in_norms, gW_out_norms, \
             gb_rec_norms, gb_out_norms, self.__H = self.process_temporal_components()
 
-        self.__value = RnnGradient.ToghterCombination(self.__H, self.__net,
-                                                      OnesCombination(normalize_components=False)).value
+        self.__value = self.__net.from_tensor(self.__H.sum(axis=0))  # GRADIENT
 
         G = self.__H / self.__H.norm(2, axis=1).reshape((self.__H.shape[0], 1))
         grad_dots = TT.dot(G, self.__value.as_tensor() / self.__value.norm())
@@ -61,10 +60,8 @@ class RnnGradient(SymbolicInfoProducer):
                            name='process_temporal_components_scan',
                            n_steps=self.__l)
 
-        h_list = values[5]
-
-        H = TT.as_tensor_variable(h_list[0:self.__l])
-        H = TT.reshape(H, (H.shape[0], H.shape[1]))
+        temporal_gradients_list = values[5]
+        H = TT.as_tensor_variable(temporal_gradients_list[0:self.__l]).squeeze()
 
         return values[0], values[1], values[2], values[3], values[4], H
 
@@ -116,8 +113,8 @@ class RnnGradient(SymbolicInfoProducer):
         def __init__(self, H, net, strategy, preserve_norm=False, grad=None):
             self.__combination_symbols = strategy.compile(H)
             self.__infos = self.__combination_symbols.infos
-            combination_as_vec = self.__combination_symbols.combination
-            self.__combination = net.from_tensor(combination_as_vec)
+            combination_vec = self.__combination_symbols.combination
+            self.__combination = net.from_tensor(combination_vec)
 
             if preserve_norm:
                 self.__combination *= grad.value.norm() / self.__combination.norm()
