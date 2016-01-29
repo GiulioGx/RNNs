@@ -146,8 +146,8 @@ class RNNGradient(SymbolicInfoProducer):
             gW_rec_tensor = (TT.as_tensor_variable(gW_rec_list)[0:l]).squeeze()
             gW_in_tensor = (TT.as_tensor_variable(gW_in_list)[0:l]).squeeze()
             gW_out_tensor = (TT.as_tensor_variable(gW_out_list)[0:l]).squeeze()
-            gb_rec_tensor = (TT.as_tensor_variable(gb_rec_list)[0:l]).squeeze()
-            gb_out_tensor = (TT.as_tensor_variable(gb_out_list)[0:l]).squeeze()
+            gb_rec_tensor = (TT.as_tensor_variable(gb_rec_list)[0:l])
+            gb_out_tensor = (TT.as_tensor_variable(gb_out_list)[0:l])
 
             gW_rec_combinantion = strategy.compile(gW_rec_tensor).combination
             gW_in_combinantion = strategy.compile(gW_in_tensor).combination
