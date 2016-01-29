@@ -16,7 +16,7 @@ __author__ = 'giulio'
 class RNNGradient(SymbolicInfoProducer):
     def __init__(self, params, loss_fnc, u, t):
 
-        self.type = 'togheter'
+        self.type = 'separate'
         self.__net = params.net
 
         y, _, _, W_rec_fixes, W_in_fixes, W_out_fixes, b_rec_fixes, b_out_fixes = params.net.symbols.net_output(
@@ -157,6 +157,6 @@ class RNNGradient(SymbolicInfoProducer):
                                   gb_out_combinantion)
             self.__combination = net.from_tensor(flattened)
 
-            if preserve_norms and grad.value is not None:  # FIXME
+            if preserve_norms and grad.value is not None:  # FIXME OBBROBRIO
                 # self.__combination *= grad.value.norm()/self.__combination.norm()
                 self.__combination = self.__combination.scale_norms_as(grad.value)

@@ -30,10 +30,10 @@ class LinearCombination(CombiningRule):
     class Symbols(CombiningRule.Symbols):
         @property
         def infos(self):
-            return []
+            return self.__infos
 
         def format_infos(self, infos):
-            return NullInfo(), infos
+            return PrintableInfoElement('db_G_norm', '', infos[0]), infos[1:]
 
         @property
         def combination(self):
@@ -48,6 +48,9 @@ class LinearCombination(CombiningRule):
             if rule.normalize_components:
                 norm_G = H.norm(2, axis=1).reshape((H.shape[0], 1))
                 G = H / TT.switch(is_not_trustworthy(norm_G), 1, norm_G)
+
+            debug_norm = G.norm(2, axis=1).mean()
+            self.__infos = [debug_norm]
 
             self.__grads_combinantions = TT.dot(G.T, coefficients)
 
