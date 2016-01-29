@@ -144,9 +144,9 @@ class RNNGradient(SymbolicInfoProducer):
                      preserve_norms=False, grad=None):
 
             gW_rec_tensor = flatten_list_element(TT.as_tensor_variable(gW_rec_list), l)
-            gW_in_tensor = flatten_list_element(TT.as_tensor_variable(gW_rec_list), l)
+            gW_in_tensor = flatten_list_element(TT.as_tensor_variable(gW_in_list), l)
             gW_out_tensor = TT.as_tensor_variable(gW_out_list)
-            gb_rec_tensor = flatten_list_element(TT.as_tensor_variable(gW_rec_list), l)
+            gb_rec_tensor = flatten_list_element(TT.as_tensor_variable(gb_rec_list), l)
             gb_out_tensor = TT.as_tensor_variable(gb_out_list)
 
             gW_rec_combinantion = strategy.compile(gW_rec_tensor).combination
