@@ -160,5 +160,5 @@ class RNNGradient(SymbolicInfoProducer):
             self.__combination = net.from_tensor(flattened)
 
             if preserve_norms and grad.value is not None:  # FIXME OBBROBRIO
-                # self.__combination *= grad.value.norm()/self.__combination.norm()
-                self.__combination = self.__combination.scale_norms_as(grad.value)
+                self.__combination *= grad.value.norm()/self.__combination.norm()
+                #self.__combination = self.__combination.scale_norms_as(grad.value)
