@@ -142,16 +142,11 @@ class RNNGradient(SymbolicInfoProducer):
 
         def __init__(self, gW_rec_list, gW_in_list, gW_out_list, gb_rec_list, gb_out_list, l, net, strategy,
                      preserve_norms=False, grad=None):
-            gW_rec_combinantion = strategy.compile(flatten_list_element(TT.as_tensor_variable(gW_rec_list), l),
-                                                   l).combination
-            gW_in_combinantion = strategy.compile(flatten_list_element(TT.as_tensor_variable(gW_in_list), l),
-                                                  l).combination
-            gW_out_combinantion = strategy.compile(flatten_list_element(TT.as_tensor_variable(gW_out_list), l),
-                                                   l).combination
-            gb_rec_combinantion = strategy.compile(flatten_list_element(TT.as_tensor_variable(gb_rec_list), l),
-                                                   l).combination
-            gb_out_combinantion = strategy.compile(flatten_list_element(TT.as_tensor_variable(gb_out_list), l),
-                                                   l).combination
+            gW_rec_combinantion = strategy.compile(TT.as_tensor_variable(gW_rec_list)).combination
+            gW_in_combinantion = strategy.compile(TT.as_tensor_variable(gW_in_list)).combination
+            gW_out_combinantion = strategy.compile(TT.as_tensor_variable(gW_out_list)).combination
+            gb_rec_combinantion = strategy.compile(TT.as_tensor_variable(gb_rec_list)).combination
+            gb_out_combinantion = strategy.compile(TT.as_tensor_variable(gb_out_list)).combination
 
             flattened = as_vector(gW_rec_combinantion, gW_in_combinantion, gW_out_combinantion, gb_rec_combinantion,
                                   gb_out_combinantion)
