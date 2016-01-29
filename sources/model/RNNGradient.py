@@ -16,7 +16,7 @@ __author__ = 'giulio'
 class RNNGradient(SymbolicInfoProducer):
     def __init__(self, params, loss_fnc, u, t):
 
-        self.type = 'separate'
+        self.type = 'togheter'
         self.__net = params.net
 
         y, _, _, W_rec_fixes, W_in_fixes, W_out_fixes, b_rec_fixes, b_out_fixes = params.net.symbols.net_output(
