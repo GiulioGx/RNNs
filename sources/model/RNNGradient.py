@@ -102,7 +102,7 @@ class RNNGradient(SymbolicInfoProducer):
         elif self.type == 'separate':
             return RNNGradient.SeparateCombination(self.__gW_rec_list, self.__gW_in_list,
                                                    self.__gW_out_list, self.__gb_rec_list,
-                                                   self.__gb_out_list, self.__net, self.__l,
+                                                   self.__gb_out_list, self.__net,
                                                    strategy, True, self)
 
     class ToghterCombination(Combination):
@@ -140,7 +140,7 @@ class RNNGradient(SymbolicInfoProducer):
         def format_infos(self, infos):
             return NullInfo(), infos
 
-        def __init__(self, gW_rec_list, gW_in_list, gW_out_list, gb_rec_list, gb_out_list, l, net, strategy,
+        def __init__(self, gW_rec_list, gW_in_list, gW_out_list, gb_rec_list, gb_out_list, net, strategy,
                      preserve_norms=False, grad=None):
             gW_rec_combinantion = strategy.compile(TT.as_tensor_variable(gW_rec_list)).combination
             gW_in_combinantion = strategy.compile(TT.as_tensor_variable(gW_in_list)).combination
