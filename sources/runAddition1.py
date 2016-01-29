@@ -70,18 +70,18 @@ print(separator)
 seed = 13
 
 # network setup
-std_dev = 0.5  # 0.14 Tanh # 0.21 Relu
+std_dev = 0.14  # 0.14 Tanh # 0.21 Relu
 mean = 0
 rnn_initializer = RNNInitializer(W_rec_init=SpectralInit(GaussianInit(mean=mean, std_dev=std_dev, seed=seed), rho=1.1),
                                  W_in_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed),
                                  W_out_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed), b_rec_init=ConstantInit(0),
                                  b_out_init=ConstantInit(0))
-net_builder = RNNBuilder(initializer=rnn_initializer, activation_fnc=Tanh(), output_fnc=Linear(), n_hidden=100)
+net_builder = RNNBuilder(initializer=rnn_initializer, activation_fnc=Tanh(), output_fnc=Softmax(), n_hidden=100)
 
 # setup
 task = XorTaskHot(144, seed)
 out_dir = Configs.output_dir + str(task)
-loss_fnc = SquaredError()
+loss_fnc = CrossEntropy()
 
 # # HF init
 # bias_value = 0.5
