@@ -16,7 +16,7 @@ __author__ = 'giulio'
 class RNNGradient(SymbolicInfoProducer):
     def __init__(self, params, loss_fnc, u, t):
 
-        self.type = 'togheter'
+        self.type = 'separate'
         self.__net = params.net
 
         y, _, _, W_rec_fixes, W_in_fixes, W_out_fixes, b_rec_fixes, b_out_fixes = params.net.symbols.net_output(
@@ -143,7 +143,7 @@ class RNNGradient(SymbolicInfoProducer):
         def __init__(self, gW_rec_list, gW_in_list, gW_out_list, gb_rec_list, gb_out_list, net, l, strategy,
                      preserve_norms=False, grad=None):
 
-            gW_rec_tensor = (TT.as_tensor_variable(gW_rec_list))
+            gW_rec_tensor = flatten_list_element(TT.as_tensor_variable(gW_rec_list)[1:l])
             gW_in_tensor = (TT.as_tensor_variable(gW_in_list)[0:l]).squeeze()
             gW_out_tensor = (TT.as_tensor_variable(gW_out_list)[0:l]).squeeze()
             gb_rec_tensor = (TT.as_tensor_variable(gb_rec_list)[0:l])
