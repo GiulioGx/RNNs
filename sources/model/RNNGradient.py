@@ -143,7 +143,7 @@ class RNNGradient(SymbolicInfoProducer):
         def __init__(self, gW_rec_list, gW_in_list, gW_out_list, gb_rec_list, gb_out_list, net, l, strategy,
                      preserve_norms=False, grad=None):
 
-            gW_rec_tensor = (TT.as_tensor_variable(gW_rec_list)[0:l])
+            gW_rec_tensor = (TT.as_tensor_variable(gW_rec_list))
             gW_in_tensor = (TT.as_tensor_variable(gW_in_list)[0:l]).squeeze()
             gW_out_tensor = (TT.as_tensor_variable(gW_out_list)[0:l]).squeeze()
             gb_rec_tensor = (TT.as_tensor_variable(gb_rec_list)[0:l])
