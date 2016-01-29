@@ -151,12 +151,12 @@ class RNNGradient(SymbolicInfoProducer):
 
             gW_rec_combinantion = strategy.compile(gW_rec_tensor).combination
             gW_in_combinantion = strategy.compile(gW_in_tensor).combination
-            gW_out_combinantion = strategy.compile(gW_out_tensor).combination
-            gb_rec_combinantion = strategy.compile(gb_rec_tensor).combination
-            gb_out_combinantion = strategy.compile(gb_out_tensor).combination
+            #gW_out_combinantion = strategy.compile(gW_out_tensor).combination
+            #gb_rec_combinantion = strategy.compile(gb_rec_tensor).combination
+            #gb_out_combinantion = strategy.compile(gb_out_tensor).combination
 
-            flattened = as_vector(gW_rec_combinantion, gW_in_combinantion, gW_out_combinantion, gb_rec_combinantion,
-                                  gb_out_combinantion)
+            flattened = as_vector(gW_rec_combinantion, gW_in_combinantion, gW_out_tensor[-1], gb_rec_tensor[-1],
+                                  gb_out_tensor[-1])
             self.__combination = net.from_tensor(flattened)
 
             if preserve_norms and grad.value is not None:  # FIXME OBBROBRIO
