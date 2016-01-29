@@ -46,7 +46,7 @@ class RNNVars(Variables):
             raise TypeError('cannot perform this action with an object of type ' + str(type(other)))
         return RNNVars(self.__net, self.__W_rec / self.__W_rec.norm(2) * other.W_rec.norm(2),
                        self.__W_in / self.__W_in.norm(2) * other.W_in.norm(2),
-                       self.__W_out / self.__W_out.norm(2) * other.W_out.nom(2)
+                       self.__W_out / self.__W_out.norm(2) * other.W_out.norm(2)
                        , self.__b_rec / self.__b_rec.norm(2) * other.b_rec.norm(2),
                        self.__b_out / self.__b_out.norm(2) * other.b_out.norm(2))
 
