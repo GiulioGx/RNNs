@@ -5,13 +5,15 @@ from infos.InfoList import InfoList
 from infos.SymbolicInfoProducer import SymbolicInfoProducer
 import theano.tensor as TT
 import theano as T
+
+import model.RNNVars
 from model.Combination import Combination
 from theanoUtils import as_vector, flatten_list_element
 
 __author__ = 'giulio'
 
 
-class RnnGradient(SymbolicInfoProducer):
+class RNNGradient(SymbolicInfoProducer):
     def __init__(self, params, loss_fnc, u, t):
 
         self.type = 'togheter'
@@ -30,9 +32,15 @@ class RnnGradient(SymbolicInfoProducer):
         self.__gb_out_list = T.grad(self.__loss, b_out_fixes)
 
         gW_rec_norms, gW_in_norms, gW_out_norms, \
-            gb_rec_norms, gb_out_norms, self.__H = self.process_temporal_components()
+        gb_rec_norms, gb_out_norms, self.__H = self.process_temporal_components()
 
         self.__value = self.__net.from_tensor(self.__H.sum(axis=0))  # GRADIENT
+
+        # self.__value = model.RNNVars(W_rec=TT.as_tensor_variable(self.__gW_rec_list).sum(axis=0),
+        #                        W_in=TT.as_tensor_variable(self.__gW_in_list).sum(axis=0),
+        #                        W_out=TT.as_tensor_variable(self.__gW_out_list).sum(axis=0),
+        #                        b_rec=TT.as_tensor_variable(self.__gb_rec_list).sum(axis=0),
+        #                        b_out=TT.as_tensor_variable(self.__gb_out_list).sum(axis=0), net=self.__net)
 
         G = self.__H / self.__H.norm(2, axis=1).reshape((self.__H.shape[0], 1))
         grad_dots = TT.dot(G, self.__value.as_tensor() / self.__value.norm())
@@ -89,10 +97,10 @@ class RnnGradient(SymbolicInfoProducer):
 
     def temporal_combination(self, strategy):  # FIXME
         if self.type == 'togheter':
-            return RnnGradient.ToghterCombination(self.__H, self.__net,
+            return RNNGradient.ToghterCombination(self.__H, self.__net,
                                                   strategy, True, self)
         elif self.type == 'separate':
-            return RnnGradient.SeparateCombination(self.__gW_rec_list, self.__gW_in_list,
+            return RNNGradient.SeparateCombination(self.__gW_rec_list, self.__gW_in_list,
                                                    self.__gW_out_list, self.__gb_rec_list,
                                                    self.__gb_out_list, self.__net, self.__l,
                                                    strategy, True, self)
@@ -132,7 +140,8 @@ class RnnGradient(SymbolicInfoProducer):
         def format_infos(self, infos):
             return NullInfo(), infos
 
-        def __init__(self, gW_rec_list, gW_in_list, gW_out_list, gb_rec_list, gb_out_list, l, net, strategy, preserve_norms=False, grad=None):
+        def __init__(self, gW_rec_list, gW_in_list, gW_out_list, gb_rec_list, gb_out_list, l, net, strategy,
+                     preserve_norms=False, grad=None):
             gW_rec_combinantion = strategy.compile(flatten_list_element(TT.as_tensor_variable(gW_rec_list), l),
                                                    l).combination
             gW_in_combinantion = strategy.compile(flatten_list_element(TT.as_tensor_variable(gW_in_list), l),

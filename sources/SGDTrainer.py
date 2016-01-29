@@ -1,3 +1,4 @@
+import datetime
 import logging
 import os
 import time
@@ -16,6 +17,7 @@ from infos.InfoList import InfoList
 from model.RNN import RNN
 from model.RNNBuilder import RNNBuilder
 from output_fncs.OutputFunction import OutputFunction
+from task import Batch
 from task.BatchPolicer import RepetitaPolicer
 from task.Dataset import Dataset
 
@@ -87,7 +89,7 @@ class SGDTrainer(object):
         best_error = 100
 
         # TODO mettere a pulito
-        incremental_hidden = False
+        incremental_hidden = True
         n_hidden_max = 100
         n_hidden_incr = 5
         n_hidden_incr_freq = 2000
@@ -105,9 +107,7 @@ class SGDTrainer(object):
 
             if i % self.__check_freq == 0:  # FIXME 1st it
                 eval_start_time = time.time()
-                valid_error, valid_loss = self.__loss_and_error(validation_set.inputs, validation_set.outputs)
-                valid_error = valid_error.item()
-                valid_loss = valid_loss.item()
+                valid_error, valid_loss = SGDTrainer.compute_error_and_loss(self.__loss_and_error, validation_set)
 
                 try:
                     rho = net.spectral_radius
@@ -151,6 +151,8 @@ class SGDTrainer(object):
     def __start_logger(self):
         os.makedirs(self.__output_dir, exist_ok=True)
         logging.basicConfig(filename=self.__log_filename, level=logging.INFO, format='%(levelname)s:%(message)s')
+        now = datetime.datetime.now()
+        logging.info('starting logging activity in date {}'.format(now.strftime("%d-%m-%Y %H:%M")))
 
     def train(self, dataset: Dataset, net_builder: RNNBuilder, seed: int = 13):
 
@@ -170,6 +172,16 @@ class SGDTrainer(object):
         self.__start_logger()
         logging.info('Resuming training...')
         return self._train(dataset, net)
+
+    @staticmethod
+    def compute_error_and_loss(loss_and_error_fnc, validation_batches: list):
+        valid_error, valid_loss = 0., 0.
+        for batch in validation_batches:
+            valid_error_i, valid_loss_i = loss_and_error_fnc(batch.inputs, batch.outputs)
+            valid_error += valid_error_i.item()
+            valid_loss += valid_loss_i.item()
+        n = len(validation_batches)
+        return valid_error / n, valid_loss / n
 
     @staticmethod
     def __build_infos(train_info, i, valid_loss, valid_error, best_error, rho, batch_time, eval_time):

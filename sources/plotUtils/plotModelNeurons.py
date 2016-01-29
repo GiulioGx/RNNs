@@ -8,7 +8,7 @@ from task.AdditionTask import AdditionTask
 from task.XorTaskHot import XorTaskHot
 import numpy
 
-seed = 2313132
+seed = 132
 task = AdditionTask(144, seed)
 #out_dir = Configs.output_dir + str(task)
 #net = Rnn.load_model('/home/giulio/RNNs/models/completed/100 hidden/add_task, min_length: 144_average/model.npz')

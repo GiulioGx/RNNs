@@ -41,7 +41,6 @@ class XorTaskHot(Task):
         #b = -1. + 2. * y[-1, 0, :]
         #return TT.switch(TT.sgn(a * b) > 0, 0, 1).mean()
 
-
     def get_batch(self, batch_size: int):
         return self.__marker_based_task.get_batch(batch_size)
 

@@ -1,0 +1,1 @@
+Recurrent neural networks (RNNs) are know to be extremely powerful yet effectively impossible to train with standart first order methods when the training sequences present long time-spanning dependecies. The aim of this thesis is to develop a novel optimization algorithm which employies adapted first order information to train such network.

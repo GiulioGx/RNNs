@@ -23,7 +23,7 @@ class Dataset(SimpleInfoProducer):  # TODO change name
 
     @abc.abstractproperty
     def validation_set(self):
-        """returns the validation 'Batch'"""
+        """returns a list of validation 'Batch'es"""
 
     @abc.abstractmethod
     def get_train_batch(self, batch_size: int):
@@ -53,7 +53,7 @@ class InfiniteDataset(Dataset):
 
     @property
     def validation_set(self):
-        return self.__task.get_batch(self.__validation_size)
+        return [self.__task.get_batch(self.__validation_size)]  # XXX FIXME add different lenghts
 
     def computer_error(self, t, y):
         return self.__task.error_fnc(t, y)

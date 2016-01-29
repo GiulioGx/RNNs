@@ -30,7 +30,7 @@ if __name__ == '__main__':
     n = TT.scalar('n', dtype='int32')
     combination = SimplexCombination(seed=14, normalize_components=False)
 
-    betas = combination.get_linear_coefficients(None, n)
+    betas = combination.get_linear_coefficients(TT.zeros((n,1)))
     f = T.function([n], [betas])
 
     betas_numpy = f(200)

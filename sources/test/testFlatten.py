@@ -6,7 +6,7 @@ from theano.tensor import slinalg as sli
 from theano.tensor.shared_randomstreams import RandomStreams
 
 from combiningRule.SimplexCombination import SimplexCombination
-from model import RnnGradient
+from model import RNNGradient
 from theanoUtils import as_vector, flatten_list_element
 
 a1 = TT.matrix()
@@ -17,7 +17,7 @@ b2 = TT.dcol()
 a = TT.as_tensor_variable([a1, a2])
 b = TT.as_tensor_variable([b1, b2])
 
-b = RnnGradient.fix(b, 2)
+b = RNNGradient.fix(b, 2)
 
 c = flatten_list_element([a, b], 2)
 

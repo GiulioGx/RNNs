@@ -6,6 +6,7 @@ from infos.SimpleInfoProducer import SimpleInfoProducer
 from infos.SymbolicInfoProducer import SymbolicInfoProducer
 from lossFunctions import LossFunction
 from model.Variables import Variables
+import theano.tensor as TT
 
 __author__ = 'giulio'
 
@@ -53,7 +54,11 @@ class ObjectiveFunction(SimpleInfoProducer):
             # separate
             separate_info = self.__grad_symbols.infos
 
-            self.__infos = separate_info + [loss, self.__grad_norm]
+            # DEBUG DIFF
+            #debug_diff = (self.grad - self.failsafe_grad).norm()
+            debug_diff = TT.alloc(-1)
+
+            self.__infos = separate_info + [loss, self.__grad_norm, debug_diff]
 
         def format_infos(self, infos_symbols):
             separate_info, infos_symbols = self.__grad_symbols.format_infos(infos_symbols)
@@ -64,9 +69,11 @@ class ObjectiveFunction(SimpleInfoProducer):
             loss_info = InfoGroup('loss', InfoList(loss_value_info, loss_grad_info))
             obj_info = InfoGroup('obj', InfoList(loss_info, separate_info))
 
-            info = obj_info
+            norm_diff_info = PrintableInfoElement('@@', '', infos_symbols[2].item())
 
-            return info, infos_symbols[loss_info.length:len(infos_symbols)]
+            info = InfoList(obj_info, norm_diff_info)
+
+            return info, infos_symbols[loss_info.length+1:len(infos_symbols)]
 
         @property
         def infos(self):

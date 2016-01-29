@@ -1,14 +1,14 @@
 import theano.tensor as TT
 from theano.ifelse import ifelse
 
-from model.RNNGradient import RnnGradient
+from model.RNNGradient import RNNGradient
 from model.Variables import Variables
 from theanoUtils import as_vector, norm2
 
 __author__ = 'giulio'
 
 
-class RnnVars(Variables):
+class RNNVars(Variables):
     def __init__(self, net, W_rec, W_in, W_out, b_rec, b_out):
         self.__net = net
         self.__W_rec = W_rec
@@ -42,28 +42,28 @@ class RnnVars(Variables):
         return norm2(self.__W_rec, self.__W_in, self.__W_out, self.__b_rec, self.__b_out)
 
     def scale_norms_as(self, other):
-        if not isinstance(other, RnnVars):
+        if not isinstance(other, RNNVars):
             raise TypeError('cannot perform this action with an object of type ' + str(type(other)))
-        return RnnVars(self.__net, self.__W_rec / self.__W_rec.norm(2) * other.W_rec.norm(2),
+        return RNNVars(self.__net, self.__W_rec / self.__W_rec.norm(2) * other.W_rec.norm(2),
                        self.__W_in / self.__W_in.norm(2) * other.W_in.norm(2),
                        self.__W_out / self.__W_out.norm(2) * other.W_out.nom(2)
                        , self.__b_rec / self.__b_rec.norm(2) * other.b_rec.norm(2),
                        self.__b_out / self.__b_out.norm(2) * other.b_out.norm(2))
 
     def __add__(self, other):
-        if not isinstance(other, RnnVars):
+        if not isinstance(other, RNNVars):
             raise TypeError(
                 'cannot add an object of type' + str(type(self)) + 'with an object of type ' + str(type(other)))
-        return RnnVars(self.__net, self.__W_rec + other.__W_rec, self.__W_in + other.__W_in,
+        return RNNVars(self.__net, self.__W_rec + other.__W_rec, self.__W_in + other.__W_in,
                        self.__W_out + other.__W_out,
                        self.__b_rec + other.__b_rec, self.__b_out + other.__b_out)
 
     def __sub__(self, other):
-        if not isinstance(other, RnnVars):
+        if not isinstance(other, RNNVars):
             raise TypeError(
                     'cannot subtract an object of type' + str(type(self)) + 'with an object of type ' + str(
                         type(other)))
-        return RnnVars(self.__net, self.__W_rec - other.__W_rec, self.__W_in - other.__W_in,
+        return RNNVars(self.__net, self.__W_rec - other.__W_rec, self.__W_in - other.__W_in,
                        self.__W_out - other.__W_out,
                        self.__b_rec - other.__b_rec, self.__b_out - other.__b_out)
 
@@ -71,21 +71,21 @@ class RnnVars(Variables):
         # if not isinstance(alpha, Number):
         #     raise TypeError('cannot multuple object of type ' + type(self),
         #                     ' with a non numeric type: ' + type(alpha))  # TODO theano scalar
-        return RnnVars(self.__net, self.__W_rec * alpha, self.__W_in * alpha, self.__W_out * alpha,
+        return RNNVars(self.__net, self.__W_rec * alpha, self.__W_in * alpha, self.__W_out * alpha,
                        self.__b_rec * alpha, self.__b_out * alpha)
 
     def __neg__(self):
         return self * (-1)
 
     def gradient(self, loss_fnc, u, t):
-        return RnnGradient(self, loss_fnc, u, t)
+        return RNNGradient(self, loss_fnc, u, t)
 
     def failsafe_grad(self, loss_fnc, u, t):  # FIXME XXX remove me
         y, _, _ = self.__net.net_output(self, u, self.__net.symbols.h_m1)
         loss = loss_fnc.value(y, t)
         gW_rec, gW_in, gW_out, \
         gb_rec, gb_out = TT.grad(loss, [self.__W_rec, self.__W_in, self.__W_out, self.__b_rec, self.__b_out])
-        return RnnVars(self.__net, gW_rec, gW_in, gW_out, gb_rec, gb_out)
+        return RNNVars(self.__net, W_rec=gW_rec, W_in=gW_in, W_out=gW_out, b_rec=gb_rec, b_out=gb_out)
 
     # XXX
     def to_zero_if(self, condition):

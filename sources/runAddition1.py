@@ -70,9 +70,9 @@ print(separator)
 seed = 13
 
 # network setup
-std_dev = 0.14  # 0.14 Tanh # 0.21 Relu
+std_dev = 0.11  # 0.14 Tanh # 0.21 Relu
 mean = 0
-rnn_initializer = RNNInitializer(W_rec_init=GaussianInit(mean=mean, std_dev=std_dev, seed=seed),
+rnn_initializer = RNNInitializer(W_rec_init=SpectralInit(GaussianInit(mean=mean, std_dev=std_dev, seed=seed), rho=1.1),
                                  W_in_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed),
                                  W_out_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed), b_rec_init=ConstantInit(0),
                                  b_out_init=ConstantInit(0))
@@ -104,10 +104,10 @@ loss_fnc = SquaredError()
 # dir_rule = FrozenGradient(penalty)
 # dir_rule = SepareteGradient()
 
-# combining_rule = OnesCombination(normalize_components=False)
-#combining_rule = SimplexCombination(normalize_components=True, seed=seed)
+#combining_rule = OnesCombination(normalize_components=True)
+combining_rule = SimplexCombination(normalize_components=True, seed=seed)
 # combining_rule = SimpleSum()
-combining_rule = EquiangularCombination()
+#combining_rule = EquiangularCombination()
 # combining_rule = DropoutCombination(drop_rate=0.8)
 # combining_rule = MedianCombination()
 dir_rule = CombinedGradients(combining_rule)

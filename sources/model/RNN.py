@@ -10,7 +10,7 @@ from infos.InfoGroup import InfoGroup
 from infos.InfoList import InfoList
 from initialization.MatrixInit import MatrixInit
 from model.RNNInitializer import RNNInitializer
-from model.RNNVars import RnnVars
+from model.RNNVars import RNNVars
 from output_fncs import OutputFunction
 
 __author__ = 'giulio'
@@ -86,12 +86,12 @@ class RNN(object):
         b_rec = TT.addbroadcast(TT.unbroadcast(b_rec_v.reshape((n_hidden, 1)), 0), 1)
         b_out = TT.addbroadcast(TT.unbroadcast(b_out_v.reshape((self.__n_out, 1)), 0), 1)
 
-        return RnnVars(self, W_rec, W_in, W_out, b_rec, b_out)
+        return RNNVars(self, W_rec, W_in, W_out, b_rec, b_out)
 
     def net_ouput_numpy(self, u):  # TODO names Theano T
         return self.__symbols.net_output_numpy(u)
 
-    def net_output(self, params: RnnVars, u, h_m1):
+    def net_output(self, params: RNNVars, u, h_m1):
         return self.__net_output(params.W_rec, params.W_in, params.W_out, params.b_rec, params.b_out, u, h_m1)
 
     def __net_output(self, W_rec, W_in, W_out, b_rec, b_out, u, h_m1):
@@ -203,7 +203,7 @@ class RNN(object):
             self.__b_out = T.shared(b_out, name='b_out_shared', broadcastable=(False, True))
 
             # current params
-            self.__current_params = RnnVars(self.__net, self.__W_rec, self.__W_in, self.__W_out, self.__b_rec,
+            self.__current_params = RNNVars(self.__net, self.__W_rec, self.__W_in, self.__W_out, self.__b_rec,
                                             self.__b_out)
 
             # define symbols
@@ -216,8 +216,8 @@ class RNN(object):
             self.u = TT.tensor3(name='u')  # input tensor
             self.t = TT.tensor3(name='t')  # target tensor
 
-            n_sequences = self.u.shape[2]  # initia
-            # l hidden values
+            n_sequences = self.u.shape[2]
+            # initial hidden values
             self.__h_m1 = TT.alloc(numpy.array(0., dtype=Configs.floatType), self.n_hidden, n_sequences)
             # self.__h_m1 = TT.addbroadcast(TT.alloc(numpy.array(0., dtype=Configs.floatType), n_sequences), 0)
 
@@ -245,7 +245,7 @@ class RNN(object):
                                                 (self.__b_out, TT.addbroadcast(b_out, 1))],
                                             name='extend_step')
 
-        def net_output(self, params: RnnVars, u):
+        def net_output(self, params: RNNVars, u):
             return self.__net_output(params.W_rec, params.W_in, params.W_out, params.b_rec, params.b_out, u)
 
         def __net_output(self, W_rec, W_in, W_out, b_rec, b_out, u):

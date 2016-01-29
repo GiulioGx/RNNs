@@ -29,12 +29,8 @@ class CombinedGradients(DescentDirectionRule):
             self.__direction = - self.__combined_grad_symbols.value
             self.__grad_dot = self.__direction.cos(obj_symbols.grad)
 
-            #self.__direction.to_zero_if(self.__grad_dot > -0.15) # XXX
-            diff_norm = (-obj_symbols.grad - self.__direction).norm()
-
             self.__infos = self.__combined_grad_symbols.infos + [self.__direction.norm(),
-                                                                 self.__grad_dot,
-                                                                 diff_norm]
+                                                                 self.__grad_dot]
 
         @property
         def direction(self):
@@ -48,7 +44,6 @@ class CombinedGradients(DescentDirectionRule):
             combining_info, infos_symbols = self.__combined_grad_symbols.format_infos(infos_symbols)
             dir_norm_info = PrintableInfoElement('dir_norm', ':07.3f', infos_symbols[0].item())
             dot_info = PrintableInfoElement('grad_dot', ':1.2f', infos_symbols[1].item())
-            norm_diff_info = PrintableInfoElement('@@', '', infos_symbols[2].item())
-            info = InfoList(combining_info, dir_norm_info, dot_info, norm_diff_info)
+            info = InfoList(combining_info, dir_norm_info, dot_info)
 
-            return info, infos_symbols[3:len(infos_symbols)]
+            return info, infos_symbols[2:len(infos_symbols)]
