@@ -1,5 +1,6 @@
 import theano.tensor as TT
 import theano as T
+from theano.ifelse import ifelse
 
 __author__ = 'giulio'
 
@@ -62,7 +63,7 @@ def fix_vector(v):
 
 def normalize(vector, norm_type=2):
     vector_norm = vector.norm(norm_type)
-    return TT.switch(vector_norm <= 0, vector, vector / vector_norm)
+    return ifelse(vector_norm <= 0, vector, vector / vector_norm)
 
 
 def get_norms(vec_list, n):

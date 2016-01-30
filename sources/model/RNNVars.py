@@ -3,7 +3,7 @@ from theano.ifelse import ifelse
 
 from model.RNNGradient import RNNGradient
 from model.Variables import Variables
-from theanoUtils import as_vector, norm2
+from theanoUtils import as_vector, norm2, normalize
 
 __author__ = 'giulio'
 
@@ -44,11 +44,11 @@ class RNNVars(Variables):
     def scale_norms_as(self, other):
         if not isinstance(other, RNNVars):
             raise TypeError('cannot perform this action with an object of type ' + str(type(other)))
-        return RNNVars(self.__net, self.__W_rec / self.__W_rec.norm(2) * other.W_rec.norm(2),
-                       self.__W_in / self.__W_in.norm(2) * other.W_in.norm(2),
-                       self.__W_out / self.__W_out.norm(2) * other.W_out.norm(2)
-                       , self.__b_rec / self.__b_rec.norm(2) * other.b_rec.norm(2),
-                       self.__b_out / self.__b_out.norm(2) * other.b_out.norm(2))
+        return RNNVars(self.__net, normalize(self.__W_rec) * other.W_rec.norm(2),
+                       normalize(self.__W_in) * other.W_in.norm(2),
+                       normalize(self.__W_out) * other.W_out.norm(2)
+                       , normalize(self.__b_rec) * other.b_rec.norm(2),
+                       normalize(self.__b_out) * other.b_out.norm(2))
 
     def __add__(self, other):
         if not isinstance(other, RNNVars):
@@ -61,8 +61,8 @@ class RNNVars(Variables):
     def __sub__(self, other):
         if not isinstance(other, RNNVars):
             raise TypeError(
-                    'cannot subtract an object of type' + str(type(self)) + 'with an object of type ' + str(
-                        type(other)))
+                'cannot subtract an object of type' + str(type(self)) + 'with an object of type ' + str(
+                    type(other)))
         return RNNVars(self.__net, self.__W_rec - other.__W_rec, self.__W_in - other.__W_in,
                        self.__W_out - other.__W_out,
                        self.__b_rec - other.__b_rec, self.__b_out - other.__b_out)
