@@ -6,11 +6,12 @@ from Configs import Configs
 from infos.InfoElement import SimpleDescription
 from task.Batch import Batch
 from task.Dataset import Dataset
+import theano.tensor as TT
 
 
 class MuseDataset(Dataset):
-    def __init__(self, pickle_filep_path: str, seed: int = Configs.seed):
-        dataset = pickle.load(open(pickle_filep_path, "rb"))
+    def __init__(self, pickle_file_path: str, seed: int = Configs.seed):
+        dataset = pickle.load(open(pickle_file_path, "rb"))
         self.__min_note_index = 21  # inclusive
         self.__max_note_index = 108  # inclusive
         self.__n_notes = self.__max_note_index - self.__min_note_index  # FOXME *2??
@@ -24,14 +25,17 @@ class MuseDataset(Dataset):
         return MuseDataset.__build_batch(example)
 
     def __pre_process_sequences(self, sequences):
+        max_length = 0
         processed_sequences = []
         for s in sequences:
             length = len(s)
+            max_length = max(max_length, length)
             inputs = numpy.zeros((length, self.n_in, 1), dtype=Configs.floatType)
             for t in range(length):
-                indexes = numpy.asarray(s[t], dtype='int32')-self.__min_note_index
+                indexes = numpy.asarray(s[t], dtype='int32') - self.__min_note_index
                 inputs[t, indexes, 0] = 1  # played note
             processed_sequences.append(inputs)
+        print('max_length: {}'.format(max_length))
         return processed_sequences
 
     @staticmethod
@@ -39,7 +43,7 @@ class MuseDataset(Dataset):
 
         batch_size = 1  # FIXME bacth_size is ignored
         length = len(example)
-        inputs = example[0:length-1, :, :]
+        inputs = example[0:length - 1, :, :]
         outputs = example[1:length, :, :]
         return Batch(inputs, outputs)
 
@@ -47,9 +51,8 @@ class MuseDataset(Dataset):
     def n_in(self):
         return self.__n_notes
 
-    @property
     def computer_error(self, t, y):
-        return 1  # XXX not sure what to do. is this meaningful for this dataset?
+        return TT.alloc(1)  # XXX not sure what to do. is this meaningful for this dataset?
 
     @property
     def n_out(self):
@@ -69,10 +72,11 @@ class MuseDataset(Dataset):
 
 if __name__ == '__main__':
     numpy.set_printoptions(threshold=numpy.inf)
-    seed = 99
+    seed = 56445
     pickle_file_path = '/home/giulio/RNNs/datasets/polyphonic/musedata/MuseData.pickle'
     print('Testing MuseDataset ...')
-    task = MuseDataset(seed = seed, pickle_filep_path=pickle_file_path)
+    task = MuseDataset(seed=seed, pickle_file_path=pickle_file_path)
     batch = task.get_train_batch(1)
     print(str(batch))
-
+    print('input batch shape: ', batch.inputs.shape)
+    print('output batch shape: ', batch.outputs.shape)

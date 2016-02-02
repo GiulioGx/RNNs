@@ -12,7 +12,7 @@ __author__ = 'giulio'
 class GradientClipping(LearningStepRule):
     class Symbols(LearningStepRule.Symbols):
         def __init__(self, rule, dir_symbols: DescentDirectionRule.Symbols):
-            norm = dir_symbols.direction.norm()
+            norm = dir_symbols.direction.norm(2)
             self.__learning_rate = ifelse(norm > rule.clip_thr, rule.clip_thr / norm * rule.lr_value, rule.lr_value)
 
         @property

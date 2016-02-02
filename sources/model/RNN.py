@@ -12,6 +12,7 @@ from initialization.MatrixInit import MatrixInit
 from model.RNNInitializer import RNNInitializer
 from model.RNNVars import RNNVars
 from output_fncs import OutputFunction
+from theanoUtils import as_vector
 
 __author__ = 'giulio'
 
@@ -186,13 +187,14 @@ class RNN(object):
     def extend_hidden_units(self, n_hidden: int):
         if n_hidden < self.n_hidden:
             raise ValueError(
-                    'new number of hidden units {()} must be bigger than the previous one {()} '.format(n_hidden,
-                                                                                                        self.n_hidden))
+                'new number of hidden units {()} must be bigger than the previous one {()} '.format(n_hidden,
+                                                                                                    self.n_hidden))
         self.symbols.extend_hidden_units(n_hidden, self.__initializer)
         self.__n_hidden = n_hidden
 
     class Symbols:
         def __init__(self, net, W_rec, W_in, W_out, b_rec, b_out):
+            self.__max_length = 200  # FOXME magic constant
             self.__net = net
 
             # define shared variables
@@ -255,7 +257,7 @@ class RNN(object):
             b_rec_fixes = []
             b_out_fixes = []
 
-            for i in range(200):  # FIXME max_lenght
+            for i in range(self.__max_length):  # FIXME max_lenght
                 W_rec_fixes.append(W_rec.clone())
                 W_in_fixes.append(W_in.clone())
                 W_out_fixes.append(W_out.clone())
@@ -284,6 +286,34 @@ class RNN(object):
             _, _, deriv_a = self.__net.net_output(params, self.u)
             return deriv_a
 
+        def compute_temporal_gradients(self, loss_fnc):  # XXX
+
+            loss = loss_fnc.value(self.y_shared, self.t)
+
+            def step(y_tp1, y_tm1, loss):
+                gW_rec, gW_in, gW_out, gb_rec, gb_out = T.grad(loss, [self.__W_rec, self.__W_in, self.__W_out, self.__b_rec, self.__b_out],
+                              consider_constant=[y_tp1, y_tm1])
+                return as_vector(gW_rec, gW_in, gW_out, gb_rec, gb_out)
+
+            values, _ = T.scan(step,
+                               sequences=dict(input=self.h_shared, taps=[+1, -1]),
+                               non_sequences=[loss],
+                               go_backwards=True,
+                               name='separate_grads_exp_scan')
+
+            vt = as_vector(*T.grad(loss, [self.__W_rec, self.__W_in, self.__W_out, self.__b_rec, self.__b_out],
+                                  consider_constant=[self.h_shared[-1]]))
+            v0 = as_vector(*T.grad(loss, [self.__W_rec, self.__W_in, self.__W_out, self.__b_rec, self.__b_out],
+                                  consider_constant=[self.h_shared[1]]))
+
+            v = values.squeeze()
+
+            V = values
+
+            V = TT.concatenate([v0.dimshuffle(1,0), v, vt.dimshuffle(1,0)], axis=0)
+
+            return V
+
         def extend_hidden_units(self, n_hidden: int, initializer: RNNInitializer):
             W_rec, W_in, W_out, b_rec, b_out = initializer.generate_variables(n_in=self.__net.n_in,
                                                                               n_out=self.__net.n_out,
@@ -294,7 +324,7 @@ class RNN(object):
             W_out[:, 0:h_prev] = self.__W_out.get_value()
             b_rec[0:h_prev, :] = self.__b_rec.get_value()
 
-            rho = MatrixInit.spectral_radius(W_rec) # XXX mettere a pulito
+            rho = MatrixInit.spectral_radius(W_rec)  # XXX mettere a pulito
             W_rec = W_rec / rho * 1.2
 
             self.__extend_step(W_rec, W_in, W_out, b_rec, b_out)
@@ -306,10 +336,10 @@ class RNN(object):
         @property  # XXX probably to remove
         def numeric_vector(self):
             return numpy.reshape(
-                    numpy.concatenate((self.__W_rec.get_value().flatten(), self.__W_in.get_value().flatten(),
-                                       self.__W_out.get_value().flatten(), self.__b_rec.get_value().flatten(),
-                                       self.__b_out.get_value().flatten())), (self.__net.n_variables, 1)).astype(
-                    dtype=Configs.floatType)
+                numpy.concatenate((self.__W_rec.get_value().flatten(), self.__W_in.get_value().flatten(),
+                                   self.__W_out.get_value().flatten(), self.__b_rec.get_value().flatten(),
+                                   self.__b_out.get_value().flatten())), (self.__net.n_variables, 1)).astype(
+                dtype=Configs.floatType)
 
         @property
         def W_rec_value(self):

@@ -1,6 +1,7 @@
 import theano.tensor as TT
 from theano.ifelse import ifelse
 
+from descentDirectionRule.DescentDirectionRule import DescentDirectionRule
 from model.RNNGradient import RNNGradient
 from model.Variables import Variables
 from theanoUtils import as_vector, norm2, normalize
@@ -38,7 +39,7 @@ class RNNVars(Variables):
     def cos(self, other):
         return self.dot(other) / (self.norm() * other.norm())
 
-    def norm(self):
+    def norm(self, L=2): # XXX
         return norm2(self.__W_rec, self.__W_in, self.__W_out, self.__b_rec, self.__b_out)
 
     def scale_norms_as(self, other):
@@ -76,6 +77,33 @@ class RNNVars(Variables):
 
     def __neg__(self):
         return self * (-1)
+
+    # XXX mettere a pulito
+    def step_as_direction(self, strategy):
+
+        class VarsSymbol(DescentDirectionRule.Symbols):
+
+            def __init__(self, vars):
+                self.__vars = vars
+
+            @property
+            def direction(self):
+                return self.__vars
+
+            def format_infos(self, infos):
+                pass
+
+            def infos(self):
+                pass
+
+        lr_w_rec =  strategy.compile(self.__net, None, VarsSymbol(self.__W_rec)).learning_rate
+        lr_w_in =  strategy.compile(self.__net, None, VarsSymbol(self.__W_in)).learning_rate
+        lr_w_out =  strategy.compile(self.__net, None, VarsSymbol(self.__W_out)).learning_rate
+        lr_b_rec =  strategy.compile(self.__net, None, VarsSymbol(self.__b_rec)).learning_rate
+        lr_b_out =  strategy.compile(self.__net, None, VarsSymbol(self.__b_out)).learning_rate
+
+        return RNNVars(self.__net, self.__W_rec * lr_w_rec, self.__W_in * lr_w_in, self.__W_out * lr_w_out,
+                       self.__b_rec * lr_b_rec, self.__b_out * lr_b_out)
 
     def gradient(self, loss_fnc, u, t):
         return RNNGradient(self, loss_fnc, u, t)

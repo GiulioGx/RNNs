@@ -94,7 +94,8 @@ class SGDTrainer(object):
         n_hidden_incr = 5
         n_hidden_incr_freq = 2000
 
-        while i < self.__max_it and best_error > self.__stop_error_thresh / 100 and (not error_occured):
+        while i < self.__max_it and best_error > self.__stop_error_thresh / 100 and (
+        not error_occured):  # FOXME strategy criterio d'arresto
 
             if incremental_hidden and (i + 1) % n_hidden_incr_freq == 0 and net.n_hidden < n_hidden_max:
                 new_hidden_number = net.n_hidden + n_hidden_incr
@@ -144,7 +145,7 @@ class SGDTrainer(object):
             logging.warning('Maximum number of iterations reached, stopping training...')
         elif best_error <= self.__stop_error_thresh / 100:
             logging.info('Training succeded, validation error below the given threshold({:.2%})'.format(
-                    self.__stop_error_thresh / 100))
+                self.__stop_error_thresh / 100))
         logging.info('Elapsed time: {:2.2f} min'.format((end_time - start_time) / 60))
         return net
 
