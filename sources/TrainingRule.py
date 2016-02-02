@@ -48,7 +48,7 @@ class TrainingRule(SimpleInfoProducer):
     class TrainCompiled(object):
         def __init__(self, rule, net, obj_fnc: ObjectiveFunction):
 
-            self.__separate = True
+            self.__separate = False
             net_symbols = net.symbols
             self.__obj_symbols = obj_fnc.compile(net, net_symbols.current_params, net_symbols.u,
                                                  net_symbols.t)

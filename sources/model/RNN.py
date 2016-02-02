@@ -246,6 +246,16 @@ class RNN(object):
                                                 (self.__b_rec, TT.addbroadcast(b_rec, 1)),
                                                 (self.__b_out, TT.addbroadcast(b_out, 1))],
                                             name='extend_step')
+            self.__trick()
+
+        def __trick(self):
+            # Trick to get dC/dh[k]
+            scan_node = self.h_shared.owner.inputs[0].owner
+            assert isinstance(scan_node.op, T.scan_module.scan_op.Scan)
+            n_pos = scan_node.op.n_seqs + 1
+            init_h = scan_node.inputs[n_pos]
+            print('npos ', n_pos)
+            print('init_h ', init_h)
 
         def net_output(self, params: RNNVars, u):
             return self.__net_output(params.W_rec, params.W_in, params.W_out, params.b_rec, params.b_out, u)
