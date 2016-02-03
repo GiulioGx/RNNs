@@ -24,7 +24,7 @@ c = flatten_list_element([a, b], 2)
 rule = SimplexCombination()
 symbols = rule.compile(c, 2)
 
-v = symbols.combination
+v = symbols.combine
 alphas = symbols.infos
 
 #from flattend

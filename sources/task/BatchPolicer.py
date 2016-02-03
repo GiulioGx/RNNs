@@ -1,6 +1,6 @@
 import abc
 from infos.InfoElement import SimpleDescription
-from infos.SimpleInfoProducer import SimpleInfoProducer
+from infos.InfoProducer import SimpleInfoProducer
 from task.Dataset import Dataset
 
 __author__ = 'giulio'

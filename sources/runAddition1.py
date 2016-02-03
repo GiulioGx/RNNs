@@ -1,57 +1,23 @@
 import theano
-from math import sqrt
 
-from ActivationFunction import Tanh, Relu
+from ActivationFunction import Tanh
 from Configs import Configs
-from SGDTrainer import SGDTrainer
 from ObjectiveFunction import ObjectiveFunction
+from SGDTrainer import SGDTrainer
 from TrainingRule import TrainingRule
-from descentDirectionRule.DropoutDirection import DropoutDirection
+from combiningRule.OnesCombination import OnesCombination
+from combiningRule.SimplexCombination import SimplexCombination
+from descentDirectionRule.CombinedGradients import CombinedGradients
 from initialization.ConstantInit import ConstantInit
-from initialization.EyeInit import EyeInit
-from initialization.OrtoghonalInit import OrtoghonalInit
-from initialization.SVDInit import SVDInit
-from initialization.SparseGaussianInit import SparseGaussianInit
-from initialization.SimplexInit import SimplexInit
-from initialization.SpectralInit import SpectralInit
-from initialization.UniformInit import UniformInit
-from lossFunctions.CrossEntropy import CrossEntropy
-from lossFunctions.HingeLoss import HingeLoss
-from lossFunctions.NullLoss import NullLoss
+from initialization.GaussianInit import GaussianInit
+from learningRule.GradientClipping import GradientClipping
 from lossFunctions.SquaredError import SquaredError
 from model.RNNBuilder import RNNBuilder
 from model.RNNInitializer import RNNInitializer
-from output_fncs.Softmax import Softmax
 from output_fncs.Linear import Linear
-from task.Dataset import Dataset, InfiniteDataset
-from task.TemporalOrderTask import TemporalOrderTask
-from task.XorTask import XorTask
-from task.XorTaskHot import XorTaskHot
-from updateRule.FixedAveragingOld import FixedAveragingOld
-from updateRule.FixedAveraging import FixedAveraging
-from updateRule.FixedAvgRemove import FixedAvgRemove
-from updateRule.Momentum import Momentum
-from updateRule.SimpleUpdate import SimpleUdpate
-from combiningRule.DropoutCombination import DropoutCombination
-from combiningRule.EquiangularCombination import EquiangularCombination
-from combiningRule.MedianCombination import MedianCombination
-from combiningRule.OnesCombination import OnesCombination
-from combiningRule.SimplexCombination import SimplexCombination
-from descentDirectionRule.AlternatingDirections import AlternatingDirections
-from descentDirectionRule.CombinedGradients import CombinedGradients
-from descentDirectionRule.DirectionWithPenalty import DirectionWithPenalty
-from initialization.GaussianInit import GaussianInit
-from initialization.ZeroInit import ZeroInit
-from learningRule.ArmijoStep import ArmijoStep
-from learningRule.ConstantNormalizedStep import ConstantNormalizedStep
-from learningRule.ConstantStep import ConstantStep
-from model.RNN import RNN
-from penalty.ConstantPenalty import ConstantPenalty
-from penalty.MeanPenalty import MeanPenalty
-from penalty.NullPenalty import NullPenalty
 from task.AdditionTask import AdditionTask
-from learningRule.GradientClipping import GradientClipping
-from task.MultiplicationTask import MultiplicationTask
+from task.Dataset import InfiniteDataset
+from updateRule.SimpleUpdate import SimpleUdpate
 
 __author__ = 'giulio'
 
@@ -80,7 +46,7 @@ net_builder = RNNBuilder(initializer=rnn_initializer, activation_fnc=Tanh(), out
 
 # setup
 task = AdditionTask(144, seed)
-out_dir = Configs.output_dir + str(task)
+out_dir = Configs.output_dir + str(task)+'debug'
 loss_fnc = SquaredError()
 
 # # HF init
@@ -104,8 +70,8 @@ loss_fnc = SquaredError()
 # dir_rule = FrozenGradient(penalty)
 # dir_rule = SepareteGradient()
 
-combining_rule = OnesCombination(normalize_components=False)
-#combining_rule = SimplexCombination(normalize_components=True, seed=seed)
+#combining_rule = OnesCombination(normalize_components=False)
+combining_rule = SimplexCombination(normalize_components=True, seed=seed)
 # combining_rule = SimpleSum()
 #combining_rule = EquiangularCombination()
 # combining_rule = DropoutCombination(drop_rate=0.8)
@@ -118,17 +84,16 @@ dir_rule = CombinedGradients(combining_rule)
 # learning step rule
 # lr_rule = WRecNormalizedStep(0.0001) #0.01
 # lr_rule = ConstantNormalizedStep(0.001)  # 0.01
-lr_rule = GradientClipping(lr_value=3e-7, clip_thr=1, normalize_wrt_dimension=True)  # 0.01
+lr_rule = GradientClipping(lr_value=0.003 * 1e-4, clip_thr=1, normalize_wrt_dimension=True)  # 0.01
 # lr_rule = ArmijoStep(alpha=0.5, beta=0.1, init_step=1, max_steps=50)
-obj_fnc = ObjectiveFunction(loss_fnc)
 
 #update_rule = FixedAveraging(t=10)
 update_rule = SimpleUdpate()
 # update_rule = Momentum(gamma=0.1)
 
-train_rule = TrainingRule(dir_rule, lr_rule, update_rule)
+train_rule = TrainingRule(dir_rule, lr_rule, update_rule, loss_fnc)
 
-trainer = SGDTrainer(train_rule, obj_fnc, output_dir=out_dir, max_it=10 ** 10,
+trainer = SGDTrainer(train_rule, output_dir=out_dir, max_it=10 ** 10,
                      check_freq=200, batch_size=100, stop_error_thresh=0.1)
 
 # dataset = Dataset.no_valid_dataset_from_task(size=1000, task=task)

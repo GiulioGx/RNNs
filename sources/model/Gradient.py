@@ -1,7 +1,7 @@
 import abc
 
 from combiningRule.CombiningRule import CombiningRule
-from infos.SymbolicInfoProducer import SymbolicInfoProducer
+from oldies.SymbolicInfoProducer import SymbolicInfoProducer
 
 __author__ = 'giulio'
 
@@ -11,7 +11,7 @@ class Gradient(SymbolicInfoProducer):
 
     @abc.abstractmethod
     def temporal_combination(self, strategy: CombiningRule):
-        """return a 'Combination' class which represents the combination of the gradients defined by 'strategy'"""
+        """return a 'Combination' class which represents the combine of the gradients defined by 'strategy'"""
 
     @abc.abstractproperty
     def value(self):

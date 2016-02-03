@@ -3,7 +3,7 @@ import abc
 from infos.InfoElement import SimpleDescription, PrintableInfoElement
 from infos.InfoGroup import InfoGroup
 from infos.InfoList import InfoList
-from infos.SimpleInfoProducer import SimpleInfoProducer
+from infos.InfoProducer import SimpleInfoProducer
 from task.Batch import Batch
 from task.Task import Task
 import numpy

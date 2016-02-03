@@ -22,8 +22,8 @@ class FixedAvgRemove(UpdateRule):
     def t(self):
         return self.__t
 
-    def compile(self, net, net_symbols, lr_symbols: LearningStepRule.Symbols,
-                dir_symbols: DescentDirectionRule.Symbols):
+    def compute_update(self, net, net_symbols, lr_symbols: LearningStepRule.Symbols,
+                       dir_symbols: DescentDirectionRule.Symbols):
         return FixedAvgRemove.Symbols(self, net, net_symbols, lr_symbols, dir_symbols)
 
     class Symbols(UpdateRule.Symbols):

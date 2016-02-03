@@ -4,7 +4,7 @@ from infos.Info import NullInfo
 from infos.InfoElement import PrintableInfoElement
 from infos.InfoGroup import InfoGroup
 from infos.InfoList import InfoList
-from infos.SimpleInfoProducer import SimpleInfoProducer
+from infos.InfoProducer import SimpleInfoProducer
 from task import Task
 from task.Batch import Batch
 import numpy

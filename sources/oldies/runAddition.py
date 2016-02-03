@@ -1,53 +1,22 @@
 import theano
-from math import sqrt
 
-from ActivationFunction import Tanh, Relu
+from ActivationFunction import Tanh
 from Configs import Configs
-from SGDTrainer import SGDTrainer
 from ObjectiveFunction import ObjectiveFunction
+from SGDTrainer import SGDTrainer
 from TrainingRule import TrainingRule
-from descentDirectionRule.DropoutDirection import DropoutDirection
+from combiningRule.SimplexCombination import SimplexCombination
+from descentDirectionRule.CombinedGradients import CombinedGradients
 from initialization.ConstantInit import ConstantInit
-from initialization.EyeInit import EyeInit
-from initialization.OrtoghonalInit import OrtoghonalInit
 from initialization.SparseGaussianInit import SparseGaussianInit
-from initialization.SimplexInit import SimplexInit
 from initialization.SpectralInit import SpectralInit
-from initialization.UniformInit import UniformInit
-from lossFunctions.CrossEntropy import CrossEntropy
-from lossFunctions.HingeLoss import HingeLoss
-from lossFunctions.NullLoss import NullLoss
+from learningRule.GradientClipping import GradientClipping
 from lossFunctions.SquaredError import SquaredError
 from model.RNNBuilder import RNNBuilder
-from output_fncs.Softmax import Softmax
+from oldies.FixedAveragingOld import FixedAveragingOld
 from output_fncs.Linear import Linear
-from task.Dataset import Dataset, InfiniteDataset
-from task.TemporalOrderTask import TemporalOrderTask
-from task.XorTask import XorTask
-from task.XorTaskHot import XorTaskHot
-from updateRule.FixedAveragingOld import FixedAveragingOld
-from updateRule.Momentum import Momentum
-from updateRule.SimpleUpdate import SimpleUdpate
-from combiningRule.DropoutCombination import DropoutCombination
-from combiningRule.EquiangularCombination import EquiangularCombination
-from combiningRule.MedianCombination import MedianCombination
-from combiningRule.OnesCombination import OnesCombination
-from combiningRule.SimplexCombination import SimplexCombination
-from descentDirectionRule.AlternatingDirections import AlternatingDirections
-from descentDirectionRule.CombinedGradients import CombinedGradients
-from descentDirectionRule.DirectionWithPenalty import DirectionWithPenalty
-from initialization.GaussianInit import GaussianInit
-from initialization.ZeroInit import ZeroInit
-from learningRule.ArmijoStep import ArmijoStep
-from learningRule.ConstantNormalizedStep import ConstantNormalizedStep
-from learningRule.ConstantStep import ConstantStep
-from model.RNN import RNN
-from penalty.ConstantPenalty import ConstantPenalty
-from penalty.MeanPenalty import MeanPenalty
-from penalty.NullPenalty import NullPenalty
 from task.AdditionTask import AdditionTask
-from learningRule.GradientClipping import GradientClipping
-from task.MultiplicationTask import MultiplicationTask
+from task.Dataset import InfiniteDataset
 
 __author__ = 'giulio'
 

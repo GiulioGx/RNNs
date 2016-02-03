@@ -1,13 +1,10 @@
-import abc
+import theano.tensor as TT
 
 from ObjectiveFunction import ObjectiveFunction
 from descentDirectionRule.DescentDirectionRule import DescentDirectionRule
 from infos.InfoList import InfoList
-from infos.SimpleInfoProducer import SimpleInfoProducer
-from infos.SymbolicInfoProducer import SymbolicInfoProducer
+from oldies.SymbolicInfoProducer import SymbolicInfoProducer
 from penalty import Penalty
-import theano.tensor as TT
-
 from theanoUtils import is_inf_or_nan
 
 __author__ = 'giulio'
@@ -42,11 +39,11 @@ class DirectionWithPenalty(DescentDirectionRule):
 
     class Symbols(SymbolicInfoProducer):
         def __init__(self, rule, net_symbols, obj_symbols: ObjectiveFunction.Symbols):
-            self.__dir_symbols = rule.descent_dir.compile(net_symbols, obj_symbols)
+            self.__dir_symbols = rule.descent_dir.compute_update(net_symbols, obj_symbols)
             dir_infos = self.__dir_symbols.infos
 
             # add penalty
-            self.__penalty_symbols = rule.penalty.compile(net_symbols.current_params, net_symbols)
+            self.__penalty_symbols = rule.penalty.compute_update(net_symbols.current_params, net_symbols)
             penalty_infos = self.__penalty_symbols.infos
             penalty_grad = self.__penalty_symbols.penalty_grad
 

@@ -1,21 +1,11 @@
 import abc
 
-from descentDirectionRule.DescentDirectionRule import DescentDirectionRule
-from infos.SimpleInfoProducer import SimpleInfoProducer
-from infos.SymbolicInfoProducer import SymbolicInfoProducer
-from learningRule.LearningRule import LearningStepRule
+from infos.InfoProducer import SimpleInfoProducer
 
 
 class UpdateRule(SimpleInfoProducer):
     __metaclass__ = abc.ABCMeta
 
     @abc.abstractmethod
-    def compile(self, net, net_symbols, lr_symbols:LearningStepRule.Symbols, dir_symbols:DescentDirectionRule.Symbols):
-        """returns the compiled Symbols"""
-
-    class Symbols(SymbolicInfoProducer):
-        __metaclass__ = abc.ABCMeta
-
-        @abc.abstractproperty
-        def update_list(self):
-            """list of theano updates"""
+    def compute_update(self, net, lr, direction):
+        """returns the update list with the new params for the theano function"""

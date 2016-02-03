@@ -30,8 +30,8 @@ class FixedAveraging(UpdateRule):
     def t(self):
         return self.__t
 
-    def compile(self, net, net_symbols, lr_symbols: LearningStepRule.Symbols,
-                dir_symbols: DescentDirectionRule.Symbols):
+    def compute_update(self, net, net_symbols, lr_symbols: LearningStepRule.Symbols,
+                       dir_symbols: DescentDirectionRule.Symbols):
         return FixedAveraging.Symbols(self, net, net_symbols, lr_symbols, dir_symbols)
 
     class Symbols(UpdateRule.Symbols):
@@ -114,8 +114,8 @@ if __name__ == '__main__':
     descent_rule = FakeDirection(constant_value)
     update_rule = FixedAveraging(t=t)
     lr_rule = ConstantStep(lr_value=1)
-    update_symbols = update_rule.compile(net, net.symbols, lr_rule.compile(None, None, None),
-                                         descent_rule.compile(None, None))
+    update_symbols = update_rule.compute_update(net, net.symbols, lr_rule.compile(None, None, None),
+                                                descent_rule.compile(None, None))
     updates = update_symbols.update_list
 
     step = T.function([], [],

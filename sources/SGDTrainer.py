@@ -14,6 +14,7 @@ from TrainingRule import TrainingRule
 from infos.InfoElement import PrintableInfoElement
 from infos.InfoGroup import InfoGroup
 from infos.InfoList import InfoList
+from lossFunctions import LossFunction
 from model.RNN import RNN
 from model.RNNBuilder import RNNBuilder
 from output_fncs.OutputFunction import OutputFunction
@@ -25,11 +26,10 @@ __author__ = 'giulio'
 
 
 class SGDTrainer(object):
-    def __init__(self, training_rule: TrainingRule, obj_fnc: ObjectiveFunction, max_it=10 ** 5, batch_size=100,
+    def __init__(self, training_rule: TrainingRule, max_it=10 ** 5, batch_size=100,
                  stop_error_thresh=0.01, check_freq=50, output_dir='.'):
 
         self.__training_rule = training_rule
-        self.__obj_fnc = obj_fnc
         self.__max_it = max_it
         self.__batch_size = batch_size
         self.__stop_error_thresh = stop_error_thresh
@@ -44,8 +44,7 @@ class SGDTrainer(object):
                                                            PrintableInfoElement('check_freq', ':d', self.__check_freq),
                                                            PrintableInfoElement('batch_size', ':d', self.__batch_size),
                                                            PrintableInfoElement('stop_error_thresh', ':f',
-                                                                                self.__stop_error_thresh),
-                                                           self.__obj_fnc.infos
+                                                                                self.__stop_error_thresh)
                                                            ))
 
     def _train(self, dataset: Dataset, net):
@@ -53,9 +52,9 @@ class SGDTrainer(object):
         self.__training_settings_info = InfoList(self.__training_settings_info,
                                                  PrintableInfoElement('task', '', str(dataset)))
 
-        # compile symbols
+        # compute_update symbols
         logging.info('Compiling theano functions for the training step...')
-        train_step = self.__training_rule.compile(net, self.__obj_fnc)
+        train_step = self.__training_rule.compile(net)
         logging.info('... Done')
 
         #  loss and error theano fnc
@@ -63,7 +62,7 @@ class SGDTrainer(object):
         t = net.symbols.t
         y = net.symbols.y_shared
         error = dataset.computer_error(y, t)
-        loss = self.__obj_fnc.loss(y, t)
+        loss = self.__training_rule.loss_fnc.value(y, t)
         self.__loss_and_error = T.function([u, t], [error, loss], name='loss_and_error_fnc')
 
         # training statistics

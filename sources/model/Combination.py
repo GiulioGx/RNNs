@@ -1,6 +1,6 @@
 import abc
 
-from infos.SymbolicInfoProducer import SymbolicInfoProducer
+from oldies.SymbolicInfoProducer import SymbolicInfoProducer
 
 __author__ = 'giulio'
 
@@ -10,4 +10,4 @@ class Combination(SymbolicInfoProducer):
 
     @abc.abstractproperty
     def value(self):
-        """return a 'Variables' class which represents the combination"""
+        """return a 'Variables' class which represents the combine"""

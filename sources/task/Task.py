@@ -1,6 +1,6 @@
 import abc
 
-from infos.SimpleInfoProducer import SimpleInfoProducer
+from infos.InfoProducer import SimpleInfoProducer
 from task import Batch
 
 __author__ = 'giulio'

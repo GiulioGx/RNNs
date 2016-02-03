@@ -1,96 +1,68 @@
-from combiningRule.LinearCombination import LinearCombination
+import theano.tensor as TT
+
+from infos.Info import Info
 from infos.InfoElement import PrintableInfoElement
 from infos.InfoGroup import InfoGroup
 from infos.InfoList import InfoList
-from infos.SimpleInfoProducer import SimpleInfoProducer
-from infos.SymbolicInfoProducer import SymbolicInfoProducer
+from infos.InfoProducer import SimpleInfoProducer
+from infos.SymbolicInfo import SymbolicInfo
 from lossFunctions import LossFunction
 from model.Variables import Variables
-import theano.tensor as TT
 
 __author__ = 'giulio'
 
 
 class ObjectiveFunction(SimpleInfoProducer):
-    @property
-    def infos(self):
-        return self.__loss_fnc.infos
-
-    def __init__(self, loss_fnc: LossFunction):
+    def __init__(self, loss_fnc: LossFunction, net, params: Variables, u, t):
+        self.__net = net
         self.__loss_fnc = loss_fnc
 
-    def compile(self, net, params: Variables, u, t):
-        return ObjectiveFunction.Symbols(self, net, params, u, t)
+        self.__u = u
+        self.__t = t
+        self.__params = params
 
-    def loss(self, y, t):  # loss without penalty
-        return self.__loss_fnc.value(y, t)
+        # XXX REMOVE (?)
+        self.failsafe_grad = self.__params.failsafe_grad(self.__loss_fnc, self.__u, self.__t)
+        self.__grad = self.__params.gradient(self.__loss_fnc, self.__u, self.__t)
+
+        self.__objective_value = self.__grad.loss_value
+        grad_norm = self.__grad.value.norm()
+
+        # separate
+        gradient_info = self.__grad.temporal_norms_infos
+
+        # DEBUG DIFF
+        # debug_diff = (self.grad - self.failsafe_grad).norm()
+        debug_diff = TT.alloc(-1)
+
+        self.__infos = ObjectiveFunction.Info(gradient_info, self.__objective_value, grad_norm, debug_diff)
 
     @property
-    def loss_fnc(self):
-        return self.__loss_fnc
+    def infos(self):
+        return self.__infos
 
-    class Symbols(SymbolicInfoProducer):
-        def __init__(self, obj_fnc, net, params, u, t):
-            self.__net = net
-            self.__obj_fnc = obj_fnc
+    @property
+    def grad(self):
+        return self.__grad
 
-            self.__u = u
-            self.__t = t
-            self.__params = params
+    class Info(SymbolicInfo):
+        def __init__(self, gradient_info, objective_value, grad_norm, debug_diff):
+            self.__symbols = [objective_value, grad_norm, debug_diff] + gradient_info.symbols
+            self.__symbolic_gradient_info = gradient_info
 
-            # XXX REMOVE (?)
-            self.failsafe_grad = self.__params.failsafe_grad(self.__obj_fnc.loss_fnc, self.__u, self.__t)
+        def fill_symbols(self, symbols_replacements: list) -> Info:
+            loss_value_info = PrintableInfoElement('value', ':07.3f', symbols_replacements[0].item())
+            loss_grad_info = PrintableInfoElement('grad', ':07.3f', symbols_replacements[1].item())
+            norm_diff_info = PrintableInfoElement('@@', '', symbols_replacements[2].item())
 
-            self.__grad_symbols = self.__params.gradient(self.__obj_fnc.loss_fnc, self.__u, self.__t)
-            self.__grad = self.__grad_symbols.value
-
-            # y, _ = self.__net.net_output(self, u)
-            # loss = loss_fnc(y, t)
-
-            loss = self.__grad_symbols.loss_value
-            self.__objective_value = loss
-            self.__grad_norm = self.__grad.norm()
-
-            # separate
-            separate_info = self.__grad_symbols.infos
-
-            # DEBUG DIFF
-            #debug_diff = (self.grad - self.failsafe_grad).norm()
-            debug_diff = TT.alloc(-1)
-
-            self.__infos = separate_info + [loss, self.__grad_norm, debug_diff]
-
-        def format_infos(self, infos_symbols):
-            separate_info, infos_symbols = self.__grad_symbols.format_infos(infos_symbols)
-
-            loss_value_info = PrintableInfoElement('value', ':07.3f', infos_symbols[0].item())
-            loss_grad_info = PrintableInfoElement('grad', ':07.3f', infos_symbols[1].item())
+            gradient_info = self.__symbolic_gradient_info.fill_symbols(symbols_replacements[3:])
 
             loss_info = InfoGroup('loss', InfoList(loss_value_info, loss_grad_info))
-            obj_info = InfoGroup('obj', InfoList(loss_info, separate_info))
-
-            norm_diff_info = PrintableInfoElement('@@', '', infos_symbols[2].item())
+            obj_info = InfoGroup('obj', InfoList(loss_info, gradient_info))
 
             info = InfoList(obj_info, norm_diff_info)
-
-            return info, infos_symbols[loss_info.length+1:len(infos_symbols)]
-
-        @property
-        def infos(self):
-            return self.__infos
+            return info
 
         @property
-        def objective_value(self):
-            return self.__objective_value
-
-        @property
-        def grad(self):
-            return self.__grad
-
-        @property
-        def grad_norm(self):
-            return self.__grad_norm
-
-        def grad_combination(self, strategy: LinearCombination):
-            # separate time steps value
-            return self.__grad_symbols.temporal_combination(strategy)
+        def symbols(self):
+            return self.__symbols

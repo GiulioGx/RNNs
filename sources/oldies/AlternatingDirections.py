@@ -22,7 +22,7 @@ class AlternatingDirections(DescentDirectionRule):
 
     class Symbols(DescentDirectionRule.Symbols):
         def __init__(self, rule, net_symbols, obj_symbols: ObjectiveFunction.Symbols):
-            self.__compiled_strategy = rule.main_strategy.compile(net_symbols, obj_symbols)
+            self.__compiled_strategy = rule.main_strategy.compute_update(net_symbols, obj_symbols)
 
             gradient = obj_symbols.grad
 

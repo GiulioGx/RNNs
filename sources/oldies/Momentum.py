@@ -18,8 +18,8 @@ class Momentum(UpdateRule):
     def gamma(self):
         return self.__gamma
 
-    def compile(self, net, net_symbols, lr_symbols: LearningStepRule.Symbols,
-                dir_symbols: DescentDirectionRule.Symbols):
+    def compute_update(self, net, net_symbols, lr_symbols: LearningStepRule.Symbols,
+                       dir_symbols: DescentDirectionRule.Symbols):
         return Momentum.Symbols(self, net, net_symbols, lr_symbols, dir_symbols)
 
     @property

@@ -1,21 +1,21 @@
 import numpy
-import theano.tensor as TT
 import theano as T
+import theano.tensor as TT
 
 from ActivationFunction import Tanh
 from Configs import Configs
 from descentDirectionRule.DescentDirectionRule import DescentDirectionRule
+from infos.Info import NullInfo
+from infos.InfoElement import PrintableInfoElement
 from infos.InfoGroup import InfoGroup
 from infos.InfoList import InfoList
 from initialization.ConstantInit import ConstantInit
 from learningRule.ConstantStep import ConstantStep
 from learningRule.LearningRule import LearningStepRule
 from model import RNNInitializer, RNNBuilder
+from oldies.FixedAveraging import FixedAveraging
 from output_fncs.Linear import Linear
-from updateRule.FixedAveraging import FixedAveraging
 from updateRule.UpdateRule import UpdateRule
-from infos.Info import NullInfo
-from infos.InfoElement import PrintableInfoElement
 
 
 class FixedAveragingOld(UpdateRule):
@@ -30,8 +30,8 @@ class FixedAveragingOld(UpdateRule):
     def t(self):
         return self.__t
 
-    def compile(self, net, net_symbols, lr_symbols: LearningStepRule.Symbols,
-                dir_symbols: DescentDirectionRule.Symbols):
+    def compute_update(self, net, net_symbols, lr_symbols: LearningStepRule.Symbols,
+                       dir_symbols: DescentDirectionRule.Symbols):
         return FixedAveragingOld.Symbols(self, net, net_symbols, lr_symbols, dir_symbols)
 
     class Symbols(UpdateRule.Symbols):
@@ -108,8 +108,8 @@ if __name__ == '__main__':
     descent_rule = FakeDirection(constant_value)
     update_rule = FixedAveraging(t=t)
     lr_rule = ConstantStep(lr_value=1)
-    update_symbols = update_rule.compile(net, net.symbols, lr_rule.compile(None, None, None),
-                                         descent_rule.compile(None, None))
+    update_symbols = update_rule.compute_update(net, net.symbols, lr_rule.compile(None, None, None),
+                                                descent_rule.compile(None, None))
     updates = update_symbols.update_list
 
     step = T.function([], [],

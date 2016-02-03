@@ -1,8 +1,8 @@
 import abc
 
-from infos.SimpleInfoProducer import SimpleInfoProducer
-from infos.SymbolicInfoProducer import SymbolicInfoProducer
+from infos.InfoProducer import SimpleInfoProducer
 from model.Variables import Variables
+from oldies.SymbolicInfoProducer import SymbolicInfoProducer
 
 __author__ = 'giulio'
 

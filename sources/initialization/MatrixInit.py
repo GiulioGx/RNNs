@@ -2,7 +2,7 @@ import abc
 import numpy
 
 from infos.InfoElement import SimpleDescription
-from infos.SimpleInfoProducer import SimpleInfoProducer
+from infos.InfoProducer import SimpleInfoProducer
 
 
 __author__ = 'giulio'

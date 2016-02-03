@@ -1,5 +1,5 @@
 from ActivationFunction import ActivationFunction, Tanh
-from infos.SimpleInfoProducer import SimpleInfoProducer
+from infos.InfoProducer import SimpleInfoProducer
 from output_fncs import OutputFunction
 from output_fncs.Linear import Linear
 from model.RNNInitializer import RNNInitializer

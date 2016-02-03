@@ -1,6 +1,6 @@
 from descentDirectionRule.DescentDirectionRule import DescentDirectionRule
-from descentDirectionRule.AntiGradientWithPenalty import AntiGradientWithPenalty
-from infos.InfoElement import PrintableInfoElement, SimpleDescription
+from infos.InfoElement import SimpleDescription
+from oldies.AntiGradientWithPenalty import AntiGradientWithPenalty
 from penalty.NullPenalty import NullPenalty
 
 __author__ = 'giulio'

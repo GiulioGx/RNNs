@@ -1,5 +1,5 @@
 import abc
-from infos.SimpleInfoProducer import SimpleInfoProducer
+from infos.InfoProducer import SimpleInfoProducer
 
 __author__ = 'giulio'
 

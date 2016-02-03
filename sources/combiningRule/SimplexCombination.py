@@ -25,17 +25,13 @@ class SimplexCombination(LinearCombination):
     def infos(self):
         return InfoGroup('simplex_combination', super(SimplexCombination, self).infos)
 
+
 if __name__ == '__main__':
-
     n = TT.scalar('n', dtype='int32')
-    combination = SimplexCombination(seed=14, normalize_components=False)
+    combination = SimplexCombination(seed=14, normalize_components=False)  # XXX probably broken
 
-    betas = combination.get_linear_coefficients(TT.zeros((n,1)))
+    betas = combination.get_linear_coefficients(TT.zeros((n, 1)))
     f = T.function([n], [betas])
 
     betas_numpy = f(200)
     print('betas', betas_numpy)
-
-
-
-

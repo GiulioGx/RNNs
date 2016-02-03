@@ -1,7 +1,7 @@
 from Configs import Configs
 from infos.InfoGroup import InfoGroup
 from infos.InfoList import InfoList
-from infos.SimpleInfoProducer import SimpleInfoProducer
+from infos.InfoProducer import SimpleInfoProducer
 from initialization.GaussianInit import GaussianInit
 from initialization.MatrixInit import MatrixInit
 

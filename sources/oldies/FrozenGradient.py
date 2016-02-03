@@ -25,8 +25,8 @@ class FrozenGradient(DescentDirectionRule):
 
     class Symbols(DescentDirectionRule.Symbols):
         def __init__(self, rule, net_symbols, obj_symbols):
-            # compile penalty
-            self.__penalty_symbols = rule.penalty.compile(net_symbols.current_params, net_symbols)
+            # compute_update penalty
+            self.__penalty_symbols = rule.penalty.compute_update(net_symbols.current_params, net_symbols)
 
             penalty_grad = self.__penalty_symbols.penalty_grad
 

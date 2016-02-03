@@ -26,7 +26,7 @@ class MidAnglePenaltyDirection(DescentDirectionRule):
     class Symbols(DescentDirectionRule.Symbols):
         def __init__(self, rule, net_symbols, obj_symbols):
             # add penalty term
-            self.__penalty_symbols = rule.penalty.compile(net_symbols.current_params, net_symbols)
+            self.__penalty_symbols = rule.penalty.compute_update(net_symbols.current_params, net_symbols)
 
             penalty_grad = self.__penalty_symbols.penalty_grad
             penalty_grad_norm = norm(penalty_grad)

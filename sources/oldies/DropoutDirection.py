@@ -38,7 +38,7 @@ class DropoutDirection(DescentDirectionRule):
 
     class Symbols(DescentDirectionRule.Symbols):
         def __init__(self, rule, net_symbols, obj_symbols: ObjectiveFunction.Symbols):
-            self.__dir_symbols = rule.dir_rule.compile(net_symbols, obj_symbols)
+            self.__dir_symbols = rule.dir_rule.compute_update(net_symbols, obj_symbols)
 
             v = self.__dir_symbols.direction.as_tensor()
             coeff = rule.generate_coeff(v.shape)

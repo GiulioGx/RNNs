@@ -2,39 +2,33 @@ import numpy
 from theano import tensor as TT
 
 from Configs import Configs
+from ObjectiveFunction import ObjectiveFunction
+from infos.Info import Info
 from infos.InfoElement import PrintableInfoElement
+from infos.InfoGroup import InfoGroup
+from infos.InfoList import InfoList
+from infos.SymbolicInfo import SymbolicInfo
 from learningRule.LearningRule import LearningStepRule
 
 __author__ = 'giulio'
 
 
 class ConstantStep(LearningStepRule):
-    class Symbols(LearningStepRule.Symbols):
-        def __init__(self, rule):
-            self.__learning_rate = TT.alloc(numpy.array(rule.lr_value, dtype=Configs.floatType))
+    def compute_lr(self, net, obj_fnc: ObjectiveFunction, direction):
 
-        @property
-        def learning_rate(self):
-            return self.__learning_rate
+        if self.__normalized_wrt_dir_norm:
+            lr = TT.alloc(numpy.array(self.__lr_value, dtype=Configs.floatType)) / direction.norm()
+        else:
+            lr = TT.alloc(numpy.array(self.__lr_value, dtype=Configs.floatType))
 
-        @property
-        def infos(self):
-            return [self.__learning_rate]
+        return lr, LearningStepRule.Infos(lr)
 
-        def format_infos(self, infos_symbols):
-            lr_info = PrintableInfoElement('lr', ':02.2e', infos_symbols[0].item())
-            return lr_info, infos_symbols[lr_info.length:len(infos_symbols)]
-
-    def __init__(self, lr_value=0.001):
+    def __init__(self, lr_value=0.001, normalized_wrt_dir_norm: bool = False):
         self.__lr_value = lr_value
-
-    @property
-    def lr_value(self):
-        return self.__lr_value
+        self.__normalized_wrt_dir_norm = normalized_wrt_dir_norm
 
     @property
     def infos(self):
-        return PrintableInfoElement('constant_step', ':02.2e', self.__lr_value)
+        return InfoGroup('constant step', InfoList(PrintableInfoElement('constant_step', ':02.2e', self.__lr_value),
+                         PrintableInfoElement('normalized', '', self.__normalized_wrt_dir_norm)))
 
-    def compile(self, net, obj_fnc, dir_symbols):
-        return ConstantStep.Symbols(self)

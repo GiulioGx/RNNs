@@ -1,8 +1,10 @@
 import theano.tensor as TT
+import theano as T
 from theano.ifelse import ifelse
 
-from descentDirectionRule.DescentDirectionRule import DescentDirectionRule
+from infos.Info import Info
 from infos.InfoList import InfoList
+from infos.SymbolicInfo import SymbolicInfo
 from model.RNNGradient import RNNGradient
 from model.Variables import Variables
 from theanoUtils import as_vector, norm2, normalize
@@ -79,60 +81,70 @@ class RNNVars(Variables):
     def __neg__(self):
         return self * (-1)
 
-    # XXX mettere a pulito
-    def format_lr_info(self, infos_symbols):
-        lr_w_rec_info, infos_symbols = self.__lr_w_rec_symbols.format_infos(infos_symbols)
-        #print(str(lr_w_rec_info))
-        lr_w_in_info, infos_symbols = self.__lr_w_in_symbols.format_infos(infos_symbols)
-        lr_w_out_info, infos_symbols = self.__lr_w_out_symbols.format_infos(infos_symbols)
-        lr_b_rec_info, infos_symbols = self.__lr_b_rec_symbols.format_infos(infos_symbols)
-        lr_b_out_info, infos_symbols = self.__lr_b_out_symbols.format_infos(infos_symbols)
-        return InfoList(lr_w_rec_info, lr_w_in_info, lr_w_out_info, lr_b_rec_info, lr_b_out_info), infos_symbols
-        #return lr_w_rec_info, infos_symbols
+    @property
+    def shape(self):
+        return self.__net.n_variables, 1
 
     # XXX mettere a pulito
     def step_as_direction(self, strategy):
 
-        class VarsSymbol(DescentDirectionRule.Symbols):
-            def __init__(self, vars):
-                self.__vars = vars
+        lr_w_rec, lr_w_rec_symbolic_infos = strategy.compute_lr(self.__net, None, self.__W_rec)
+        lr_w_in, lr_w_in_symbolic_infos = strategy.compute_lr(self.__net, None, self.__W_in)
+        lr_w_out, lr_w_out_symbolic_infos = strategy.compute_lr(self.__net, None, self.__W_out)
+        lr_b_rec, lr_b_rec_symbolic_infos = strategy.compute_lr(self.__net, None, self.__b_rec)
+        lr_b_out, lr_b_out_symbolic_infos = strategy.compute_lr(self.__net, None, self.__b_out)
 
-            @property
-            def direction(self):
-                return self.__vars
-
-            def format_infos(self, infos):
-                pass
-
-            def infos(self):
-                pass
-
-        self.__lr_w_rec_symbols = strategy.compile(self.__net, None, VarsSymbol(self.__W_rec))
-        lr_w_rec = self.__lr_w_rec_symbols.learning_rate
-        lr_w_rec_infos = self.__lr_w_rec_symbols.infos
-
-        self.__lr_w_in_symbols = strategy.compile(self.__net, None, VarsSymbol(self.__W_in))
-        lr_w_in = self.__lr_w_in_symbols.learning_rate
-        lr_w_in_infos = self.__lr_w_in_symbols.infos
-
-        self.__lr_w_out_symbols = strategy.compile(self.__net, None, VarsSymbol(self.__W_out))
-        lr_w_out = self.__lr_w_out_symbols.learning_rate
-        lr_w_out_infos = self.__lr_w_out_symbols.infos
-
-        self.__lr_b_rec_symbols = strategy.compile(self.__net, None, VarsSymbol(self.__b_rec))
-        lr_b_rec = self.__lr_b_rec_symbols.learning_rate
-        lr_b_rec_infos = self.__lr_b_rec_symbols.infos
-
-        self.__lr_b_out_symbols = strategy.compile(self.__net, None, VarsSymbol(self.__b_out))
-        lr_b_out = self.__lr_b_out_symbols.learning_rate
-        lr_b_out_infos = self.__lr_b_out_symbols.infos
+        info = RNNVars.StepInfo(lr_w_rec_symbolic_infos, lr_w_in_symbolic_infos, lr_w_out_symbolic_infos,
+                                lr_b_rec_symbolic_infos, lr_b_out_symbolic_infos)
 
         return RNNVars(self.__net, self.__W_rec * lr_w_rec, self.__W_in * lr_w_in, self.__W_out * lr_w_out,
                        self.__b_rec * lr_b_rec,
-                       self.__b_out * lr_b_out), lr_w_rec_infos + lr_w_in_infos + lr_w_out_infos + lr_b_rec_infos + lr_b_out_infos
+                       self.__b_out * lr_b_out), info
+
+    class StepInfo(SymbolicInfo):
+
+        def __init__(self, lr_w_rec_symbolic_infos, lr_w_in_symbolic_infos, lr_w_out_symbolic_infos,
+                     lr_b_rec_symbolic_infos, lr_b_out_symbolic_infos):
+            self.__lr_w_rec_symbolic_infos = lr_w_rec_symbolic_infos
+            self.__lr_w_in_symbolic_infos = lr_w_in_symbolic_infos
+            self.__lr_w_out_symbolic_infos = lr_w_out_symbolic_infos
+            self.__lr_b_rec_symbolic_infos = lr_b_rec_symbolic_infos
+            self.__lr_b_out_symbolic_infos = lr_b_out_symbolic_infos
+
+            self.__symbols = lr_w_rec_symbolic_infos.symbols + lr_w_in_symbolic_infos.symbols + \
+                             lr_w_out_symbolic_infos.symbols + lr_b_rec_symbolic_infos.symbols + \
+                             lr_b_out_symbolic_infos.symbols
+
+        @property
+        def symbols(self):
+            return self.__symbols
+
+        def fill_symbols(self, symbols_replacedments: list) -> Info:
+            lr_w_rec_info = self.__lr_w_rec_symbolic_infos.fill_symbols(symbols_replacedments)
+            lr_w_in_info = self.__lr_w_in_symbolic_infos.fill_symbols(
+                symbols_replacedments[len(self.__lr_w_rec_symbolic_infos.symbols):])
+            lr_w_out_info = self.__lr_w_out_symbolic_infos.fill_symbols(
+                symbols_replacedments[len(self.__lr_w_in_symbolic_infos.symbols):])
+            lr_b_rec_info = self.__lr_b_rec_symbolic_infos.fill_symbols(
+                symbols_replacedments[len(self.__lr_w_out_symbolic_infos.symbols):])
+            lr_b_out_info = self.__lr_b_out_symbolic_infos.fill_symbols(
+                symbols_replacedments[len(self.__lr_b_rec_symbolic_infos.symbols):])
+            return InfoList(lr_w_rec_info, lr_w_in_info, lr_w_out_info, lr_b_rec_info, lr_b_out_info)
 
     def gradient(self, loss_fnc, u, t):
-        return RNNGradient(self, loss_fnc, u, t)
+        y, _, _, W_rec_fixes, W_in_fixes, W_out_fixes, b_rec_fixes, b_out_fixes = self.net.symbols.net_output(
+            self, u)
+
+        loss = loss_fnc.value(y, t)
+        l = u.shape[0]
+
+        gW_rec_list = T.grad(loss, W_rec_fixes)
+        gW_in_list = T.grad(loss, W_in_fixes)
+        gW_out_list = T.grad(loss, W_out_fixes)
+        gb_rec_list = T.grad(loss, b_rec_fixes)
+        gb_out_list = T.grad(loss, b_out_fixes)
+
+        return RNNGradient(self, gW_rec_list, gW_in_list, gW_out_list, gb_rec_list, gb_out_list, l, loss)
 
     def failsafe_grad(self, loss_fnc, u, t):  # FIXME XXX remove me
         y, _, _ = self.__net.net_output(self, u, self.__net.symbols.h_m1)
