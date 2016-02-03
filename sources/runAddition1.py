@@ -46,7 +46,7 @@ net_builder = RNNBuilder(initializer=rnn_initializer, activation_fnc=Tanh(), out
 
 # setup
 task = AdditionTask(144, seed)
-out_dir = Configs.output_dir + str(task)+'debug'
+out_dir = Configs.output_dir + str(task)
 loss_fnc = SquaredError()
 
 # # HF init
