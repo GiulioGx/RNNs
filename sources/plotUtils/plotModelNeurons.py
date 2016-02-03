@@ -20,8 +20,8 @@ y, h = net.net_ouput_numpy(batch.inputs)
 h_mean = numpy.mean(h, axis=2)
 
 # tanh
-saturation_b1 = numpy.tanh(1)
-saturation_b2 = numpy.tanh(-1)
+saturation_b1 = numpy.tanh(2)
+saturation_b2 = numpy.tanh(-2)
 
 # relu
 # saturation_b1 = numpy.tanh(0.)

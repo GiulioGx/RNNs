@@ -151,7 +151,7 @@ class RNNGradient(SymbolicInfoProducer):
 
             gW_rec_combinantion = strategy.compile(gW_rec_tensor).combination
             gW_in_combinantion = strategy.compile(gW_in_tensor).combination
-            #gW_out_combinantion = strategy.compile(gW_out_tensor).combination
+            #gW_out_combinantion = strategy.compile(gW_out_tensor).combination # FIXME renderlo dinamico
             gb_rec_combinantion = strategy.compile(gb_rec_tensor).combination
             #gb_out_combinantion = strategy.compile(gb_out_tensor).combination
 

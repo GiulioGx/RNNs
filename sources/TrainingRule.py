@@ -48,7 +48,7 @@ class TrainingRule(SimpleInfoProducer):
     class TrainCompiled(object):
         def __init__(self, rule, net, obj_fnc: ObjectiveFunction):
 
-            self.__separate = False
+            self.__separate = True
             net_symbols = net.symbols
             self.__obj_symbols = obj_fnc.compile(net, net_symbols.current_params, net_symbols.u,
                                                  net_symbols.t)
@@ -65,9 +65,10 @@ class TrainingRule(SimpleInfoProducer):
                 output_list = self.__obj_symbols.infos + lr_infos + dir_infos + update_info
 
             else:
-                update_vars = net_symbols.current_params + self.__dir_symbols.direction.step_as_direction(rule.lr_rule)
+                step, lr_infos = self.__dir_symbols.direction.step_as_direction(rule.lr_rule)
+                update_vars = net_symbols.current_params + step
                 diff = (update_vars-net_symbols.current_params).norm(2)
-                output_list = self.__obj_symbols.infos + dir_infos + [diff]
+                output_list = self.__obj_symbols.infos + dir_infos + [diff] + lr_infos
                 updates = net_symbols.current_params.update_list(update_vars)
 
             self.__step = T.function([net_symbols.u, net_symbols.t], output_list,
@@ -92,5 +93,6 @@ class TrainingRule(SimpleInfoProducer):
                 obj_info, infos_symbols = self.__obj_symbols.format_infos(infos_symbols)
                 dir_info, infos_symbols = self.__dir_symbols.format_infos(infos_symbols)
                 diff_info = PrintableInfoElement('#diff', '', infos_symbols[0])
-                info = InfoList(obj_info, dir_info, diff_info)
+                lr_info, infos_symbols = self.__dir_symbols.direction.format_lr_info(infos_symbols[1:])
+                info = InfoList(obj_info, dir_info, diff_info, lr_info)
             return info
