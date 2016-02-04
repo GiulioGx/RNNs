@@ -7,6 +7,7 @@ from infos import Info
 from infos.InfoElement import PrintableInfoElement, SimpleDescription
 from infos.InfoList import InfoList
 from infos.SymbolicInfo import SymbolicInfo
+from theanoUtils import is_not_trustworthy
 
 __author__ = 'giulio'
 
@@ -16,10 +17,10 @@ class EquiangularCombination(CombiningRule):
     def infos(self):
         return SimpleDescription('equiangular_combination')
 
-    @property
     def combine(self, H):
         # normalize rows
-        G = H / H.norm(2, axis=1).reshape((H.shape[0], 1))
+        norm_G = H.norm(2, axis=1).reshape((H.shape[0], 1))
+        G = H / TT.switch(is_not_trustworthy(norm_G), 1, norm_G)
         u = TT.ones((G.shape[0], 1))
 
         # solve problem

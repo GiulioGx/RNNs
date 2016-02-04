@@ -5,6 +5,7 @@ from Configs import Configs
 from ObjectiveFunction import ObjectiveFunction
 from SGDTrainer import SGDTrainer
 from TrainingRule import TrainingRule
+from combiningRule.EquiangularCombination import EquiangularCombination
 from combiningRule.OnesCombination import OnesCombination
 from combiningRule.SimplexCombination import SimplexCombination
 from descentDirectionRule.CombinedGradients import CombinedGradients
@@ -84,7 +85,7 @@ dir_rule = CombinedGradients(combining_rule)
 # learning step rule
 # lr_rule = WRecNormalizedStep(0.0001) #0.01
 # lr_rule = ConstantNormalizedStep(0.001)  # 0.01
-lr_rule = GradientClipping(lr_value=0.003 * 1e-4, clip_thr=1, normalize_wrt_dimension=True)  # 0.01
+lr_rule = GradientClipping(lr_value=0.03, clip_thr=0.1, normalize_wrt_dimension=False)  # 0.01
 # lr_rule = ArmijoStep(alpha=0.5, beta=0.1, init_step=1, max_steps=50)
 
 #update_rule = FixedAveraging(t=10)
@@ -94,7 +95,7 @@ update_rule = SimpleUdpate()
 train_rule = TrainingRule(dir_rule, lr_rule, update_rule, loss_fnc)
 
 trainer = SGDTrainer(train_rule, output_dir=out_dir, max_it=10 ** 10,
-                     check_freq=200, batch_size=100, stop_error_thresh=0.1)
+                     check_freq=200, batch_size=20, stop_error_thresh=0.1)
 
 # dataset = Dataset.no_valid_dataset_from_task(size=1000, task=task)
 dataset = InfiniteDataset(task=task, validation_size=10 ** 4)

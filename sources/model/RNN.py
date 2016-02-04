@@ -98,23 +98,24 @@ class RNN(object):
     def __net_output(self, W_rec, W_in, W_out, b_rec, b_out, u, h_m1):
 
         values, _ = T.scan(self.net_output_t, sequences=u,
-                           outputs_info=[h_m1, None, None],
+                           outputs_info=[h_m1, None, None, None],
                            non_sequences=[W_rec, W_in, W_out, b_rec, b_out],
                            name='net_output_scan')
         h = values[0]
         y = values[1]
-        deriv_a = values[2]
-        return y, deriv_a, h
+        a_t = values[2]
+        deriv_a = values[3]
+        return y, a_t, deriv_a, h
 
     def net_output_t(self, u_t, h_tm1, W_rec, W_in, W_out, b_rec, b_out):
-        h_t, deriv_a_t = self.h_t(u_t, h_tm1, W_rec, W_in, b_rec)
+        h_t, a_t, deriv_a_t = self.h_t(u_t, h_tm1, W_rec, W_in, b_rec)
         y_t = self.y_t(h_t, W_out, b_out)
-        return h_t, y_t, deriv_a_t
+        return h_t, y_t, a_t, deriv_a_t,
 
     def h_t(self, u_t, h_tm1, W_rec, W_in, b_rec):
         a_t = TT.dot(W_rec, h_tm1) + TT.dot(W_in, u_t) + b_rec
         deriv_a = self.__activation_fnc.grad_f(a_t)
-        return self.__activation_fnc.f(a_t), deriv_a
+        return self.__activation_fnc.f(a_t), a_t, deriv_a
 
     def y_t(self, h_t, W_out, b_out):
         return self.__output_fnc.value(TT.dot(W_out, h_t) + b_out)
@@ -194,7 +195,7 @@ class RNN(object):
 
     class Symbols:
         def __init__(self, net, W_rec, W_in, W_out, b_rec, b_out):
-            self.__max_length = 200  # FOXME magic constant
+            self.__max_length = 160  # FOXME magic constant
             self.__net = net
 
             # define shared variables
@@ -224,9 +225,9 @@ class RNN(object):
             # self.__h_m1 = TT.addbroadcast(TT.alloc(numpy.array(0., dtype=Configs.floatType), n_sequences), 0)
 
             # output of the net
-            self.y, self.deriv_a, h = net.net_output(self.__current_params, self.u, self.__h_m1)
+            self.y, self.a, self.deriv_a, h = net.net_output(self.__current_params, self.u, self.__h_m1)
             # self.y, self.deriv_a, h = net.experimental.net_output(self.__current_params, self.u)
-            self.y_shared, self.deriv_a_shared, self.h_shared = T.clone([self.y, self.deriv_a, h],
+            self.y_shared, self.a_shared, self.deriv_a_shared, self.h_shared = T.clone([self.y, self.a, self.deriv_a, h],
                                                                         replace={W_rec: self.__W_rec, W_in: self.__W_in,
                                                                                  W_out: self.__W_out,
                                                                                  b_rec: self.__b_rec,
@@ -246,7 +247,7 @@ class RNN(object):
                                                 (self.__b_rec, TT.addbroadcast(b_rec, 1)),
                                                 (self.__b_out, TT.addbroadcast(b_out, 1))],
                                             name='extend_step')
-            self.__trick()
+            #self.__trick()
 
         def __trick(self):
             # Trick to get dC/dh[k]
@@ -288,7 +289,7 @@ class RNN(object):
             return y, deriv_a, h, W_rec_fixes, W_in_fixes, W_out_fixes, b_rec_fixes, b_out_fixes
 
         def __net_output_t(self, u_t, W_rec_fixes, W_in_fixes, W_out_fixes, b_rec_fixes, b_out_fixes, h_tm1):
-            h_t, deriv_a_t = self.__net.h_t(u_t, h_tm1, W_rec_fixes, W_in_fixes, b_rec_fixes)
+            h_t, _, deriv_a_t = self.__net.h_t(u_t, h_tm1, W_rec_fixes, W_in_fixes, b_rec_fixes)
             y_t = self.__net.y_t(h_t, W_out_fixes, b_out_fixes)
             return h_t, y_t, deriv_a_t
 
@@ -362,6 +363,26 @@ class RNN(object):
         @property
         def W_out_value(self):
             return self.__W_out.get_value()
+
+        @property
+        def W_out(self):
+            return self.__W_out
+
+        @property
+        def W_rec(self):
+            return self.__W_rec
+
+        @property
+        def W_in(self):
+            return self.__W_in
+
+        @property
+        def b_rec(self):
+            return self.__b_rec
+        #XXX remove
+        @property
+        def b_out(self):
+            return self.__b_out
 
         @property
         def b_rec_value(self):

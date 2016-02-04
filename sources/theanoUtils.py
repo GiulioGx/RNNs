@@ -53,7 +53,7 @@ def is_not_trustworthy(norm_v):
     negative_norm = (norm_v <= 0)
     too_close_to_zero = (norm_v < lowest_norm)
     # return TT.or_(norm_v < 0, TT.or_(norm_v > 1e10, norm_v < 1e-20))
-    return TT.or_(negative_norm, is_inf_or_nan(norm_v))
+    return TT.or_(too_close_to_zero, is_inf_or_nan(norm_v))
 
 
 def fix_vector(v):

@@ -147,7 +147,7 @@ class RNNVars(Variables):
         return RNNGradient(self, gW_rec_list, gW_in_list, gW_out_list, gb_rec_list, gb_out_list, l, loss)
 
     def failsafe_grad(self, loss_fnc, u, t):  # FIXME XXX remove me
-        y, _, _ = self.__net.net_output(self, u, self.__net.symbols.h_m1)
+        y, _, _, _ = self.__net.net_output(self, u, self.__net.symbols.h_m1)
         loss = loss_fnc.value(y, t)
         gW_rec, gW_in, gW_out, \
         gb_rec, gb_out = TT.grad(loss, [self.__W_rec, self.__W_in, self.__W_out, self.__b_rec, self.__b_out])
