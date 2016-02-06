@@ -2,7 +2,7 @@ import theano as T
 import theano.tensor as TT
 
 from infos.Info import Info
-from infos.InfoElement import NonPrintableInfoElement
+from infos.InfoElement import NonPrintableInfoElement, PrintableInfoElement
 from infos.InfoList import InfoList
 from infos.SymbolicInfo import SymbolicInfo, NullSymbolicInfos
 from theanoUtils import as_vector, flatten_list_element
@@ -27,7 +27,7 @@ class RNNGradient(object):
         self.__gb_out_list = gb_out_list
 
         gW_rec_norms, gW_in_norms, gW_out_norms, \
-        gb_rec_norms, gb_out_norms, self.__H = self.__process_temporal_components()
+        gb_rec_norms, gb_out_norms, full_gradients_norms, self.__H = self.__process_temporal_components()
 
         self.__value = self.__net.from_tensor(self.__H.sum(axis=0))  # GRADIENT
 
@@ -40,7 +40,7 @@ class RNNGradient(object):
         G = self.__H / self.__H.norm(2, axis=1).reshape((self.__H.shape[0], 1))
         grad_dots = TT.dot(G, self.__value.as_tensor() / self.__value.norm())
 
-        self.__infos = RNNGradient.Info(gW_rec_norms, gW_in_norms, gW_out_norms, gb_rec_norms, gb_out_norms, grad_dots)
+        self.__infos = RNNGradient.Info(gW_rec_norms, gW_in_norms, gW_out_norms, gb_rec_norms, gb_out_norms, grad_dots, full_gradients_norms)
 
     # FOXME fa cagare
     def __process_temporal_components(self):
@@ -53,21 +53,23 @@ class RNNGradient(object):
             gb_out_t_norm = gb_out_t.norm(2)
 
             v = as_vector(gW_rec_t, gW_in_t, gW_out_t, gb_rec_t, gb_out_t)
-            return gW_rec_t_norm, gW_in_t_norm, gW_out_t_norm, gb_rec_t_norm, gb_out_t_norm, v
+            norm_v = v.norm(2)
+
+            return gW_rec_t_norm, gW_in_t_norm, gW_out_t_norm, gb_rec_t_norm, gb_out_t_norm, norm_v, v
 
         values, _ = T.scan(g, sequences=[TT.as_tensor_variable(self.__gW_rec_list),
                                          TT.as_tensor_variable(self.__gW_in_list),
                                          TT.as_tensor_variable(self.__gW_out_list),
                                          TT.as_tensor_variable(self.__gb_rec_list),
                                          TT.as_tensor_variable(self.__gb_out_list)],
-                           outputs_info=[None, None, None, None, None, None],
+                           outputs_info=[None, None, None, None, None, None, None],
                            name='process_temporal_components_scan',
                            n_steps=self.__l)
 
-        temporal_gradients_list = values[5]
+        temporal_gradients_list = values[6]
         H = TT.as_tensor_variable(temporal_gradients_list[0:self.__l]).squeeze()
 
-        return values[0], values[1], values[2], values[3], values[4], H
+        return values[0], values[1], values[2], values[3], values[4], values[5], H
 
     @property
     def value(self):
@@ -83,8 +85,10 @@ class RNNGradient(object):
 
     class Info(SymbolicInfo):
 
-        def __init__(self, gW_rec_norms, gW_in_norms, gW_out_norms, gb_rec_norms, gb_out_norms, grad_dots):
-            self.__symbols = [gW_rec_norms, gW_in_norms, gW_out_norms, gb_rec_norms, gb_out_norms, grad_dots]
+        def __init__(self, gW_rec_norms, gW_in_norms, gW_out_norms, gb_rec_norms, gb_out_norms, grad_dots, full_gradients_norms):
+
+            norm_variance = full_gradients_norms.var()
+            self.__symbols = [gW_rec_norms, gW_in_norms, gW_out_norms, gb_rec_norms, gb_out_norms, full_gradients_norms, grad_dots, norm_variance]
 
         @property
         def symbols(self):
@@ -94,11 +98,13 @@ class RNNGradient(object):
             separate_norms_dict = {'W_rec': symbols_replacements[0], 'W_in': symbols_replacements[1],
                                    'W_out': symbols_replacements[2],
                                    'b_rec': symbols_replacements[3],
-                                   'b_out': symbols_replacements[4]}
+                                   'b_out': symbols_replacements[4],
+                                   'full_grad': symbols_replacements[5]}
 
-            grad_dots = NonPrintableInfoElement('grad_temporal_cos', symbols_replacements[5])
+            variance = PrintableInfoElement('g_var', ':02.2f', symbols_replacements[7].item())
+            grad_dots = NonPrintableInfoElement('grad_temporal_cos', symbols_replacements[6])
             separate_info = NonPrintableInfoElement('separate_norms', separate_norms_dict)
-            info = InfoList(grad_dots, separate_info)
+            info = InfoList(grad_dots, variance, separate_info)
             return info
 
     def temporal_combination(self, strategy):  # FIXME

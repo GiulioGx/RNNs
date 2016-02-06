@@ -94,7 +94,7 @@ class SGDTrainer(object):
         n_hidden_incr_freq = 2000
 
         while i < self.__max_it and best_error > self.__stop_error_thresh / 100 and (
-        not error_occured):  # FOXME strategy criterio d'arresto
+                not error_occured):  # FOXME strategy criterio d'arresto
 
             if incremental_hidden and (i + 1) % n_hidden_incr_freq == 0 and net.n_hidden < n_hidden_max:
                 new_hidden_number = net.n_hidden + n_hidden_incr

@@ -56,41 +56,44 @@ dir_rule = CombinedGradients(combining_rule)
 
 dataset = InfiniteDataset(task=task, validation_size=10 ** 4)
 net = net_builder.init_net(n_in=dataset.n_in, n_out=dataset.n_out)
-net = RNN.load_model(out_dir + '/current_model.npz')
+#net = RNN.load_model(out_dir + '/current_model.npz')
 
 net_symbols = net.symbols
 
 # double scan function
 n_sequences = net_symbols.u.shape[2]
-h_m1 = TT.alloc(numpy.array(0., dtype=Configs.floatType), net.n_hidden, n_sequences)
+a_m1 = TT.alloc(numpy.array(0., dtype=Configs.floatType), net.n_hidden, n_sequences)
 
 
-def h_t(u_t, h_tm1, W_rec, W_in, b_rec):
-    a_t = TT.dot(W_rec, h_tm1) + TT.dot(W_in, u_t) + b_rec
-    da_dh_t = TG.jacobian(a_t.flatten(), wrt=W_rec, consider_constant=[h_tm1])
-    return TT.tanh(a_t), da_dh_t
+def a_t(u_t, a_tm1, W_rec, W_in, b_rec):
+    a_t = TT.dot(W_rec, TT.tanh(a_tm1)) + TT.dot(W_in, u_t) + b_rec
+    da_d_w_rec = TG.jacobian(a_t.sum(axis=1), wrt=W_rec, consider_constant=[a_tm1])
+    tmp=da_d_w_rec
+    #tmp = da_d_w_rec.dimshuffle(1,2,0)
+    tmp = tmp.reshape(shape=(W_rec.shape[0], W_rec.shape[1], a_t.shape[0], a_t.shape[1]))
+    tmp = tmp.dimshuffle(2,3,0,1).sum(axis=1)
+    return TT.tanh(a_t), da_d_w_rec
 
 
-values, _ = T.scan(h_t, sequences=net_symbols.u,
-                   outputs_info=[h_m1, None],
+values, _ = T.scan(a_t, sequences=net_symbols.u,
+                   outputs_info=[a_m1, None],
                    non_sequences=[net_symbols.W_rec, net_symbols.W_in, net_symbols.b_rec],
                    name='h_scan')
-h = values[0]
-a = TT.tanh(h)
-da_dh = values[1]
+a = values[0]
+da_d_w_rec = values[1]
 
 
-def y_t(h_t, W_out, b_out):
-    return TT.dot(W_out, h_t) + b_out #  XXX solo linear
+def y_t(a_t, W_out, b_out):
+    return TT.dot(W_out, TT.tanh(a_t)) + b_out #  XXX solo linear
 
-values, _ = T.scan(y_t, sequences=[h],
+values, _ = T.scan(y_t, sequences=[a],
                    outputs_info=[None],
                    non_sequences=[net_symbols.W_out, net_symbols.b_out],
                    name='y_scan')
 y = values
 loss = loss_fnc.value(y, net_symbols.t)
 
-wrt = y
+wrt = a
 constants = []
 vars = net_symbols.W_rec
 
@@ -100,6 +103,9 @@ d_wrt_d_vars = TG.jacobian(wrt.sum(axis=2).flatten(), vars,
 
 reshaped = d_wrt_d_vars.reshape(
     shape=[d_C_d_wrt.shape[0], d_C_d_wrt.shape[1], vars.shape[0], vars.shape[1]])
+
+reshaped = da_d_w_rec
+
 
 d_C_d_wrt = d_C_d_wrt.dimshuffle(0, 1, 'x')
 # dot = TT.tensordot(dCdy, reshaped, axes=[[1,2], [1,2]])
@@ -112,32 +118,46 @@ def step(A, B):
     n0 = B.shape[0]
     n1 = B.shape[1]
     n2 = B.shape[2]
-    C = B.reshape(shape=[n0, n1 * n2])
-    D = A.T.dot(C)
-    E = D.reshape(shape=[n1, n2])
-    return E
-
+    #C = B.reshape(shape=[n0, n1 * n2])
+    C = B
+    D = A.dot(C)
+    #E = D.reshape(shape=[n1, n2])
+    TT.tensordot(A, B, axes=[[0,1], [0,1]])
+    return A.T.dot(B)
 
 values, _ = T.scan(step, sequences=[d_C_d_wrt, reshaped],
-                   name='net_output_scan')
+                   outputs_info=[None],
+                   name='prod l')
 
 dot = values
+
+#dot = TT.tensordot(reshaped, d_C_d_wrt, axes=[[0,1], [0,1]])
 # dot = TT.alloc(0)
 diff = (dot.sum(axis=0) - real_grad).norm(2)
+norm_dot = dot.sum(axis=0).norm(2)
+norm_real = real_grad.norm(2)
 # diff = TT.alloc(0)
 # exp = T.grad(loss, [net_symbols.W_rec], consider_constant=[net_symbols.h_shared])
 
 
-f = theano.function([net_symbols.u, net_symbols.t], [d_C_d_wrt, reshaped, dot, diff], on_unused_input='warn')
+f = theano.function([net_symbols.u, net_symbols.t], [d_C_d_wrt, reshaped, dot, real_grad, diff, norm_dot, norm_real], on_unused_input='warn')
 
 batch = dataset.get_train_batch(1)
 
-d_C_d_wrt, d_wrt_d_vars, dot, diff = f(batch.inputs, batch.outputs)
+d_C_d_wrt, d_wrt_d_vars, dot, real_grad, diff, norm_dot, norm_real = f(batch.inputs, batch.outputs)
 print('d_C_d_wrt shape', d_C_d_wrt.shape)
 print('d_wrt_d_vars shape', d_wrt_d_vars.shape)
 print('dot shape', dot.shape)
-print('diff', diff)
+#print('real_grad', real_grad)
 print('dc_wrt norms', li.norm(d_C_d_wrt, axis=0))
 
-print('others', sum(sum(sum(dot[0:-2]))))
-print(dot[144])
+print('diff: ', diff)
+print('norm dot', norm_dot)
+print('norm_real', norm_real)
+
+print('sd', d_wrt_d_vars[-1, 0, 0, :])
+
+#print('reshaped', d_wrt_d_vars)
+
+#print('d_C_d_wrt: ', dot[-1])
+#print('real_grad: ', real_grad)

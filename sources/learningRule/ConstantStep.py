@@ -14,6 +14,10 @@ __author__ = 'giulio'
 
 
 class ConstantStep(LearningStepRule):
+    def __init__(self, lr_value=0.001, normalized_wrt_dir_norm: bool = False):
+        self.__lr_value = lr_value
+        self.__normalized_wrt_dir_norm = normalized_wrt_dir_norm
+
     def compute_lr(self, net, obj_fnc: ObjectiveFunction, direction):
 
         if self.__normalized_wrt_dir_norm:
@@ -23,12 +27,12 @@ class ConstantStep(LearningStepRule):
 
         return lr, LearningStepRule.Infos(lr)
 
-    def __init__(self, lr_value=0.001, normalized_wrt_dir_norm: bool = False):
-        self.__lr_value = lr_value
-        self.__normalized_wrt_dir_norm = normalized_wrt_dir_norm
+    @property
+    def updates(self):
+        return []
 
     @property
     def infos(self):
         return InfoGroup('constant step', InfoList(PrintableInfoElement('constant_step', ':02.2e', self.__lr_value),
-                         PrintableInfoElement('normalized', '', self.__normalized_wrt_dir_norm)))
-
+                                                   PrintableInfoElement('normalized', '',
+                                                                        self.__normalized_wrt_dir_norm)))

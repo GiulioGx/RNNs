@@ -12,6 +12,7 @@ __author__ = 'giulio'
 
 
 class CombinedGradients(DescentDirectionRule):
+
     def __init__(self, strategy: CombiningRule):
         self.__combining_strategy = strategy
 
@@ -22,6 +23,10 @@ class CombinedGradients(DescentDirectionRule):
         grad_dot = direction.cos(obj_fnc.grad.value)
 
         return direction, CombinedGradients.Infos(combining_strategy_symbolic_info, direction.norm(), grad_dot)
+
+    @property
+    def updates(self):
+        return []
 
     @property
     def infos(self):

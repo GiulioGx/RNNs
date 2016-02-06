@@ -1,6 +1,7 @@
 import abc
 
 from ObjectiveFunction import ObjectiveFunction
+from Rule import Rule
 from infos.Info import Info
 from infos.InfoElement import PrintableInfoElement
 from infos.InfoProducer import SimpleInfoProducer
@@ -9,7 +10,7 @@ from infos.SymbolicInfo import SymbolicInfo
 __author__ = 'giulio'
 
 
-class LearningStepRule(SimpleInfoProducer):
+class LearningStepRule(Rule):
     __metaclass__ = abc.ABCMeta
 
     @abc.abstractmethod

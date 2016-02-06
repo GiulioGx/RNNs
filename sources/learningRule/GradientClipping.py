@@ -27,6 +27,10 @@ class GradientClipping(LearningStepRule):
         return computed_learning_rate, LearningStepRule.Infos(computed_learning_rate)
 
     @property
+    def updates(self):
+        return []
+
+    @property
     def infos(self):
         step_info = PrintableInfoElement('constant_step', ':02.2e', self.__lr_value)
         thr_info = PrintableInfoElement('clipping_thr', ':02.2e', self.__clip_thr)
