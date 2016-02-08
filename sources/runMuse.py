@@ -26,7 +26,7 @@ from task.Dataset import InfiniteDataset
 from task.MuseDataset import MuseDataset
 from task.TemporalOrderTask import TemporalOrderTask
 from updateRule.SimpleUpdate import SimpleUdpate
-
+import sys
 __author__ = 'giulio'
 
 separator = '#####################'
@@ -42,6 +42,8 @@ print('floatType: ' + floatX)
 print(separator)
 
 seed = 13
+
+sys.setrecursionlimit(100000)
 
 # network setup
 std_dev = 0.14  # 0.14 Tanh # 0.21 Relu

@@ -33,20 +33,22 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="runMuse.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="runMuse.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/runMuse.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="112" column="44" selection-start-line="112" selection-start-column="44" selection-end-line="112" selection-end-column="44" />
-              <folding />
+            <state vertical-scroll-proportion="0.6117103">
+              <caret line="45" column="26" selection-start-line="45" selection-start-column="26" selection-end-line="45" selection-end-column="26" />
+              <folding>
+                <element signature="e#0#13#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="RNN.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="RNN.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/model/RNN.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.7765794">
+            <state vertical-scroll-proportion="0.0">
               <caret line="197" column="60" selection-start-line="197" selection-start-column="60" selection-end-line="197" selection-end-column="60" />
               <folding />
             </state>
@@ -187,9 +189,9 @@
         <option value="$PROJECT_DIR$/test/testDoubleScanSingle.py" />
         <option value="$PROJECT_DIR$/test/testDoubleScanBadMemory.py" />
         <option value="$PROJECT_DIR$/test/testDoubleScan.py" />
-        <option value="$PROJECT_DIR$/runMuse.py" />
         <option value="$PROJECT_DIR$/TrainingRule.py" />
         <option value="$PROJECT_DIR$/model/RNN.py" />
+        <option value="$PROJECT_DIR$/runMuse.py" />
       </list>
     </option>
   </component>
@@ -1128,19 +1130,21 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/runMuse.py">
+    <entry file="file://$PROJECT_DIR$/model/RNN.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="112" column="44" selection-start-line="112" selection-start-column="44" selection-end-line="112" selection-end-column="44" />
+          <caret line="197" column="60" selection-start-line="197" selection-start-column="60" selection-end-line="197" selection-end-column="60" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/model/RNN.py">
+    <entry file="file://$PROJECT_DIR$/runMuse.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.7765794">
-          <caret line="197" column="60" selection-start-line="197" selection-start-column="60" selection-end-line="197" selection-end-column="60" />
-          <folding />
+        <state vertical-scroll-proportion="0.6117103">
+          <caret line="45" column="26" selection-start-line="45" selection-start-column="26" selection-end-line="45" selection-end-column="26" />
+          <folding>
+            <element signature="e#0#13#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
