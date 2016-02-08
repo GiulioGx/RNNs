@@ -67,14 +67,18 @@ a_m1 = TT.alloc(numpy.array(0., dtype=Configs.floatType), net.n_hidden, n_sequen
 
 def a_t(u_t, a_tm1, W_rec, W_in, b_rec):
     a_t = TT.dot(W_rec, TT.tanh(a_tm1)) + TT.dot(W_in, u_t) + b_rec
-    return a_t
+    da_d_w_rec = TG.jacobian(a_t.flatten(), wrt=W_rec, consider_constant=[a_tm1])
+
+    tmp = da_d_w_rec.reshape(shape=(a_t.shape[0], a_t.shape[1], W_rec.shape[0], W_rec.shape[1]))
+    return a_t, tmp
 
 
 values, _ = T.scan(a_t, sequences=net_symbols.u,
-                   outputs_info=[a_m1],
+                   outputs_info=[a_m1, None],
                    non_sequences=[net_symbols.W_rec, net_symbols.W_in, net_symbols.b_rec],
                    name='a_scan')
-a = values
+a = values[0]
+da_d_w_rec = values[1]
 
 
 def y_t(a_t, W_out, b_out):  # FOXME vectorial output function
@@ -102,37 +106,76 @@ d_C_d_wrt = d_C_d_wrt[1:]
 
 real_grad = TT.grad(loss, vars)
 
+
+# def step(A, B):
+#     n0 = B.shape[0]
+#     n1 = B.shape[1]
+#     n2 = B.shape[2]
+#     # B = B.dimshuffle(1,2,0)
+#     C = B.reshape(shape=[n0, n1 * n2])
+#     # C = C.dimshuffle(1, 0)
+#     # C = B
+#     D = A.T.dot(C)
+#     E = D.reshape(shape=[n1, n2])
+#     # return TT.tensordot(A, B, axes=[[0,1], [0,1]])
+#     # return A.T.dot(B)
+#     return E
+#
+#
+# d_C_d_wrt = d_C_d_wrt.dimshuffle(0, 1, 'x')
+# values, _ = T.scan(step, sequences=[d_C_d_wrt, da_d_w_rec],
+#                    outputs_info=[None],
+#                    name='prod l')
+#
+# dot = values
+
+#B = da_d_w_rec.dimshuffle(0, 4, 3, 1, 2)
+B = da_d_w_rec.dimshuffle(0, 2, 1, 3, 4)
+#B = B.reshape(shape=(wrt.shape[0], wrt.shape[2], wrt.shape[1], vars.shape[0]*vars.shape[1]))
 A = d_C_d_wrt.dimshuffle(0, 2, 1)
 
 
-def smart_step(A, u_t, a_tm1):
+def step(A, B):
+    A = A.dimshuffle(0, 'x')
+    n0 = B.shape[0]
+    n1 = B.shape[1]
+    n2 = B.shape[2]
+    # B = B.dimshuffle(1,2,0)
+    C = B.reshape(shape=[n0, n1 * n2])
+    # C = C.dimshuffle(1, 0)
+    # C = B
+    D = A.T.dot(C)
+    E = D.reshape(shape=[n1, n2])
+    # return TT.tensordot(A, B, axes=[[0,1], [0,1]])
+    # return A.T.dot(B)
+    return E
 
-    a_t = TT.dot(net_symbols.W_rec, TT.tanh(a_tm1)) + TT.dot(net_symbols.W_in, u_t) + net_symbols.b_rec
-
-    vars = net_symbols.W_rec
-    n1 = vars.shape[0]
-    n2 = vars.shape[1]
-    N = a_t.shape[1]
-    n_hid = a_t.shape[0]
-
-    B = TG.jacobian(a_t.flatten(), wrt=vars, consider_constant=[a_tm1])
-    B = B.reshape(shape=(n_hid, N, n1, n2))
-    B = B.dimshuffle(1,0,2,3)
-
+def smart_step(A, B):
+    n1 = B.shape[2]
+    n2 = B.shape[3]
+    N = B.shape[0]
+    n_hid = B.shape[1]
     A = A.reshape(shape=(1, N * n_hid))
+    #B = B.dimshuffle(shape=(1,0,2,3))
     B = B.reshape(shape=(N*n_hid, n1*n2))
 
     C = A.dot(B)
     C = C.reshape(shape=(n1, n2))
-    return a_t, C
+    return C
 
-values, _ = T.scan(smart_step, sequences=[A, net_symbols.u],
-                   outputs_info=[a_m1, None],
-                   name='outer_scan',
-                   n_steps=A.shape[0])
 
-dot = values[1]
+def inner_scan(A, B):
+    values, _ = T.scan(step, sequences=[A, B],
+                   outputs_info=[None],
+                   name='inner scan')
+    return values.sum(axis=0)
 
+
+values, _ = T.scan(smart_step, sequences=[A, B],
+                   outputs_info=[None],
+                   name='outer_scan')
+
+dot = values
 #dot = TT.zeros(shape=(a.shape[0], real_grad.shape[0], real_grad.shape[1]))
 
 #dot = TT.tensordot(A,B, axes=[[1,2], [1, 2]])
@@ -172,8 +215,9 @@ h = TT.tanh(a).sum(axis=2)
 f = theano.function([net_symbols.u, net_symbols.t],
                     [diff],
                     on_unused_input='warn')
-batch = dataset.get_train_batch(batch_size=100)
+batch = dataset.get_train_batch(batch_size=2)
 diff = f(batch.inputs, batch.outputs)
 #print(diff[0].shape)
+
 print('diff: ', diff)
 

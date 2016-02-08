@@ -67,14 +67,16 @@ a_m1 = TT.alloc(numpy.array(0., dtype=Configs.floatType), net.n_hidden, n_sequen
 
 def a_t(u_t, a_tm1, W_rec, W_in, b_rec):
     a_t = TT.dot(W_rec, TT.tanh(a_tm1)) + TT.dot(W_in, u_t) + b_rec
-    return a_t
+    da_d_w_rec = TG.jacobian(a_t.sum(axis=1), wrt=W_rec, consider_constant=[a_tm1])
+    return a_t, da_d_w_rec
 
 
 values, _ = T.scan(a_t, sequences=net_symbols.u,
-                   outputs_info=[a_m1],
+                   outputs_info=[a_m1, None],
                    non_sequences=[net_symbols.W_rec, net_symbols.W_in, net_symbols.b_rec],
                    name='a_scan')
-a = values
+a = values[0]
+da_d_w_rec = values[1]
 
 
 def y_t(a_t, W_out, b_out):  # FOXME vectorial output function
@@ -96,84 +98,61 @@ scan_node = a.owner.inputs[0].owner
 assert isinstance(scan_node.op, theano.scan_module.scan_op.Scan)
 n_pos = scan_node.op.n_seqs + 1
 init_a = scan_node.inputs[n_pos]
-d_C_d_wrt = T.grad(loss, init_a)
+d_C_d_wrt = T.grad(loss, init_a).sum(axis=2)
 d_C_d_wrt = d_C_d_wrt[1:]
-
+d_C_d_wrt = d_C_d_wrt.dimshuffle(0, 1, 'x')
 
 real_grad = TT.grad(loss, vars)
 
-A = d_C_d_wrt.dimshuffle(0, 2, 1)
+
+def step(A, B):
+    n0 = B.shape[0]
+    n1 = B.shape[1]
+    n2 = B.shape[2]
+    # B = B.dimshuffle(1,2,0)
+    C = B.reshape(shape=[n0, n1 * n2])
+    # C = C.dimshuffle(1, 0)
+    # C = B
+    D = A.T.dot(C)
+    E = D.reshape(shape=[n1, n2])
+    # return TT.tensordot(A, B, axes=[[0,1], [0,1]])
+    # return A.T.dot(B)
+    return E
 
 
-def smart_step(A, u_t, a_tm1):
+values, _ = T.scan(step, sequences=[d_C_d_wrt, da_d_w_rec],
+                   outputs_info=[None],
+                   name='prod l')
 
-    a_t = TT.dot(net_symbols.W_rec, TT.tanh(a_tm1)) + TT.dot(net_symbols.W_in, u_t) + net_symbols.b_rec
-
-    vars = net_symbols.W_rec
-    n1 = vars.shape[0]
-    n2 = vars.shape[1]
-    N = a_t.shape[1]
-    n_hid = a_t.shape[0]
-
-    B = TG.jacobian(a_t.flatten(), wrt=vars, consider_constant=[a_tm1])
-    B = B.reshape(shape=(n_hid, N, n1, n2))
-    B = B.dimshuffle(1,0,2,3)
-
-    A = A.reshape(shape=(1, N * n_hid))
-    B = B.reshape(shape=(N*n_hid, n1*n2))
-
-    C = A.dot(B)
-    C = C.reshape(shape=(n1, n2))
-    return a_t, C
-
-values, _ = T.scan(smart_step, sequences=[A, net_symbols.u],
-                   outputs_info=[a_m1, None],
-                   name='outer_scan',
-                   n_steps=A.shape[0])
-
-dot = values[1]
-
-#dot = TT.zeros(shape=(a.shape[0], real_grad.shape[0], real_grad.shape[1]))
-
-#dot = TT.tensordot(A,B, axes=[[1,2], [1, 2]])
+dot = values
 
 diff = (dot.sum(axis=0) - real_grad).norm(2)
 norm_dot = dot.sum(axis=0).norm(2)
 norm_real = real_grad.norm(2)
 
 h = TT.tanh(a).sum(axis=2)
-#
-# f = theano.function([net_symbols.u, net_symbols.t],
-#                     [A, B, dot, real_grad, diff, norm_dot, norm_real, h],
-#                     on_unused_input='warn')
-
-# f = theano.function([net_symbols.u, net_symbols.t],
-#                     [A, B, dot, real_grad, diff, norm_dot, norm_real, h],
-#                     on_unused_input='warn')
-# print('l: ', batch.inputs.shape[0])
-# print('d_C_d_wrt shape', d_C_d_wrt.shape)
-# print('d_wrt_d_vars shape', d_wrt_d_vars_numpy.shape)
-# print('dot shape', dot.shape)
-#
-# print('diff: ', diff)
-# print('norm dot', norm_dot)
-# print('norm_real', norm_real)
-#
-# sum = 0
-# for l in range(d_C_d_wrt.shape[0]):
-#     for e in range(d_C_d_wrt.shape[1]):
-#         for n1 in range(d_C_d_wrt.shape[2]):
-#             sum += d_C_d_wrt[l, e, n1] * d_wrt_d_vars_numpy[l, e, n1, 0, 0]
-#
-# print('sum', sum)
-# print(dot.sum(axis=0)[0, 0])
-# print(real_grad[0, 0])
 
 f = theano.function([net_symbols.u, net_symbols.t],
-                    [diff],
+                    [d_C_d_wrt, da_d_w_rec, dot, real_grad, diff, norm_dot, norm_real, h],
                     on_unused_input='warn')
-batch = dataset.get_train_batch(batch_size=100)
-diff = f(batch.inputs, batch.outputs)
-#print(diff[0].shape)
-print('diff: ', diff)
 
+batch = dataset.get_train_batch(1)
+d_C_d_wrt, d_wrt_d_vars_numpy, dot, real_grad, diff, norm_dot, norm_real, h_numpy = f(batch.inputs, batch.outputs)
+
+print('l: ', batch.inputs.shape[0])
+print('d_C_d_wrt shape', d_C_d_wrt.shape)
+print('d_wrt_d_vars shape', d_wrt_d_vars_numpy.shape)
+print('dot shape', dot.shape)
+
+print('diff: ', diff)
+print('norm dot', norm_dot)
+print('norm_real', norm_real)
+
+sum = 0
+for l in range(d_C_d_wrt.shape[0]):
+    for n1 in range(d_C_d_wrt.shape[1]):
+        sum += d_C_d_wrt[l, n1] * d_wrt_d_vars_numpy[l, n1, 0, 0]
+
+print('sum', sum)
+print(dot.sum(axis=0)[0, 0])
+print(real_grad[0, 0])

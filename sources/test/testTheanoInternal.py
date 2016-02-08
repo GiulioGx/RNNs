@@ -18,6 +18,7 @@ import theano as T
 import theano.gradient as TG
 import theano.tensor as TT
 
+import numpy.linalg as li
 from task.XorTaskHot import XorTaskHot
 
 __author__ = 'giulio'
@@ -71,7 +72,7 @@ print('node', scan_node)
 
 loss = loss_fnc.value(net_symbols.y_shared, net_symbols.t)
 
-wrt = net_symbols.h_shared
+wrt = net_symbols.y_shared
 constants = []
 vars = net_symbols.W_rec
 
@@ -108,12 +109,22 @@ diff = (dot[-1] - real_grad).norm(2)
 # diff = TT.alloc(0)
 # exp = T.grad(loss, [net_symbols.W_rec], consider_constant=[net_symbols.h_shared])
 
+###
+# Trick to get dC/dh[k]
+scan_node = net_symbols.h_shared.owner.inputs[0].owner
+assert isinstance(scan_node.op, theano.scan_module.scan_op.Scan)
+n_pos = scan_node.op.n_seqs + 1
+print('npos', n_pos)
+init_h = scan_node.inputs[n_pos]
+dcdh = T.grad(loss, init_h).sum(axis=2)
+dcdh = dcdh[1:]
+###
 
-f = theano.function([net_symbols.u, net_symbols.t], [d_C_d_wrt, reshaped, dot, diff], on_unused_input='warn')
+f = theano.function([net_symbols.u, net_symbols.t], [d_C_d_wrt, reshaped, dot, diff, dcdh], on_unused_input='warn')
 
 batch = dataset.get_train_batch(1)
 
-d_C_d_wrt, d_wrt_d_vars, dot, diff = f(batch.inputs, batch.outputs)
+d_C_d_wrt, d_wrt_d_vars, dot, diff, dcdh_numpy = f(batch.inputs, batch.outputs)
 print('dCdy shape', d_C_d_wrt.shape)
 print('dydw_out shape', d_wrt_d_vars.shape)
 print('dot shape', dot.shape)
@@ -121,3 +132,6 @@ print('diff', diff)
 
 print('others', sum(sum(sum(dot[0:-2]))))
 print(dot[145])
+
+norms = li.norm(dcdh_numpy, axis=1)
+print('dcdh_numpy norms', norms)

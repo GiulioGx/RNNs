@@ -195,7 +195,7 @@ class RNN(object):
 
     class Symbols:
         def __init__(self, net, W_rec, W_in, W_out, b_rec, b_out):
-            self.__max_length = 160  # FOXME magic constant
+            self.__max_length = 3900  # FOXME magic constant
             self.__net = net
 
             # define shared variables
