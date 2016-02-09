@@ -83,7 +83,7 @@ class TrainingRule(SimpleInfoProducer):
                                         net_symbols.t)
             obj_fnc_symbolic_info = obj_fnc.infos
             self.__symbolic_infos_list.append(obj_fnc_symbolic_info)
-            direction, dir_symbolic_dir_infos = rule.desc_dir_rule.direction(net_symbols, obj_fnc)
+            direction, dir_symbolic_dir_infos = rule.desc_dir_rule.direction(net, obj_fnc)
             self.__symbolic_infos_list.append(dir_symbolic_dir_infos)
 
             if not self.__separate:

@@ -16,7 +16,7 @@ class CombinedGradients(DescentDirectionRule):
     def __init__(self, strategy: CombiningRule):
         self.__combining_strategy = strategy
 
-    def direction(self, net_symbols, obj_fnc:ObjectiveFunction):
+    def direction(self, net, obj_fnc:ObjectiveFunction):
         gradients_combination, combining_strategy_symbolic_info = obj_fnc.grad.temporal_combination(
             self.__combining_strategy)
         direction = - gradients_combination

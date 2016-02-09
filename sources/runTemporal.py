@@ -10,13 +10,16 @@ from descentDirectionRule.LBFGSUpdate import LBFGSDirection
 from initialization.ConstantInit import ConstantInit
 from initialization.GaussianInit import GaussianInit
 from learningRule.GradientClipping import GradientClipping
+from lossFunctions.CrossEntropy import CrossEntropy
 from lossFunctions.SquaredError import SquaredError
 from model import RNN
 from model.RNNBuilder import RNNBuilder
 from model.RNNInitializer import RNNInitializer
 from output_fncs.Linear import Linear
+from output_fncs.Softmax import Softmax
 from task.AdditionTask import AdditionTask
 from task.Dataset import InfiniteDataset
+from task.TemporalOrderTask import TemporalOrderTask
 from updateRule.SimpleUpdate import SimpleUdpate
 
 __author__ = 'giulio'
@@ -42,12 +45,12 @@ rnn_initializer = RNNInitializer(W_rec_init=GaussianInit(mean=mean, std_dev=std_
                                  W_in_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed),
                                  W_out_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed), b_rec_init=ConstantInit(0),
                                  b_out_init=ConstantInit(0))
-net_builder = RNNBuilder(initializer=rnn_initializer, activation_fnc=Tanh(), output_fnc=Linear(), n_hidden=100)
+net_builder = RNNBuilder(initializer=rnn_initializer, activation_fnc=Tanh(), output_fnc=Softmax(), n_hidden=50)
 
 # setup
-task = AdditionTask(144, seed)
+task = TemporalOrderTask(144, seed)
 out_dir = Configs.output_dir + str(task)
-loss_fnc = SquaredError()
+loss_fnc = CrossEntropy()
 
 # # HF init
 # bias_value = 0.5
@@ -73,13 +76,13 @@ loss_fnc = SquaredError()
 #combining_rule = OnesCombination(normalize_components=False)
 combining_rule = SimplexCombination(normalize_components=True, seed=seed)
 # combining_rule = SimpleSum()
-#dir_rule = CombinedGradients(combining_rule)
-dir_rule = LBFGSDirection(n_pairs=20)
+dir_rule = CombinedGradients(combining_rule)
+#dir_rule = LBFGSDirection(n_pairs=20)
 
 # learning step rule
 # lr_rule = WRecNormalizedStep(0.0001) #0.01
 # lr_rule = ConstantNormalizedStep(0.001)  # 0.01
-lr_rule = GradientClipping(lr_value=0.001, clip_thr=1, normalize_wrt_dimension=False)  # 0.01
+lr_rule = GradientClipping(lr_value=0.003, clip_thr=1, normalize_wrt_dimension=False)  # 0.01
 # lr_rule = ArmijoStep(alpha=0.5, beta=0.1, init_step=1, max_steps=50)
 
 #update_rule = FixedAveraging(t=10)
@@ -90,12 +93,12 @@ update_rule = SimpleUdpate()
 train_rule = TrainingRule(dir_rule, lr_rule, update_rule, loss_fnc)
 
 trainer = SGDTrainer(train_rule, output_dir=out_dir, max_it=10 ** 10,
-                     check_freq=1, batch_size=1000, stop_error_thresh=1)
+                     check_freq=200, batch_size=100, stop_error_thresh=1)
 
 # dataset = Dataset.no_valid_dataset_from_task(size=1000, task=task)
-dataset = InfiniteDataset(task=task, validation_size=10 ** 2)
+dataset = InfiniteDataset(task=task, validation_size=10 ** 4)
 
-#net = trainer.train(dataset, net_builder, seed=seed)
+net = trainer.train(dataset, net_builder, seed=seed)
 
-net = RNN.load_model(out_dir+'/best_model.npz')
-net = trainer.resume_training(dataset, net)
+#net = RNN.load_model(out_dir+'/best_model.npz')
+#net = trainer.resume_training(dataset, net)

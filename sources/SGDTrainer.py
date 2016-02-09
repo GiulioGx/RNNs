@@ -116,25 +116,28 @@ class SGDTrainer(object):
                     error_occured = True
                     rho = numpy.nan
 
-                if valid_error < best_error:
-                    best_error = valid_error
-                    net.save_model(self.__output_dir + '/best_model')
+                if not error_occured:
 
-                batch_end_time = time.time()
-                total_elapsed_time = batch_end_time - start_time
+                    if valid_error < best_error:
+                        best_error = valid_error
+                        net.save_model(self.__output_dir + '/best_model')
 
-                eval_time = time.time() - eval_start_time
-                batch_time = batch_end_time - batch_start_time
+                    batch_end_time = time.time()
+                    total_elapsed_time = batch_end_time - start_time
 
-                info = SGDTrainer.__build_infos(train_info, i, valid_loss, valid_error, best_error, rho,
-                                                batch_time, eval_time)
-                logging.info(info)
-                stats.update(info, i, total_elapsed_time)
-                net.save_model(self.__output_dir + '/current_model')
-                stats.save(self.__output_dir + '/stats')
+                    eval_time = time.time() - eval_start_time
+                    batch_time = batch_end_time - batch_start_time
 
-                batch_start_time = time.time()
-                if error_occured:
+                    info = SGDTrainer.__build_infos(train_info, i, valid_loss, valid_error, best_error, rho,
+                                                    batch_time, eval_time)
+                    logging.info(info)
+                    stats.update(info, i, total_elapsed_time)
+                    net.save_model(self.__output_dir + '/current_model')
+                    stats.save(self.__output_dir + '/stats')
+
+                    batch_start_time = time.time()
+                else:
+
                     logging.warning('stopping training...')
 
             i += 1
