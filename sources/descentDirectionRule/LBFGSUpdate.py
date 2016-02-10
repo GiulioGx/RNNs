@@ -85,13 +85,17 @@ class LBFGSDirection(DescentDirectionRule):
 
         return q_second_loop
 
-    def __compute_h_k0_dot(self, q):  # TODO
+    @property
+    def __gamma_k(self):
+
+        #s_km1 = self.__stored_x[1]
+        #y_km1 = self.__stored_grad[1]
+        #return vec_dot(s_km1, y_km1) / vec_dot(y_km1, y_km1)
+        return TT.constant(1., dtype=Configs.floatType)
+
+    def __compute_h_k0_dot(self, q):
         """compute the dot product between H_k0 and a vector q"""
-
-        s_km1 = self.__stored_x[1]
-        y_km1 = self.__stored_grad[1]
-        gamma_k = vec_dot(s_km1, y_km1) / vec_dot(y_km1, y_km1)
-
+        gamma_k = self.__gamma_k
         return q * gamma_k
 
     def direction(self, net, obj_fnc: ObjectiveFunction):
@@ -135,18 +139,18 @@ class LBFGSDirection(DescentDirectionRule):
         direction_vars = net.from_tensor(direction)
 
         return direction_vars, LBFGSDirection.Infos(direction_vars, gradients_combination, sk, yk,
-                                                    self.__counter)  # TODO infos
+                                                    self.__first_step_completed, self.__gamma_k)  # TODO infos
 
     @property
     def updates(self):
         return self.__updates
 
     class Infos(SymbolicInfo):
-        def __init__(self, direction, gradient, sk, yk, collected):
+        def __init__(self, direction, gradient, sk, yk, collected, gamma_k):
             sy_dot = vec_dot(sk, yk)
             grad_dot = direction.cos(gradient)
             dir_norm = direction.norm(2)
-            self.__symbols = [dir_norm, grad_dot, sy_dot, collected, sk.norm(2), yk.norm(2)]
+            self.__symbols = [dir_norm, grad_dot, sy_dot, collected, sk.norm(2), yk.norm(2), gamma_k]
 
         @property
         def symbols(self):
@@ -155,10 +159,10 @@ class LBFGSDirection(DescentDirectionRule):
         def fill_symbols(self, symbols_replacements: list) -> Info:
             dir_norm_info = PrintableInfoElement('dir_norm', ':07.3f', symbols_replacements[0].item())
             dot_info = PrintableInfoElement('grad_dot', ':1.2f', symbols_replacements[1].item())
-            sy_dot_info = PrintableInfoElement('sy_dot', ':1.2f', symbols_replacements[2].item())
+            sy_dot_info = PrintableInfoElement('sy_dot', ':02.2e', symbols_replacements[2].item())
             collected = PrintableInfoElement('collected', ':1.2f', symbols_replacements[3].item())
             sk_norm = PrintableInfoElement('sk_norm', ':02.2e', symbols_replacements[4].item())
             yk_norm = PrintableInfoElement('yk_norm', ':02.2e', symbols_replacements[5].item())
-
-            info = InfoList(dir_norm_info, dot_info, sy_dot_info, collected, sk_norm, yk_norm)
+            gamma_k_info = PrintableInfoElement('gamma_k', ':02.2e', symbols_replacements[6].item())
+            info = InfoList(dir_norm_info, dot_info, sy_dot_info, collected, sk_norm, yk_norm, gamma_k_info)
             return info

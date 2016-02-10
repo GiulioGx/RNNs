@@ -4,6 +4,7 @@ from ActivationFunction import Tanh
 from Configs import Configs
 from SGDTrainer import SGDTrainer
 from TrainingRule import TrainingRule
+from combiningRule.OnesCombination import OnesCombination
 from combiningRule.SimplexCombination import SimplexCombination
 from descentDirectionRule.CombinedGradients import CombinedGradients
 from descentDirectionRule.LBFGSUpdate import LBFGSDirection
@@ -70,8 +71,8 @@ loss_fnc = SquaredError()
 # dir_rule = FrozenGradient(penalty)
 # dir_rule = SepareteGradient()
 
-#combining_rule = OnesCombination(normalize_components=False)
-combining_rule = SimplexCombination(normalize_components=True, seed=seed)
+combining_rule = OnesCombination(normalize_components=False)
+#combining_rule = SimplexCombination(normalize_components=True, seed=seed)
 # combining_rule = SimpleSum()
 #dir_rule = CombinedGradients(combining_rule)
 dir_rule = LBFGSDirection(n_pairs=20)
@@ -90,10 +91,10 @@ update_rule = SimpleUdpate()
 train_rule = TrainingRule(dir_rule, lr_rule, update_rule, loss_fnc)
 
 trainer = SGDTrainer(train_rule, output_dir=out_dir, max_it=10 ** 10,
-                     check_freq=1, batch_size=1000, stop_error_thresh=1)
+                     check_freq=50, batch_size=1000, stop_error_thresh=1)
 
 # dataset = Dataset.no_valid_dataset_from_task(size=1000, task=task)
-dataset = InfiniteDataset(task=task, validation_size=10 ** 2)
+dataset = InfiniteDataset(task=task, validation_size=10 ** 4)
 
 #net = trainer.train(dataset, net_builder, seed=seed)
 
