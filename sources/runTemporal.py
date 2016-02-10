@@ -36,7 +36,7 @@ print('device: ' + device)
 print('floatType: ' + floatX)
 print(separator)
 
-seed = 13
+seed = 14
 Configs.seed = seed
 
 # network setup
