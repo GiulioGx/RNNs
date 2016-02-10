@@ -8,6 +8,7 @@ import theano as T
 from numpy.linalg import LinAlgError
 
 from ActivationFunction import ActivationFunction
+from Configs import Configs
 from ObjectiveFunction import ObjectiveFunction
 from Statistics import Statistics
 from TrainingRule import TrainingRule
@@ -56,6 +57,7 @@ class SGDTrainer(object):
         logging.info('Compiling theano functions for the training step...')
         train_step = self.__training_rule.compile(net)
         logging.info('... Done')
+        logging.info('Seed: {}'.format(Configs.seed))
 
         #  loss and error theano fnc
         u = net.symbols.u
