@@ -93,11 +93,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="SGDTrainer.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="SGDTrainer.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/SGDTrainer.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="139" column="0" selection-start-line="139" selection-start-column="0" selection-end-line="139" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.32142857">
+              <caret line="88" column="0" selection-start-line="88" selection-start-column="0" selection-end-line="88" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -115,10 +115,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="runTemporal.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="runTemporal.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/runTemporal.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.2611607">
+            <state vertical-scroll-proportion="0.0">
               <caret line="38" column="9" selection-start-line="38" selection-start-column="9" selection-end-line="38" selection-end-column="9" />
               <folding />
             </state>
@@ -180,7 +180,6 @@
         <option value="$PROJECT_DIR$/updateRule/LBFGSRule.py" />
         <option value="$PROJECT_DIR$/model/RNN.py" />
         <option value="$PROJECT_DIR$/theanoUtils.py" />
-        <option value="$PROJECT_DIR$/SGDTrainer.py" />
         <option value="$PROJECT_DIR$/updateRule/LBFGSUpdate.py" />
         <option value="$PROJECT_DIR$/descentDirectionRule/CombinedGradients.py" />
         <option value="$PROJECT_DIR$/TrainingRule.py" />
@@ -188,6 +187,7 @@
         <option value="$PROJECT_DIR$/runAddition.py" />
         <option value="$PROJECT_DIR$/descentDirectionRule/LBFGSUpdate.py" />
         <option value="$PROJECT_DIR$/runTemporal.py" />
+        <option value="$PROJECT_DIR$/SGDTrainer.py" />
       </list>
     </option>
   </component>
@@ -242,6 +242,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -305,7 +306,6 @@
         </subPane>
       </pane>
       <pane id="Scope" />
-      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -901,9 +901,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#47#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1005,27 +1002,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="27" column="20" selection-start-line="27" selection-start-column="20" selection-end-line="27" selection-end-column="20" />
-          <folding>
-            <element signature="e#442#601#0" expanded="false" />
-            <element signature="e#643#717#0" expanded="false" />
-            <element signature="e#835#852#0" expanded="false" />
-            <element signature="e#944#1091#0" expanded="false" />
-            <element signature="e#1127#1180#0" expanded="false" />
-            <element signature="e#1222#1303#0" expanded="false" />
-            <element signature="e#1350#1846#0" expanded="false" />
-            <element signature="e#2331#2762#0" expanded="false" />
-            <element signature="e#2802#3178#0" expanded="false" />
-            <element signature="e#3211#3229#0" expanded="false" />
-            <element signature="e#3387#4255#0" expanded="false" />
-            <element signature="e#7106#7514#0" expanded="false" />
-            <element signature="e#7649#7669#0" expanded="false" />
-            <element signature="e#7714#7733#0" expanded="false" />
-            <element signature="e#7777#7795#0" expanded="false" />
-            <element signature="e#7840#7859#0" expanded="false" />
-            <element signature="e#7904#7923#0" expanded="false" />
-            <element signature="e#7968#7987#0" expanded="false" />
-            <element signature="e#8030#8047#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1033,7 +1009,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.5562404">
           <caret line="227" column="0" selection-start-line="227" selection-start-column="0" selection-end-line="227" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1049,14 +1024,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="209" column="57" selection-start-line="209" selection-start-column="57" selection-end-line="209" selection-end-column="57" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/SGDTrainer.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="139" column="0" selection-start-line="139" selection-start-column="0" selection-end-line="139" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -1115,8 +1082,16 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/runTemporal.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.2611607">
+        <state vertical-scroll-proportion="0.0">
           <caret line="38" column="9" selection-start-line="38" selection-start-column="9" selection-end-line="38" selection-end-column="9" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/SGDTrainer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.32142857">
+          <caret line="88" column="0" selection-start-line="88" selection-start-column="0" selection-end-line="88" selection-end-column="0" />
           <folding />
         </state>
       </provider>
