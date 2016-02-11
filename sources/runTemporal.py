@@ -1,3 +1,4 @@
+import sys
 import theano
 
 from ActivationFunction import Tanh
@@ -9,12 +10,14 @@ from descentDirectionRule.CombinedGradients import CombinedGradients
 from descentDirectionRule.LBFGSUpdate import LBFGSDirection
 from initialization.ConstantInit import ConstantInit
 from initialization.GaussianInit import GaussianInit
+from initialization.SpectralInit import SpectralInit
 from learningRule.GradientClipping import GradientClipping
 from lossFunctions.CrossEntropy import CrossEntropy
 from lossFunctions.SquaredError import SquaredError
 from model import RNN
-from model.RNNBuilder import RNNBuilder
-from model.RNNInitializer import RNNInitializer
+from model.RNNGrowingPolicy import RNNIncrementalGrowing
+from model.RNNManager import RNNManager
+from model.RNNInitializer import RNNInitializer, RNNVarsInitializer
 from output_fncs.Linear import Linear
 from output_fncs.Softmax import Softmax
 from task.AdditionTask import AdditionTask
@@ -36,17 +39,22 @@ print('device: ' + device)
 print('floatType: ' + floatX)
 print(separator)
 
-seed = 15
+seed = 13
 Configs.seed = seed
+sys.setrecursionlimit(100000)
 
 # network setup
 std_dev = 0.14  # 0.14 Tanh # 0.21 Relu
 mean = 0
-rnn_initializer = RNNInitializer(W_rec_init=GaussianInit(mean=mean, std_dev=std_dev, seed=seed),
-                                 W_in_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed),
-                                 W_out_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed), b_rec_init=ConstantInit(0),
-                                 b_out_init=ConstantInit(0))
-net_builder = RNNBuilder(initializer=rnn_initializer, activation_fnc=Tanh(), output_fnc=Softmax(), n_hidden=50)
+vars_initializer = RNNVarsInitializer(
+    W_rec_init=SpectralInit(matrix_init=GaussianInit(mean=mean, std_dev=std_dev, seed=seed), rho=1.2),
+    W_in_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed),
+    W_out_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed), b_rec_init=ConstantInit(0),
+    b_out_init=ConstantInit(0))
+net_initializer = RNNInitializer(vars_initializer, n_hidden=5)
+net_growing_policy = RNNIncrementalGrowing(n_hidden_incr=5, n_hidden_max=50, n_hidden_incr_freq=1000,
+                                           initializer=vars_initializer)
+net_builder = RNNManager(initializer=net_initializer, activation_fnc=Tanh(), output_fnc=Softmax(), growing_policy=net_growing_policy)
 
 # setup
 task = TemporalOrderTask(200, seed)
@@ -74,19 +82,19 @@ loss_fnc = CrossEntropy()
 # dir_rule = FrozenGradient(penalty)
 # dir_rule = SepareteGradient()
 
-#combining_rule = OnesCombination(normalize_components=False)
+# combining_rule = OnesCombination(normalize_components=False)
 combining_rule = SimplexCombination(normalize_components=True, seed=seed)
 # combining_rule = SimpleSum()
 dir_rule = CombinedGradients(combining_rule)
-#dir_rule = LBFGSDirection(n_pairs=20)
+# dir_rule = LBFGSDirection(n_pairs=20)
 
 # learning step rule
 # lr_rule = WRecNormalizedStep(0.0001) #0.01
 # lr_rule = ConstantNormalizedStep(0.001)  # 0.01
-lr_rule = GradientClipping(lr_value=0.003, clip_thr=1, normalize_wrt_dimension=False)  # 0.01
+lr_rule = GradientClipping(lr_value=0.001, clip_thr=1, normalize_wrt_dimension=False)  # 0.01
 # lr_rule = ArmijoStep(alpha=0.5, beta=0.1, init_step=1, max_steps=50)
 
-#update_rule = FixedAveraging(t=10)
+# update_rule = FixedAveraging(t=10)
 update_rule = SimpleUdpate()
 # update_rule = Momentum(gamma=0.1)
 
@@ -99,7 +107,7 @@ trainer = SGDTrainer(train_rule, output_dir=out_dir, max_it=10 ** 10,
 # dataset = Dataset.no_valid_dataset_from_task(size=1000, task=task)
 dataset = InfiniteDataset(task=task, validation_size=10 ** 4)
 
-net = trainer.train(dataset, net_builder, seed=seed)
+net = trainer.train(dataset, net_builder)
 
-#net = RNN.load_model(out_dir+'/best_model.npz')
-#net = trainer.resume_training(dataset, net)
+# net = RNN.load_model(out_dir+'/best_model.npz')
+# net = trainer.resume_training(dataset, net)

@@ -1,39 +1,64 @@
-from Configs import Configs
-from infos.InfoGroup import InfoGroup
+import abc
+
+import numpy
+
+from infos.InfoElement import SimpleDescription, PrintableInfoElement
 from infos.InfoList import InfoList
 from infos.InfoProducer import SimpleInfoProducer
-from initialization.GaussianInit import GaussianInit
-from initialization.MatrixInit import MatrixInit
+from initialization.RNNVarsInitializer import RNNVarsInitializer
+
+__author__ = 'giulio'
 
 
-class RNNInitializer(SimpleInfoProducer):
-    def __init__(self, W_rec_init: MatrixInit = GaussianInit(), W_in_init: MatrixInit = GaussianInit(),
-                 W_out_init: MatrixInit = GaussianInit(), b_rec_init: MatrixInit = GaussianInit(),
-                 b_out_init: MatrixInit = GaussianInit()):
-        self.__W_rec_init = W_rec_init
-        self.__W_in_init = W_in_init
-        self.__W_out_init = W_out_init
-        self.__b_rec_init = b_rec_init
-        self.__b_out_init = b_out_init
+class RNNProducer(SimpleInfoProducer):
+    __metaclass__ = abc.ABCMeta
 
-    def generate_variables(self, n_in: int, n_out: int, n_hidden: int):
-        # init network matrices
-        W_rec = self.__W_rec_init.init_matrix((n_hidden, n_hidden), Configs.floatType)
-        W_in = self.__W_in_init.init_matrix((n_hidden, n_in), Configs.floatType)
-        W_out = self.__W_out_init.init_matrix((n_out, n_hidden), Configs.floatType)
+    @abc.abstractmethod
+    def generate_variables(self, n_in: int, n_out: int):
+        """generate W_rec, W_in, W_out, b_rec, b_out in some way"""
 
-        # init biases
-        b_rec = self.__b_rec_init.init_matrix((n_hidden, 1), Configs.floatType)
-        b_out = self.__b_out_init.init_matrix((n_out, 1), Configs.floatType)
+
+class RNNLoader(RNNProducer):
+    @property
+    def infos(self):
+        return SimpleDescription("RNN loading from file '{}'".format(self.__filename))
+
+    def __init__(self, filename: str):
+        self.__filename = filename
+
+    def generate_variables(self, n_in: int, n_out: int):
+        npz = numpy.load(self.__filename)
+
+        W_rec = npz["W_rec"]
+        W_in = npz["W_in"]
+        W_out = npz["W_out"]
+        b_rec = npz["b_rec"]
+        b_out = npz["b_out"]
+
+        if W_in.shape[1] != n_in or W_out.shape[0] != n_out:
+            raise ValueError('the model specified does not have the number of units needed..')  # FOXME
+
+        # # TODO pickel variable initializer
+        #
+        # filename, file_extension = os.path.splitext(filename)
+        # pickle_file = filename + '.pkl'
+        # activation_fnc_pkl, output_fnc_pkl = pickle.load(open(pickle_file, 'rb'))
+        # if activation_fnc is None:
+        #     activation_fnc = activation_fnc_pkl
+        # if output_fnc is None:
+        #     output_fnc = output_fnc_pkl
 
         return W_rec, W_in, W_out, b_rec, b_out
 
+
+class RNNInitializer(RNNProducer):
+    def generate_variables(self, n_in: int, n_out: int):
+        return self.__variables_initializer.generate_variables(n_in, n_out, self.__n_hidden)
+
     @property
     def infos(self):
-        W_rec_info = InfoGroup('W_rec', InfoList(self.__W_rec_init.infos))
-        W_in_info = InfoGroup('W_in', InfoList(self.__W_in_init.infos))
-        W_out_info = InfoGroup('W_out', InfoList(self.__W_out_init.infos))
-        b_rec_info = InfoGroup('b_rec', InfoList(self.__b_rec_init.infos))
-        b_out_info = InfoGroup('b_out', InfoList(self.__b_out_init.infos))
+        return InfoList(PrintableInfoElement('n_hidden', '', self.__n_hidden), self.__variables_initializer.infos)
 
-        return InfoGroup('Init Strategies', InfoList(W_rec_info, W_in_info, W_out_info, b_rec_info, b_out_info))
+    def __init__(self, variables_initializer: RNNVarsInitializer, n_hidden: int = 100):
+        self.__n_hidden = n_hidden
+        self.__variables_initializer = variables_initializer

@@ -12,7 +12,7 @@ from initialization.SparseGaussianInit import SparseGaussianInit
 from initialization.SpectralInit import SpectralInit
 from learningRule.GradientClipping import GradientClipping
 from lossFunctions.SquaredError import SquaredError
-from model.RNNBuilder import RNNBuilder
+from model.RNNManager import RNNManager
 from oldies.FixedAveragingOld import FixedAveragingOld
 from output_fncs.Linear import Linear
 from task.AdditionTask import AdditionTask
@@ -50,7 +50,7 @@ bias_value = 0
 n_conns = 15
 std_dev = 0.1
 #std_dev = 0.14
-net_initializer = RNNBuilder(
+net_initializer = RNNManager(
     W_rec_init=SpectralInit(SparseGaussianInit(n_connections_per_unit=n_conns, std_dev=std_dev, columnwise=False), rho=1.1),
     W_in_init=SparseGaussianInit(n_connections_per_unit=n_conns, std_dev=1, columnwise=True),
     W_out_init=SparseGaussianInit(n_connections_per_unit=n_conns, std_dev=std_dev, columnwise=False),

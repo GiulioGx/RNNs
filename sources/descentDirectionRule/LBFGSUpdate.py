@@ -139,7 +139,7 @@ class LBFGSDirection(DescentDirectionRule):
         direction_vars = net.from_tensor(direction)
 
         return direction_vars, LBFGSDirection.Infos(direction_vars, gradients_combination, sk, yk,
-                                                    self.__first_step_completed, self.__gamma_k)  # TODO infos
+                                                    self.__first_step_completed, self.__gamma_k)
 
     @property
     def updates(self):

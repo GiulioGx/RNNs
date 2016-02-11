@@ -9,7 +9,7 @@ from infos.InfoElement import PrintableInfoElement
 from infos.InfoGroup import InfoGroup
 from infos.InfoList import InfoList
 from initialization.MatrixInit import MatrixInit
-from model.RNNInitializer import RNNInitializer
+from initialization.RNNVarsInitializer import RNNVarsInitializer
 from model.RNNVars import RNNVars
 from output_fncs import OutputFunction
 from theanoUtils import as_vector
@@ -19,13 +19,11 @@ __author__ = 'giulio'
 
 class RNN(object):
     def __init__(self, W_rec, W_in, W_out, b_rec, b_out, activation_fnc: ActivationFunction,
-                 output_fnc: OutputFunction, variables_initializer: RNNInitializer):
+                 output_fnc: OutputFunction):
         assert (W_rec.shape[0] == W_rec.shape[1])
         assert (W_in.shape[0] == W_rec.shape[1])
         assert (b_rec.shape[0] == W_rec.shape[0])
         assert (b_out.shape[0] == W_out.shape[0])
-
-        self.__initializer = variables_initializer
 
         # topology
         self.__n_hidden = W_rec.shape[0]
@@ -133,29 +131,6 @@ class RNN(object):
         return RNN(W_rec=W_rec, W_in=W_in, W_out=W_out, b_rec=b_rec, b_out=b_out, activation_fnc=self.__activation_fnc,
                    output_fnc=output_fnc)
 
-    @staticmethod
-    def load_model(filename, activation_fnc: ActivationFunction = None, output_fnc: OutputFunction = None):
-        npz = numpy.load(filename)
-
-        W_rec = npz["W_rec"]
-        W_in = npz["W_in"]
-        W_out = npz["W_out"]
-        b_rec = npz["b_rec"]
-        b_out = npz["b_out"]
-
-        # TODO pickel variable initializer
-
-        filename, file_extension = os.path.splitext(filename)
-        pickle_file = filename + '.pkl'
-        activation_fnc_pkl, output_fnc_pkl = pickle.load(open(pickle_file, 'rb'))
-        if activation_fnc is None:
-            activation_fnc = activation_fnc_pkl
-        if output_fnc is None:
-            output_fnc = output_fnc_pkl
-
-        return RNN(W_rec=W_rec, W_in=W_in, W_out=W_out, b_rec=b_rec, b_out=b_out, activation_fnc=activation_fnc,
-                   output_fnc=output_fnc, variables_initializer=None)
-
     @property
     def info(self):
         return InfoGroup('net',
@@ -185,17 +160,17 @@ class RNN(object):
         pickfile = open(filename + '.pkl', "wb")
         pickle.dump([self.__activation_fnc, self.__output_fnc], pickfile)
 
-    def extend_hidden_units(self, n_hidden: int):
+    def extend_hidden_units(self, n_hidden: int, initializer:RNNVarsInitializer):
         if n_hidden < self.n_hidden:
             raise ValueError(
                 'new number of hidden units {()} must be bigger than the previous one {()} '.format(n_hidden,
                                                                                                     self.n_hidden))
-        self.symbols.extend_hidden_units(n_hidden, self.__initializer)
+        self.symbols.extend_hidden_units(n_hidden, initializer)
         self.__n_hidden = n_hidden
 
     class Symbols:
         def __init__(self, net, W_rec, W_in, W_out, b_rec, b_out):
-            self.__max_length = 200  # FOXME magic constant
+            self.__max_length = 250  # FOXME magic constant
             self.__net = net
 
             # define shared variables
@@ -247,16 +222,6 @@ class RNN(object):
                                                 (self.__b_rec, TT.addbroadcast(b_rec, 1)),
                                                 (self.__b_out, TT.addbroadcast(b_out, 1))],
                                             name='extend_step')
-            #self.__trick()
-
-        def __trick(self):
-            # Trick to get dC/dh[k]
-            scan_node = self.h_shared.owner.inputs[0].owner
-            assert isinstance(scan_node.op, T.scan_module.scan_op.Scan)
-            n_pos = scan_node.op.n_seqs + 1
-            init_h = scan_node.inputs[n_pos]
-            print('npos ', n_pos)
-            print('init_h ', init_h)
 
         def net_output(self, params: RNNVars, u):
             return self.__net_output(params.W_rec, params.W_in, params.W_out, params.b_rec, params.b_out, u)
@@ -325,7 +290,7 @@ class RNN(object):
 
             return V
 
-        def extend_hidden_units(self, n_hidden: int, initializer: RNNInitializer):
+        def extend_hidden_units(self, n_hidden: int, initializer: RNNVarsInitializer):
             W_rec, W_in, W_out, b_rec, b_out = initializer.generate_variables(n_in=self.__net.n_in,
                                                                               n_out=self.__net.n_out,
                                                                               n_hidden=n_hidden)

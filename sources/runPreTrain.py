@@ -14,7 +14,7 @@ from learningRule.GradientClipping import GradientClipping
 from lossFunctions.FullSquaredError import FullSquaredError
 from lossFunctions.SquaredError import SquaredError
 from model.RNN import RNN
-from model.RNNBuilder import RNNBuilder
+from model.RNNManager import RNNManager
 from oldies.FixedAveragingOld import FixedAveragingOld
 from output_fncs.Linear import Linear
 from penalty.ConstantPenalty import ConstantPenalty
@@ -39,7 +39,7 @@ print(separator)
 # network setup
 std_dev = 0.14  # 0.14 Tanh # 0.21 Relu
 mean = 0
-net_initializer = RNNBuilder(W_rec_init=SpectralInit(GaussianInit(mean=mean, std_dev=std_dev), rho=1.1), W_in_init=GaussianInit(mean=mean, std_dev = 0.1),
+net_initializer = RNNManager(W_rec_init=SpectralInit(GaussianInit(mean=mean, std_dev=std_dev), rho=1.1), W_in_init=GaussianInit(mean=mean, std_dev = 0.1),
                              W_out_init=GaussianInit(mean=mean, std_dev=0.1), b_rec_init=ConstantInit(0),
                              b_out_init=ConstantInit(0), activation_fnc=Tanh(), output_fnc=Linear(), n_hidden=100)
 

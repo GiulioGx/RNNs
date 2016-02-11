@@ -10,7 +10,7 @@ from initialization.ConstantInit import ConstantInit
 from initialization.GaussianInit import GaussianInit
 from lossFunctions.SquaredError import SquaredError
 from model.RNN import RNN
-from model.RNNBuilder import RNNBuilder
+from model.RNNManager import RNNManager
 from model.RNNInitializer import RNNInitializer
 from output_fncs.Linear import Linear
 from task.AdditionTask import AdditionTask
@@ -44,7 +44,7 @@ rnn_initializer = RNNInitializer(W_rec_init=GaussianInit(mean=mean, std_dev=std_
                                  W_in_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed),
                                  W_out_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed), b_rec_init=ConstantInit(0),
                                  b_out_init=ConstantInit(0))
-net_builder = RNNBuilder(initializer=rnn_initializer, activation_fnc=Tanh(), output_fnc=Linear(), n_hidden=100)
+net_builder = RNNManager(initializer=rnn_initializer, activation_fnc=Tanh(), output_fnc=Linear(), n_hidden=100)
 
 # setup
 task = XorTaskHot(144, seed)
@@ -55,7 +55,7 @@ combining_rule = OnesCombination(normalize_components=False)
 dir_rule = CombinedGradients(combining_rule)
 
 dataset = InfiniteDataset(task=task, validation_size=10 ** 4)
-net = net_builder.init_net(n_in=dataset.n_in, n_out=dataset.n_out)
+net = net_builder.get_net(n_in=dataset.n_in, n_out=dataset.n_out)
 # net = RNN.load_model(out_dir + '/current_model.npz')
 
 net_symbols = net.symbols

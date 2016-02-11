@@ -12,7 +12,7 @@ from initialization.GaussianInit import GaussianInit
 from initialization.SpectralInit import SpectralInit
 from learningRule.GradientClipping import GradientClipping
 from lossFunctions.SquaredError import SquaredError
-from model.RNNBuilder import RNNBuilder
+from model.RNNManager import RNNManager
 from model.RNNInitializer import RNNInitializer
 from oldies.FixedAveraging import FixedAveraging
 from output_fncs.Linear import Linear
@@ -42,7 +42,7 @@ rnn_initializer = RNNInitializer(W_rec_init=SpectralInit(GaussianInit(mean=mean,
                                  W_in_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed),
                                  W_out_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed), b_rec_init=ConstantInit(0),
                                  b_out_init=ConstantInit(0))
-net_builder = RNNBuilder(initializer=rnn_initializer, activation_fnc=Tanh(), output_fnc=Linear(), n_hidden=100)
+net_builder = RNNManager(initializer=rnn_initializer, activation_fnc=Tanh(), output_fnc=Linear(), n_hidden=100)
 
 # setup
 task = AdditionTask(144, seed)

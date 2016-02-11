@@ -16,8 +16,9 @@ from infos.InfoElement import PrintableInfoElement
 from infos.InfoGroup import InfoGroup
 from infos.InfoList import InfoList
 from lossFunctions import LossFunction
+from model import NetManager
 from model.RNN import RNN
-from model.RNNBuilder import RNNBuilder
+from model.RNNManager import RNNManager
 from output_fncs.OutputFunction import OutputFunction
 from task import Batch
 from task.BatchPolicer import RepetitaPolicer
@@ -28,7 +29,7 @@ __author__ = 'giulio'
 
 class SGDTrainer(object):
     def __init__(self, training_rule: TrainingRule, max_it=10 ** 5, batch_size=100,
-                 stop_error_thresh=0.01, check_freq=50, output_dir='.', incremental_units:bool= False):
+                 stop_error_thresh=0.01, check_freq=50, output_dir='.', incremental_units: bool = False):
 
         self.__training_rule = training_rule
         self.__max_it = max_it
@@ -49,7 +50,10 @@ class SGDTrainer(object):
                                                                                 self.__stop_error_thresh)
                                                            ))
 
-    def _train(self, dataset: Dataset, net):
+    def _train(self, dataset: Dataset, net_manager: NetManager):
+
+        net = net_manager.get_net(n_in=dataset.n_in, n_out=dataset.n_out)
+
         # add task description to infos
         self.__training_settings_info = InfoList(self.__training_settings_info,
                                                  PrintableInfoElement('task', '', str(dataset)))
@@ -90,24 +94,18 @@ class SGDTrainer(object):
         i = 0
         best_error = 100
 
-        # TODO mettere a pulito
-        n_hidden_max = 100
-        n_hidden_incr = 5
-        n_hidden_incr_freq = 2000
-
         while i < self.__max_it and best_error > self.__stop_error_thresh / 100 and (
                 not error_occured):  # FOXME strategy criterio d'arresto
 
-            if self.__incremental_units and (i + 1) % n_hidden_incr_freq == 0 and net.n_hidden < n_hidden_max:
-                new_hidden_number = net.n_hidden + n_hidden_incr
-                net.extend_hidden_units(n_hidden=new_hidden_number)
-                logging.info('extending the number of hidden units to {}'.format(new_hidden_number))
+            # this makes the network grow in size according to the policy
+            # specified when instanziating the network manager (may be even a null grow)
+            net_manager.grow_net()
 
             batch = dataset.get_train_batch(self.__batch_size)
             # batch = policer.get_train_batch()
             train_info = train_step.step(batch.inputs, batch.outputs)
 
-            if i % self.__check_freq == 0:  # FIXME 1st it
+            if i % self.__check_freq == 0:  # FIXME 1st iteration
                 eval_start_time = time.time()
                 valid_error, valid_loss = SGDTrainer.compute_error_and_loss(self.__loss_and_error, validation_set)
 
@@ -159,7 +157,7 @@ class SGDTrainer(object):
         now = datetime.datetime.now()
         logging.info('starting logging activity in date {}'.format(now.strftime("%d-%m-%Y %H:%M")))
 
-    def train(self, dataset: Dataset, net_builder: RNNBuilder, seed: int = 13):
+    def train(self, dataset: Dataset, net_manager: NetManager):
 
         if os.path.exists(self.__log_filename):
             os.remove(self.__log_filename)
@@ -167,16 +165,15 @@ class SGDTrainer(object):
 
         # configure network
         logging.info('Initializing the net and compiling theano functions for the net...')
-        net = net_builder.init_net(n_in=dataset.n_in, n_out=dataset.n_out)
         logging.info('...Done')
-        logging.info(str(net_builder.infos))
+        logging.info(str(net_manager.infos))
 
-        return self._train(dataset, net)
+        return self._train(dataset, net_manager)
 
-    def resume_training(self, dataset: Dataset, net):  # TODO load statistics too
+    def resume_training(self, dataset: Dataset, net_manager: NetManager):  # TODO load statistics too
         self.__start_logger()
         logging.info('Resuming training...')
-        return self._train(dataset, net)
+        return self._train(dataset, net_manager)
 
     @staticmethod
     def compute_error_and_loss(loss_and_error_fnc, validation_batches: list):

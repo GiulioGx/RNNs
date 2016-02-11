@@ -1,4 +1,4 @@
-from model.RNNBuilder import RNNBuilder
+from model.RNNManager import RNNManager
 from model.RNNInitializer import RNNInitializer
 from model.RNN import RNN
 from model.RNNVars import RNNVars

@@ -10,7 +10,7 @@ from infos.InfoList import InfoList
 from initialization.ConstantInit import ConstantInit
 from learningRule.ConstantStep import ConstantStep
 from learningRule.LearningRule import LearningStepRule
-from model import RNNInitializer, RNNBuilder
+from model import RNNInitializer, RNNManager
 from output_fncs.Linear import Linear
 from updateRule.UpdateRule import UpdateRule
 from infos.Info import NullInfo
@@ -105,10 +105,10 @@ if __name__ == '__main__':
                                      W_in_init=ConstantInit(1),
                                      W_out_init=ConstantInit(1), b_rec_init=ConstantInit(1),
                                      b_out_init=ConstantInit(1))
-    net_builder = RNNBuilder(initializer=rnn_initializer, activation_fnc=Tanh(), output_fnc=Linear(), n_hidden=5)
+    net_builder = RNNManager(initializer=rnn_initializer, activation_fnc=Tanh(), output_fnc=Linear(), n_hidden=5)
 
     t = 5
-    net = net_builder.init_net(2, 3)
+    net = net_builder.get_net(2, 3)
     n = net.n_variables
     constant_value = numpy.ones(shape=(n, 1), dtype='float32')
     descent_rule = FakeDirection(constant_value)
