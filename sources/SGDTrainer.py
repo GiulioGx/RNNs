@@ -28,7 +28,7 @@ __author__ = 'giulio'
 
 class SGDTrainer(object):
     def __init__(self, training_rule: TrainingRule, max_it=10 ** 5, batch_size=100,
-                 stop_error_thresh=0.01, check_freq=50, output_dir='.'):
+                 stop_error_thresh=0.01, check_freq=50, output_dir='.', incremental_units:bool= False):
 
         self.__training_rule = training_rule
         self.__max_it = max_it
@@ -36,6 +36,7 @@ class SGDTrainer(object):
         self.__stop_error_thresh = stop_error_thresh
         self.__check_freq = check_freq
         self.__output_dir = output_dir
+        self.__incremental_units = incremental_units
 
         self.__log_filename = self.__output_dir + '/train.log'
 
@@ -90,7 +91,6 @@ class SGDTrainer(object):
         best_error = 100
 
         # TODO mettere a pulito
-        incremental_hidden = False
         n_hidden_max = 100
         n_hidden_incr = 5
         n_hidden_incr_freq = 2000
@@ -98,7 +98,7 @@ class SGDTrainer(object):
         while i < self.__max_it and best_error > self.__stop_error_thresh / 100 and (
                 not error_occured):  # FOXME strategy criterio d'arresto
 
-            if incremental_hidden and (i + 1) % n_hidden_incr_freq == 0 and net.n_hidden < n_hidden_max:
+            if self.__incremental_units and (i + 1) % n_hidden_incr_freq == 0 and net.n_hidden < n_hidden_max:
                 new_hidden_number = net.n_hidden + n_hidden_incr
                 net.extend_hidden_units(n_hidden=new_hidden_number)
                 logging.info('extending the number of hidden units to {}'.format(new_hidden_number))

@@ -49,7 +49,7 @@ rnn_initializer = RNNInitializer(W_rec_init=GaussianInit(mean=mean, std_dev=std_
 net_builder = RNNBuilder(initializer=rnn_initializer, activation_fnc=Tanh(), output_fnc=Softmax(), n_hidden=50)
 
 # setup
-task = TemporalOrderTask(144, seed)
+task = TemporalOrderTask(200, seed)
 out_dir = Configs.output_dir + str(task)
 loss_fnc = CrossEntropy()
 
