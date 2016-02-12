@@ -11,6 +11,7 @@ from descentDirectionRule.LBFGSUpdate import LBFGSDirection
 from initialization.ConstantInit import ConstantInit
 from initialization.GaussianInit import GaussianInit
 from initialization.SpectralInit import SpectralInit
+from initialization.UniformInit import UniformInit
 from learningRule.GradientClipping import GradientClipping
 from lossFunctions.CrossEntropy import CrossEntropy
 from lossFunctions.SquaredError import SquaredError
@@ -46,8 +47,13 @@ sys.setrecursionlimit(100000)
 # network setup
 std_dev = 0.14  # 0.14 Tanh # 0.21 Relu
 mean = 0
+# vars_initializer = RNNVarsInitializer(
+#     W_rec_init=SpectralInit(matrix_init=GaussianInit(mean=mean, std_dev=std_dev, seed=seed), rho=1.2),
+#     W_in_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed),
+#     W_out_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed), b_rec_init=ConstantInit(0),
+#     b_out_init=ConstantInit(0))
 vars_initializer = RNNVarsInitializer(
-    W_rec_init=SpectralInit(matrix_init=GaussianInit(mean=mean, std_dev=std_dev, seed=seed), rho=1.2),
+    W_rec_init=SpectralInit(matrix_init=UniformInit(seed=seed), rho=1.2),
     W_in_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed),
     W_out_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed), b_rec_init=ConstantInit(0),
     b_out_init=ConstantInit(0))
@@ -57,7 +63,7 @@ net_growing_policy = RNNIncrementalGrowing(n_hidden_incr=5, n_hidden_max=50, n_h
 net_builder = RNNManager(initializer=net_initializer, activation_fnc=Tanh(), output_fnc=Softmax(), growing_policy=net_growing_policy)
 
 # setup
-task = TemporalOrderTask(200, seed)
+task = TemporalOrderTask(100, seed)
 out_dir = Configs.output_dir + str(task)
 loss_fnc = CrossEntropy()
 

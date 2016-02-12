@@ -1,5 +1,6 @@
 import numpy
 import theano
+import time
 
 from ActivationFunction import Tanh
 from Configs import Configs
@@ -8,11 +9,16 @@ from combiningRule.OnesCombination import OnesCombination
 from descentDirectionRule.CombinedGradients import CombinedGradients
 from initialization.ConstantInit import ConstantInit
 from initialization.GaussianInit import GaussianInit
+from initialization.RNNVarsInitializer import RNNVarsInitializer
+from initialization.SpectralInit import SpectralInit
+from initialization.UniformInit import UniformInit
+from lossFunctions.CrossEntropy import CrossEntropy
 from lossFunctions.SquaredError import SquaredError
 from model.RNN import RNN
 from model.RNNManager import RNNManager
 from model.RNNInitializer import RNNInitializer
 from output_fncs.Linear import Linear
+from output_fncs.Softmax import Softmax
 from task.AdditionTask import AdditionTask
 from task.Dataset import InfiniteDataset
 import theano as T
@@ -40,16 +46,18 @@ seed = 13
 # network setup
 std_dev = 0.14  # 0.14 Tanh # 0.21 Relu
 mean = 0
-rnn_initializer = RNNInitializer(W_rec_init=GaussianInit(mean=mean, std_dev=std_dev, seed=seed),
-                                 W_in_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed),
-                                 W_out_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed), b_rec_init=ConstantInit(0),
-                                 b_out_init=ConstantInit(0))
-net_builder = RNNManager(initializer=rnn_initializer, activation_fnc=Tanh(), output_fnc=Linear(), n_hidden=100)
+vars_initializer = RNNVarsInitializer(
+    W_rec_init=SpectralInit(matrix_init=UniformInit(seed=seed), rho=1.2),
+    W_in_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed),
+    W_out_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed), b_rec_init=ConstantInit(0),
+    b_out_init=ConstantInit(0))
+net_initializer = RNNInitializer(vars_initializer, n_hidden=100)
+net_builder = RNNManager(initializer=net_initializer, activation_fnc=Tanh(), output_fnc=Softmax())
 
 # setup
 task = XorTaskHot(144, seed)
 out_dir = Configs.output_dir + str(task)
-loss_fnc = SquaredError()
+loss_fnc = CrossEntropy()
 
 combining_rule = OnesCombination(normalize_components=False)
 dir_rule = CombinedGradients(combining_rule)
@@ -99,15 +107,13 @@ init_a = scan_node.inputs[n_pos]
 d_C_d_wrt = T.grad(loss, init_a)
 d_C_d_wrt = d_C_d_wrt[1:]
 
-
 real_grad = TT.grad(loss, vars)
 
 A = d_C_d_wrt.dimshuffle(0, 2, 1)
 
 
-def smart_step(A, u_t, a_tm1):
-
-    a_t = TT.dot(net_symbols.W_rec, TT.tanh(a_tm1)) + TT.dot(net_symbols.W_in, u_t) + net_symbols.b_rec
+def smart_step(A, a_tm1):
+    a_t = TT.dot(net_symbols.W_rec, TT.tanh(a_tm1))
 
     vars = net_symbols.W_rec
     n1 = vars.shape[0]
@@ -117,63 +123,73 @@ def smart_step(A, u_t, a_tm1):
 
     B = TG.jacobian(a_t.flatten(), wrt=vars, consider_constant=[a_tm1])
     B = B.reshape(shape=(n_hid, N, n1, n2))
-    B = B.dimshuffle(1,0,2,3)
+    B = B.dimshuffle(1, 0, 2, 3)
 
     A = A.reshape(shape=(1, N * n_hid))
-    B = B.reshape(shape=(N*n_hid, n1*n2))
+    B = B.reshape(shape=(N * n_hid, n1 * n2))
 
     C = A.dot(B)
     C = C.reshape(shape=(n1, n2))
-    return a_t, C
+    return C
 
-values, _ = T.scan(smart_step, sequences=[A, net_symbols.u],
-                   outputs_info=[a_m1, None],
+def inner_step(A, B):
+
+    n_hid = A.shape[0]
+    n1 = B.shape[0]
+    n2 = B.shape[1]
+    A = A.reshape(shape=(1, n_hid))
+    B = B.reshape(shape=(n_hid, n1 * n2))
+
+    C = A.dot(B)
+    C = C.reshape(shape=(n1, n2))
+    return C
+
+def example_step(A, a_tm1):
+
+    a_t = TT.dot(net_symbols.W_rec, TT.tanh(a_tm1))
+    vars = net_symbols.W_rec
+    n1 = vars.shape[0]
+    n2 = vars.shape[1]
+    N = a_t.shape[1]
+    n_hid = a_t.shape[0]
+
+    B = TG.jacobian(a_t.flatten(), wrt=vars, consider_constant=[a_tm1])
+    B = B.reshape(shape=(n_hid, N, n1, n2))
+    B = B.dimshuffle(1, 0, 2, 3)
+
+    values, _ = T.scan(inner_step, sequences=[A, B],
+                   outputs_info=[None],
+                   name='inner_scan',
+                   n_steps=A.shape[0])
+
+    C = values.sum(axis=0)
+    return C
+
+
+a_extended = TT.zeros(shape=(a.shape[0] + 1, a.shape[1], a.shape[2]))
+a_extended = TT.set_subtensor(a_extended[1:], a[0:])
+
+values, _ = T.scan(smart_step, sequences=[A, a_extended],
+                   outputs_info=[None],
                    name='outer_scan',
                    n_steps=A.shape[0])
 
-dot = values[1]
-
-#dot = TT.zeros(shape=(a.shape[0], real_grad.shape[0], real_grad.shape[1]))
-
-#dot = TT.tensordot(A,B, axes=[[1,2], [1, 2]])
+dot = values
 
 diff = (dot.sum(axis=0) - real_grad).norm(2)
 norm_dot = dot.sum(axis=0).norm(2)
 norm_real = real_grad.norm(2)
 
 h = TT.tanh(a).sum(axis=2)
-#
-# f = theano.function([net_symbols.u, net_symbols.t],
-#                     [A, B, dot, real_grad, diff, norm_dot, norm_real, h],
-#                     on_unused_input='warn')
-
-# f = theano.function([net_symbols.u, net_symbols.t],
-#                     [A, B, dot, real_grad, diff, norm_dot, norm_real, h],
-#                     on_unused_input='warn')
-# print('l: ', batch.inputs.shape[0])
-# print('d_C_d_wrt shape', d_C_d_wrt.shape)
-# print('d_wrt_d_vars shape', d_wrt_d_vars_numpy.shape)
-# print('dot shape', dot.shape)
-#
-# print('diff: ', diff)
-# print('norm dot', norm_dot)
-# print('norm_real', norm_real)
-#
-# sum = 0
-# for l in range(d_C_d_wrt.shape[0]):
-#     for e in range(d_C_d_wrt.shape[1]):
-#         for n1 in range(d_C_d_wrt.shape[2]):
-#             sum += d_C_d_wrt[l, e, n1] * d_wrt_d_vars_numpy[l, e, n1, 0, 0]
-#
-# print('sum', sum)
-# print(dot.sum(axis=0)[0, 0])
-# print(real_grad[0, 0])
 
 f = theano.function([net_symbols.u, net_symbols.t],
                     [diff],
                     on_unused_input='warn')
-batch = dataset.get_train_batch(batch_size=100)
-diff = f(batch.inputs, batch.outputs)
-#print(diff[0].shape)
-print('diff: ', diff)
-
+print('getting batch...')
+batch = dataset.get_train_batch(batch_size=1)
+print('computing gradients...')
+t1 = time.time()
+result_numpy = f(batch.inputs, batch.outputs)
+t2 = time.time()
+print('elapsed_time: {}s'.format(t2 - t1))
+print('diff: ', li.norm(result_numpy))

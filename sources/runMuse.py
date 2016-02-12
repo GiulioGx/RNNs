@@ -1,32 +1,33 @@
+import sys
 import theano
 
 from ActivationFunction import Tanh
 from Configs import Configs
-from ObjectiveFunction import ObjectiveFunction
 from SGDTrainer import SGDTrainer
 from TrainingRule import TrainingRule
-from combiningRule.EquiangularCombination import EquiangularCombination
-from combiningRule.OnesCombination import OnesCombination
 from combiningRule.SimplexCombination import SimplexCombination
 from descentDirectionRule.CombinedGradients import CombinedGradients
+from descentDirectionRule.LBFGSUpdate import LBFGSDirection
 from initialization.ConstantInit import ConstantInit
 from initialization.GaussianInit import GaussianInit
+from initialization.SpectralInit import SpectralInit
+from initialization.UniformInit import UniformInit
 from learningRule.GradientClipping import GradientClipping
 from lossFunctions.CrossEntropy import CrossEntropy
 from lossFunctions.FullCrossEntropy import FullCrossEntropy
 from lossFunctions.SquaredError import SquaredError
 from model import RNN
+from model.RNNGrowingPolicy import RNNIncrementalGrowing
 from model.RNNManager import RNNManager
-from model.RNNInitializer import RNNInitializer
+from model.RNNInitializer import RNNInitializer, RNNVarsInitializer
 from output_fncs.Linear import Linear
-from output_fncs.Logistic import Logistic
 from output_fncs.Softmax import Softmax
 from task.AdditionTask import AdditionTask
 from task.Dataset import InfiniteDataset
 from task.MuseDataset import MuseDataset
 from task.TemporalOrderTask import TemporalOrderTask
 from updateRule.SimpleUpdate import SimpleUdpate
-import sys
+
 __author__ = 'giulio'
 
 separator = '#####################'
@@ -42,20 +43,26 @@ print('floatType: ' + floatX)
 print(separator)
 
 seed = 13
-
-sys.setrecursionlimit(100000)
+Configs.seed = seed
+sys.setrecursionlimit(2**31-1)
 
 # network setup
 std_dev = 0.14  # 0.14 Tanh # 0.21 Relu
 mean = 0
-rnn_initializer = RNNInitializer(W_rec_init=GaussianInit(mean=mean, std_dev=std_dev, seed=seed),
-                                 W_in_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed),
-                                 W_out_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed), b_rec_init=ConstantInit(0),
-                                 b_out_init=ConstantInit(0))
-net_builder = RNNManager(initializer=rnn_initializer, activation_fnc=Tanh(), output_fnc=Logistic(), n_hidden=100)
+# vars_initializer = RNNVarsInitializer(
+#     W_rec_init=SpectralInit(matrix_init=GaussianInit(mean=mean, std_dev=std_dev, seed=seed), rho=1.2),
+#     W_in_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed),
+#     W_out_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed), b_rec_init=ConstantInit(0),
+#     b_out_init=ConstantInit(0))
+vars_initializer = RNNVarsInitializer(
+    W_rec_init=SpectralInit(matrix_init=UniformInit(seed=seed), rho=1.2),
+    W_in_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed),
+    W_out_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed), b_rec_init=ConstantInit(0),
+    b_out_init=ConstantInit(0))
+net_initializer = RNNInitializer(vars_initializer, n_hidden=100)
+net_builder = RNNManager(initializer=net_initializer, activation_fnc=Tanh(), output_fnc=Softmax())
 
 # setup
-#task = TemporalOrderTask(144, seed)
 out_dir = Configs.output_dir + 'Muse'
 loss_fnc = FullCrossEntropy()
 
@@ -109,7 +116,7 @@ trainer = SGDTrainer(train_rule, output_dir=out_dir, max_it=10 ** 10,
 # dataset = Dataset.no_valid_dataset_from_task(size=1000, task=task)
 dataset = MuseDataset(seed=seed, pickle_file_path='/home/giulio/RNNs/datasets/polyphonic/musedata/MuseData.pickle')
 
-net = trainer.train(dataset, net_builder, seed=seed)
+net = trainer.train(dataset, net_builder)
 
 #net = RNN.load_model(out_dir+'/best_model.npz')
 #net = trainer.resume_training(dataset, net)
