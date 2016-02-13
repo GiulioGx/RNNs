@@ -14,6 +14,7 @@ from initialization.SpectralInit import SpectralInit
 from initialization.UniformInit import UniformInit
 from learningRule.GradientClipping import GradientClipping
 from lossFunctions.CrossEntropy import CrossEntropy
+from lossFunctions.FullCrossEntropy import FullCrossEntropy
 from lossFunctions.SquaredError import SquaredError
 from model import RNN
 from model.RNNGrowingPolicy import RNNIncrementalGrowing
@@ -64,8 +65,8 @@ net_builder = RNNManager(initializer=net_initializer, activation_fnc=Tanh(), out
 
 # setup
 task = TemporalOrderTask(100, seed)
-out_dir = Configs.output_dir + str(task)
-loss_fnc = CrossEntropy()
+out_dir = Configs.output_dir + str(task)+'_pokka'
+loss_fnc = FullCrossEntropy(single_probability_ouput=False)
 
 # # HF init
 # bias_value = 0.5

@@ -1,4 +1,6 @@
 import theano.tensor as TT
+from theano.tensor.elemwise import TensorType
+import theano as T
 
 from infos.Info import Info
 from infos.InfoElement import PrintableInfoElement
@@ -21,9 +23,12 @@ class ObjectiveFunction(SimpleInfoProducer):
         self.__t = t
         self.__params = params
 
+        # XXX
+        self.__loss_mask = TT.tensor3(name='loss_mask')
+
         # XXX REMOVE (?)
-        self.failsafe_grad = self.__params.failsafe_grad(self.__loss_fnc, self.__u, self.__t)
-        self.__grad = self.__params.gradient(self.__loss_fnc, self.__u, self.__t)
+        self.failsafe_grad = self.__params.failsafe_grad(self.__loss_fnc, self.__u, self.__t, self.__loss_mask)
+        self.__grad = self.__params.gradient(self.__loss_fnc, self.__u, self.__t, self.__loss_mask)
 
         self.__objective_value = self.__grad.loss_value
         grad_norm = self.__grad.value.norm()
@@ -36,6 +41,10 @@ class ObjectiveFunction(SimpleInfoProducer):
         debug_diff = TT.alloc(-1)
 
         self.__infos = ObjectiveFunction.Info(gradient_info, self.__objective_value, grad_norm, debug_diff)
+
+    @property
+    def loss_mask(self):
+        return self.__loss_mask
 
     @property
     def infos(self):

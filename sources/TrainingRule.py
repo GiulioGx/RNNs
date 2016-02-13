@@ -79,15 +79,15 @@ class TrainingRule(SimpleInfoProducer):
             self.__separate = False
             self.__symbolic_infos_list = []
             net_symbols = net.symbols
-            obj_fnc = ObjectiveFunction(rule.loss_fnc, net, net_symbols.current_params, net_symbols.u,
+            self.__obj_fnc = ObjectiveFunction(rule.loss_fnc, net, net_symbols.current_params, net_symbols.u,
                                         net_symbols.t)
-            obj_fnc_symbolic_info = obj_fnc.infos
+            obj_fnc_symbolic_info = self.__obj_fnc.infos
             self.__symbolic_infos_list.append(obj_fnc_symbolic_info)
-            direction, dir_symbolic_dir_infos = rule.desc_dir_rule.direction(net, obj_fnc)
+            direction, dir_symbolic_dir_infos = rule.desc_dir_rule.direction(net, self.__obj_fnc)
             self.__symbolic_infos_list.append(dir_symbolic_dir_infos)
 
             if not self.__separate:
-                lr, lr_symbolic_infos = rule.lr_rule.compute_lr(net, obj_fnc, direction)
+                lr, lr_symbolic_infos = rule.lr_rule.compute_lr(net, self.__obj_fnc, direction)
                 update_vars, update_symbolic_info = rule.update_rule.compute_update(net, lr, direction)
                 self.__symbolic_infos_list.append(update_symbolic_info)
 
@@ -105,14 +105,14 @@ class TrainingRule(SimpleInfoProducer):
                 output_list += s.symbols
 
             rule_updates = rule.updates_poller.updates
-            self.__step = T.function([net_symbols.u, net_symbols.t], output_list,
+            self.__step = T.function([net_symbols.u, net_symbols.t, self.__obj_fnc.loss_mask], output_list,
                                      allow_input_downcast='true',
                                      on_unused_input='warn',
                                      updates=network_updates + rule_updates,
                                      name='train_step')
 
-        def step(self, inputs, outputs):
-            infos_symbols = self.__step(inputs, outputs)
+        def step(self, inputs, outputs, mask):
+            infos_symbols = self.__step(inputs, outputs, mask)
             infos = self.__format_infos(infos_symbols)
             return infos
 
@@ -125,3 +125,7 @@ class TrainingRule(SimpleInfoProducer):
                 start += len(symbolic_info.symbols)
 
             return InfoList(*info_list)
+
+        @property
+        def mask(self):
+            return self.__obj_fnc.loss_mask

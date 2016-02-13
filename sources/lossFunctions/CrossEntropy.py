@@ -3,9 +3,9 @@ from lossFunctions.LossFunction import LossFunction
 import theano.tensor as TT
 
 
-class CrossEntropy(LossFunction):
-    def value(self, y, t):
-        return -(t[-1, :, :] * TT.log(y[-1, :, :])).mean(axis=1).sum()
+class CrossEntropy(LossFunction):  # XXX deprecated
+    def value(self, y, t, mask):
+        return -(t * TT.log(y)*mask)[-1].mean(axis=1).sum()
 
     @property
     def infos(self):

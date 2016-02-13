@@ -1,8 +1,8 @@
-\beamer@slide {rnn_model}{3}
-\beamer@slide {algo:sgd}{6}
-\beamer@slide {sum_over_time}{11}
-\beamer@slide {deriv_arcs_rnn}{12}
-\beamer@slide {rnn_delta}{13}
-\beamer@slide {eq:temporalComponent}{14}
-\beamer@slide {rnn_unfolding}{19}
-\beamer@slide {algo:gradClipping}{24}
+\beamer@slide {rnn_model}{4}
+\beamer@slide {algo:sgd}{7}
+\beamer@slide {sum_over_time}{13}
+\beamer@slide {deriv_arcs_rnn}{14}
+\beamer@slide {rnn_delta}{15}
+\beamer@slide {eq:temporalComponent}{16}
+\beamer@slide {rnn_unfolding}{22}
+\beamer@slide {algo:gradClipping}{28}

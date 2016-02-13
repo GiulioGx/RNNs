@@ -47,7 +47,10 @@ class TemporalOrderTask(Task):
 
         outputs[-1, v0 + 2 * v1, batch_size_indexes] = 1
 
-        return Batch(inputs.astype(dtype=Configs.floatType), outputs.astype(Configs.floatType))
+        mask = numpy.zeros_like(outputs)
+        mask[-1, :, :] = 1
+
+        return Batch(inputs.astype(dtype=Configs.floatType), outputs.astype(Configs.floatType), mask)
 
     def __str__(self):
         return str(self.infos)

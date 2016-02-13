@@ -18,7 +18,7 @@ class RNNGradient(object):
         self.__net = params.net
 
         self.__l = l
-        self.__loss = loss  # XXX
+        self.__loss = loss  # XXX non dovrebbe stare qui?
 
         self.__gW_rec_list = gW_rec_list
         self.__gW_in_list = gW_in_list

@@ -1,3 +1,5 @@
+import numpy
+
 __author__ = 'giulio'
 
 '''
@@ -9,9 +11,14 @@ dimension is the time because theano scan can loop only on the first dimension.
 
 
 class Batch:
-    def __init__(self, inputs, outputs):
+    def __init__(self, inputs, outputs, mask=None):
         self.__inputs = inputs
         self.__outputs = outputs
+        if mask is not None:
+            self.__mask = mask
+        else:
+            # if the mask is not specified all the target is relevant to the prediction
+            self.__mask = numpy.ones(shape=self.__outputs.shape)
 
     def __getitem__(self, item):
         return Batch(self.__inputs[item], self.__outputs[item])
@@ -27,6 +34,10 @@ class Batch:
     @property
     def inputs(self):
         return self.__inputs
+
+    @property
+    def mask(self):
+        return self.__mask
 
     def __str__(self):
         s = []

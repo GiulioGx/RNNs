@@ -131,11 +131,11 @@ class RNNVars(Variables):
                 symbols_replacedments[len(self.__lr_b_rec_symbolic_infos.symbols):])
             return InfoList(lr_w_rec_info, lr_w_in_info, lr_w_out_info, lr_b_rec_info, lr_b_out_info)
 
-    def gradient(self, loss_fnc, u, t):
+    def gradient(self, loss_fnc, u, t, loss_mask):
         y, _, _, W_rec_fixes, W_in_fixes, W_out_fixes, b_rec_fixes, b_out_fixes = self.net.symbols.net_output(
             self, u)
 
-        loss = loss_fnc.value(y, t)
+        loss = loss_fnc.value(y, t, loss_mask)
         l = u.shape[0]
 
         gW_rec_list = T.grad(loss, W_rec_fixes)
@@ -146,9 +146,9 @@ class RNNVars(Variables):
 
         return RNNGradient(self, gW_rec_list, gW_in_list, gW_out_list, gb_rec_list, gb_out_list, l, loss)
 
-    def failsafe_grad(self, loss_fnc, u, t):  # FIXME XXX remove me
+    def failsafe_grad(self, loss_fnc, u, t, loss_mask):  # FIXME XXX remove me
         y, _, _, _ = self.__net.net_output(self, u, self.__net.symbols.h_m1)
-        loss = loss_fnc.value(y, t)
+        loss = loss_fnc.value(y, t, loss_mask)
         gW_rec, gW_in, gW_out, \
         gb_rec, gb_out = TT.grad(loss, [self.__W_rec, self.__W_in, self.__W_out, self.__b_rec, self.__b_out])
         return RNNVars(self.__net, W_rec=gW_rec, W_in=gW_in, W_out=gW_out, b_rec=gb_rec, b_out=gb_out)

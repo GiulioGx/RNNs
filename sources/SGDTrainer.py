@@ -68,9 +68,10 @@ class SGDTrainer(object):
         u = net.symbols.u
         t = net.symbols.t
         y = net.symbols.y_shared
+        mask = train_step.mask  # XXX magari mettere mask in una classe
         error = dataset.computer_error(y, t)
-        loss = self.__training_rule.loss_fnc.value(y, t)
-        self.__loss_and_error = T.function([u, t], [error, loss], name='loss_and_error_fnc')
+        loss = self.__training_rule.loss_fnc.value(y, t, mask)
+        self.__loss_and_error = T.function([u, t, mask], [error, loss], name='loss_and_error_fnc')
 
         # training statistics
         stats = Statistics(self.__max_it, self.__check_freq, self.__training_settings_info, net.info)
@@ -103,7 +104,7 @@ class SGDTrainer(object):
 
             batch = dataset.get_train_batch(self.__batch_size)
             # batch = policer.get_train_batch()
-            train_info = train_step.step(batch.inputs, batch.outputs)
+            train_info = train_step.step(batch.inputs, batch.outputs, batch.mask)
 
             if i % self.__check_freq == 0:  # FIXME 1st iteration
                 eval_start_time = time.time()
@@ -179,7 +180,7 @@ class SGDTrainer(object):
     def compute_error_and_loss(loss_and_error_fnc, validation_batches: list):
         valid_error, valid_loss = 0., 0.
         for batch in validation_batches:
-            valid_error_i, valid_loss_i = loss_and_error_fnc(batch.inputs, batch.outputs)
+            valid_error_i, valid_loss_i = loss_and_error_fnc(batch.inputs, batch.outputs, batch.mask)
             valid_error += valid_error_i.item()
             valid_loss += valid_loss_i.item()
         n = len(validation_batches)
