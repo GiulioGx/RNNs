@@ -73,19 +73,25 @@ n_sequences = net_symbols.u.shape[2]
 a_m1 = TT.alloc(numpy.array(0., dtype=Configs.floatType), net.n_hidden, n_sequences)
 loss_mask = TT.tensor3(name='loss_mask')
 
+def fill(W):
+    return W
 
-def a_t(u_t, a_tm1, W_rec, W_in, b_rec):
-    W_fix = W_rec.clone()
-    a_t = TT.dot(W_fix, TT.tanh(a_tm1)) + TT.dot(W_in, u_t) + b_rec
-    return a_t, W_fix
+values, updates_scan = T.scan(fill, non_sequences=[net_symbols.W_rec], outputs_info=[None],
+                              name='replicate_scan', n_steps=net_symbols.u.shape[0])
+
+W3 = values
 
 
-values, _ = T.scan(a_t, sequences=net_symbols.u,
-                   outputs_info=[a_m1, None],
-                   non_sequences=[net_symbols.W_rec, net_symbols.W_in, net_symbols.b_rec],
+def a_t(u_t, W_rec, a_tm1, W_in, b_rec):
+    a_t = TT.dot(W_rec, TT.tanh(a_tm1)) + TT.dot(W_in, u_t) + b_rec
+    return a_t
+
+
+values, updates_scan = T.scan(a_t, sequences=[net_symbols.u, W3],
+                   outputs_info=[a_m1],
+                   non_sequences=[net_symbols.W_in, net_symbols.b_rec],
                    name='a_scan')
-a = values[0]
-W_copy = values[1]
+a = values
 
 
 def y_t(a_t, W_out, b_out):  # FOXME vectorial output function
@@ -100,30 +106,22 @@ y = values
 loss = loss_fnc.value(y, net_symbols.t, loss_mask)
 
 
-# Trick to get dC/da[k]
-scan_node = a.owner.inputs[0].owner
-print(a.owner.outputs[1].owner)
-assert isinstance(scan_node.op, theano.scan_module.scan_op.Scan)
-n_pos = scan_node.op.n_seqs + 1
-init_a = scan_node.inputs[n_pos]
-d_C_d_wrt = T.grad(loss, init_a)
-d_C_d_wrt = d_C_d_wrt[1:]
-
 #real_grad = TT.grad(loss, net_symbols.W_rec)
 #norm_real = real_grad.norm(2)
 
-grad = TT.grad(loss, )
+grad = TT.grad(loss, W3)
 
 h = TT.tanh(a).sum(axis=2)
 
-f = theano.function([net_symbols.u, net_symbols.t],
+f = theano.function([net_symbols.u, net_symbols.t, loss_mask],
                     [grad],
-                    on_unused_input='warn')
+                    on_unused_input='warn', updates=updates_scan)
 print('getting batch...')
-batch = dataset.get_train_batch(batch_size=1)
+batch = dataset.get_train_batch(batch_size=2)
 print('computing gradients...')
 t1 = time.time()
-result_numpy = f(batch.inputs, batch.outputs)
+result_numpy = f(batch.inputs, batch.outputs, batch.mask)
 t2 = time.time()
 print('elapsed_time: {}s'.format(t2 - t1))
-print('diff: ', result_numpy.shape)
+print('diff: ', result_numpy[0].shape)
+print('sum: ', result_numpy[0][6])
