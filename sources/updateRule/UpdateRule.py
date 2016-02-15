@@ -1,7 +1,6 @@
 import abc
 
-from Rule import Rule
-from infos.InfoProducer import SimpleInfoProducer
+from training.Rule import Rule
 
 
 class UpdateRule(Rule):

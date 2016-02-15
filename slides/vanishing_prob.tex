@@ -55,18 +55,11 @@ The predicted output should be the sum of the two one-marked positions (1.1).
 \end{frame}
 \begin{frame}
 	
-	\tikzstyle{rnn_style}=[->,shorten >=1pt,auto,node distance=1.5cm,
-	thick,
-	neuron/.style={circle,fill=white!50,draw,minimum size=0.7cm,font=\sffamily\normalsize},
-	missing/.style={circle,fill=white!50,draw=none,minimum size=0.7cm,font=\sffamily\Huge\bfseries},
-	label/.style={node distance=1.2cm,rectangle,fill=white!50,draw=none,minimum size=0.7cm,font=\sffamily\normalsize},
-	thick_edge/.style={line width=1.2pt},
-	thin_edge/.style={line width=0.5pt}
-	]
+	
 	\begin{figure}
 		\centering
 		\resizebox{5cm}{!}{
-		\begin{tikzpicture}[rnn_style]
+		\begin{tikzpicture}[RNN_style]
 		
 		
 		\node[neuron]    (x1)[]   {$u$};

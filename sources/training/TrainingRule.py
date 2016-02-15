@@ -1,17 +1,17 @@
 import theano as T
 
-from Rule import Rule
-from infos.SymbolicInfo import NullSymbolicInfos
-from lossFunctions import LossFunction
-from lossFunctions.SquaredError import SquaredError
-from updateRule.UpdateRule import UpdateRule
-from updateRule.SimpleUpdate import SimpleUdpate
+from ObjectiveFunction import ObjectiveFunction
 from descentDirectionRule import DescentDirectionRule
 from infos.InfoGroup import InfoGroup
 from infos.InfoList import InfoList
 from infos.InfoProducer import SimpleInfoProducer
+from infos.SymbolicInfo import NullSymbolicInfos
 from learningRule import LearningRule
-from ObjectiveFunction import ObjectiveFunction
+from lossFunctions import LossFunction
+from lossFunctions.SquaredError import SquaredError
+from training.Rule import Rule
+from updateRule.SimpleUpdate import SimpleUdpate
+from updateRule.UpdateRule import UpdateRule
 
 __author__ = 'giulio'
 

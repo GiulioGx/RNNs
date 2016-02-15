@@ -26,20 +26,11 @@
 
 \subsection{A new proposal}
 \begin{frame}{Understanding the gradient structure: unfolding}
-	\tikzstyle{rnn_style}=[->,shorten >=1pt,auto,node distance=1.5cm,
-	thick,
-	neuron/.style={circle,fill=white!50,draw,minimum size=0.7cm,font=\sffamily\Large\bfseries},
-	missing/.style={circle,fill=white!50,draw=none,minimum size=0.7cm,font=\sffamily\Huge\bfseries},
-	label/.style={node distance=1.2cm,rectangle,fill=white!50,draw=none,minimum size=0.7cm,font=\sffamily\normalsize},
-	layer/.style={rectangle,fill=white!50,draw,minimum width=4cm,font=\sffamily\normalsize},
-	loopStyle/.style={in=120,out=60, distance=2.5cm},]
-	
-	
 	
 	\begin{figure}[h!]
 		\centering
 		\resizebox{8cm}{!}{
-			\begin{tikzpicture}[rnn_style]
+			\begin{tikzpicture}[RNN_style, loopStyle/.style={in=120,out=60, distance=2.5cm}]
 			
 			%t=0
 			\node[layer] (hl1) {Hidden layer t=0};

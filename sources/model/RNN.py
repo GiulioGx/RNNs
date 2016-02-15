@@ -160,13 +160,32 @@ class RNN(object):
         pickfile = open(filename + '.pkl', "wb")
         pickle.dump([self.__activation_fnc, self.__output_fnc], pickfile)
 
-    def extend_hidden_units(self, n_hidden: int, initializer:RNNVarsInitializer):
+    def extend_hidden_units(self, n_hidden: int, initializer: RNNVarsInitializer):
         if n_hidden < self.n_hidden:
             raise ValueError(
                 'new number of hidden units {()} must be bigger than the previous one {()} '.format(n_hidden,
                                                                                                     self.n_hidden))
         self.symbols.extend_hidden_units(n_hidden, initializer)
         self.__n_hidden = n_hidden
+
+    @staticmethod
+    def load_model(filename):
+        npz = numpy.load(filename)
+
+        W_rec = npz["W_rec"]
+        W_in = npz["W_in"]
+        W_out = npz["W_out"]
+        b_rec = npz["b_rec"]
+        b_out = npz["b_out"]
+
+        filename, file_extension = os.path.splitext(filename)
+        pickle_file = filename + '.pkl'
+        activation_fnc_pkl, output_fnc_pkl = pickle.load(open(pickle_file, 'rb'))
+        activation_fnc = activation_fnc_pkl
+        output_fnc = output_fnc_pkl
+
+        return RNN(W_rec=W_rec, W_in=W_in, W_out=W_out, b_rec=b_rec, b_out=b_out, activation_fnc=activation_fnc,
+                   output_fnc=output_fnc)
 
     class Symbols:
         def __init__(self, net, W_rec, W_in, W_out, b_rec, b_out):
@@ -202,11 +221,12 @@ class RNN(object):
             # output of the net
             self.y, self.a, self.deriv_a, h = net.net_output(self.__current_params, self.u, self.__h_m1)
             # self.y, self.deriv_a, h = net.experimental.net_output(self.__current_params, self.u)
-            self.y_shared, self.a_shared, self.deriv_a_shared, self.h_shared = T.clone([self.y, self.a, self.deriv_a, h],
-                                                                        replace={W_rec: self.__W_rec, W_in: self.__W_in,
-                                                                                 W_out: self.__W_out,
-                                                                                 b_rec: self.__b_rec,
-                                                                                 b_out: self.__b_out})
+            self.y_shared, self.a_shared, self.deriv_a_shared, self.h_shared = T.clone(
+                [self.y, self.a, self.deriv_a, h],
+                replace={W_rec: self.__W_rec, W_in: self.__W_in,
+                         W_out: self.__W_out,
+                         b_rec: self.__b_rec,
+                         b_out: self.__b_out})
 
             # compute_update numpy output function
             self.net_output_numpy = T.function([self.u], [self.y_shared, self.h_shared])
@@ -262,33 +282,33 @@ class RNN(object):
             _, _, deriv_a = self.__net.net_output(params, self.u)
             return deriv_a
 
-        def compute_temporal_gradients(self, loss_fnc):  # XXX
-
-            loss = loss_fnc.value(self.y_shared, self.t)
-
-            def step(y_tp1, y_tm1, loss):
-                gW_rec, gW_in, gW_out, gb_rec, gb_out = T.grad(loss, [self.__W_rec, self.__W_in, self.__W_out, self.__b_rec, self.__b_out],
-                              consider_constant=[y_tp1, y_tm1])
-                return as_vector(gW_rec, gW_in, gW_out, gb_rec, gb_out)
-
-            values, _ = T.scan(step,
-                               sequences=dict(input=self.h_shared, taps=[+1, -1]),
-                               non_sequences=[loss],
-                               go_backwards=True,
-                               name='separate_grads_exp_scan')
-
-            vt = as_vector(*T.grad(loss, [self.__W_rec, self.__W_in, self.__W_out, self.__b_rec, self.__b_out],
-                                  consider_constant=[self.h_shared[-1]]))
-            v0 = as_vector(*T.grad(loss, [self.__W_rec, self.__W_in, self.__W_out, self.__b_rec, self.__b_out],
-                                  consider_constant=[self.h_shared[1]]))
-
-            v = values.squeeze()
-
-            V = values
-
-            V = TT.concatenate([v0.dimshuffle(1,0), v, vt.dimshuffle(1,0)], axis=0)
-
-            return V
+        # def compute_temporal_gradients(self, loss_fnc):  # XXX
+        #
+        #     loss = loss_fnc.value(self.y_shared, self.t)
+        #
+        #     def step(y_tp1, y_tm1, loss):
+        #         gW_rec, gW_in, gW_out, gb_rec, gb_out = T.grad(loss, [self.__W_rec, self.__W_in, self.__W_out, self.__b_rec, self.__b_out],
+        #                       consider_constant=[y_tp1, y_tm1])
+        #         return as_vector(gW_rec, gW_in, gW_out, gb_rec, gb_out)
+        #
+        #     values, _ = T.scan(step,
+        #                        sequences=dict(input=self.h_shared, taps=[+1, -1]),
+        #                        non_sequences=[loss],
+        #                        go_backwards=True,
+        #                        name='separate_grads_exp_scan')
+        #
+        #     vt = as_vector(*T.grad(loss, [self.__W_rec, self.__W_in, self.__W_out, self.__b_rec, self.__b_out],
+        #                           consider_constant=[self.h_shared[-1]]))
+        #     v0 = as_vector(*T.grad(loss, [self.__W_rec, self.__W_in, self.__W_out, self.__b_rec, self.__b_out],
+        #                           consider_constant=[self.h_shared[1]]))
+        #
+        #     v = values.squeeze()
+        #
+        #     V = values
+        #
+        #     V = TT.concatenate([v0.dimshuffle(1,0), v, vt.dimshuffle(1,0)], axis=0)
+        #
+        #     return V
 
         def extend_hidden_units(self, n_hidden: int, initializer: RNNVarsInitializer):
             W_rec, W_in, W_out, b_rec, b_out = initializer.generate_variables(n_in=self.__net.n_in,
@@ -300,8 +320,8 @@ class RNN(object):
             W_out[:, 0:h_prev] = self.__W_out.get_value()
             b_rec[0:h_prev, :] = self.__b_rec.get_value()
 
-            rho = MatrixInit.spectral_radius(W_rec)  # XXX mettere a pulito
-            W_rec = W_rec / rho * 1.2
+            # rho = MatrixInit.spectral_radius(W_rec)  # XXX mettere a pulito
+            # W_rec = W_rec / rho * 1.2
 
             self.__extend_step(W_rec, W_in, W_out, b_rec, b_out)
 
@@ -344,7 +364,8 @@ class RNN(object):
         @property
         def b_rec(self):
             return self.__b_rec
-        #XXX remove
+
+        # XXX remove
         @property
         def b_out(self):
             return self.__b_out

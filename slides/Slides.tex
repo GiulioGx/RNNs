@@ -1,17 +1,14 @@
 \documentclass[xcolor=dvipsnames,10pt]{beamer}
-
-\usepackage{tikz}
-\usetikzlibrary{arrows}
-\usepackage{verbatim}
-\usepackage[active,tightpage]{preview}
-\setlength\PreviewBorder{5pt}%
-
 \mode<presentation>
 
+
+\usepackage[active,tightpage]{preview}
+%\setlength\PreviewBorder{5pt}%
 %\usepackage[hidelinks]{hyperref}
-\usepackage{beamerthemesplit}
-\usepackage[UKenglish]{babel}
 %\usepackage{cite}
+\usepackage{beamerthemesplit}
+\usepackage{verbatim}
+\usepackage[UKenglish]{babel}
 \usepackage{listings}
 \usepackage{latexsym}
 \usepackage[utf8]{inputenc}
@@ -24,8 +21,21 @@
 \usepackage{pgf}
 \usepackage{tikz}
 \usetikzlibrary{automata,arrows,decorations.pathreplacing}
-\usetikzlibrary{positioning}
+	\usetikzlibrary{positioning}
+	\usetikzlibrary{backgrounds}
+	\usetikzlibrary{arrows}
 \usepackage{epstopdf}
+
+%% style for drawing RNNs
+\tikzstyle{RNN_style}=[
+	->,shorten >=1pt,auto,node distance=1.5cm, thick,
+	neuron/.style={circle,fill=white!50,node distance =1.2cm,draw,minimum 	size=0.7cm,font=\sffamily\normalsize},
+	missing/.style={rectangle,node distance =1.2cm,draw=none,minimum size=0.7cm,font=\sffamily\Huge\bfseries},
+	label/.style={node distance=1.2cm,rectangle,draw=none,minimum size=0.7cm,font=\sffamily\normalsize},
+	layer/.style={rectangle,fill=white!50,draw,minimum width=4cm,font=\sffamily\normalsize},
+	thick_edge/.style={line width=1pt},
+	thin_edge/.style={line width=0.5pt}
+]
 
 %%Notation:
 
@@ -44,58 +54,29 @@
 %% pair<x,y>
 \newcommand{\pair}[2]{\langle#1,#2\rangle}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\usepackage{sansmathaccent}
-\pdfmapfile{+sansmathaccent.map}
-
-\definecolor{dkgreen}{rgb}{0,0.6,0}
-\definecolor{mauve}{rgb}{0.58,0,0.82}
 
 \graphicspath{ {./images/} }
 
-
 %\usecolortheme[named=MidnightBlue]{structure}
-
 %Warsaw Dresden Singapore Copenhagen Madrid AnnArbor
 %\usetheme{Warsaw}
 \usetheme{metropolis}
 \setbeamercovered{transparent}
-\setbeamercolor{lowercolor}{fg=white , bg=MidnightBlue}
+%\setbeamercolor{lowercolor}{fg=white , bg=MidnightBlue}
 \setbeamertemplate{blocks}[rounded][shadow=true]
 \setbeamertemplate{items}[default]
 \setbeamertemplate{navigation symbols}{}
 
-\def\hilite<#1>{%
-\temporal<#1>{\color{lightgray}}{\color{black}}%
-{\color{black}}}
-
-\usetitlepagetemplate{
-  \begin{center}
-
-    \begin{beamerboxesrounded}[lower=lowercolor, shadow=true]{}
-     \begin{center}
-    \normalsize{Recurrent neural networks}
-     \end{center}
-    \end{beamerboxesrounded}
-    \vspace{3em}
-    Giulio Galvan
-    
-  \end{center}
-}
-
-\title[Recurrent neural network]{}
-\author{Giulio Galvan}
+\title{Recurrent neural networks}
+\subtitle{A nice subtitle}
 \date{\today}
-
-\newcommand*\oldmacro{}%
-\let\oldmacro\insertshorttitle%
-\renewcommand*\insertshorttitle{%
-  \oldmacro\hfill%
-  \insertframenumber\,/\,\inserttotalframenumber}
+\author{Giulio Galvan}
+\institute{Università degli studi di Firenze}
+%\titlegraphic{\hfill\includegraphics[height=1.5cm]{logo}}  % %TODO put the logo img here
 
 \begin{document}
-
-\frame{\titlepage}
+\maketitle
+%\frame{\titlepage}
 \section{Introduction}
 \input{model}
 \section{The vanishing gradient problem}

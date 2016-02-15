@@ -1,31 +1,23 @@
 import sys
+
 import theano
+from SGDTrainer import SGDTrainer
 
 from ActivationFunction import Tanh
 from Configs import Configs
-from SGDTrainer import SGDTrainer
-from TrainingRule import TrainingRule
 from combiningRule.SimplexCombination import SimplexCombination
 from descentDirectionRule.CombinedGradients import CombinedGradients
-from descentDirectionRule.LBFGSUpdate import LBFGSDirection
 from initialization.ConstantInit import ConstantInit
 from initialization.GaussianInit import GaussianInit
 from initialization.SpectralInit import SpectralInit
 from initialization.UniformInit import UniformInit
 from learningRule.GradientClipping import GradientClipping
-from lossFunctions.CrossEntropy import CrossEntropy
 from lossFunctions.FullCrossEntropy import FullCrossEntropy
-from lossFunctions.SquaredError import SquaredError
-from model import RNN
-from model.RNNGrowingPolicy import RNNIncrementalGrowing
-from model.RNNManager import RNNManager
 from model.RNNInitializer import RNNInitializer, RNNVarsInitializer
-from output_fncs.Linear import Linear
+from model.RNNManager import RNNManager
 from output_fncs.Softmax import Softmax
-from task.AdditionTask import AdditionTask
-from task.Dataset import InfiniteDataset
 from task.MuseDataset import MuseDataset
-from task.TemporalOrderTask import TemporalOrderTask
+from training.TrainingRule import TrainingRule
 from updateRule.SimpleUpdate import SimpleUdpate
 
 __author__ = 'giulio'

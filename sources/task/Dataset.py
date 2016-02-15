@@ -42,9 +42,11 @@ class Dataset(SimpleInfoProducer):  # TODO change name
 
 
 class InfiniteDataset(Dataset):
-    def __init__(self, task: Task, validation_size: int):
+    def __init__(self, task: Task, validation_size: int, n_batches: int = 1):
         self.__validation_size = validation_size
         self.__task = task
+        self.__n_batches = n_batches
+
         self.__infos = InfoGroup('infinite dataset', InfoList(PrintableInfoElement('validation_set_size', ':d',
                                                                                    validation_size), task.infos))
 
@@ -53,7 +55,11 @@ class InfiniteDataset(Dataset):
 
     @property
     def validation_set(self):
-        return [self.__task.get_batch(self.__validation_size)]  # XXX FIXME add different lenghts
+        batches = []
+        n_seqs_per_batch = round(float(self.__validation_size) / self.__n_batches)
+        for i in range(self.__n_batches):
+            batches.append(self.__task.get_batch(n_seqs_per_batch))
+        return batches
 
     def computer_error(self, t, y):
         return self.__task.error_fnc(t, y)

@@ -20,17 +20,10 @@ where $\sigma(\cdot):\mathbb{R}\rightarrow\mathbb{R}$ is a non linear function a
 \end{frame}
 
 \begin{frame}
-	\tikzstyle{rnn_style}=[->,shorten >=1pt,auto,node distance=1.5cm,
-	thick,
-	neuron/.style={circle,fill=white!50,node distance =1.2cm,draw,minimum size=0.7cm,font=\sffamily\Large\bfseries},
-	missing/.style={rectangle,node distance =1.2cm,fill=white!50,draw=none,minimum size=0.7cm,font=\sffamily\Huge\bfseries},
-	label/.style={node distance=1.2cm,rectangle,fill=white!50,draw=none,minimum size=0.7cm,font=\sffamily\normalsize},
-	layer/.style={rectangle,fill=white!50,draw,minimum width=4cm,font=\sffamily\normalsize},
-	loopStyle/.style={in=120,out=60, distance=2.5cm},]
 	\begin{figure}[!h]
 		\centering
 		\resizebox{7cm}{!}{
-		\begin{tikzpicture}[rnn_style]
+		\begin{tikzpicture}[RNN_style, loopStyle/.style={in=120,out=60, distance=2.5cm}]
 		
 		\node[neuron]    (x0)       {};
 		\node[neuron]    (x1)[right of=x0]   {};

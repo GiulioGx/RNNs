@@ -1,10 +1,9 @@
 import theano
+from SGDTrainer import SGDTrainer
 
 from ActivationFunction import Tanh
 from Configs import Configs
 from ObjectiveFunction import ObjectiveFunction
-from SGDTrainer import SGDTrainer
-from TrainingRule import TrainingRule
 from combiningRule.SimplexCombination import SimplexCombination
 from descentDirectionRule.CombinedGradients import CombinedGradients
 from initialization.ConstantInit import ConstantInit
@@ -21,6 +20,7 @@ from penalty.ConstantPenalty import ConstantPenalty
 from task.AdditionTask import AdditionTask
 from task.Dataset import InfiniteDataset
 from task.PreTrainTask import PreTrainTask
+from training.TrainingRule import TrainingRule
 
 __author__ = 'giulio'
 

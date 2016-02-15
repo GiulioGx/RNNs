@@ -1,11 +1,10 @@
 import abc
 
 from ObjectiveFunction import ObjectiveFunction
-from Rule import Rule
 from infos.Info import Info
 from infos.InfoElement import PrintableInfoElement
-from infos.InfoProducer import SimpleInfoProducer
 from infos.SymbolicInfo import SymbolicInfo
+from training.Rule import Rule
 
 __author__ = 'giulio'
 

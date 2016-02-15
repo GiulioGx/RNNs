@@ -7,22 +7,15 @@ import numpy
 import theano as T
 from numpy.linalg import LinAlgError
 
-from ActivationFunction import ActivationFunction
 from Configs import Configs
-from ObjectiveFunction import ObjectiveFunction
-from Statistics import Statistics
-from TrainingRule import TrainingRule
 from infos.InfoElement import PrintableInfoElement
 from infos.InfoGroup import InfoGroup
 from infos.InfoList import InfoList
-from lossFunctions import LossFunction
 from model import NetManager
-from model.RNN import RNN
-from model.RNNManager import RNNManager
-from output_fncs.OutputFunction import OutputFunction
-from task import Batch
 from task.BatchPolicer import RepetitaPolicer
 from task.Dataset import Dataset
+from training.Statistics import Statistics
+from training.TrainingRule import TrainingRule
 
 __author__ = 'giulio'
 
@@ -50,7 +43,7 @@ class SGDTrainer(object):
                                                                                 self.__stop_error_thresh)
                                                            ))
 
-    def _train(self, dataset: Dataset, net_manager: NetManager):
+    def _train(self, dataset: Dataset, net_manager: NetManager, logger):
 
         net = net_manager.get_net(n_in=dataset.n_in, n_out=dataset.n_out)
 
@@ -59,10 +52,10 @@ class SGDTrainer(object):
                                                  PrintableInfoElement('task', '', str(dataset)))
 
         # compute_update symbols
-        logging.info('Compiling theano functions for the training step...')
+        logger.info('Compiling theano functions for the training step...')
         train_step = self.__training_rule.compile(net)
-        logging.info('... Done')
-        logging.info('Seed: {}'.format(Configs.seed))
+        logger.info('... Done')
+        logger.info('Seed: {}'.format(Configs.seed))
 
         #  loss and error theano fnc
         u = net.symbols.u
@@ -79,15 +72,15 @@ class SGDTrainer(object):
         # policer #TODO se funziona mettere a pulito
         policer = RepetitaPolicer(dataset=dataset, batch_size=self.__batch_size, n_repetitions=100, block_size=1000)
 
-        logging.info('Generating validation set ...')
+        logger.info('Generating validation set ...')
         validation_set = dataset.validation_set
-        logging.info('... Done')
+        logger.info('... Done')
 
-        logging.info(str(net.info))
+        logger.info(str(net.info))
 
-        logging.info(str(self.__training_settings_info))
-        logging.info(str(self.__training_rule.infos))
-        logging.info('Training ...\n')
+        logger.info(str(self.__training_settings_info))
+        logger.info(str(self.__training_rule.infos))
+        logger.info('Training ...\n')
         start_time = time.time()
         batch_start_time = time.time()
 
@@ -113,7 +106,7 @@ class SGDTrainer(object):
                 try:
                     rho = net.spectral_radius
                 except LinAlgError as e:
-                    logging.error(str(e))
+                    logger.error(str(e))
                     error_occured = True
                     rho = numpy.nan
 
@@ -131,7 +124,7 @@ class SGDTrainer(object):
 
                     info = SGDTrainer.__build_infos(train_info, i, valid_loss, valid_error, best_error, rho,
                                                     batch_time, eval_time)
-                    logging.info(info)
+                    logger.info(info)
                     stats.update(info, i, total_elapsed_time)
                     net.save_model(self.__output_dir + '/current_model')
                     stats.save(self.__output_dir + '/stats')
@@ -139,42 +132,53 @@ class SGDTrainer(object):
                     batch_start_time = time.time()
                 else:
 
-                    logging.warning('stopping training...')
+                    logger.warning('stopping training...')
 
             i += 1
 
         end_time = time.time()
         if i == self.__max_it:
-            logging.warning('Maximum number of iterations reached, stopping training...')
+            logger.warning('Maximum number of iterations reached, stopping training...')
         elif best_error <= self.__stop_error_thresh / 100:
-            logging.info('Training succeded, validation error below the given threshold({:.2%})'.format(
+            logger.info('Training succeded, validation error below the given threshold({:.2%})'.format(
                 self.__stop_error_thresh / 100))
-        logging.info('Elapsed time: {:2.2f} min'.format((end_time - start_time) / 60))
+        logger.info('Elapsed time: {:2.2f} min'.format((end_time - start_time) / 60))
         return net
 
     def __start_logger(self):
         os.makedirs(self.__output_dir, exist_ok=True)
-        logging.basicConfig(filename=self.__log_filename, level=logging.INFO, format='%(levelname)s:%(message)s')
+
+        file_handler = logging.FileHandler(filename=self.__log_filename, mode='a')
+        formatter = logging.Formatter('%(levelname)s:%(message)s')
+        file_handler.setFormatter(formatter)
+
+        logger = logging.getLogger('rnn.sgd.train')  # root logger
+        logger.setLevel(logging.INFO)
+
+        for hdlr in logger.handlers:  # remove all old handlers
+            logger.removeHandler(hdlr)
+        logger.addHandler(file_handler)      # set the new handler
         now = datetime.datetime.now()
-        logging.info('starting logging activity in date {}'.format(now.strftime("%d-%m-%Y %H:%M")))
+        logger.info('starting logging activity in date {}'.format(now.strftime("%d-%m-%Y %H:%M")))
+        return logger
 
     def train(self, dataset: Dataset, net_manager: NetManager):
 
         if os.path.exists(self.__log_filename):
             os.remove(self.__log_filename)
-        self.__start_logger()
+        logger = self.__start_logger()
 
         # configure network
-        logging.info('Initializing the net and compiling theano functions for the net...')
-        logging.info('...Done')
-        logging.info(str(net_manager.infos))
+        logger.info('Initializing the net and compiling theano functions for the net...')
+        logger.info('...Done')
+        logger.info(str(net_manager.infos))
 
-        return self._train(dataset, net_manager)
+        return self._train(dataset, net_manager, logger)
 
     def resume_training(self, dataset: Dataset, net_manager: NetManager):  # TODO load statistics too
-        self.__start_logger()
-        logging.info('Resuming training...')
-        return self._train(dataset, net_manager)
+        logger = self.__start_logger()
+        logger.info('Resuming training...')
+        return self._train(dataset, net_manager, logger)
 
     @staticmethod
     def compute_error_and_loss(loss_and_error_fnc, validation_batches: list):

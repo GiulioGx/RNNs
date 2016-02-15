@@ -1,9 +1,7 @@
 import abc
 
 from ObjectiveFunction import ObjectiveFunction
-from Rule import Rule
-from infos.InfoProducer import SimpleInfoProducer
-from oldies.SymbolicInfoProducer import SymbolicInfoProducer
+from training.Rule import Rule
 
 __author__ = 'giulio'
 
