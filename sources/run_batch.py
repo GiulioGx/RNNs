@@ -86,7 +86,7 @@ prefix = 'train_run'
 print('Beginning train run...')
 print('seeds: {}, lengths: {}'.format(seeds, lengths))
 
-shutil.rmtree(Configs.output_dir+prefix)
+shutil.rmtree(Configs.output_dir+prefix, ignore_errors=True)
 
 for i in range(len(seeds)):
     for j in range(len(lengths)):
