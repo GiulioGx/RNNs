@@ -1,7 +1,6 @@
 import sys
 
 import theano
-from SGDTrainer import SGDTrainer
 
 from ActivationFunction import Tanh
 from Configs import Configs
@@ -17,6 +16,7 @@ from model.RNNInitializer import RNNInitializer, RNNVarsInitializer
 from model.RNNManager import RNNManager
 from output_fncs.Softmax import Softmax
 from task.MuseDataset import MuseDataset
+from training.SGDTrainer import SGDTrainer
 from training.TrainingRule import TrainingRule
 from updateRule.SimpleUpdate import SimpleUdpate
 
