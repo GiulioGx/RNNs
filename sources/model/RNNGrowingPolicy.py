@@ -34,7 +34,8 @@ class RNNIncrementalGrowing(RNNGrowingPolicy):
         if (self.__counter + 1) % self.__n_hidden_incr_freq == 0 and net.n_hidden < self.__n_hidden_max:
             new_hidden_number = net.n_hidden + self.__n_hidden_incr
             net.extend_hidden_units(n_hidden=new_hidden_number, initializer=self.__initializer)
-            logging.info('extending the number of hidden units to {}'.format(new_hidden_number))
+            logger = logging.getLogger('rnn.train')  # XXX
+            logger.info('extending the number of hidden units to {}'.format(new_hidden_number))
         self.__counter += 1
 
     @property
@@ -42,7 +43,7 @@ class RNNIncrementalGrowing(RNNGrowingPolicy):
         return InfoGroup('incremental hidden policy',
                          InfoList(PrintableInfoElement('max_units', '', self.__n_hidden_max),
                                   PrintableInfoElement('increment', '', self.__n_hidden_incr),
-                                  PrintableInfoElement('frquency', '', self.__n_hidden_incr_freq)))
+                                  PrintableInfoElement('frequency', '', self.__n_hidden_incr_freq)))
 
     def __init__(self, initializer:RNNVarsInitializer, n_hidden_max: int = 100, n_hidden_incr: int = 5, n_hidden_incr_freq: int = 2000):
         self.__n_hidden_max = n_hidden_max

@@ -21,18 +21,6 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="runExp.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/runExp.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="42" column="23" selection-start-line="42" selection-start-column="23" selection-end-line="42" selection-end-column="23" />
-              <folding>
-                <element signature="e#0#10#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="runTemporal.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/runTemporal.py">
           <provider selected="true" editor-type-id="text-editor">
@@ -69,7 +57,7 @@
         <entry file="file://$PROJECT_DIR$/training/SGDTrainer.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="167" column="31" selection-start-line="167" selection-start-column="0" selection-end-line="168" selection-end-column="0" />
+              <caret line="154" column="33" selection-start-line="154" selection-start-column="0" selection-end-line="155" selection-end-column="0" />
               <folding>
                 <element signature="e#0#15#0" expanded="true" />
               </folding>
@@ -77,23 +65,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="TrainingRule.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/training/TrainingRule.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="46" column="22" selection-start-line="46" selection-start-column="22" selection-end-line="46" selection-end-column="22" />
-              <folding>
-                <element signature="e#0#18#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="run_batch.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="run_batch.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/run_batch.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.69491524">
-              <caret line="88" column="59" selection-start-line="88" selection-start-column="59" selection-end-line="88" selection-end-column="59" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="93" column="0" selection-start-line="93" selection-start-column="0" selection-end-line="93" selection-end-column="0" />
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
               </folding>
@@ -109,6 +85,26 @@
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="RNNGrowingPolicy.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/model/RNNGrowingPolicy.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.47303542">
+              <caret line="40" column="13" selection-start-line="40" selection-start-column="13" selection-end-line="40" selection-end-column="13" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Configs.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Configs.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -169,7 +165,6 @@
         <option value="$PROJECT_DIR$/model/RNNManager.py" />
         <option value="$PROJECT_DIR$/initialization/RNNVarsInitializer.py" />
         <option value="$PROJECT_DIR$/model/RNNInitializer.py" />
-        <option value="$PROJECT_DIR$/model/RNNGrowingPolicy.py" />
         <option value="$PROJECT_DIR$/hf/hf_examples.py" />
         <option value="$PROJECT_DIR$/descentDirectionRule/LBFGSUpdate.py" />
         <option value="$PROJECT_DIR$/test/testDoubleScan.py" />
@@ -193,11 +188,12 @@
         <option value="$PROJECT_DIR$/descentDirectionRule/Antigradient.py" />
         <option value="$PROJECT_DIR$/runExp.py" />
         <option value="$PROJECT_DIR$/runScripts/runTemporal.py" />
-        <option value="$PROJECT_DIR$/training/SGDTrainer.py" />
         <option value="$PROJECT_DIR$/model/RNN.py" />
         <option value="$PROJECT_DIR$/testModels.py" />
         <option value="$PROJECT_DIR$/task/Dataset.py" />
         <option value="$PROJECT_DIR$/run_batch.py" />
+        <option value="$PROJECT_DIR$/training/SGDTrainer.py" />
+        <option value="$PROJECT_DIR$/model/RNNGrowingPolicy.py" />
       </list>
     </option>
   </component>
@@ -281,7 +277,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="task" />
+              <option name="myItemId" value="model" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -943,14 +939,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/model/RNNGrowingPolicy.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="22" column="11" selection-start-line="22" selection-start-column="6" selection-end-line="22" selection-end-column="20" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/model/RNNGradient.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -983,14 +971,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Configs.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/training/Rule.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1013,16 +993,6 @@
           <caret line="46" column="22" selection-start-line="46" selection-start-column="22" selection-end-line="46" selection-end-column="22" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/training/SGDTrainer.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="167" column="31" selection-start-line="167" selection-start-column="0" selection-end-line="168" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#15#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1093,11 +1063,37 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/run_batch.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.69491524">
-          <caret line="88" column="59" selection-start-line="88" selection-start-column="59" selection-end-line="88" selection-end-column="59" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="93" column="0" selection-start-line="93" selection-start-column="0" selection-end-line="93" selection-end-column="0" />
           <folding>
             <element signature="e#0#13#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/training/SGDTrainer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="154" column="33" selection-start-line="154" selection-start-column="0" selection-end-line="155" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#15#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Configs.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/model/RNNGrowingPolicy.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.47303542">
+          <caret line="40" column="13" selection-start-line="40" selection-start-column="13" selection-end-line="40" selection-end-column="13" />
+          <folding />
         </state>
       </provider>
     </entry>

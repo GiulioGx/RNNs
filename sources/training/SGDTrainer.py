@@ -152,7 +152,7 @@ class SGDTrainer(object):
         formatter = logging.Formatter('%(levelname)s:%(message)s')
         file_handler.setFormatter(formatter)
 
-        logger = logging.getLogger('rnn.sgd.train')  # root logger
+        logger = logging.getLogger('rnn.train')  # root logger
         logger.setLevel(logging.INFO)
 
         for hdlr in logger.handlers:  # remove all old handlers
