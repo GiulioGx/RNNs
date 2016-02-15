@@ -12,8 +12,8 @@ class FullCrossEntropy(LossFunction):
         if self.__single_probability_output:
             return (-(t * TT.log(y) + (1 - t) * TT.log(1 - y))*mask).sum(axis=1).mean(axis=0).mean(axis=0)
         else:
-            return -((t * TT.log(y))*mask).sum(axis=0).sum(axis=0).mean(axis=0)
+            return -((t * TT.log(y))*mask).sum(axis=1).mean(axis=0).mean(axis=0)
 
     @property
     def infos(self):
-        return SimpleDescription('full_cross_entropy_loss')
+        return SimpleDescription('full_cross_entropy_loss')  # TODO add single prob option

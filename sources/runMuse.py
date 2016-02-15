@@ -56,7 +56,7 @@ net_builder = RNNManager(initializer=net_initializer, activation_fnc=Tanh(), out
 
 # setup
 out_dir = Configs.output_dir + 'Muse'
-loss_fnc = FullCrossEntropy()
+loss_fnc = FullCrossEntropy(single_probability_ouput=True)
 
 # # HF init
 # bias_value = 0.5
