@@ -36,7 +36,7 @@ print('THEANO CONFIG')
 print('device: ' + device)
 print('floatType: ' + floatX)
 print(separator)
-sys.setrecursionlimit(100000)
+# sys.setrecursionlimit(100000)
 
 
 def train_run(seed: int, task_length: int, prefix: str):

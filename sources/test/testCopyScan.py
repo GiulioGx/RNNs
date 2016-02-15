@@ -82,14 +82,14 @@ values, updates_scan = T.scan(fill, non_sequences=[net_symbols.W_rec], outputs_i
 W3 = values
 
 
-def a_t(u_t, W_rec, a_tm1, W_in, b_rec):
+def a_t(u_t, a_tm1, W_rec, W_in, b_rec):
     a_t = TT.dot(W_rec, TT.tanh(a_tm1)) + TT.dot(W_in, u_t) + b_rec
     return a_t
 
 
-values, updates_scan = T.scan(a_t, sequences=[net_symbols.u, W3],
+values, updates_scan = T.scan(a_t, sequences=[net_symbols.u],
                    outputs_info=[a_m1],
-                   non_sequences=[net_symbols.W_in, net_symbols.b_rec],
+                   non_sequences=[net_symbols.W_rec, net_symbols.W_in, net_symbols.b_rec],
                    name='a_scan')
 a = values
 
@@ -109,7 +109,7 @@ loss = loss_fnc.value(y, net_symbols.t, loss_mask)
 #real_grad = TT.grad(loss, net_symbols.W_rec)
 #norm_real = real_grad.norm(2)
 
-grad = TT.grad(loss, W3)
+grad = TT.grad(loss, net_symbols.W_rec)
 
 h = TT.tanh(a).sum(axis=2)
 

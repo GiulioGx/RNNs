@@ -13,8 +13,8 @@ __author__ = 'giulio'
 
 class Antigradient(DescentDirectionRule):
 
-    def __init__(self, strategy: CombiningRule):
-        self.__combining_strategy = strategy
+    def __init__(self):
+        pass
 
     def direction(self, net, obj_fnc:ObjectiveFunction):
         gradient = obj_fnc.grad.value

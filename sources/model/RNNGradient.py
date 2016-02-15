@@ -140,10 +140,10 @@ class RNNGradient(object):
         gb_rec_combinantion, _ = strategy.combine(gb_rec_tensor)
         # gb_out_combinantion, _ = strategy.combine(gb_out_tensor)
 
-        flattened = as_vector(gW_rec_combinantion, gW_in_combinantion, as_vector(gW_out_tensor[self.__l]),
+        flattened = as_vector(gW_rec_combinantion, gW_in_combinantion, as_vector(gW_out_tensor[self.__l-1]),
                               gb_rec_combinantion,
                               as_vector(
-                                  gb_out_tensor[self.__l]))  # XXX no need to do this, use RNNVars constructor instead
+                                  gb_out_tensor[self.__l-1]))  # XXX no need to do this, use RNNVars constructor instead
         combination = self.__net.from_tensor(flattened)
 
         return combination, NullSymbolicInfos()

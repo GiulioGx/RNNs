@@ -189,7 +189,6 @@ class RNN(object):
 
     class Symbols:
         def __init__(self, net, W_rec, W_in, W_out, b_rec, b_out):
-            self.__max_length = 250  # FOXME magic constant
             self.__net = net
 
             # define shared variables
@@ -244,26 +243,19 @@ class RNN(object):
                                             name='extend_step')
 
         def net_output(self, params: RNNVars, u):
-            return self.__net_output(params.W_rec, params.W_in, params.W_out, params.b_rec, params.b_out, u)
+
+            def fill_tensor(W_rec, W_in, W_out, b_rec, b_out):
+                return W_rec, W_in, W_out, b_rec, b_out
+
+            values, _ = T.scan(fill_tensor, non_sequences=[params.W_rec, params.W_in, params.W_out, params.b_rec, params.b_out], outputs_info=[None, None, None, None, None],
+                              name='replicate_scan', n_steps=u.shape[0])
+
+            return self.__net_output(values[0], values[1], values[2], values[3], values[4], u)
 
         def __net_output(self, W_rec, W_in, W_out, b_rec, b_out, u):
-            W_rec_fixes = []
-            W_in_fixes = []
-            W_out_fixes = []
-            b_rec_fixes = []
-            b_out_fixes = []
-
-            for i in range(self.__max_length):  # FIXME max_lenght
-                W_rec_fixes.append(W_rec.clone())
-                W_in_fixes.append(W_in.clone())
-                W_out_fixes.append(W_out.clone())
-                b_rec_fixes.append(b_rec.clone())
-                b_out_fixes.append(b_out.clone())
 
             values, _ = T.scan(self.__net_output_t,
-                               sequences=[u, TT.as_tensor_variable(W_rec_fixes), TT.as_tensor_variable(W_in_fixes),
-                                          TT.as_tensor_variable(W_out_fixes), TT.as_tensor_variable(b_rec_fixes),
-                                          TT.as_tensor_variable(b_out_fixes)],
+                               sequences=[u, W_rec, W_in, W_out, b_rec, b_out],
                                outputs_info=[self.__h_m1, None, None],
                                non_sequences=[],
                                name='separate_matrices_net_output_scan',
@@ -271,7 +263,7 @@ class RNN(object):
             h = values[0]
             y = values[1]
             deriv_a = values[2]
-            return y, deriv_a, h, W_rec_fixes, W_in_fixes, W_out_fixes, b_rec_fixes, b_out_fixes
+            return y, deriv_a, h, W_rec, W_in, W_out, b_rec, b_out
 
         def __net_output_t(self, u_t, W_rec_fixes, W_in_fixes, W_out_fixes, b_rec_fixes, b_out_fixes, h_tm1):
             h_t, _, deriv_a_t = self.__net.h_t(u_t, h_tm1, W_rec_fixes, W_in_fixes, b_rec_fixes)
@@ -281,34 +273,6 @@ class RNN(object):
         def get_deriv_a(self, params):
             _, _, deriv_a = self.__net.net_output(params, self.u)
             return deriv_a
-
-        # def compute_temporal_gradients(self, loss_fnc):  # XXX
-        #
-        #     loss = loss_fnc.value(self.y_shared, self.t)
-        #
-        #     def step(y_tp1, y_tm1, loss):
-        #         gW_rec, gW_in, gW_out, gb_rec, gb_out = T.grad(loss, [self.__W_rec, self.__W_in, self.__W_out, self.__b_rec, self.__b_out],
-        #                       consider_constant=[y_tp1, y_tm1])
-        #         return as_vector(gW_rec, gW_in, gW_out, gb_rec, gb_out)
-        #
-        #     values, _ = T.scan(step,
-        #                        sequences=dict(input=self.h_shared, taps=[+1, -1]),
-        #                        non_sequences=[loss],
-        #                        go_backwards=True,
-        #                        name='separate_grads_exp_scan')
-        #
-        #     vt = as_vector(*T.grad(loss, [self.__W_rec, self.__W_in, self.__W_out, self.__b_rec, self.__b_out],
-        #                           consider_constant=[self.h_shared[-1]]))
-        #     v0 = as_vector(*T.grad(loss, [self.__W_rec, self.__W_in, self.__W_out, self.__b_rec, self.__b_out],
-        #                           consider_constant=[self.h_shared[1]]))
-        #
-        #     v = values.squeeze()
-        #
-        #     V = values
-        #
-        #     V = TT.concatenate([v0.dimshuffle(1,0), v, vt.dimshuffle(1,0)], axis=0)
-        #
-        #     return V
 
         def extend_hidden_units(self, n_hidden: int, initializer: RNNVarsInitializer):
             W_rec, W_in, W_out, b_rec, b_out = initializer.generate_variables(n_in=self.__net.n_in,
@@ -320,8 +284,8 @@ class RNN(object):
             W_out[:, 0:h_prev] = self.__W_out.get_value()
             b_rec[0:h_prev, :] = self.__b_rec.get_value()
 
-            # rho = MatrixInit.spectral_radius(W_rec)  # XXX mettere a pulito
-            # W_rec = W_rec / rho * 1.2
+            rho = MatrixInit.spectral_radius(W_rec)  # XXX mettere a pulito
+            W_rec = W_rec / rho * 1.2
 
             self.__extend_step(W_rec, W_in, W_out, b_rec, b_out)
 

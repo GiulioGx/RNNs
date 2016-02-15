@@ -1,11 +1,12 @@
 import sys
 
 import theano
-from SGDTrainer import SGDTrainer
 
 from ActivationFunction import Tanh
 from Configs import Configs
 from combiningRule.SimplexCombination import SimplexCombination
+from descentDirectionRule.Antigradient import Antigradient
+from descentDirectionRule.CombinedGradients import CombinedGradients
 from descentDirectionRule.LBFGSUpdate import LBFGSDirection
 from initialization.ConstantInit import ConstantInit
 from initialization.GaussianInit import GaussianInit
@@ -19,6 +20,7 @@ from model.RNNManager import RNNManager
 from output_fncs.Softmax import Softmax
 from task.Dataset import InfiniteDataset
 from task.TemporalOrderTask import TemporalOrderTask
+from training.SGDTrainer import SGDTrainer
 from training.TrainingRule import TrainingRule
 from updateRule.SimpleUpdate import SimpleUdpate
 
@@ -59,7 +61,7 @@ net_growing_policy = RNNIncrementalGrowing(n_hidden_incr=5, n_hidden_max=50, n_h
 net_builder = RNNManager(initializer=net_initializer, activation_fnc=Tanh(), output_fnc=Softmax(), growing_policy=net_growing_policy)
 
 # setup
-task = TemporalOrderTask(100, seed)
+task = TemporalOrderTask(50, seed)
 out_dir = Configs.output_dir + str(task)+'_pokka'
 loss_fnc = FullCrossEntropy(single_probability_ouput=False)
 
@@ -87,8 +89,9 @@ loss_fnc = FullCrossEntropy(single_probability_ouput=False)
 # combining_rule = OnesCombination(normalize_components=False)
 combining_rule = SimplexCombination(normalize_components=True, seed=seed)
 # combining_rule = SimpleSum()
-#dir_rule = CombinedGradients(combining_rule)
-dir_rule = LBFGSDirection(n_pairs=7)
+dir_rule = CombinedGradients(combining_rule)
+#dir_rule = Antigradient()
+#dir_rule = LBFGSDirection(n_pairs=7)
 
 # learning step rule
 # lr_rule = WRecNormalizedStep(0.0001) #0.01
@@ -107,7 +110,7 @@ trainer = SGDTrainer(train_rule, output_dir=out_dir, max_it=10 ** 10,
                      check_freq=200, batch_size=100, stop_error_thresh=1)
 
 # dataset = Dataset.no_valid_dataset_from_task(size=1000, task=task)
-dataset = InfiniteDataset(task=task, validation_size=10 ** 4)
+dataset = InfiniteDataset(task=task, validation_size=10 ** 4, n_batches=5)
 
 net = trainer.train(dataset, net_builder)
 
