@@ -1,4 +1,6 @@
-from infos.InfoElement import SimpleDescription
+from infos.InfoElement import SimpleDescription, PrintableInfoElement
+from infos.InfoGroup import InfoGroup
+from infos.InfoList import InfoList
 from lossFunctions.LossFunction import LossFunction
 import theano.tensor as TT
 
@@ -19,4 +21,5 @@ class FullCrossEntropy(LossFunction):
 
     @property
     def infos(self):
-        return SimpleDescription('full_cross_entropy_loss')  # TODO add single prob option
+        return InfoGroup('full_cross_entropy_loss', InfoList(PrintableInfoElement('single_prob_output', '',
+                                                                                  self.__single_probability_output)))

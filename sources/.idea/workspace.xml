@@ -90,8 +90,8 @@
       <file leaf-file-name="FullCrossEntropy.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/lossFunctions/FullCrossEntropy.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.55469954">
-              <caret line="22" column="0" selection-start-line="22" selection-start-column="0" selection-end-line="22" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.58243454">
+              <caret line="25" column="0" selection-start-line="25" selection-start-column="0" selection-end-line="25" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -311,18 +311,18 @@
     </option>
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/training" />
-      <recent name="$PROJECT_DIR$" />
-      <recent name="$PROJECT_DIR$/updateRule" />
-      <recent name="$PROJECT_DIR$/learningRule" />
-      <recent name="$PROJECT_DIR$/descentDirectionRule" />
-    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/runScripts" />
       <recent name="$PROJECT_DIR$/updateRule" />
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/test" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/oldies" />
+      <recent name="$PROJECT_DIR$/training" />
+      <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/updateRule" />
+      <recent name="$PROJECT_DIR$/learningRule" />
     </key>
   </component>
   <component name="RunManager" selected="Python.runTemporal">
@@ -1095,8 +1095,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/lossFunctions/FullCrossEntropy.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.55469954">
-          <caret line="22" column="0" selection-start-line="22" selection-start-column="0" selection-end-line="22" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.58243454">
+          <caret line="25" column="0" selection-start-line="25" selection-start-column="0" selection-end-line="25" selection-end-column="0" />
           <folding />
         </state>
       </provider>
