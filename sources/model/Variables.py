@@ -34,14 +34,14 @@ class Variables(object):
     def cos(self, other):
         """returns the cosine between this 'Variable' object (seen as a vector) and 'other' """
 
-    @abc.abstractmethod
-    def failsafe_grad(self, loss_fnc, u, t, loss_mask):
-        """return the gradient of the function fnc wrt the parameters this class represents"""
-
-    @abc.abstractmethod
-    def gradient(self, loss_fnc, u, t, loss_mask):
-        """return a class that can produce combinantion of gradients for each time steps given a 'strategy' for combining them
-        wrt the parameters this class represents"""
+    # @abc.abstractmethod # TODO move in an abstract class for the network
+    # def failsafe_grad(self, loss_fnc, u, t, loss_mask):
+    #     """return the gradient of the function fnc wrt the parameters this class represents"""
+    #
+    # @abc.abstractmethod
+    # def gradient(self, loss_fnc, u, t, loss_mask):
+    #     """return a class that can produce combinantion of gradients for each time steps given a 'strategy' for combining them
+    #     wrt the parameters this class represents"""
 
     @abc.abstractmethod
     def net_output(self, u):

@@ -11,13 +11,13 @@ __author__ = 'giulio'
 
 
 class RNNGradient(object):
-    def __init__(self, params, gW_rec_list, gW_in_list, gW_out_list, gb_rec_list, gb_out_list, l, loss):
+    def __init__(self, net, gW_rec_list, gW_in_list, gW_out_list, gb_rec_list, gb_out_list, loss):
 
         self.__preserve_norm = True
         self.__type = 'separate'
-        self.__net = params.net
+        self.__net = net
 
-        self.__l = l
+        self.__l = gW_rec_list.shape[0]
         self.__loss = loss  # XXX non dovrebbe stare qui?
 
         self.__gW_rec_list = gW_rec_list

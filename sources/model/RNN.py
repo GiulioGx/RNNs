@@ -3,6 +3,8 @@ import pickle
 import numpy
 import theano as T
 import theano.tensor as TT
+
+import ObjectiveFunction
 from ActivationFunction import ActivationFunction
 from Configs import Configs
 from infos.InfoElement import PrintableInfoElement
@@ -10,6 +12,7 @@ from infos.InfoGroup import InfoGroup
 from infos.InfoList import InfoList
 from initialization.MatrixInit import MatrixInit
 from initialization.RNNVarsInitializer import RNNVarsInitializer
+from model.RNNGradient import RNNGradient
 from model.RNNVars import RNNVars
 from output_fncs import OutputFunction
 from theanoUtils import as_vector
@@ -96,24 +99,22 @@ class RNN(object):
     def __net_output(self, W_rec, W_in, W_out, b_rec, b_out, u, h_m1):
 
         values, _ = T.scan(self.net_output_t, sequences=u,
-                           outputs_info=[h_m1, None, None, None],
+                           outputs_info=[h_m1, None, None],
                            non_sequences=[W_rec, W_in, W_out, b_rec, b_out],
                            name='net_output_scan')
         h = values[0]
         y = values[1]
         a_t = values[2]
-        deriv_a = values[3]
-        return y, a_t, deriv_a, h
+        return y, a_t, h
 
     def net_output_t(self, u_t, h_tm1, W_rec, W_in, W_out, b_rec, b_out):
-        h_t, a_t, deriv_a_t = self.h_t(u_t, h_tm1, W_rec, W_in, b_rec)
+        h_t, a_t = self.h_t(u_t, h_tm1, W_rec, W_in, b_rec)
         y_t = self.y_t(h_t, W_out, b_out)
-        return h_t, y_t, a_t, deriv_a_t,
+        return h_t, y_t, a_t
 
     def h_t(self, u_t, h_tm1, W_rec, W_in, b_rec):
         a_t = TT.dot(W_rec, h_tm1) + TT.dot(W_in, u_t) + b_rec
-        deriv_a = self.__activation_fnc.grad_f(a_t)
-        return self.__activation_fnc.f(a_t), a_t, deriv_a
+        return self.__activation_fnc.f(a_t), a_t
 
     def y_t(self, h_t, W_out, b_out):
         return self.__output_fnc.value(TT.dot(W_out, h_t) + b_out)
@@ -218,10 +219,9 @@ class RNN(object):
             # self.__h_m1 = TT.addbroadcast(TT.alloc(numpy.array(0., dtype=Configs.floatType), n_sequences), 0)
 
             # output of the net
-            self.y, self.a, self.deriv_a, h = net.net_output(self.__current_params, self.u, self.__h_m1)
-            # self.y, self.deriv_a, h = net.experimental.net_output(self.__current_params, self.u)
-            self.y_shared, self.a_shared, self.deriv_a_shared, self.h_shared = T.clone(
-                [self.y, self.a, self.deriv_a, h],
+            self.y, self.a, h = net.net_output(self.__current_params, self.u, self.__h_m1)
+            self.y_shared, self.a_shared, self.h_shared = T.clone(
+                [self.y, self.a, h],
                 replace={W_rec: self.__W_rec, W_in: self.__W_in,
                          W_out: self.__W_out,
                          b_rec: self.__b_rec,
@@ -256,23 +256,31 @@ class RNN(object):
 
             values, _ = T.scan(self.__net_output_t,
                                sequences=[u, W_rec, W_in, W_out, b_rec, b_out],
-                               outputs_info=[self.__h_m1, None, None],
+                               outputs_info=[self.__h_m1, None],
                                non_sequences=[],
                                name='separate_matrices_net_output_scan',
                                n_steps=u.shape[0])
             h = values[0]
             y = values[1]
-            deriv_a = values[2]
-            return y, deriv_a, h, W_rec, W_in, W_out, b_rec, b_out
+            return y, h, W_rec, W_in, W_out, b_rec, b_out
 
         def __net_output_t(self, u_t, W_rec_fixes, W_in_fixes, W_out_fixes, b_rec_fixes, b_out_fixes, h_tm1):
-            h_t, _, deriv_a_t = self.__net.h_t(u_t, h_tm1, W_rec_fixes, W_in_fixes, b_rec_fixes)
+            h_t, _ = self.__net.h_t(u_t, h_tm1, W_rec_fixes, W_in_fixes, b_rec_fixes)
             y_t = self.__net.y_t(h_t, W_out_fixes, b_out_fixes)
-            return h_t, y_t, deriv_a_t
+            return h_t, y_t
 
-        def get_deriv_a(self, params):
-            _, _, deriv_a = self.__net.net_output(params, self.u)
-            return deriv_a
+        def gradient(self, u, t, params: RNNVars, obj_fnc: ObjectiveFunction):
+            y, _, W_rec, W_in, W_out, b_rec, b_out = self.net_output(u=u, params=params)
+            cost = obj_fnc.value(y, t)
+            gW_rec, gW_in, gW_out, gb_rec, gb_out = T.grad(cost=cost, wrt=[W_rec, W_in, W_out, b_rec, b_out])
+            return RNNGradient(self.__net, gW_rec, gW_in, gW_out, gb_rec, gb_out, cost)
+
+        def failsafe_grad(self, u, t, params:RNNVars, obj_fnc:ObjectiveFunction):  # FIXME XXX remove me
+            y, _, _ = self.__net.net_output(u=u, params=params, h_m1=self.__net.symbols.h_m1)
+            cost = obj_fnc.value(y, t)
+            gW_rec, gW_in, gW_out, \
+            gb_rec, gb_out = TT.grad(cost, [self.__W_rec, self.__W_in, self.__W_out, self.__b_rec, self.__b_out])
+            return RNNVars(self.__net, W_rec=gW_rec, W_in=gW_in, W_out=gW_out, b_rec=gb_rec, b_out=gb_out)
 
         def extend_hidden_units(self, n_hidden: int, initializer: RNNVarsInitializer):
             W_rec, W_in, W_out, b_rec, b_out = initializer.generate_variables(n_in=self.__net.n_in,
