@@ -1,4 +1,3 @@
-import sys
 
 import theano
 
@@ -14,6 +13,7 @@ from learningRule.GradientClipping import GradientClipping
 from lossFunctions.FullCrossEntropy import FullCrossEntropy
 from model.RNNInitializer import RNNInitializer, RNNVarsInitializer
 from model.RNNManager import RNNManager
+from output_fncs.Logistic import Logistic
 from output_fncs.Softmax import Softmax
 from task.MuseDataset import MuseDataset
 from training.SGDTrainer import SGDTrainer
@@ -36,7 +36,6 @@ print(separator)
 
 seed = 13
 Configs.seed = seed
-sys.setrecursionlimit(2**31-1)
 
 # network setup
 std_dev = 0.14  # 0.14 Tanh # 0.21 Relu
@@ -52,7 +51,7 @@ vars_initializer = RNNVarsInitializer(
     W_out_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed), b_rec_init=ConstantInit(0),
     b_out_init=ConstantInit(0))
 net_initializer = RNNInitializer(vars_initializer, n_hidden=100)
-net_builder = RNNManager(initializer=net_initializer, activation_fnc=Tanh(), output_fnc=Softmax())
+net_builder = RNNManager(initializer=net_initializer, activation_fnc=Tanh(), output_fnc=Logistic())
 
 # setup
 out_dir = Configs.output_dir + 'Muse'
@@ -93,7 +92,7 @@ dir_rule = CombinedGradients(combining_rule)
 # learning step rule
 # lr_rule = WRecNormalizedStep(0.0001) #0.01
 # lr_rule = ConstantNormalizedStep(0.001)  # 0.01
-lr_rule = GradientClipping(lr_value=0.003, clip_thr=1, normalize_wrt_dimension=False)  # 0.01
+lr_rule = GradientClipping(lr_value=0.001, clip_thr=1, normalize_wrt_dimension=False)  # 0.01
 # lr_rule = ArmijoStep(alpha=0.5, beta=0.1, init_step=1, max_steps=50)
 
 #update_rule = FixedAveraging(t=10)

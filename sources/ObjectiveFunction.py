@@ -36,8 +36,8 @@ class ObjectiveFunction(SimpleInfoProducer):
         gradient_info = self.__grad.temporal_norms_infos
 
         # DEBUG DIFF
-        debug_diff = (self.grad.value - self.failsafe_grad).norm()
-        #debug_diff = TT.alloc(-1)
+        #debug_diff = (self.grad.value - self.failsafe_grad).norm()
+        debug_diff = TT.alloc(-1)
 
         self.__infos = ObjectiveFunction.Info(gradient_info, self.__objective_value, grad_norm, debug_diff)
 
