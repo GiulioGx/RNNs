@@ -1,6 +1,7 @@
 import theano as T
 import theano.tensor as TT
 
+import ObjectiveFunction
 from infos.Info import Info
 from infos.InfoElement import NonPrintableInfoElement, PrintableInfoElement
 from infos.InfoList import InfoList
@@ -11,23 +12,20 @@ __author__ = 'giulio'
 
 
 class RNNGradient(object):
-    def __init__(self, net, gW_rec_list, gW_in_list, gW_out_list, gb_rec_list, gb_out_list, loss):
+    def __init__(self, net, gW_rec_T, gW_in_T, gW_out_T, gb_rec_T, gb_out_T, obj_fnc:ObjectiveFunction):
 
         self.__preserve_norm = True
         self.__type = 'separate'
         self.__net = net
 
-        self.__l = gW_rec_list.shape[0]
-        self.__loss = loss  # XXX non dovrebbe stare qui?
-
-        self.__gW_rec_list = gW_rec_list
-        self.__gW_in_list = gW_in_list
-        self.__gW_out_list = gW_out_list
-        self.__gb_rec_list = gb_rec_list
-        self.__gb_out_list = gb_out_list
+        self.__gW_rec_T = gW_rec_T
+        self.__gW_in_T = gW_in_T
+        self.__gW_out_T = gW_out_T
+        self.__gb_rec_T = gb_rec_T
+        self.__gb_out_T = gb_out_T
 
         gW_rec_norms, gW_in_norms, gW_out_norms, \
-        gb_rec_norms, gb_out_norms, full_gradients_norms, self.__H = self.__process_temporal_components()
+        gb_rec_norms, gb_out_norms, full_gradients_norms, self.__H = self.__compute_H() #self.__process_temporal_components()
 
         self.__value = self.__net.from_tensor(self.__H.sum(axis=0))  # GRADIENT
 
@@ -42,42 +40,46 @@ class RNNGradient(object):
 
         self.__infos = RNNGradient.Info(gW_rec_norms, gW_in_norms, gW_out_norms, gb_rec_norms, gb_out_norms, grad_dots, full_gradients_norms)
 
-    # FOXME fa cagare
-    def __process_temporal_components(self):
+    def __compute_H(self):
+        output_list = []
+        to_concat = []
+        for t in [self.__gW_rec_T, self.__gW_in_T, self.__gW_out_T, self.__gb_rec_T, self.__gb_out_T]:
+            output_list.append(t.norm(2, axis=0))
+            to_concat.append(t.reshape(shape=(t.shape[0], t.shape[1]*t.shape[2])))
+        H = TT.concatenate(to_concat, axis=1)
+        result = output_list + [H.norm(2, axis=0), H]
+        return result
 
-        def g(gW_rec_t, gW_in_t, gW_out_t, gb_rec_t, gb_out_t):
-            gW_rec_t_norm = gW_rec_t.norm(2)
-            gW_in_t_norm = gW_in_t.norm(2)
-            gW_out_t_norm = gW_out_t.norm(2)
-            gb_rec_t_norm = gb_rec_t.norm(2)
-            gb_out_t_norm = gb_out_t.norm(2)
-
-            v = as_vector(gW_rec_t, gW_in_t, gW_out_t, gb_rec_t, gb_out_t)
-            norm_v = v.norm(2)
-
-            return gW_rec_t_norm, gW_in_t_norm, gW_out_t_norm, gb_rec_t_norm, gb_out_t_norm, norm_v, v
-
-        values, _ = T.scan(g, sequences=[TT.as_tensor_variable(self.__gW_rec_list),
-                                         TT.as_tensor_variable(self.__gW_in_list),
-                                         TT.as_tensor_variable(self.__gW_out_list),
-                                         TT.as_tensor_variable(self.__gb_rec_list),
-                                         TT.as_tensor_variable(self.__gb_out_list)],
-                           outputs_info=[None, None, None, None, None, None, None],
-                           name='process_temporal_components_scan',
-                           n_steps=self.__l)
-
-        temporal_gradients_list = values[6]
-        H = TT.as_tensor_variable(temporal_gradients_list[0:self.__l]).squeeze()
-
-        return values[0], values[1], values[2], values[3], values[4], values[5], H
+    # def __process_temporal_components(self):
+    #
+    #     def g(gW_rec_t, gW_in_t, gW_out_t, gb_rec_t, gb_out_t):
+    #         gW_rec_t_norm = gW_rec_t.norm(2)
+    #         gW_in_t_norm = gW_in_t.norm(2)
+    #         gW_out_t_norm = gW_out_t.norm(2)
+    #         gb_rec_t_norm = gb_rec_t.norm(2)
+    #         gb_out_t_norm = gb_out_t.norm(2)
+    #
+    #         v = as_vector(gW_rec_t, gW_in_t, gW_out_t, gb_rec_t, gb_out_t)
+    #         norm_v = v.norm(2)
+    #
+    #         return gW_rec_t_norm, gW_in_t_norm, gW_out_t_norm, gb_rec_t_norm, gb_out_t_norm, norm_v, v
+    #
+    #     values, _ = T.scan(g, sequences=[TT.as_tensor_variable(self.__gW_rec_T),
+    #                                      TT.as_tensor_variable(self.__gW_in_T),
+    #                                      TT.as_tensor_variable(self.__gW_out_T),
+    #                                      TT.as_tensor_variable(self.__gb_rec_T),
+    #                                      TT.as_tensor_variable(self.__gb_out_T)],
+    #                        outputs_info=[None, None, None, None, None, None, None],
+    #                        name='process_temporal_components_scan')
+    #
+    #     temporal_gradients_list = values[6]
+    #     H = TT.as_tensor_variable(temporal_gradients_list).squeeze()
+    #
+    #     return values[0], values[1], values[2], values[3], values[4], values[5], H
 
     @property
     def value(self):
         return self.__value
-
-    @property
-    def loss_value(self):
-        return self.__loss
 
     @property
     def temporal_norms_infos(self) -> SymbolicInfo:
@@ -128,11 +130,11 @@ class RNNGradient(object):
 
     def __separate_combination(self, strategy):
 
-        gW_rec_tensor = flatten_list_element(TT.as_tensor_variable(self.__gW_rec_list), self.__l).squeeze()
-        gW_in_tensor = flatten_list_element(TT.as_tensor_variable(self.__gW_in_list), self.__l).squeeze()
-        gW_out_tensor = TT.as_tensor_variable(self.__gW_out_list)
-        gb_rec_tensor = flatten_list_element(TT.as_tensor_variable(self.__gb_rec_list), self.__l).squeeze()
-        gb_out_tensor = TT.as_tensor_variable(self.__gb_out_list)
+        gW_rec_tensor = flatten_list_element(TT.as_tensor_variable(self.__gW_rec_T)).squeeze()
+        gW_in_tensor = flatten_list_element(TT.as_tensor_variable(self.__gW_in_T)).squeeze()
+        gW_out_tensor = TT.as_tensor_variable(self.__gW_out_T)
+        gb_rec_tensor = flatten_list_element(TT.as_tensor_variable(self.__gb_rec_T)).squeeze()
+        gb_out_tensor = TT.as_tensor_variable(self.__gb_out_T)
 
         gW_rec_combinantion, _ = strategy.combine(gW_rec_tensor)
         gW_in_combinantion, _ = strategy.combine(gW_in_tensor)
@@ -140,10 +142,10 @@ class RNNGradient(object):
         gb_rec_combinantion, _ = strategy.combine(gb_rec_tensor)
         # gb_out_combinantion, _ = strategy.combine(gb_out_tensor)
 
-        flattened = as_vector(gW_rec_combinantion, gW_in_combinantion, as_vector(gW_out_tensor[self.__l-1]),
+        flattened = as_vector(gW_rec_combinantion, gW_in_combinantion, as_vector(gW_out_tensor[-1]),
                               gb_rec_combinantion,
                               as_vector(
-                                  gb_out_tensor[self.__l-1]))  # XXX no need to do this, use RNNVars constructor instead
+                                  gb_out_tensor[-1]))  # XXX no need to do this, use RNNVars constructor instead
         combination = self.__net.from_tensor(flattened)
 
         return combination, NullSymbolicInfos()

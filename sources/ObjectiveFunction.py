@@ -27,18 +27,17 @@ class ObjectiveFunction(SimpleInfoProducer):
         self.__loss_mask = TT.tensor3(name='loss_mask')
 
         # XXX REMOVE (?)
-        self.failsafe_grad = self.__net.symbols.failsafe_grad(u=u, t=t, params=self.__params, obj_fnc=self)
-        self.__grad = self.__net.symbols.gradient(u=u, t=t, params=self.__params, obj_fnc=self)
+        self.failsafe_grad, _ = self.__net.symbols.failsafe_grad(u=u, t=t, params=self.__params, obj_fnc=self)
+        self.__grad,  self.__objective_value = self.__net.symbols.gradient(u=u, t=t, params=self.__params, obj_fnc=self)
 
-        self.__objective_value = self.__grad.loss_value
         grad_norm = self.__grad.value.norm()
 
         # separate
         gradient_info = self.__grad.temporal_norms_infos
 
         # DEBUG DIFF
-        #debug_diff = (self.grad.value - self.failsafe_grad).norm()
-        debug_diff = TT.alloc(-1)
+        debug_diff = (self.grad.value - self.failsafe_grad).norm()
+        #debug_diff = TT.alloc(-1)
 
         self.__infos = ObjectiveFunction.Info(gradient_info, self.__objective_value, grad_norm, debug_diff)
 

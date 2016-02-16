@@ -76,12 +76,11 @@ def get_norms(vec_list, n):
     return values
 
 
-def flatten_list_element(list_of_tensor_variables, l):
+def flatten_list_element(list_of_tensor_variables):
     values, _ = T.scan(as_vector, sequences=list_of_tensor_variables,
                        outputs_info=[None],
                        non_sequences=[],
-                       name='as_vector_combinations_scan',
-                       n_steps=l)
+                       name='as_vector_combinations_scan')
     return values
 
 

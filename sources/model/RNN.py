@@ -273,14 +273,14 @@ class RNN(object):
             y, _, W_rec, W_in, W_out, b_rec, b_out = self.net_output(u=u, params=params)
             cost = obj_fnc.value(y, t)
             gW_rec, gW_in, gW_out, gb_rec, gb_out = T.grad(cost=cost, wrt=[W_rec, W_in, W_out, b_rec, b_out])
-            return RNNGradient(self.__net, gW_rec, gW_in, gW_out, gb_rec, gb_out, cost)
+            return RNNGradient(self.__net, gW_rec, gW_in, gW_out, gb_rec, gb_out, obj_fnc), cost
 
         def failsafe_grad(self, u, t, params:RNNVars, obj_fnc:ObjectiveFunction):  # FIXME XXX remove me
             y, _, _ = self.__net.net_output(u=u, params=params, h_m1=self.__net.symbols.h_m1)
             cost = obj_fnc.value(y, t)
             gW_rec, gW_in, gW_out, \
             gb_rec, gb_out = TT.grad(cost, [self.__W_rec, self.__W_in, self.__W_out, self.__b_rec, self.__b_out])
-            return RNNVars(self.__net, W_rec=gW_rec, W_in=gW_in, W_out=gW_out, b_rec=gb_rec, b_out=gb_out)
+            return RNNVars(self.__net, W_rec=gW_rec, W_in=gW_in, W_out=gW_out, b_rec=gb_rec, b_out=gb_out), cost
 
         def extend_hidden_units(self, n_hidden: int, initializer: RNNVarsInitializer):
             W_rec, W_in, W_out, b_rec, b_out = initializer.generate_variables(n_in=self.__net.n_in,
