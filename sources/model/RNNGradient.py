@@ -17,6 +17,7 @@ class RNNGradient(object):
         self.__preserve_norm = True
         self.__type = 'separate'
         self.__net = net
+        self.__obj_fnc = obj_fnc
 
         self.__gW_rec_T = gW_rec_T
         self.__gW_in_T = gW_in_T
@@ -130,22 +131,23 @@ class RNNGradient(object):
 
     def __separate_combination(self, strategy):
 
-        gW_rec_tensor = flatten_list_element(TT.as_tensor_variable(self.__gW_rec_T)).squeeze()
-        gW_in_tensor = flatten_list_element(TT.as_tensor_variable(self.__gW_in_T)).squeeze()
-        gW_out_tensor = TT.as_tensor_variable(self.__gW_out_T)
-        gb_rec_tensor = flatten_list_element(TT.as_tensor_variable(self.__gb_rec_T)).squeeze()
-        gb_out_tensor = TT.as_tensor_variable(self.__gb_out_T)
+        gW_rec_tensor = flatten_list_element(self.__gW_rec_T).squeeze()
+        gW_in_tensor = flatten_list_element(self.__gW_in_T).squeeze()
+        gb_rec_tensor = flatten_list_element(self.__gb_rec_T).squeeze()
+
+        # # these are the indexes where the loss is not null by design
+        indexes = (self.__obj_fnc.loss_mask.sum(axis=1).sum(axis=1)).nonzero()
+        gW_out_tensor = flatten_list_element(self.__gW_out_T.take(indexes, axis=0)).squeeze()
+        gb_out_tensor = flatten_list_element(self.__gb_out_T.take(indexes, axis=0)).squeeze()
 
         gW_rec_combinantion, _ = strategy.combine(gW_rec_tensor)
         gW_in_combinantion, _ = strategy.combine(gW_in_tensor)
-        # gW_out_combinantion, _ = strategy.combine(gW_out_tensor) # FIXME renderlo dinamico
+        gW_out_combinantion, _ = strategy.combine(gW_out_tensor)
         gb_rec_combinantion, _ = strategy.combine(gb_rec_tensor)
-        # gb_out_combinantion, _ = strategy.combine(gb_out_tensor)
+        gb_out_combinantion, _ = strategy.combine(gb_out_tensor)
 
-        flattened = as_vector(gW_rec_combinantion, gW_in_combinantion, as_vector(gW_out_tensor[-1]),
-                              gb_rec_combinantion,
-                              as_vector(
-                                  gb_out_tensor[-1]))  # XXX no need to do this, use RNNVars constructor instead
+        flattened = as_vector(gW_rec_combinantion, gW_in_combinantion, gW_out_combinantion,
+                              gb_rec_combinantion, gb_out_combinantion)
         combination = self.__net.from_tensor(flattened)
 
         return combination, NullSymbolicInfos()
