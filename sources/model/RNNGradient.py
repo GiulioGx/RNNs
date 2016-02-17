@@ -45,10 +45,11 @@ class RNNGradient(object):
         output_list = []
         to_concat = []
         for t in [self.__gW_rec_T, self.__gW_in_T, self.__gW_out_T, self.__gb_rec_T, self.__gb_out_T]:
-            output_list.append(t.norm(2, axis=0))
-            to_concat.append(t.reshape(shape=(t.shape[0], t.shape[1]*t.shape[2])))
+            vec_T = t.reshape(shape=(t.shape[0], t.shape[1]*t.shape[2]))
+            output_list.append(vec_T.norm(2, axis=1).squeeze())
+            to_concat.append(vec_T)
         H = TT.concatenate(to_concat, axis=1)
-        result = output_list + [H.norm(2, axis=0), H]
+        result = output_list + [H.norm(2, axis=1).squeeze(), H]
         return result
 
     # def __process_temporal_components(self):

@@ -36,24 +36,23 @@ print('THEANO CONFIG')
 print('device: ' + device)
 print('floatType: ' + floatX)
 print(separator)
-# sys.setrecursionlimit(100000)
 
 
 def train_run(seed: int, task_length: int, prefix: str):
     Configs.seed = seed
 
     # network setup
+    std_dev = 0.14  # 0.14 Tanh # 0.21 Relu
     mean = 0
     vars_initializer = RNNVarsInitializer(
-        W_rec_init=SpectralInit(matrix_init=UniformInit(seed=seed), rho=1.2),
+        W_rec_init=SpectralInit(matrix_init=GaussianInit(seed=seed, std_dev=std_dev), rho=1.2),
         W_in_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed),
         W_out_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed), b_rec_init=ConstantInit(0),
         b_out_init=ConstantInit(0))
-    net_initializer = RNNInitializer(vars_initializer, n_hidden=5)
-    net_growing_policy = RNNIncrementalGrowing(n_hidden_incr=5, n_hidden_max=50, n_hidden_incr_freq=500,
-                                               initializer=vars_initializer)
-    net_builder = RNNManager(initializer=net_initializer, activation_fnc=Tanh(), output_fnc=Softmax(),
-                             growing_policy=net_growing_policy)
+    net_initializer = RNNInitializer(vars_initializer, n_hidden=50)
+    # net_growing_policy = RNNIncrementalGrowing(n_hidden_incr=5, n_hidden_max=50, n_hidden_incr_freq=500,
+    #                                            initializer=vars_initializer)
+    net_builder = RNNManager(initializer=net_initializer, activation_fnc=Tanh(), output_fnc=Softmax())
 
     loss_fnc = FullCrossEntropy(single_probability_ouput=False)
 
@@ -62,7 +61,7 @@ def train_run(seed: int, task_length: int, prefix: str):
     # combining_rule = SimpleSum()
     dir_rule = CombinedGradients(combining_rule)
 
-    lr_rule = GradientClipping(lr_value=0.001, clip_thr=1, normalize_wrt_dimension=False)  # 0.01
+    lr_rule = GradientClipping(lr_value=0.005, clip_thr=1, normalize_wrt_dimension=False)  # 0.01
 
     # update_rule = FixedAveraging(t=10)
     update_rule = SimpleUdpate()

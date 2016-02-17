@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 __author__ = 'giulio'
 
 #modelFile = '/home/giulio/RNNs/models/completed/100 hidden/add_task, min_length: 144_average/model.npz'
-modelFile = '/home/giulio/RNNs/models/add_task, min_length: 144/stats.npz'
+modelFile = '/home/giulio/RNNs/models/temporal_order, min_length: 50_pokka3/stats.npz'
 #modelFile = '/home/giulio/model_octopus.npz'
 #modelFile = '/home/giulio/RNNs/models/completed/temporal_order, min_length: 144/model.npz'
 npz = numpy.load(modelFile)
@@ -26,12 +26,14 @@ x = reversed(x)
 for i in x:
     dict = norms_dicts[i]
     keys = sorted(dict.keys())
+    print(keys)
     fig, axarr = plt.subplots(len(dict)+1, sharex=True, figsize=(20, 30))
 
     j = 0
     for key in keys:
         print(key)
         y = dict[key]
+        y = y if y.ndim == 1 else y[0]
         print(y)
         axarr[j].bar(range(len(y)), y)
         axarr[j].legend([key], shadow=True, fancybox=True)
