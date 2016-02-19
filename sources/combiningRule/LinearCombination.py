@@ -48,4 +48,4 @@ class LinearCombination(CombiningRule):
             return self.__symbols
 
         def fill_symbols(self, symbols_replacedments: list) -> Info:
-            return PrintableInfoElement('db_G_norm', '', symbols_replacedments[0])
+            return PrintableInfoElement('db_G_norm', ':1.2f', symbols_replacedments[0].item())

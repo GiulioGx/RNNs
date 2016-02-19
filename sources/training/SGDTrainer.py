@@ -135,7 +135,7 @@ class SGDTrainer(object):
 
                 if not error_occured:
 
-                    if self.__saving_criterion.is_satisfied:
+                    if self.__saving_criterion.is_satisfied():
                         logger.info('best model found: saving...')
                         net.save_model(self.__output_dir + '/best_model')
 

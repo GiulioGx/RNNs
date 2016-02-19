@@ -16,6 +16,7 @@ class BestValueFoundCriterion(Criterion):
         self.__monitor = monitor
 
     def is_satisfied(self) -> bool:
+
         if self.__best_value > self.__monitor.value:
             self.__best_value = self.__monitor.value
             return True
