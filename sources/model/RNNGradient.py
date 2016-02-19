@@ -92,7 +92,8 @@ class RNNGradient(object):
         def __init__(self, gW_rec_norms, gW_in_norms, gW_out_norms, gb_rec_norms, gb_out_norms, grad_dots, full_gradients_norms):
 
             norm_variance = full_gradients_norms.var()
-            self.__symbols = [gW_rec_norms, gW_in_norms, gW_out_norms, gb_rec_norms, gb_out_norms, full_gradients_norms, grad_dots, norm_variance]
+            dots_variance = grad_dots.var()
+            self.__symbols = [gW_rec_norms, gW_in_norms, gW_out_norms, gb_rec_norms, gb_out_norms, full_gradients_norms, grad_dots, norm_variance, dots_variance]
 
         @property
         def symbols(self):
@@ -105,10 +106,11 @@ class RNNGradient(object):
                                    'b_out': symbols_replacements[4],
                                    'full_grad': symbols_replacements[5]}
 
-            variance = PrintableInfoElement('g_var', ':02.2f', symbols_replacements[7].item())
+            norms_variance = PrintableInfoElement('g_var', ':02.2f', symbols_replacements[7].item())
+            dots_variance = PrintableInfoElement('dots_var', ':02.2f', symbols_replacements[8].item())
             grad_dots = NonPrintableInfoElement('grad_temporal_cos', symbols_replacements[6])
             separate_info = NonPrintableInfoElement('separate_norms', separate_norms_dict)
-            info = InfoList(grad_dots, variance, separate_info)
+            info = InfoList(grad_dots, norms_variance, dots_variance, separate_info)
             return info
 
     def temporal_combination(self, strategy):  # FIXME
@@ -132,7 +134,8 @@ class RNNGradient(object):
 
     def __separate_combination(self, strategy):
 
-        gW_rec_tensor = flatten_list_element(self.__gW_rec_T).squeeze()
+        # gW_rec[0] is null by design
+        gW_rec_tensor = flatten_list_element(self.__gW_rec_T[1:]).squeeze()
         gW_in_tensor = flatten_list_element(self.__gW_in_T).squeeze()
         gb_rec_tensor = flatten_list_element(self.__gb_rec_T).squeeze()
 

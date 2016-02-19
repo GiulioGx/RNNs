@@ -80,7 +80,7 @@ class TrainingRule(SimpleInfoProducer):
             self.__symbolic_infos_list = []
             net_symbols = net.symbols
             self.__obj_fnc = ObjectiveFunction(rule.loss_fnc, net, net_symbols.current_params, net_symbols.u,
-                                        net_symbols.t)
+                                               net_symbols.t)
             obj_fnc_symbolic_info = self.__obj_fnc.infos
             self.__symbolic_infos_list.append(obj_fnc_symbolic_info)
             direction, dir_symbolic_dir_infos = rule.desc_dir_rule.direction(net, self.__obj_fnc)
@@ -100,21 +100,27 @@ class TrainingRule(SimpleInfoProducer):
             self.__symbolic_infos_list.append(update_symbolic_info)
 
             network_updates = net_symbols.current_params.update_list(update_vars)
-            output_list = []
+            output_symbol_list = []
             for s in self.__symbolic_infos_list:
-                output_list += s.symbols
+                output_symbol_list += s.symbols
 
             rule_updates = rule.updates_poller.updates
-            self.__step = T.function([net_symbols.u, net_symbols.t, self.__obj_fnc.loss_mask], output_list,
-                                     allow_input_downcast='true',
-                                     on_unused_input='warn',
-                                     updates=network_updates + rule_updates,
-                                     name='train_step')
 
-        def step(self, inputs, outputs, mask):
-            infos_symbols = self.__step(inputs, outputs, mask)
-            infos = self.__format_infos(infos_symbols)
-            return infos
+            params = dict(allow_input_downcast='true', on_unused_input='warn', updates=network_updates + rule_updates,
+                          name='train_step')
+            input_symbol_list = [net_symbols.u, net_symbols.t, self.__obj_fnc.loss_mask]
+
+            self.__step_with_info = T.function(input_symbol_list, output_symbol_list, **params)
+            self.__step_without_info = T.function(input_symbol_list, [], **params)
+
+        def step(self, inputs, outputs, mask, report_info: bool = True):
+            if report_info:
+                infos_symbols = self.__step_with_info(inputs, outputs, mask)
+                infos = self.__format_infos(infos_symbols)
+                return infos
+            else:
+                self.__step_without_info(inputs, outputs, mask)
+                return
 
         def __format_infos(self, filled_symbols):
 

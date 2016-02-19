@@ -48,4 +48,7 @@ class Batch:
             s.append("Output seq {0}\n".format(i))
             s.append(str(self.__outputs[:, :, i]))
             s.append('\n\n')
+            s.append("Mask seq {0}\n".format(i))
+            s.append(str(self.__mask[:, :, i]))
+            s.append('\n\n')
         return ''.join(s)

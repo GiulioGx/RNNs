@@ -3,23 +3,24 @@ import numpy
 
 __author__ = 'giulio'
 
-modelFile = '/home/giulio/RNNs/models/add_task, min_length: 144/stats.npz'
-#modelFile = '/home/giulio/model_octopus.npz'
+stats_file = '/home/giulio/RNNs/models/temporal_order, min_length: 100/stats.npz'
 
 # load npz archive
-npz = numpy.load(modelFile)
-
+npz = numpy.load(stats_file)
 
 # choose what and how to display it
 valid_error = {'label': 'validation_error_curr', 'legend': 'validation error', 'color': 'r', 'scale': 'linear'}
 valid_loss = {'label': 'validation_loss', 'legend': 'validation loss', 'color': 'm', 'scale': 'linear'}
-dir_norm = {'label': 'dir_norm', 'legend': 'dir norm', 'color': 'm', 'scale': 'log'}
+dir_norm = {'label': 'dir_norm', 'legend': 'dir norm', 'color': 'c', 'scale': 'log'}
 grad_dot = {'label': 'grad_dot', 'legend': 'gradient dot', 'color': 'b', 'scale': 'linear'}
 equi_cos = {'label': 'W_rec_equi_cos', 'legend': 'equi_cos', 'color': 'b', 'scale': 'linear'}
 rho = {'label': 'rho', 'legend': 'W_rec spetral radius', 'color': 'r', 'scale': 'linear'}
+grad_var = {'label': 'obj_g_var', 'legend': 'gradient var', 'color': 'g', 'scale': 'linear'}
+dots_var = {'label': 'obj_dots_var', 'legend': 'dots var', 'color': 'b', 'scale': 'linear'}
 
 
-measures = [valid_error, valid_loss, dir_norm, rho]
+# only elements in this list gets displayed
+measures = [valid_error, valid_loss, dir_norm, rho, grad_var, dots_var]
 
 # compute x-axis points
 check_freq = npz['settings_check_freq']

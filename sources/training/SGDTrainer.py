@@ -97,9 +97,10 @@ class SGDTrainer(object):
 
             batch = dataset.get_train_batch(self.__batch_size)
             # batch = policer.get_train_batch()
-            train_info = train_step.step(batch.inputs, batch.outputs, batch.mask)
 
             if i % self.__check_freq == 0:  # FIXME 1st iteration
+
+                train_info = train_step.step(batch.inputs, batch.outputs, batch.mask, report_info=True)
                 eval_start_time = time.time()
                 valid_error, valid_loss = SGDTrainer.compute_error_and_loss(self.__loss_and_error, validation_set)
 
@@ -133,6 +134,8 @@ class SGDTrainer(object):
                 else:
 
                     logger.warning('stopping training...')
+            else:
+                train_step.step(batch.inputs, batch.outputs, batch.mask, report_info=False)
 
             i += 1
 
