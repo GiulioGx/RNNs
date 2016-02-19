@@ -57,7 +57,7 @@ net_initializer = RNNInitializer(vars_initializer, n_hidden=100)
 net_builder = RNNManager(initializer=net_initializer, activation_fnc=Tanh(), output_fnc=Logistic())
 
 # setup
-out_dir = Configs.output_dir + 'Muse2'
+out_dir = Configs.output_dir + 'Muse'
 loss_fnc = FullCrossEntropy(single_probability_ouput=True)
 
 # # HF init
