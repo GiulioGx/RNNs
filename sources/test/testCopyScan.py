@@ -71,7 +71,7 @@ net_symbols = net.symbols
 # DOUBLE scan function
 n_sequences = net_symbols.u.shape[2]
 a_m1 = TT.alloc(numpy.array(0., dtype=Configs.floatType), net.n_hidden, n_sequences)
-loss_mask = TT.tensor3(name='loss_mask')
+loss_mask = TT.tensor3(name='mask')
 
 def fill(W):
     return W

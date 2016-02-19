@@ -14,6 +14,10 @@ from initialization.SpectralInit import SpectralInit
 from initialization.UniformInit import UniformInit
 from learningRule.GradientClipping import GradientClipping
 from lossFunctions.FullCrossEntropy import FullCrossEntropy
+from metrics.BestValueFoundCriterion import BestValueFoundCriterion
+from metrics.ErrorMonitor import ErrorMonitor
+from metrics.LossMonitor import LossMonitor
+from metrics.ThresholdCriterion import ThresholdCriterion
 from model.RNNGrowingPolicy import RNNIncrementalGrowing
 from model.RNNInitializer import RNNInitializer, RNNVarsInitializer
 from model.RNNManager import RNNManager
@@ -57,11 +61,12 @@ vars_initializer = RNNVarsInitializer(
 net_initializer = RNNInitializer(vars_initializer, n_hidden=50)
 net_growing_policy = RNNIncrementalGrowing(n_hidden_incr=5, n_hidden_max=50, n_hidden_incr_freq=1000,
                                            initializer=vars_initializer)
-net_builder = RNNManager(initializer=net_initializer, activation_fnc=Tanh(), output_fnc=Softmax())#, growing_policy=net_growing_policy)
+net_builder = RNNManager(initializer=net_initializer, activation_fnc=Tanh(),
+                         output_fnc=Softmax())  # , growing_policy=net_growing_policy)
 
 # setup
 task = TemporalOrderTask(100, seed)
-out_dir = Configs.output_dir + str(task)+'new'
+out_dir = Configs.output_dir + str(task)
 loss_fnc = FullCrossEntropy(single_probability_ouput=False)
 
 # # HF init
@@ -89,8 +94,8 @@ loss_fnc = FullCrossEntropy(single_probability_ouput=False)
 combining_rule = SimplexCombination(normalize_components=True, seed=seed)
 # combining_rule = SimpleSum()
 dir_rule = CombinedGradients(combining_rule)
-#dir_rule = Antigradient()
-#dir_rule = LBFGSDirection(n_pairs=7)
+# dir_rule = Antigradient()
+# dir_rule = LBFGSDirection(n_pairs=7)
 
 # learning step rule
 # lr_rule = WRecNormalizedStep(0.0001) #0.01
@@ -105,11 +110,18 @@ update_rule = SimpleUdpate()
 
 train_rule = TrainingRule(dir_rule, lr_rule, update_rule, loss_fnc)
 
-trainer = SGDTrainer(train_rule, output_dir=out_dir, max_it=10 ** 10,
-                     check_freq=200, batch_size=100, stop_error_thresh=1)
-
 # dataset = Dataset.no_valid_dataset_from_task(size=1000, task=task)
 dataset = InfiniteDataset(task=task, validation_size=10 ** 4, n_batches=5)
+
+loss_monitor = LossMonitor(loss_fnc=loss_fnc)
+error_monitor = ErrorMonitor(dataset=dataset)
+monitors = [loss_monitor, error_monitor]
+stopping_criterion = ThresholdCriterion(monitor=error_monitor, threshold=1. / 100)
+saving_criterion = BestValueFoundCriterion(monitor=error_monitor)
+
+trainer = SGDTrainer(train_rule, output_dir=out_dir, max_it=10 ** 10,
+                     check_freq=200, batch_size=100, saving_criterion=saving_criterion,
+                     stopping_criterion=stopping_criterion, monitors=monitors)
 
 net = trainer.train(dataset, net_builder)
 

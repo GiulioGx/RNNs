@@ -3,8 +3,8 @@ from lossFunctions.LossFunction import LossFunction
 
 
 class FullSquaredError(LossFunction):
-    def value(self, y, t, mask):
-        return (((t - y) * mask) ** 2).sum(axis=0).sum(axis=0).mean(axis=0)
+    def value(self, y, t):
+        return (((t - y) * self.mask) ** 2).sum(axis=0).sum(axis=0).mean(axis=0)
 
     @property
     def infos(self):

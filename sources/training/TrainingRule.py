@@ -108,7 +108,7 @@ class TrainingRule(SimpleInfoProducer):
 
             params = dict(allow_input_downcast='true', on_unused_input='warn', updates=network_updates + rule_updates,
                           name='train_step')
-            input_symbol_list = [net_symbols.u, net_symbols.t, self.__obj_fnc.loss_mask]
+            input_symbol_list = [net_symbols.u, net_symbols.t, rule.loss_fnc.mask]
 
             self.__step_with_info = T.function(input_symbol_list, output_symbol_list, **params)
             self.__step_without_info = T.function(input_symbol_list, [], **params)

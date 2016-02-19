@@ -11,6 +11,7 @@ from Configs import Configs
 from infos.InfoElement import PrintableInfoElement
 from infos.InfoGroup import InfoGroup
 from infos.InfoList import InfoList
+from metrics.Criterion import Criterion
 from model import NetManager
 from task.BatchPolicer import RepetitaPolicer
 from task.Dataset import Dataset
@@ -21,16 +22,22 @@ __author__ = 'giulio'
 
 
 class SGDTrainer(object):
-    def __init__(self, training_rule: TrainingRule, max_it=10 ** 5, batch_size=100,
-                 stop_error_thresh=0.01, check_freq=50, output_dir='.', incremental_units: bool = False):
+    def __init__(self, training_rule: TrainingRule, stopping_criterion: Criterion, saving_criterion: Criterion,
+                 monitors: list, max_it=10 ** 5, batch_size=100, check_freq=50, output_dir='.',
+                 incremental_units: bool = False):
+
+        # XXX for now the monitor used for the criterion must be passed in the monitor list
 
         self.__training_rule = training_rule
         self.__max_it = max_it
         self.__batch_size = batch_size
-        self.__stop_error_thresh = stop_error_thresh
         self.__check_freq = check_freq
         self.__output_dir = output_dir
         self.__incremental_units = incremental_units
+
+        self.__stopping_criterion = stopping_criterion
+        self.__saving_criterion = saving_criterion
+        self.__monitors = monitors
 
         self.__log_filename = self.__output_dir + '/train.log'
 
@@ -39,9 +46,32 @@ class SGDTrainer(object):
                                                   InfoList(PrintableInfoElement('max_it', ':d', self.__max_it),
                                                            PrintableInfoElement('check_freq', ':d', self.__check_freq),
                                                            PrintableInfoElement('batch_size', ':d', self.__batch_size),
-                                                           PrintableInfoElement('stop_error_thresh', ':f',
-                                                                                self.__stop_error_thresh)
-                                                           ))
+                                                           self.__stopping_criterion.infos))
+
+    def __compile_monitoring_fnc(self, net):
+
+        u = net.symbols.u
+        t = net.symbols.t
+        y = net.symbols.y_shared  # XXX
+        mask = self.__training_rule.loss_fnc.mask
+
+        symbols = []
+        symbols_lengths = []
+        for m in self.__monitors:
+            s = m.get_symbols(y=y, t=t)
+            symbols += s
+            symbols_lengths.append(len(s))
+
+        return T.function([u, t, mask], symbols, name='monitoring_fnc'), symbols_lengths
+
+    def __update_monitors(self, updated_values, symbols_lengths):
+        start = 0
+        for i in range(len(self.__monitors)):
+            n = symbols_lengths[i]
+            m = self.__monitors[i]
+            values = updated_values[start:start + n]
+            m.update(values)
+            start += n
 
     def _train(self, dataset: Dataset, net_manager: NetManager, logger):
 
@@ -57,14 +87,7 @@ class SGDTrainer(object):
         logger.info('... Done')
         logger.info('Seed: {}'.format(Configs.seed))
 
-        #  loss and error theano fnc
-        u = net.symbols.u
-        t = net.symbols.t
-        y = net.symbols.y_shared
-        mask = train_step.mask  # XXX magari mettere mask in una classe
-        error = dataset.computer_error(y, t)
-        loss = self.__training_rule.loss_fnc.value(y, t, mask)
-        self.__loss_and_error = T.function([u, t, mask], [error, loss], name='loss_and_error_fnc')
+        monitor_fnc, symbols_lengths = self.__compile_monitoring_fnc(net)
 
         # training statistics
         stats = Statistics(self.__max_it, self.__check_freq, self.__training_settings_info, net.info)
@@ -86,10 +109,8 @@ class SGDTrainer(object):
 
         error_occured = False
         i = 0
-        best_error = 100
 
-        while i < self.__max_it and best_error > self.__stop_error_thresh / 100 and (
-                not error_occured):  # FOXME strategy criterio d'arresto
+        while i < self.__max_it and not self.__stopping_criterion.is_satisfied() and not error_occured:
 
             # this makes the network grow in size according to the policy
             # specified when instanziating the network manager (may be even a null grow)
@@ -102,7 +123,8 @@ class SGDTrainer(object):
 
                 train_info = train_step.step(batch.inputs, batch.outputs, batch.mask, report_info=True)
                 eval_start_time = time.time()
-                valid_error, valid_loss = SGDTrainer.compute_error_and_loss(self.__loss_and_error, validation_set)
+                monitored_values = SGDTrainer.__evaluate_monitor_fnc(monitor_fnc, sum(symbols_lengths), validation_set)
+                self.__update_monitors(monitored_values, symbols_lengths)
 
                 try:
                     rho = net.spectral_radius
@@ -113,8 +135,8 @@ class SGDTrainer(object):
 
                 if not error_occured:
 
-                    if valid_error < best_error:
-                        best_error = valid_error
+                    if self.__saving_criterion.is_satisfied:
+                        logger.info('best model found: saving...')
                         net.save_model(self.__output_dir + '/best_model')
 
                     batch_end_time = time.time()
@@ -123,8 +145,7 @@ class SGDTrainer(object):
                     eval_time = time.time() - eval_start_time
                     batch_time = batch_end_time - batch_start_time
 
-                    info = SGDTrainer.__build_infos(train_info, i, valid_loss, valid_error, best_error, rho,
-                                                    batch_time, eval_time)
+                    info = self.__build_infos(train_info, i, rho, batch_time, eval_time)
                     logger.info(info)
                     stats.update(info, i, total_elapsed_time)
                     net.save_model(self.__output_dir + '/current_model')
@@ -142,9 +163,8 @@ class SGDTrainer(object):
         end_time = time.time()
         if i == self.__max_it:
             logger.warning('Maximum number of iterations reached, stopping training...')
-        elif best_error <= self.__stop_error_thresh / 100:
-            logger.info('Training succeded, validation error below the given threshold({:.2%})'.format(
-                self.__stop_error_thresh / 100))
+        elif self.__stopping_criterion.is_satisfied:
+            logger.info('Training succeded, stopping criterion satisfied')
         logger.info('Elapsed time: {:2.2f} min'.format((end_time - start_time) / 60))
         return net
 
@@ -160,7 +180,7 @@ class SGDTrainer(object):
 
         for hdlr in logger.handlers:  # remove all old handlers
             logger.removeHandler(hdlr)
-        logger.addHandler(file_handler)      # set the new handler
+        logger.addHandler(file_handler)  # set the new handler
         now = datetime.datetime.now()
         logger.info('starting logging activity in date {}'.format(now.strftime("%d-%m-%Y %H:%M")))
         return logger
@@ -184,27 +204,25 @@ class SGDTrainer(object):
         return self._train(dataset, net_manager, logger)
 
     @staticmethod
-    def compute_error_and_loss(loss_and_error_fnc, validation_batches: list):
-        valid_error, valid_loss = 0., 0.
+    def __evaluate_monitor_fnc(monitor_fnc, n, validation_batches: list):
+        init_values = numpy.zeros(shape=(n,), dtype=Configs.floatType)
         for batch in validation_batches:
-            valid_error_i, valid_loss_i = loss_and_error_fnc(batch.inputs, batch.outputs, batch.mask)
-            valid_error += valid_error_i.item()
-            valid_loss += valid_loss_i.item()
-        n = len(validation_batches)
-        return valid_error / n, valid_loss / n
+            values = monitor_fnc(batch.inputs, batch.outputs, batch.mask)
+            assert (len(values) == n)
+            for i in range(n):
+                init_values[i] += values[i].item()
+        m = len(validation_batches)
+        return init_values / m
 
-    @staticmethod
-    def __build_infos(train_info, i, valid_loss, valid_error, best_error, rho, batch_time, eval_time):
+    def __build_infos(self, train_info, i, rho, batch_time, eval_time):
 
         it_info = PrintableInfoElement('iteration', ':7d', i)
 
-        val_loss_info = PrintableInfoElement('loss', ':07.4f', valid_loss)
+        monitor_info = []
+        for m in self.__monitors:
+            monitor_info.append(m.info)
 
-        error_info = PrintableInfoElement('curr', ':.2%', valid_error)
-        best_info = PrintableInfoElement('best', ':.2%', best_error)
-        error_group = InfoGroup('error', InfoList(error_info, best_info))
-
-        val_info = InfoGroup('validation', InfoList(val_loss_info, error_group))
+        val_info = InfoGroup('validation', InfoList(*monitor_info))
 
         rho_info = PrintableInfoElement('rho', ':5.2f', rho)
         eval_time_info = PrintableInfoElement('eval', ':2.2f', eval_time)

@@ -7,16 +7,17 @@ import theano.tensor as TT
 
 class FullCrossEntropy(LossFunction):
     def __init__(self, single_probability_ouput: bool = False):
+        super().__init__()
         self.__single_probability_output = single_probability_ouput
 
-    def value(self, y, t, mask):
+    def value(self, y, t):
 
         if self.__single_probability_output:
             c = -(t * TT.log(y) + (1 - t) * TT.log(1 - y))
         else:
             c = -(t * TT.log(y))
-        n_selected_temporal_losses = TT.switch(mask.norm(2, axis=1) > 0, 1, 0).sum().sum()
-        s = (c * mask).sum().sum().sum() / n_selected_temporal_losses
+        n_selected_temporal_losses = TT.switch(self.mask.norm(2, axis=1) > 0, 1, 0).sum().sum()
+        s = (c * self.mask).sum().sum().sum() / n_selected_temporal_losses
         return s
 
     @property

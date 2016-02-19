@@ -63,7 +63,7 @@ def fix_vector(v):
 
 def normalize(vector, norm_type=2):
     vector_norm = vector.norm(norm_type)
-    return ifelse(vector_norm <= 0, vector, vector / vector_norm)
+    return ifelse(TT.or_(vector_norm <= 0, is_inf_or_nan(vector_norm)), vector, vector / vector_norm)
 
 
 def get_norms(vec_list, n):

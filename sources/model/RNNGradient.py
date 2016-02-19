@@ -15,7 +15,7 @@ class RNNGradient(object):
     def __init__(self, net, gW_rec_T, gW_in_T, gW_out_T, gb_rec_T, gb_out_T, obj_fnc:ObjectiveFunction):
 
         self.__preserve_norm = True
-        self.__type = 'separate'
+        self.__type = 'togheter'
         self.__net = net
         self.__obj_fnc = obj_fnc
 
@@ -121,7 +121,7 @@ class RNNGradient(object):
             combination, strategy_info = self.__separate_combination(strategy=strategy)
 
         if self.__preserve_norm:
-            # combination *= self.__.value.norm()/combination.norm()
+            # combination *= self.__.value.norm()/combination.norm() # XXX isnana
             combination = combination.scale_norms_as(self.__value)
 
         return combination, strategy_info

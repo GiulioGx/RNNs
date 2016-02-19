@@ -2,10 +2,10 @@ from theano import tensor as TT
 from theano.ifelse import ifelse
 
 from ObjectiveFunction import ObjectiveFunction
-from descentDirectionRule.DescentDirectionRule import DescentDirectionRule
 from infos.InfoElement import PrintableInfoElement
 from infos.InfoList import InfoList
 from learningRule.LearningRule import LearningStepRule
+from theanoUtils import is_inf_or_nan
 
 __author__ = 'giulio'
 
@@ -22,7 +22,7 @@ class GradientClipping(LearningStepRule):
         lr = self.__lr_value
         if self.__normalize_wrt_dimension:
             lr = lr * direction.shape.prod()
-        computed_learning_rate = ifelse(norm > self.__clip_thr, self.__clip_thr / norm * lr, lr)
+        computed_learning_rate = ifelse(TT.or_(norm < self.__clip_thr, is_inf_or_nan(norm)), lr, self.__clip_thr / norm * lr)
 
         return computed_learning_rate, LearningStepRule.Infos(computed_learning_rate)
 
