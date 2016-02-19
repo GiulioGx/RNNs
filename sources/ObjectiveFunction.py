@@ -14,7 +14,7 @@ from model.Variables import Variables
 __author__ = 'giulio'
 
 
-class ObjectiveFunction(SimpleInfoProducer):
+class ObjectiveFunction(SimpleInfoProducer):  # XXX is this class needed?
     def __init__(self, loss_fnc: LossFunction, net, params: Variables, u, t):
         self.__net = net
         self.__loss_fnc = loss_fnc
