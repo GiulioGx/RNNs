@@ -59,7 +59,7 @@ class MuseDataset(Dataset):
         return inputs, outputs, mask
 
     def __build_batch_splitted(self, examples, indexes):
-        fixed_length = 200  # FIXME magic constant
+        fixed_length = 300  # FIXME magic constant
         bacth_size = len(indexes)
         min_length = MuseDataset.__min_length(examples, indexes) - 1
         batch_length = min(min_length, fixed_length)

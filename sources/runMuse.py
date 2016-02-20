@@ -14,7 +14,7 @@ from lossFunctions.FullCrossEntropy import FullCrossEntropy
 from metrics.BestValueFoundCriterion import BestValueFoundCriterion
 from metrics.LossMonitor import LossMonitor
 from metrics.ThresholdCriterion import ThresholdCriterion
-from model.RNNInitializer import RNNInitializer, RNNVarsInitializer
+from model.RNNInitializer import RNNInitializer, RNNVarsInitializer, RNNLoader
 from model.RNNManager import RNNManager
 from output_fncs.Logistic import Logistic
 from output_fncs.Softmax import Softmax
@@ -39,6 +39,8 @@ print(separator)
 
 seed = 13
 Configs.seed = seed
+out_dir = Configs.output_dir + 'Muse'
+
 
 # network setup
 std_dev = 0.14  # 0.14 Tanh # 0.21 Relu
@@ -53,11 +55,12 @@ vars_initializer = RNNVarsInitializer(
     W_in_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed),
     W_out_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed), b_rec_init=ConstantInit(0),
     b_out_init=ConstantInit(0))
-net_initializer = RNNInitializer(vars_initializer, n_hidden=300)
+net_initializer = RNNInitializer(vars_initializer, n_hidden=100)
+
+net_initializer = RNNLoader(out_dir+'/best_model.npz')
 net_builder = RNNManager(initializer=net_initializer, activation_fnc=Tanh(), output_fnc=Logistic())
 
 # setup
-out_dir = Configs.output_dir + 'Muse2'
 loss_fnc = FullCrossEntropy(single_probability_ouput=True)
 
 # # HF init
@@ -110,12 +113,12 @@ stopping_criterion = ThresholdCriterion(monitor=loss_monitor, threshold=0.9)
 saving_criterion = BestValueFoundCriterion(monitor=loss_monitor)
 
 trainer = SGDTrainer(train_rule, output_dir=out_dir, max_it=10 ** 10,
-                     check_freq=200, batch_size=100, saving_criterion=saving_criterion,
+                     check_freq=200, batch_size=10, saving_criterion=saving_criterion,
                      stopping_criterion=stopping_criterion, monitors=monitors)
 
-dataset = MuseDataset(seed=seed, pickle_file_path=Paths.muse_path)
+dataset = MuseDataset(seed=seed, pickle_file_path=Paths.muse_path, mode='full')
 
-net = trainer.train(dataset, net_builder)
+#net = trainer.train(dataset, net_builder)
 
 # net = RNN.load_model(out_dir+'/best_model.npz')
-# net = trainer.resume_training(dataset, net)
+net = trainer.resume_training(dataset, net_builder)

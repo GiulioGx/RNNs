@@ -13,6 +13,10 @@ from initialization.SpectralInit import SpectralInit
 from initialization.UniformInit import UniformInit
 from learningRule.GradientClipping import GradientClipping
 from lossFunctions.FullCrossEntropy import FullCrossEntropy
+from metrics.BestValueFoundCriterion import BestValueFoundCriterion
+from metrics.ErrorMonitor import ErrorMonitor
+from metrics.LossMonitor import LossMonitor
+from metrics.ThresholdCriterion import ThresholdCriterion
 from model.RNNGrowingPolicy import RNNIncrementalGrowing
 from model.RNNInitializer import RNNInitializer, RNNVarsInitializer
 from model.RNNManager import RNNManager
@@ -72,14 +76,23 @@ def train_run(seed: int, task_length: int, prefix: str):
     out_dir = Configs.output_dir + prefix + '/' + str(task) + '_' + str(seed)
     dataset = InfiniteDataset(task=task, validation_size=10 ** 4, n_batches=5)
 
+    loss_monitor = LossMonitor(loss_fnc=loss_fnc)
+    error_monitor = ErrorMonitor(dataset=dataset)
+    monitors = [loss_monitor, error_monitor]
+    stopping_criterion = ThresholdCriterion(monitor=error_monitor, threshold=1. / 100)
+    saving_criterion = BestValueFoundCriterion(monitor=error_monitor)
+
     trainer = SGDTrainer(train_rule, output_dir=out_dir, max_it=10 ** 10,
-                         check_freq=200, batch_size=100, stop_error_thresh=1)
+                         check_freq=200, batch_size=100, saving_criterion=saving_criterion,
+                         stopping_criterion=stopping_criterion, monitors=monitors)
+
     net = trainer.train(dataset, net_builder)
+
     return net
 
 
 seeds = [13, 14, 15, 16, 17]
-lengths = [100]
+lengths = [150]
 prefix = 'train_run'
 
 print('Beginning train run...')
