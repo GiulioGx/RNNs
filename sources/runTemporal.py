@@ -10,6 +10,7 @@ from descentDirectionRule.CombinedGradients import CombinedGradients
 from descentDirectionRule.LBFGSUpdate import LBFGSDirection
 from initialization.ConstantInit import ConstantInit
 from initialization.GaussianInit import GaussianInit
+from initialization.SVDInit import SVDInit
 from initialization.SpectralInit import SpectralInit
 from initialization.UniformInit import UniformInit
 from learningRule.GradientClipping import GradientClipping
@@ -42,7 +43,7 @@ print('device: ' + device)
 print('floatType: ' + floatX)
 print(separator)
 
-seed = 13
+seed = 14
 Configs.seed = seed
 
 # network setup
@@ -54,7 +55,7 @@ mean = 0
 #     W_out_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed), b_rec_init=ConstantInit(0),
 #     b_out_init=ConstantInit(0))
 vars_initializer = RNNVarsInitializer(
-    W_rec_init=SpectralInit(matrix_init=GaussianInit(seed=seed, std_dev=std_dev), rho=1.7),
+    W_rec_init=SVDInit(matrix_init=GaussianInit(seed=seed, std_dev=std_dev), rho=1.2),
     W_in_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed),
     W_out_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed), b_rec_init=ConstantInit(0),
     b_out_init=ConstantInit(0))
@@ -65,7 +66,7 @@ net_builder = RNNManager(initializer=net_initializer, activation_fnc=Tanh(),
                          output_fnc=Softmax())  # , growing_policy=net_growing_policy)
 
 # setup
-task = TemporalOrderTask(100, seed)
+task = TemporalOrderTask(150, seed)
 out_dir = Configs.output_dir + str(task)
 loss_fnc = FullCrossEntropy(single_probability_ouput=False)
 

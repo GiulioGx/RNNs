@@ -6,12 +6,12 @@ from model import RNN
 from task.MuseDataset import MuseDataset
 
 seed = 676768
-out_dir = '/home/giulio/RNNs/models/Muse/best_model.npz'
+out_dir = '/home/giulio/RNNs/models/Bach/best_model.npz'
 
 print('Loading...')
 net = RNN.load_model(out_dir)
-dataset = MuseDataset(seed=seed, pickle_file_path=Paths.muse_path, mode='full')
-seq = dataset.test_set[0].inputs
+dataset = MuseDataset(seed=seed, pickle_file_path=Paths.bach_path, mode='full')
+seq = dataset.test_set[5].inputs
 
 print('RNN is composing music...')
 played_music = net.net_ouput_numpy(seq)[0]

@@ -118,8 +118,16 @@ class RNN(object):
         return self.__output_fnc.value(TT.dot(W_out, h_t) + b_out)
 
     @property
-    def spectral_radius(self):
-        return numpy.max(abs(numpy.linalg.eigvals(self.symbols.current_params.W_rec.get_value())))
+    def spectral_info(self):
+        w = self.symbols.current_params.W_rec.get_value()
+        rho = numpy.max(abs(numpy.linalg.eigvals(w)))
+        u, s, v = numpy.linalg.svd(w)
+        singular_var = numpy.var(s)
+        max_s = max(abs(s))
+        rho_info = PrintableInfoElement('rho', ':5.2f', rho)
+        var_info = PrintableInfoElement('singular_var', ':2.2f', singular_var)
+        max_singular = PrintableInfoElement('max_singular', ':2.2f', max_s)
+        return InfoList(rho_info, var_info, max_singular)
 
     def reconfigure_network(self, W_out, b_out, output_fnc: OutputFunction):
         W_rec = self.__symbols.W_rec_value
@@ -132,7 +140,7 @@ class RNN(object):
     @property
     def info(self):
         return InfoGroup('net',
-                         InfoList(PrintableInfoElement('init_rho', ':2.2f', self.spectral_radius),
+                         InfoList(self.spectral_info,
                                   PrintableInfoElement('n_hidden', ':d', self.__n_hidden),
                                   PrintableInfoElement('n_in', ':d', self.__n_in),
                                   PrintableInfoElement('n_out', ':d', self.__n_out),

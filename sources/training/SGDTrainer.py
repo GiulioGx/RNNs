@@ -127,11 +127,10 @@ class SGDTrainer(object):
                 self.__update_monitors(monitored_values, symbols_lengths)
 
                 try:
-                    rho = net.spectral_radius
+                    spectral_info = net.spectral_info
                 except LinAlgError as e:
                     logger.error(str(e))
                     error_occured = True
-                    rho = numpy.nan
 
                 if not error_occured:
 
@@ -145,7 +144,7 @@ class SGDTrainer(object):
                     eval_time = time.time() - eval_start_time
                     batch_time = batch_end_time - batch_start_time
 
-                    info = self.__build_infos(train_info, i, rho, batch_time, eval_time)
+                    info = self.__build_infos(train_info, i, spectral_info, batch_time, eval_time)
                     logger.info(info)
                     stats.update(info, i, total_elapsed_time)
                     net.save_model(self.__output_dir + '/current_model')
@@ -214,7 +213,7 @@ class SGDTrainer(object):
         m = len(validation_batches)
         return init_values / m
 
-    def __build_infos(self, train_info, i, rho, batch_time, eval_time):
+    def __build_infos(self, train_info, i, spectral_info, batch_time, eval_time):
 
         it_info = PrintableInfoElement('iteration', ':7d', i)
 
@@ -224,10 +223,9 @@ class SGDTrainer(object):
 
         val_info = InfoGroup('validation', InfoList(*monitor_info))
 
-        rho_info = PrintableInfoElement('rho', ':5.2f', rho)
         eval_time_info = PrintableInfoElement('eval', ':2.2f', eval_time)
         batch_time_info = PrintableInfoElement('tot', ':2.2f', batch_time)
         time_info = InfoGroup('time', InfoList(eval_time_info, batch_time_info))
 
-        info = InfoList(it_info, val_info, rho_info, train_info, time_info)
+        info = InfoList(it_info, val_info, spectral_info, train_info, time_info)
         return info
