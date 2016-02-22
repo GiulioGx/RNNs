@@ -96,14 +96,14 @@ combining_rule = SimplexCombination(normalize_components=True, seed=seed)
 # combining_rule = DropoutCombination(drop_rate=0.8)
 # combining_rule = MedianCombination()
 dir_rule = CombinedGradients(combining_rule)
-#dir_rule = DropoutDirection(dir_rule, drop_rate=0.9)
+dir_rule = DropoutDirection(dir_rule, drop_rate=0.7)
 # dir_rule = DirectionWithPenalty(direction_rule=dir_rule, penalty=penalty, penalty_lambda=1)
 # dir_rule = AlternatingDirections(dir_rule)
 
 # learning step rule
 # lr_rule = WRecNormalizedStep(0.0001) #0.01
 # lr_rule = ConstantNormalizedStep(0.001)  # 0.01
-lr_rule = GradientClipping(lr_value=0.0001, clip_thr=3, normalize_wrt_dimension=False)  # 0.01
+lr_rule = GradientClipping(lr_value=0.01, clip_thr=3, normalize_wrt_dimension=False)  # 0.01
 # lr_rule = ArmijoStep(alpha=0.5, beta=0.1, init_step=1, max_steps=50)
 
 # update_rule = FixedAveraging(t=10)

@@ -24,8 +24,8 @@
       <file leaf-file-name="runMuse.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/runMuse.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.7589286">
-              <caret line="123" column="80" selection-start-line="123" selection-start-column="80" selection-end-line="123" selection-end-column="80" />
+            <state vertical-scroll-proportion="0.25669643">
+              <caret line="98" column="51" selection-start-line="98" selection-start-column="51" selection-end-line="98" selection-end-column="51" />
               <folding />
             </state>
           </provider>
@@ -1008,6 +1008,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="31" column="91" selection-start-line="31" selection-start-column="91" selection-end-line="31" selection-end-column="91" />
+          <folding>
+            <element signature="e#0#60#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1107,8 +1110,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/runMuse.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.7589286">
-          <caret line="123" column="80" selection-start-line="123" selection-start-column="80" selection-end-line="123" selection-end-column="80" />
+        <state vertical-scroll-proportion="0.25669643">
+          <caret line="98" column="51" selection-start-line="98" selection-start-column="51" selection-end-line="98" selection-end-column="51" />
           <folding />
         </state>
       </provider>
