@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 __author__ = 'giulio'
 
 #modelFile = '/home/giulio/RNNs/models/completed/100 hidden/add_task, min_length: 144_average/model.npz'
-modelFile = '/home/giulio/RNNs/models/temporal_order, min_length: 100/stats.npz'
+modelFile = '/home/giulio/RNNs/models/train_run/temporal_order, min_length: 150_14/stats.npz'
 #modelFile = '/home/giulio/model_octopus.npz'
 #modelFile = '/home/giulio/RNNs/models/completed/temporal_order, min_length: 144/model.npz'
 npz = numpy.load(modelFile)

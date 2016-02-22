@@ -10,14 +10,15 @@ import theano.tensor as TT
 
 
 class MuseDataset(Dataset):
-    def __init__(self, pickle_file_path: str, seed: int = Configs.seed, mode: str = 'split'):
+    def __init__(self, pickle_file_path: str, seed: int = Configs.seed, mode: str = 'split'):  # TODO enum
         dataset = pickle.load(open(pickle_file_path, "rb"))
         self.__min_note_index = 21  # inclusive
         self.__max_note_index = 108  # inclusive
         self.__n_notes = self.__max_note_index - self.__min_note_index  # FOXME *2??
         self.__rng = numpy.random.RandomState(seed)
         self.__train_set = self.__pre_process_sequences(dataset['train'])
-        self.__validation = self.__pre_process_sequences(dataset['valid'])
+        self.__validation_set = self.__pre_process_sequences(dataset['valid'])
+        self.__test_set = self.__pre_process_sequences(dataset['test'])
 
         if mode == 'split':
             self.__build_batch = self.__build_batch_splitted
@@ -106,12 +107,19 @@ class MuseDataset(Dataset):
     def infos(self):
         return SimpleDescription('MuseDataset')
 
+    def __process_set(self, set):
+        batches = []
+        for i in range(len(set)):
+            batches.append(self.__build_batch_full(set, [i]))
+        return batches
+
     @property
     def validation_set(self):
-        batches = []
-        for i in range(len(self.__validation)):
-            batches.append(self.__build_batch_full(self.__validation, [i]))
-        return batches
+        return self.__process_set(self.__validation_set)
+
+    @property
+    def test_set(self):
+        return self.__process_set(self.__test_set)
 
 
 if __name__ == '__main__':

@@ -3,8 +3,10 @@ import theano
 from ActivationFunction import Tanh
 from Configs import Configs
 from Paths import Paths
+from combiningRule.EquiangularCombination import EquiangularCombination
 from combiningRule.SimplexCombination import SimplexCombination
 from descentDirectionRule.CombinedGradients import CombinedGradients
+from descentDirectionRule.DropoutDirection import DropoutDirection
 from initialization.ConstantInit import ConstantInit
 from initialization.GaussianInit import GaussianInit
 from initialization.SpectralInit import SpectralInit
@@ -14,6 +16,7 @@ from lossFunctions.FullCrossEntropy import FullCrossEntropy
 from metrics.BestValueFoundCriterion import BestValueFoundCriterion
 from metrics.LossMonitor import LossMonitor
 from metrics.ThresholdCriterion import ThresholdCriterion
+from model.RNNGrowingPolicy import RNNIncrementalGrowing
 from model.RNNInitializer import RNNInitializer, RNNVarsInitializer, RNNLoader
 from model.RNNManager import RNNManager
 from output_fncs.Logistic import Logistic
@@ -55,10 +58,11 @@ vars_initializer = RNNVarsInitializer(
     W_in_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed),
     W_out_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed), b_rec_init=ConstantInit(0),
     b_out_init=ConstantInit(0))
-net_initializer = RNNInitializer(vars_initializer, n_hidden=100)
-
+#net_initializer = RNNInitializer(vars_initializer, n_hidden=300)
 net_initializer = RNNLoader(out_dir+'/best_model.npz')
-net_builder = RNNManager(initializer=net_initializer, activation_fnc=Tanh(), output_fnc=Logistic())
+net_growing_policy = RNNIncrementalGrowing(n_hidden_incr=50, n_hidden_max=200, n_hidden_incr_freq=5000,
+                                           initializer=vars_initializer)
+net_builder = RNNManager(initializer=net_initializer, activation_fnc=Tanh(), output_fnc=Logistic(), growing_policy=net_growing_policy)
 
 # setup
 loss_fnc = FullCrossEntropy(single_probability_ouput=True)
@@ -87,18 +91,18 @@ loss_fnc = FullCrossEntropy(single_probability_ouput=True)
 # combining_rule = OnesCombination(normalize_components=False)
 combining_rule = SimplexCombination(normalize_components=True, seed=seed)
 # combining_rule = SimpleSum()
-# combining_rule = EquiangularCombination()
+#combining_rule = EquiangularCombination()
 # combining_rule = DropoutCombination(drop_rate=0.8)
 # combining_rule = MedianCombination()
 dir_rule = CombinedGradients(combining_rule)
-# dir_rule = DropoutDirection(dir_rule, drop_rate=0.1)
+dir_rule = DropoutDirection(dir_rule, drop_rate=0.7)
 # dir_rule = DirectionWithPenalty(direction_rule=dir_rule, penalty=penalty, penalty_lambda=1)
 # dir_rule = AlternatingDirections(dir_rule)
 
 # learning step rule
 # lr_rule = WRecNormalizedStep(0.0001) #0.01
 # lr_rule = ConstantNormalizedStep(0.001)  # 0.01
-lr_rule = GradientClipping(lr_value=0.05, clip_thr=2, normalize_wrt_dimension=False)  # 0.01
+lr_rule = GradientClipping(lr_value=0.001, clip_thr=2, normalize_wrt_dimension=False)  # 0.01
 # lr_rule = ArmijoStep(alpha=0.5, beta=0.1, init_step=1, max_steps=50)
 
 # update_rule = FixedAveraging(t=10)
@@ -116,9 +120,9 @@ trainer = SGDTrainer(train_rule, output_dir=out_dir, max_it=10 ** 10,
                      check_freq=200, batch_size=10, saving_criterion=saving_criterion,
                      stopping_criterion=stopping_criterion, monitors=monitors)
 
-dataset = MuseDataset(seed=seed, pickle_file_path=Paths.muse_path, mode='full')
+dataset = MuseDataset(seed=seed, pickle_file_path=Paths.muse_path, mode='split')
 
-#net = trainer.train(dataset, net_builder)
+net = trainer.train(dataset, net_builder)
 
-# net = RNN.load_model(out_dir+'/best_model.npz')
-net = trainer.resume_training(dataset, net_builder)
+#net = RNN.load_model(out_dir+'/best_model.npz')
+#net = trainer.resume_training(dataset, net_builder)

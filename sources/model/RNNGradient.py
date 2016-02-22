@@ -15,7 +15,7 @@ class RNNGradient(object):
     def __init__(self, net, gW_rec_T, gW_in_T, gW_out_T, gb_rec_T, gb_out_T, obj_fnc:ObjectiveFunction):
 
         self.__preserve_norm = True
-        self.__type = 'separate'
+        self.__type = 'togheter'
         self.__net = net
         self.__obj_fnc = obj_fnc
 
@@ -140,7 +140,7 @@ class RNNGradient(object):
         gb_rec_tensor = flatten_list_element(self.__gb_rec_T).squeeze()
 
         # # these are the indexes where the loss is not null by design
-        indexes = (self.__obj_fnc.loss_mask.sum(axis=1).sum(axis=1)).nonzero()
+        indexes = (self.__obj_fnc.loss_mask.sum(axis=1).sum(axis=1)).nonzero()[0]
         gW_out_tensor = flatten_list_element(self.__gW_out_T.take(indexes, axis=0)).squeeze()
         gb_out_tensor = flatten_list_element(self.__gb_out_T.take(indexes, axis=0)).squeeze()
 

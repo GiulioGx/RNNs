@@ -67,7 +67,6 @@ class RNN(object):
         return self.__symbols
 
     def from_tensor(self, v):
-
         n_hidden = self.__symbols.n_hidden
 
         n1 = n_hidden ** 2
@@ -97,7 +96,6 @@ class RNN(object):
         return self.__net_output(params.W_rec, params.W_in, params.W_out, params.b_rec, params.b_out, u, h_m1)
 
     def __net_output(self, W_rec, W_in, W_out, b_rec, b_out, u, h_m1):
-
         values, _ = T.scan(self.net_output_t, sequences=u,
                            outputs_info=[h_m1, None, None],
                            non_sequences=[W_rec, W_in, W_out, b_rec, b_out],
@@ -124,7 +122,6 @@ class RNN(object):
         return numpy.max(abs(numpy.linalg.eigvals(self.symbols.current_params.W_rec.get_value())))
 
     def reconfigure_network(self, W_out, b_out, output_fnc: OutputFunction):
-
         W_rec = self.__symbols.W_rec_value
         W_in = self.__symbols.W_in_value
         b_rec = self.__symbols.b_rec_value
@@ -242,18 +239,23 @@ class RNN(object):
                                                 (self.__b_out, TT.addbroadcast(b_out, 1))],
                                             name='extend_step')
 
-        def net_output(self, params: RNNVars, u):
+            # # play music
+            # n = TT.scalar('n', dtype='int32')
+            # music = self.__play_music(self.u, self.current_params, n)
+            # self.play_music = T.function([self.u, n], music)
 
+        def net_output(self, params: RNNVars, u):
             def fill_tensor(W_rec, W_in, W_out, b_rec, b_out):
                 return W_rec, W_in, W_out, b_rec, b_out
 
-            values, _ = T.scan(fill_tensor, non_sequences=[params.W_rec, params.W_in, params.W_out, params.b_rec, params.b_out], outputs_info=[None, None, None, None, None],
-                              name='replicate_scan', n_steps=u.shape[0])
+            values, _ = T.scan(fill_tensor,
+                               non_sequences=[params.W_rec, params.W_in, params.W_out, params.b_rec, params.b_out],
+                               outputs_info=[None, None, None, None, None],
+                               name='replicate_scan', n_steps=u.shape[0])
 
             return self.__net_output(values[0], values[1], values[2], values[3], values[4], u)
 
         def __net_output(self, W_rec, W_in, W_out, b_rec, b_out, u):
-
             values, _ = T.scan(self.__net_output_t,
                                sequences=[u, W_rec, W_in, W_out, b_rec, b_out],
                                outputs_info=[self.__h_m1, None],
@@ -275,7 +277,7 @@ class RNN(object):
             gW_rec, gW_in, gW_out, gb_rec, gb_out = T.grad(cost=cost, wrt=[W_rec, W_in, W_out, b_rec, b_out])
             return RNNGradient(self.__net, gW_rec, gW_in, gW_out, gb_rec, gb_out, obj_fnc), cost
 
-        def failsafe_grad(self, u, t, params:RNNVars, obj_fnc:ObjectiveFunction):  # FIXME XXX remove me
+        def failsafe_grad(self, u, t, params: RNNVars, obj_fnc: ObjectiveFunction):  # FIXME XXX remove me
             y, _, _ = self.__net.net_output(u=u, params=params, h_m1=self.__net.symbols.h_m1)
             cost = obj_fnc.value(y, t)
             gW_rec, gW_in, gW_out, \
@@ -292,10 +294,27 @@ class RNN(object):
             W_out[:, 0:h_prev] = self.__W_out.get_value()
             b_rec[0:h_prev, :] = self.__b_rec.get_value()
 
-            rho = MatrixInit.spectral_radius(W_rec)  # XXX mettere a pulito
-            W_rec = W_rec / rho * 1.2
+            #rho = MatrixInit.spectral_radius(W_rec)  # XXX mettere a pulito
+            #W_rec = W_rec / rho * 1.2
 
             self.__extend_step(W_rec, W_in, W_out, b_rec, b_out)
+
+        # def __play_music(self, u, params: RNNVars, n_beats):
+        #     y, _, h = self.__net.net_output(params, u[0:-1], self.__h_m1)
+        #     y_mod = TT.cast(TT.switch(y > 0.5, 1., 0.), dtype=Configs.floatType)
+        #
+        #     def play_step(y_tm1, h_tm1):
+        #         h_t, y_t, _ = self.__net.net_output_t(y_tm1, h_tm1, params.W_rec, params.W_in, params.W_out,
+        #                                           params.b_rec, params.b_out)
+        #         y_mod_t = TT.cast(TT.switch(y_t > 0.2, 1., 0.), dtype=Configs.floatType)
+        #         return y_mod_t, h_t
+        #
+        #     values, _ = T.scan(play_step,
+        #                        outputs_info=[u[-1], h[-1]],
+        #                        name='play_music_scan',
+        #                        n_steps=n_beats)
+        #     musical_seq = TT.concatenate([y_mod, values[0]], axis=0)
+        #     return musical_seq
 
         @property
         def current_params(self):
