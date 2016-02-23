@@ -11,7 +11,8 @@ from Configs import Configs
 from infos.InfoElement import PrintableInfoElement
 from infos.InfoGroup import InfoGroup
 from infos.InfoList import InfoList
-from metrics.Criterion import Criterion
+from metrics.Criterion import Criterion, AlwaysFalseCriterion, AlwaysTrueCriterion
+from metrics.MeasureMonitor import MeasureMonitor
 from model import NetManager
 from task.BatchPolicer import RepetitaPolicer
 from task.Dataset import Dataset
@@ -22,22 +23,22 @@ __author__ = 'giulio'
 
 
 class SGDTrainer(object):
-    def __init__(self, training_rule: TrainingRule, stopping_criterion: Criterion, saving_criterion: Criterion,
-                 monitors: list, max_it=10 ** 5, batch_size=100, check_freq=50, output_dir='.',
-                 incremental_units: bool = False):
-
-        # XXX for now the monitor used for the criterion must be passed in the monitor list
+    def __init__(self, training_rule: TrainingRule, max_it=10 ** 5, batch_size=100, monitor_update_freq=50,
+                 output_dir='.'):
 
         self.__training_rule = training_rule
         self.__max_it = max_it
         self.__batch_size = batch_size
-        self.__check_freq = check_freq
+        self.__check_freq = monitor_update_freq
         self.__output_dir = output_dir
-        self.__incremental_units = incremental_units
 
-        self.__stopping_criterion = stopping_criterion
-        self.__saving_criterion = saving_criterion
-        self.__monitors = monitors
+        # XXX for now the monitors used for the criterions must be added manually
+        # these are the deafult criterions, they can be changed with
+        # the set_stopping_criterion and set_saving_criterion methods
+        self.__stopping_criterion = AlwaysFalseCriterion()
+        self.__saving_criterion = AlwaysTrueCriterion()
+
+        self.__monitor_dicts = []
 
         self.__log_filename = self.__output_dir + '/train.log'
 
@@ -45,8 +46,16 @@ class SGDTrainer(object):
         self.__training_settings_info = InfoGroup('settings',
                                                   InfoList(PrintableInfoElement('max_it', ':d', self.__max_it),
                                                            PrintableInfoElement('check_freq', ':d', self.__check_freq),
-                                                           PrintableInfoElement('batch_size', ':d', self.__batch_size),
-                                                           self.__stopping_criterion.infos))
+                                                           PrintableInfoElement('batch_size', ':d', self.__batch_size)))
+
+    def add_monitors(self, batches: list, name:str, *monitors: MeasureMonitor):
+        self.__monitor_dicts.append(dict(batches=batches, monitors=monitors, name=name))
+
+    def set_stopping_criterion(self, criterion: Criterion):
+        self.__stopping_criterion = criterion
+
+    def set_saving_criterion(self, criterion: Criterion):
+        self.__saving_criterion = criterion
 
     def __compile_monitoring_fnc(self, net):
 
@@ -55,23 +64,44 @@ class SGDTrainer(object):
         y = net.symbols.y_shared  # XXX
         mask = self.__training_rule.loss_fnc.mask
 
-        symbols = []
-        symbols_lengths = []
-        for m in self.__monitors:
-            s = m.get_symbols(y=y, t=t)
-            symbols += s
-            symbols_lengths.append(len(s))
+        for d in self.__monitor_dicts:
 
-        return T.function([u, t, mask], symbols, name='monitoring_fnc'), symbols_lengths
+            monitors = d["monitors"]
+            symbols = []
+            symbols_lengths = []
+            for m in monitors:
+                s = m.get_symbols(y=y, t=t)
+                symbols += s
+                symbols_lengths.append(len(s))
 
-    def __update_monitors(self, updated_values, symbols_lengths):
-        start = 0
-        for i in range(len(self.__monitors)):
-            n = symbols_lengths[i]
-            m = self.__monitors[i]
-            values = updated_values[start:start + n]
-            m.update(values)
-            start += n
+            d["fnc"] = T.function([u, t, mask], symbols, name='monitoring_fnc')
+            d["symbol_lengths"] = symbols_lengths
+
+    def __update_monitors(self):
+        for d in self.__monitor_dicts:
+            start = 0
+            lengths = d["symbol_lengths"]
+            monitors = d["monitors"]
+            batches = d["batches"]
+            updated_values = SGDTrainer.__evaluate_monitor_fnc(d["fnc"], sum(lengths), batches)
+
+            for i in range(len(monitors)):
+                n = lengths[i]
+                m = monitors[i]
+                values = updated_values[start:start + n]
+                m.update(values)
+                start += n
+
+    @staticmethod
+    def __evaluate_monitor_fnc(monitor_fnc, n, batches: list):
+        init_values = numpy.zeros(shape=(n,), dtype=Configs.floatType)
+        for batch in batches:
+            values = monitor_fnc(batch.inputs, batch.outputs, batch.mask)
+            assert (len(values) == n)
+            for i in range(n):
+                init_values[i] += values[i].item()
+        m = len(batches)
+        return init_values / m
 
     def _train(self, dataset: Dataset, net_manager: NetManager, logger):
 
@@ -87,17 +117,10 @@ class SGDTrainer(object):
         logger.info('... Done')
         logger.info('Seed: {}'.format(Configs.seed))
 
-        monitor_fnc, symbols_lengths = self.__compile_monitoring_fnc(net)
+        self.__compile_monitoring_fnc(net)
 
         # training statistics
         stats = Statistics(self.__max_it, self.__check_freq, self.__training_settings_info, net.info)
-
-        # policer #TODO se funziona mettere a pulito
-        policer = RepetitaPolicer(dataset=dataset, batch_size=self.__batch_size, n_repetitions=100, block_size=1000)
-
-        logger.info('Generating validation set ...')
-        validation_set = dataset.validation_set
-        logger.info('... Done')
 
         logger.info(str(net.info))
 
@@ -117,14 +140,12 @@ class SGDTrainer(object):
             net_manager.grow_net()
 
             batch = dataset.get_train_batch(self.__batch_size)
-            # batch = policer.get_train_batch()
 
             if i % self.__check_freq == 0:  # FIXME 1st iteration
 
                 train_info = train_step.step(batch.inputs, batch.outputs, batch.mask, report_info=True)
                 eval_start_time = time.time()
-                monitored_values = SGDTrainer.__evaluate_monitor_fnc(monitor_fnc, sum(symbols_lengths), validation_set)
-                self.__update_monitors(monitored_values, symbols_lengths)
+                self.__update_monitors()
 
                 try:
                     spectral_info = net.spectral_info
@@ -202,30 +223,22 @@ class SGDTrainer(object):
         logger.info('Resuming training...')
         return self._train(dataset, net_manager, logger)
 
-    @staticmethod
-    def __evaluate_monitor_fnc(monitor_fnc, n, validation_batches: list):
-        init_values = numpy.zeros(shape=(n,), dtype=Configs.floatType)
-        for batch in validation_batches:
-            values = monitor_fnc(batch.inputs, batch.outputs, batch.mask)
-            assert (len(values) == n)
-            for i in range(n):
-                init_values[i] += values[i].item()
-        m = len(validation_batches)
-        return init_values / m
-
     def __build_infos(self, train_info, i, spectral_info, batch_time, eval_time):
 
         it_info = PrintableInfoElement('iteration', ':7d', i)
 
-        monitor_info = []
-        for m in self.__monitors:
-            monitor_info.append(m.info)
+        monitors_info_list = []
+        for d in self.__monitor_dicts:
+            monitors = d["monitors"]
+            monitor_info = []
+            for m in monitors:
+                monitor_info.append(m.info)
+            monitors_info_list.append(InfoGroup(d["name"], InfoList(*monitor_info)))
 
-        val_info = InfoGroup('validation', InfoList(*monitor_info))
-
+        monitor_info = InfoList(*monitors_info_list)
         eval_time_info = PrintableInfoElement('eval', ':2.2f', eval_time)
         batch_time_info = PrintableInfoElement('tot', ':2.2f', batch_time)
         time_info = InfoGroup('time', InfoList(eval_time_info, batch_time_info))
 
-        info = InfoList(it_info, val_info, spectral_info, train_info, time_info)
+        info = InfoList(it_info, monitor_info, spectral_info, train_info, time_info)
         return info

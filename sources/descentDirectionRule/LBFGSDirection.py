@@ -88,10 +88,10 @@ class LBFGSDirection(DescentDirectionRule):
     @property
     def __gamma_k(self):
 
-        #s_km1 = self.__stored_x[1]
-        #y_km1 = self.__stored_grad[1]
-        #return vec_dot(s_km1, y_km1) / vec_dot(y_km1, y_km1)
-        return TT.constant(1., dtype=Configs.floatType)
+        s_km1 = self.__stored_x[0]  # XXX 0 o 1?
+        y_km1 = self.__stored_grad[0]
+        return vec_dot(s_km1, y_km1) / vec_dot(y_km1, y_km1)
+        #return TT.constant(1., dtype=Configs.floatType)
 
     def __compute_h_k0_dot(self, q):
         """compute the dot product between H_k0 and a vector q"""

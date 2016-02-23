@@ -121,6 +121,10 @@ class MuseDataset(Dataset):
     def test_set(self):
         return self.__process_set(self.__test_set)
 
+    @property
+    def train_set(self):
+        return self.__process_set(self.__train_set)
+
 
 if __name__ == '__main__':
     numpy.set_printoptions(threshold=numpy.inf)

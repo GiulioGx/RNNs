@@ -7,6 +7,7 @@ from combiningRule.EquiangularCombination import EquiangularCombination
 from combiningRule.SimplexCombination import SimplexCombination
 from descentDirectionRule.CombinedGradients import CombinedGradients
 from descentDirectionRule.DropoutDirection import DropoutDirection
+from descentDirectionRule.LBFGSDirection import LBFGSDirection
 from initialization.ConstantInit import ConstantInit
 from initialization.GaussianInit import GaussianInit
 from initialization.SVDInit import SVDInit
@@ -43,7 +44,7 @@ print(separator)
 
 seed = 13
 Configs.seed = seed
-out_dir = Configs.output_dir + 'Muse'
+out_dir = Configs.output_dir + 'MuseL'
 
 
 # network setup
@@ -59,8 +60,8 @@ vars_initializer = RNNVarsInitializer(
     W_in_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed),
     W_out_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed), b_rec_init=ConstantInit(0),
     b_out_init=ConstantInit(0))
-net_initializer = RNNInitializer(vars_initializer, n_hidden=300)
-#net_initializer = RNNLoader(out_dir+'/best_model.npz')
+net_initializer = RNNInitializer(vars_initializer, n_hidden=200)
+net_initializer = RNNLoader(out_dir+'/best_model.npz')
 net_growing_policy = RNNIncrementalGrowing(n_hidden_incr=50, n_hidden_max=300, n_hidden_incr_freq=5000,
                                            initializer=vars_initializer)
 net_builder = RNNManager(initializer=net_initializer, activation_fnc=Tanh(), output_fnc=Logistic())#, growing_policy=net_growing_policy)
@@ -92,13 +93,14 @@ loss_fnc = FullCrossEntropy(single_probability_ouput=True)
 # combining_rule = OnesCombination(normalize_components=False)
 combining_rule = SimplexCombination(normalize_components=True, seed=seed)
 # combining_rule = SimpleSum()
-#combining_rule = EquiangularCombination()
+combining_rule = EquiangularCombination()
 # combining_rule = DropoutCombination(drop_rate=0.8)
 # combining_rule = MedianCombination()
 dir_rule = CombinedGradients(combining_rule)
-dir_rule = DropoutDirection(dir_rule, drop_rate=0.7)
+#dir_rule = DropoutDirection(dir_rule, drop_rate=0.7)
 # dir_rule = DirectionWithPenalty(direction_rule=dir_rule, penalty=penalty, penalty_lambda=1)
 # dir_rule = AlternatingDirections(dir_rule)
+#dir_rule = LBFGSDirection(n_pairs=10)
 
 # learning step rule
 # lr_rule = WRecNormalizedStep(0.0001) #0.01
@@ -111,17 +113,19 @@ update_rule = SimpleUdpate()
 # update_rule = Momentum(gamma=0.1)
 
 train_rule = TrainingRule(dir_rule, lr_rule, update_rule, loss_fnc)
+dataset = MuseDataset(seed=seed, pickle_file_path=Paths.muse_path, mode='split')
+
 
 loss_monitor = LossMonitor(loss_fnc=loss_fnc)
-monitors = [loss_monitor]
 stopping_criterion = ThresholdCriterion(monitor=loss_monitor, threshold=0.9)
 saving_criterion = BestValueFoundCriterion(monitor=loss_monitor)
 
 trainer = SGDTrainer(train_rule, output_dir=out_dir, max_it=10 ** 10,
-                     check_freq=200, batch_size=20, saving_criterion=saving_criterion,
-                     stopping_criterion=stopping_criterion, monitors=monitors)
-
-dataset = MuseDataset(seed=seed, pickle_file_path=Paths.muse_path, mode='split')
+                     monitor_update_freq=200, batch_size=20)
+trainer.add_monitors(dataset.validation_set, "validation", loss_monitor)
+trainer.add_monitors(dataset.train_set, "train", LossMonitor(loss_fnc))
+trainer.set_saving_criterion(saving_criterion)
+trainer.set_stopping_criterion(stopping_criterion)
 
 net = trainer.train(dataset, net_builder)
 

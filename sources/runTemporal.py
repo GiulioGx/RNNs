@@ -7,7 +7,7 @@ from Configs import Configs
 from combiningRule.SimplexCombination import SimplexCombination
 from descentDirectionRule.Antigradient import Antigradient
 from descentDirectionRule.CombinedGradients import CombinedGradients
-from descentDirectionRule.LBFGSUpdate import LBFGSDirection
+from descentDirectionRule.LBFGSDirectionpy import LBFGSDirection
 from initialization.ConstantInit import ConstantInit
 from initialization.GaussianInit import GaussianInit
 from initialization.SVDInit import SVDInit
@@ -121,7 +121,7 @@ stopping_criterion = ThresholdCriterion(monitor=error_monitor, threshold=1. / 10
 saving_criterion = BestValueFoundCriterion(monitor=error_monitor)
 
 trainer = SGDTrainer(train_rule, output_dir=out_dir, max_it=10 ** 10,
-                     check_freq=200, batch_size=100, saving_criterion=saving_criterion,
+                     monitor_update_freq=200, batch_size=100, saving_criterion=saving_criterion,
                      stopping_criterion=stopping_criterion, monitors=monitors)
 
 net = trainer.train(dataset, net_builder)

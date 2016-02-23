@@ -83,7 +83,7 @@ def train_run(seed: int, task_length: int, prefix: str):
     saving_criterion = BestValueFoundCriterion(monitor=error_monitor)
 
     trainer = SGDTrainer(train_rule, output_dir=out_dir, max_it=10 ** 10,
-                         check_freq=200, batch_size=100, saving_criterion=saving_criterion,
+                         monitor_update_freq=200, batch_size=100, saving_criterion=saving_criterion,
                          stopping_criterion=stopping_criterion, monitors=monitors)
 
     net = trainer.train(dataset, net_builder)
