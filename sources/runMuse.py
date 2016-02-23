@@ -5,6 +5,7 @@ from Configs import Configs
 from Paths import Paths
 from combiningRule.EquiangularCombination import EquiangularCombination
 from combiningRule.SimplexCombination import SimplexCombination
+from descentDirectionRule.Antigradient import Antigradient
 from descentDirectionRule.CombinedGradients import CombinedGradients
 from descentDirectionRule.DropoutDirection import DropoutDirection
 from descentDirectionRule.LBFGSDirection import LBFGSDirection
@@ -44,7 +45,7 @@ print(separator)
 
 seed = 13
 Configs.seed = seed
-out_dir = Configs.output_dir + 'MuseL'
+out_dir = Configs.output_dir + 'Muse'
 
 
 # network setup
@@ -61,7 +62,7 @@ vars_initializer = RNNVarsInitializer(
     W_out_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed), b_rec_init=ConstantInit(0),
     b_out_init=ConstantInit(0))
 net_initializer = RNNInitializer(vars_initializer, n_hidden=200)
-net_initializer = RNNLoader(out_dir+'/best_model.npz')
+#net_initializer = RNNLoader(out_dir+'/best_model.npz')
 net_growing_policy = RNNIncrementalGrowing(n_hidden_incr=50, n_hidden_max=300, n_hidden_incr_freq=5000,
                                            initializer=vars_initializer)
 net_builder = RNNManager(initializer=net_initializer, activation_fnc=Tanh(), output_fnc=Logistic())#, growing_policy=net_growing_policy)
@@ -91,17 +92,17 @@ loss_fnc = FullCrossEntropy(single_probability_ouput=True)
 # dir_rule = SepareteGradient()
 
 # combining_rule = OnesCombination(normalize_components=False)
-combining_rule = SimplexCombination(normalize_components=True, seed=seed)
+#combining_rule = SimplexCombination(normalize_components=True, seed=seed)
 # combining_rule = SimpleSum()
-combining_rule = EquiangularCombination()
+#combining_rule = EquiangularCombination()
 # combining_rule = DropoutCombination(drop_rate=0.8)
 # combining_rule = MedianCombination()
-dir_rule = CombinedGradients(combining_rule)
+#dir_rule = CombinedGradients(combining_rule)
 #dir_rule = DropoutDirection(dir_rule, drop_rate=0.7)
 # dir_rule = DirectionWithPenalty(direction_rule=dir_rule, penalty=penalty, penalty_lambda=1)
 # dir_rule = AlternatingDirections(dir_rule)
 #dir_rule = LBFGSDirection(n_pairs=10)
-
+dir_rule = Antigradient()
 # learning step rule
 # lr_rule = WRecNormalizedStep(0.0001) #0.01
 # lr_rule = ConstantNormalizedStep(0.001)  # 0.01
