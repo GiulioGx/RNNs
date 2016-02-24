@@ -1,3 +1,4 @@
+import theano as T
 from theano.ifelse import ifelse
 from theano.tensor.shared_randomstreams import RandomStreams
 
@@ -6,20 +7,24 @@ from ObjectiveFunction import ObjectiveFunction
 from infos.InfoElement import PrintableInfoElement
 from infos.InfoGroup import InfoGroup
 from infos.InfoList import InfoList
-from infos.SymbolicInfo import NullSymbolicInfos
 from learningRule.LearningStepRule import LearningStepRule
-import theano.tensor as TT
-import theano as T
 
 
 class ProbabilisticSearch(LearningStepRule):
     def __init__(self, init_lr: float = 0.001, prob_check: float = 1., prob_augment: float = 0.5,
                  beta_augment: float = 0.1, beta_lessen: float = 0.5, seed: int = Configs.seed):
+        # data validation
+        assert (0 < prob_check <= 1)
+        assert (0 <= prob_augment <= 1)
+        assert (0 < beta_lessen < 1)
+        assert (beta_augment > 1)
+
         self.__srng = RandomStreams(seed=seed)
         self.__prob_check = prob_check
         self.__prob_augment = prob_augment
-        self.__beta_augment = beta_augment  # TODO add assertions
+        self.__beta_augment = beta_augment
         self.__beta_lessen = beta_lessen
+        self.__init_lr = init_lr
         self.__lr = T.shared(init_lr, name='lr')
         self.__updates = []
 
@@ -29,7 +34,7 @@ class ProbabilisticSearch(LearningStepRule):
 
     def __random_decision(self, p):
         r = self.__srng.choice(size=(1,), a=[1, 0], replace=True, p=[p, 1. - p],
-                                  dtype=Configs.floatType)[0]
+                               dtype=Configs.floatType)[0]
         return r > 0
 
     def __augment_lr(self):
@@ -49,12 +54,16 @@ class ProbabilisticSearch(LearningStepRule):
         return lr
 
     def compute_lr(self, net, obj_fnc: ObjectiveFunction, direction):
-        lr = ifelse(self.__random_decision(self.__prob_check), self.__compute_loss_after_update(net, obj_fnc, direction), self.__lr)
+        lr = ifelse(self.__random_decision(self.__prob_check),
+                    self.__compute_loss_after_update(net, obj_fnc, direction), self.__lr)
         self.__updates = [(self.__lr, lr)]
         return lr, LearningStepRule.Infos(lr)
 
     @property
-    def infos(self):  # TODO add other fields
+    def infos(self):
         return InfoGroup('probabilistic lr rule',
                          InfoList(PrintableInfoElement('prob_check', ':2.2f', self.__prob_check),
-                                  PrintableInfoElement('prob_augment', ':2.2f', self.__prob_augment)))
+                                  PrintableInfoElement('prob_augment', ':2.2f', self.__prob_augment),
+                                  PrintableInfoElement('init_lr', ':2.2f', self.__init_lr),
+                                  PrintableInfoElement('beta_augment', ':2.2f', self.__beta_augment),
+                                  PrintableInfoElement('beta_lessen', ':2.2f', self.__beta_lessen)))
