@@ -104,7 +104,7 @@ dir_rule = CombinedGradients(combining_rule)
 # lr_rule = ConstantNormalizedStep(0.001)  # 0.01
 #lr_rule = GradientClipping(lr_value=0.005, clip_thr=1, normalize_wrt_dimension=False)  # 0.01
 lr_rule = ProbabilisticSearch(init_lr=0.001, prob_check=1., prob_augment=0.4,
-                              beta_augment=1.5, beta_lessen=0.1, seed=seed)
+                              beta_augment=1.1, beta_lessen=0.1, seed=seed)
 # lr_rule = ArmijoStep(alpha=0.5, beta=0.1, init_step=1, max_steps=50)
 
 # update_rule = FixedAveraging(t=10)
