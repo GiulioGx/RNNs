@@ -9,7 +9,7 @@ from infos.InfoGroup import InfoGroup
 from infos.InfoList import InfoList
 from initialization.ConstantInit import ConstantInit
 from learningRule.ConstantStep import ConstantStep
-from learningRule.LearningRule import LearningStepRule
+from learningRule.LearningStepRule import LearningStepRule
 from model import RNNInitializer, RNNManager
 from output_fncs.Linear import Linear
 from updateRule.UpdateRule import UpdateRule

@@ -6,7 +6,7 @@ from infos.InfoGroup import InfoGroup
 from infos.InfoList import InfoList
 from infos.InfoProducer import SimpleInfoProducer
 from infos.SymbolicInfo import NullSymbolicInfos
-from learningRule import LearningRule
+from learningRule import LearningStepRule
 from lossFunctions import LossFunction
 from lossFunctions.SquaredError import SquaredError
 from training.Rule import Rule
@@ -24,7 +24,7 @@ class TrainingRule(SimpleInfoProducer):
     def __str__(self):
         return str(self.__infos)
 
-    def __init__(self, desc_dir_rule: DescentDirectionRule, lr_rule: LearningRule,
+    def __init__(self, desc_dir_rule: DescentDirectionRule, lr_rule: LearningStepRule,
                  update_rule: UpdateRule = SimpleUdpate(), loss_fnc: LossFunction = SquaredError()):
         self.__desc_dir_rule = desc_dir_rule
         self.__lr_rule = lr_rule

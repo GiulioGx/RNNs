@@ -40,6 +40,10 @@ class ObjectiveFunction(SimpleInfoProducer):  # XXX is this class needed?
 
         self.__infos = ObjectiveFunction.Info(gradient_info, self.__objective_value, grad_norm, debug_diff)
 
+    @property
+    def current_loss(self):
+        return self.__objective_value
+
     def value(self, y, t):
         return self.__loss_fnc.value(y=y, t=t)
 

@@ -7,13 +7,14 @@ from Configs import Configs
 from combiningRule.SimplexCombination import SimplexCombination
 from descentDirectionRule.Antigradient import Antigradient
 from descentDirectionRule.CombinedGradients import CombinedGradients
-from descentDirectionRule.LBFGSDirectionpy import LBFGSDirection
+from descentDirectionRule.LBFGSDirection import LBFGSDirection
 from initialization.ConstantInit import ConstantInit
 from initialization.GaussianInit import GaussianInit
 from initialization.SVDInit import SVDInit
 from initialization.SpectralInit import SpectralInit
 from initialization.UniformInit import UniformInit
 from learningRule.GradientClipping import GradientClipping
+from learningRule.ProbabilisticSearch import ProbabilisticSearch
 from lossFunctions.FullCrossEntropy import FullCrossEntropy
 from metrics.BestValueFoundCriterion import BestValueFoundCriterion
 from metrics.ErrorMonitor import ErrorMonitor
@@ -55,7 +56,7 @@ mean = 0
 #     W_out_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed), b_rec_init=ConstantInit(0),
 #     b_out_init=ConstantInit(0))
 vars_initializer = RNNVarsInitializer(
-    W_rec_init=SVDInit(matrix_init=GaussianInit(seed=seed, std_dev=std_dev), rho=1.2),
+    W_rec_init=SpectralInit(matrix_init=GaussianInit(seed=seed, std_dev=std_dev), rho=1.2),
     W_in_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed),
     W_out_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed), b_rec_init=ConstantInit(0),
     b_out_init=ConstantInit(0))
@@ -101,7 +102,9 @@ dir_rule = CombinedGradients(combining_rule)
 # learning step rule
 # lr_rule = WRecNormalizedStep(0.0001) #0.01
 # lr_rule = ConstantNormalizedStep(0.001)  # 0.01
-lr_rule = GradientClipping(lr_value=0.005, clip_thr=1, normalize_wrt_dimension=False)  # 0.01
+#lr_rule = GradientClipping(lr_value=0.005, clip_thr=1, normalize_wrt_dimension=False)  # 0.01
+lr_rule = ProbabilisticSearch(init_lr=0.001, prob_check=1., prob_augment=0.4,
+                              beta_augment=1.5, beta_lessen=0.1, seed=seed)
 # lr_rule = ArmijoStep(alpha=0.5, beta=0.1, init_step=1, max_steps=50)
 
 # update_rule = FixedAveraging(t=10)
@@ -116,13 +119,14 @@ dataset = InfiniteDataset(task=task, validation_size=10 ** 4, n_batches=5)
 
 loss_monitor = LossMonitor(loss_fnc=loss_fnc)
 error_monitor = ErrorMonitor(dataset=dataset)
-monitors = [loss_monitor, error_monitor]
 stopping_criterion = ThresholdCriterion(monitor=error_monitor, threshold=1. / 100)
 saving_criterion = BestValueFoundCriterion(monitor=error_monitor)
 
 trainer = SGDTrainer(train_rule, output_dir=out_dir, max_it=10 ** 10,
-                     monitor_update_freq=200, batch_size=100, saving_criterion=saving_criterion,
-                     stopping_criterion=stopping_criterion, monitors=monitors)
+                     monitor_update_freq=200, batch_size=100)
+trainer.add_monitors(dataset.validation_set, "validation", loss_monitor, error_monitor)
+trainer.set_saving_criterion(saving_criterion)
+trainer.set_stopping_criterion(stopping_criterion)
 
 net = trainer.train(dataset, net_builder)
 

@@ -4,7 +4,7 @@ from Configs import Configs
 from descentDirectionRule.DescentDirectionRule import DescentDirectionRule
 from infos.InfoGroup import InfoGroup
 from infos.InfoList import InfoList
-from learningRule.LearningRule import LearningStepRule
+from learningRule.LearningStepRule import LearningStepRule
 from updateRule.UpdateRule import UpdateRule
 from infos.Info import NullInfo
 from infos.InfoElement import PrintableInfoElement

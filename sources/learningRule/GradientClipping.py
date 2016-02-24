@@ -4,7 +4,7 @@ from theano.ifelse import ifelse
 from ObjectiveFunction import ObjectiveFunction
 from infos.InfoElement import PrintableInfoElement
 from infos.InfoList import InfoList
-from learningRule.LearningRule import LearningStepRule
+from learningRule.LearningStepRule import LearningStepRule
 from theanoUtils import is_inf_or_nan
 
 __author__ = 'giulio'

@@ -6,7 +6,7 @@ from descentDirectionRule.DescentDirectionRule import DescentDirectionRule
 from infos.InfoGroup import InfoGroup
 from infos.InfoList import InfoList
 from infos.InfoElement import PrintableInfoElement, SimpleDescription
-from learningRule.LearningRule import LearningStepRule
+from learningRule.LearningStepRule import LearningStepRule
 
 __author__ = 'giulio'
 

@@ -1,4 +1,4 @@
 __author__ = 'giulio'
 
-from learningRule import LearningRule
+from learningRule import LearningStepRule
 

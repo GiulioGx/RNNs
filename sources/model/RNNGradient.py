@@ -15,7 +15,7 @@ class RNNGradient(object):
     def __init__(self, net, gW_rec_T, gW_in_T, gW_out_T, gb_rec_T, gb_out_T, obj_fnc:ObjectiveFunction):
 
         self.__preserve_norm = True
-        self.__type = 'togheter'
+        self.__type = 'separate'  # FIXME
         self.__net = net
         self.__obj_fnc = obj_fnc
 

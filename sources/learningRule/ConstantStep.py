@@ -8,7 +8,7 @@ from infos.InfoElement import PrintableInfoElement
 from infos.InfoGroup import InfoGroup
 from infos.InfoList import InfoList
 from infos.SymbolicInfo import SymbolicInfo
-from learningRule.LearningRule import LearningStepRule
+from learningRule.LearningStepRule import LearningStepRule
 
 __author__ = 'giulio'
 

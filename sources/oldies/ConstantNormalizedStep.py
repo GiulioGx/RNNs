@@ -3,7 +3,7 @@ from theano import tensor as TT
 
 from Configs import Configs
 from infos.InfoElement import PrintableInfoElement
-from learningRule.LearningRule import LearningStepRule
+from learningRule.LearningStepRule import LearningStepRule
 
 __author__ = 'giulio'
 
