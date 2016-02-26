@@ -61,7 +61,7 @@ vars_initializer = RNNVarsInitializer(
     W_in_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed),
     W_out_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed), b_rec_init=ConstantInit(0),
     b_out_init=ConstantInit(0))
-net_initializer = RNNInitializer(vars_initializer, n_hidden=300)
+net_initializer = RNNInitializer(vars_initializer, n_hidden=100)
 #net_initializer = RNNLoader(out_dir+'/best_model.npz')
 net_growing_policy = RNNIncrementalGrowing(n_hidden_incr=50, n_hidden_max=300, n_hidden_incr_freq=5000,
                                            initializer=vars_initializer)
