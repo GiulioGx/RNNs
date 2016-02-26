@@ -13,7 +13,7 @@ class LossFunction(SimpleInfoProducer):
 
     @property
     def mask(self):
-        return self.__mask
+        return self.__mask  #XXX maybe not here?
 
     @abc.abstractmethod
     def value(self, y, t):

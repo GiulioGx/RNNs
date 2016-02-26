@@ -78,20 +78,21 @@ def train_run(seed: int, task_length: int, prefix: str):
 
     loss_monitor = LossMonitor(loss_fnc=loss_fnc)
     error_monitor = ErrorMonitor(dataset=dataset)
-    monitors = [loss_monitor, error_monitor]
     stopping_criterion = ThresholdCriterion(monitor=error_monitor, threshold=1. / 100)
     saving_criterion = BestValueFoundCriterion(monitor=error_monitor)
 
     trainer = SGDTrainer(train_rule, output_dir=out_dir, max_it=10 ** 10,
-                         monitor_update_freq=200, batch_size=100, saving_criterion=saving_criterion,
-                         stopping_criterion=stopping_criterion, monitors=monitors)
+                         monitor_update_freq=200, batch_size=100)
+    trainer.add_monitors(dataset.validation_set, 'validation', loss_monitor, error_monitor)
+    trainer.set_stopping_criterion(stopping_criterion)
+    trainer.set_saving_criterion(saving_criterion)
 
     net = trainer.train(dataset, net_builder)
 
     return net
 
 
-seeds = [14, 15, 16, 17]
+seeds = [13, 14, 15, 16, 17]
 lengths = [150]
 prefix = 'train_run'
 

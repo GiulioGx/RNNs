@@ -70,7 +70,7 @@ class SGDTrainer(object):
             symbols = []
             symbols_lengths = []
             for m in monitors:
-                s = m.get_symbols(y=y, t=t)
+                s = m.get_symbols(y=y, t=t, mask=mask)
                 symbols += s
                 symbols_lengths.append(len(s))
 
@@ -79,29 +79,23 @@ class SGDTrainer(object):
 
     def __update_monitors(self):
         for d in self.__monitor_dicts:
-            start = 0
             lengths = d["symbol_lengths"]
             monitors = d["monitors"]
             batches = d["batches"]
-            updated_values = SGDTrainer.__evaluate_monitor_fnc(d["fnc"], sum(lengths), batches)
 
+            updated_values = []
+            for batch in batches:
+                updated_values.append(d["fnc"](batch.inputs, batch.outputs, batch.mask))
+
+            start = 0
             for i in range(len(monitors)):
+                monitor_values = []
                 n = lengths[i]
                 m = monitors[i]
-                values = updated_values[start:start + n]
-                m.update(values)
+                for batch_values in updated_values:
+                    monitor_values.append(batch_values[start:start + n])
                 start += n
-
-    @staticmethod
-    def __evaluate_monitor_fnc(monitor_fnc, n, batches: list):
-        init_values = numpy.zeros(shape=(n,), dtype=Configs.floatType)
-        for batch in batches:
-            values = monitor_fnc(batch.inputs, batch.outputs, batch.mask)
-            assert (len(values) == n)
-            for i in range(n):
-                init_values[i] += values[i].item()
-        m = len(batches)
-        return init_values / m
+                m.update(monitor_values)
 
     def _train(self, dataset: Dataset, net_manager: NetManager, logger):
 

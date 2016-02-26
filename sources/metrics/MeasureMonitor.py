@@ -9,7 +9,7 @@ class MeasureMonitor(object):
     __metaclass__ = abc.ABCMeta
 
     @abc.abstractmethod
-    def get_symbols(self, y, t)->list:
+    def get_symbols(self, y, t, mask)->list:
         """return a list of symbols defining the observed quantities
         given the output of the net 'y' and the target 't' """
 
