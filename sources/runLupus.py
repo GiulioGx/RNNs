@@ -54,11 +54,6 @@ Configs.seed = seed
 # network setup
 std_dev = 0.14  # 0.14 Tanh # 0.21 Relu
 mean = 0
-# vars_initializer = RNNVarsInitializer(
-#     W_rec_init=SpectralInit(matrix_init=GaussianInit(mean=mean, std_dev=std_dev, seed=seed), rho=1.2),
-#     W_in_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed),
-#     W_out_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed), b_rec_init=ConstantInit(0),
-#     b_out_init=ConstantInit(0))
 vars_initializer = RNNVarsInitializer(
     W_rec_init=SpectralInit(matrix_init=GaussianInit(seed=seed, std_dev=std_dev), rho=1.2),
     W_in_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed),
@@ -78,13 +73,13 @@ loss_fnc = FullCrossEntropy(single_probability_ouput=True)
 combining_rule = SimplexCombination(normalize_components=True, seed=seed)
 # combining_rule = SimpleSum()
 dir_rule = CombinedGradients(combining_rule)
-# dir_rule = Antigradient()
+dir_rule = Antigradient()
 # dir_rule = LBFGSDirection(n_pairs=7)
 
 # learning step rule
 # lr_rule = WRecNormalizedStep(0.0001) #0.01
 # lr_rule = ConstantNormalizedStep(0.001)  # 0.01
-lr_rule = GradientClipping(lr_value=0.0001, clip_thr=1, normalize_wrt_dimension=False)  # 0.01
+lr_rule = GradientClipping(lr_value=0.001, clip_thr=1, normalize_wrt_dimension=False)  # 0.01
 # lr_rule = ArmijoStep(alpha=0.5, beta=0.1, init_step=1, max_steps=50)
 
 # update_rule = FixedAveraging(t=10)
@@ -102,7 +97,7 @@ roc_monitor = RocMonitor()
 #saving_criterion = BestValueFoundCriterion(monitor=error_monitor)
 
 trainer = SGDTrainer(train_rule, output_dir=out_dir, max_it=10 ** 10,
-                     monitor_update_freq=50, batch_size=100)
+                     monitor_update_freq=50, batch_size=20)
 trainer.add_monitors(dataset.train_set, 'train', loss_monitor, roc_monitor)
 #trainer.set_saving_criterion(saving_criterion)
 #trainer.set_stopping_criterion(stopping_criterion)

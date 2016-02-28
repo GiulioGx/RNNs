@@ -13,6 +13,7 @@ class LupusDataset(Dataset):
     def __init__(self, mat_file: str, seed: int = Configs.seed):
         mat_obj = loadmat(mat_file)
 
+        self.__num_min_visit = 3  # XXX 2 schould work
         positive_patients = mat_obj['pazientiPositivi']
         negative_patients = mat_obj['pazientiNegativi']
 
@@ -24,13 +25,13 @@ class LupusDataset(Dataset):
         data = numpy.concatenate((positive_patients, negative_patients), axis=0)
         self.__features_normalizations = LupusDataset.__find_normalization_factors(self.__features_names, data)
 
-        positives, self.__max_visits_pos = LupusDataset.__process_patients(positive_patients, self.__features_names,
-                                                                           self.__features_normalizations)
+        positives, self.__max_visits_pos = self.__process_patients(positive_patients, self.__features_names,
+                                                                   self.__features_normalizations)
         self.__early_positives, self.__late_positives = LupusDataset.__split_positive(positives)
 
-        self.__negatives, self.__max_visits_neg = LupusDataset.__process_patients(negative_patients,
-                                                                                  self.__features_names,
-                                                                                  self.__features_normalizations)
+        self.__negatives, self.__max_visits_neg = self.__process_patients(negative_patients,
+                                                                          self.__features_names,
+                                                                          self.__features_normalizations)
 
         self.__rng = numpy.random.RandomState(seed)
         self.__n_in = len(self.__features_names)
@@ -64,15 +65,14 @@ class LupusDataset(Dataset):
         for p in positives:
             targets = p['targets']
             assert (sum(targets) > 0)
-            if targets[0] == 1:
+            if targets[0] > 0:
                 early_positives.append(p)
             else:
                 late_positives.append(p)
 
         return early_positives, late_positives
 
-    @staticmethod
-    def __process_patients(mat_data, features_names, features_normalizations):
+    def __process_patients(self, mat_data, features_names, features_normalizations):
 
         patients_datas = []
         max_visits = 0
@@ -84,7 +84,7 @@ class LupusDataset(Dataset):
             visits = mat_data[visits_indexes]
             visits = sorted(visits, key=lambda visit: visit['numberVisit'].item())
             n_visits = len(visits)
-            if n_visits >= 3:  # XXX 2 schould work
+            if n_visits >= self.__num_min_visit:
                 max_visits = max(max_visits, n_visits)
                 pat_matrix = numpy.zeros(shape=(n_visits, n_features))
                 target_vec = numpy.zeros(shape=(n_visits, 1))
@@ -108,12 +108,12 @@ class LupusDataset(Dataset):
         for i in range(n_visits):
             print('Visit {}:\n features: {}\t targets(sdi): {}'.format(i, features[i, :], targets[i]))
 
-    def __build_batch(self, indexes, exs, max_length):
+    def __build_batch(self, indexes, sets, max_length):
         max_length -= 1
-        n_sets = len(exs)
+        n_sets = len(sets)
         n_batch_examples = 0
-        for i in indexes: n_batch_examples += len(i)
-
+        for i in indexes:
+            n_batch_examples += len(i)
         inputs = numpy.zeros(shape=(max_length, self.__n_in, n_batch_examples))
         outputs = numpy.zeros(shape=(max_length, self.__n_out, n_batch_examples))
         mask = numpy.zeros_like(outputs)
@@ -123,7 +123,7 @@ class LupusDataset(Dataset):
             bs = len(indexes[i])
             for j in range(bs):
                 idx = indexes[i][j]
-                pat = exs[i][idx]
+                pat = sets[i][idx]
                 feats = pat['features']
                 targets = pat['targets']
                 n_visits = len(targets)
