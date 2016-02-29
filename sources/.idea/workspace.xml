@@ -34,8 +34,8 @@
       <file leaf-file-name="runMuse.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/runMuse.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.86006826">
-              <caret line="70" column="58" selection-start-line="70" selection-start-column="58" selection-end-line="70" selection-end-column="58" />
+            <state vertical-scroll-proportion="0.6450512">
+              <caret line="63" column="64" selection-start-line="63" selection-start-column="64" selection-end-line="63" selection-end-column="64" />
               <folding />
             </state>
           </provider>
@@ -177,7 +177,6 @@
         <option value="$PROJECT_DIR$/metrics/ErrorMonitor.py" />
         <option value="$PROJECT_DIR$/run_batch.py" />
         <option value="$PROJECT_DIR$/task/LupusDataset.py" />
-        <option value="$PROJECT_DIR$/runMuse.py" />
         <option value="$PROJECT_DIR$/metrics/RocMonitor.py" />
         <option value="$PROJECT_DIR$/lossFunctions/FullCrossEntropy.py" />
         <option value="$PROJECT_DIR$/updateRule/SimpleUpdate.py" />
@@ -188,6 +187,7 @@
         <option value="$PROJECT_DIR$/training/TrainingRule.py" />
         <option value="$PROJECT_DIR$/training/Statistics.py" />
         <option value="$PROJECT_DIR$/model/RNNGradient.py" />
+        <option value="$PROJECT_DIR$/runMuse.py" />
       </list>
     </option>
   </component>
@@ -1068,8 +1068,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/runMuse.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.86006826">
-          <caret line="70" column="58" selection-start-line="70" selection-start-column="58" selection-end-line="70" selection-end-column="58" />
+        <state vertical-scroll-proportion="0.6450512">
+          <caret line="63" column="64" selection-start-line="63" selection-start-column="64" selection-end-line="63" selection-end-column="64" />
           <folding />
         </state>
       </provider>
