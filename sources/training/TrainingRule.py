@@ -9,6 +9,7 @@ from infos.SymbolicInfo import NullSymbolicInfos
 from learningRule import LearningStepRule
 from lossFunctions import LossFunction
 from lossFunctions.SquaredError import SquaredError
+from training.NanCheckRule import NanCheckRule
 from training.Rule import Rule
 from updateRule.SimpleUpdate import SimpleUdpate
 from updateRule.UpdateRule import UpdateRule
@@ -25,11 +26,12 @@ class TrainingRule(SimpleInfoProducer):
         return str(self.__infos)
 
     def __init__(self, desc_dir_rule: DescentDirectionRule, lr_rule: LearningStepRule,
-                 update_rule: UpdateRule = SimpleUdpate(), loss_fnc: LossFunction = SquaredError()):
+                 update_rule: UpdateRule = SimpleUdpate(), loss_fnc: LossFunction = SquaredError(), nan_check:bool = False):
         self.__desc_dir_rule = desc_dir_rule
         self.__lr_rule = lr_rule
         self.__update_rule = update_rule
         self.__loss_fnc = loss_fnc
+        self.__nan_check = nan_check
         self.__infos = InfoGroup('train_rule', InfoList(InfoGroup('desc_dir', InfoList(self.__desc_dir_rule.infos)),
                                                         InfoGroup('lr_rate', InfoList(self.__lr_rule.infos)),
                                                         InfoGroup('update_rule', InfoList(self.__update_rule.infos))))
@@ -59,6 +61,10 @@ class TrainingRule(SimpleInfoProducer):
     def loss_fnc(self):
         return self.__loss_fnc
 
+    @property
+    def nan_check(self):
+        return self.__nan_check
+
     class UpdatesPoller(object):
 
         def __init__(self, *rules: Rule):
@@ -78,6 +84,7 @@ class TrainingRule(SimpleInfoProducer):
 
             self.__separate = False
             self.__symbolic_infos_list = []
+            self.__symbolic_error_list = []
             net_symbols = net.symbols
             self.__obj_fnc = ObjectiveFunction(rule.loss_fnc, net, net_symbols.current_params, net_symbols.u,
                                                net_symbols.t)
@@ -99,10 +106,14 @@ class TrainingRule(SimpleInfoProducer):
             self.__symbolic_infos_list.append(lr_symbolic_infos)
             self.__symbolic_infos_list.append(update_symbolic_info)
 
+            if rule.nan_check:
+                nan_check = NanCheckRule()
+                self.__symbolic_error_list.append(nan_check.check(lr, direction)) # XXX separate
+
             network_updates = net_symbols.current_params.update_list(update_vars)
-            output_symbol_list = []
-            for s in self.__symbolic_infos_list:
-                output_symbol_list += s.symbols
+
+            output_info_symbol_list = TrainingRule.TrainCompiled.get_symbols_list(self.__symbolic_infos_list)
+            output_error_symbol_list = TrainingRule.TrainCompiled.get_symbols_list(self.__symbolic_error_list)
 
             rule_updates = rule.updates_poller.updates
 
@@ -110,27 +121,39 @@ class TrainingRule(SimpleInfoProducer):
                           name='train_step')
             input_symbol_list = [net_symbols.u, net_symbols.t, rule.loss_fnc.mask]
 
-            self.__step_with_info = T.function(input_symbol_list, output_symbol_list, **params)
-            self.__step_without_info = T.function(input_symbol_list, [], **params)
+            self.__step_with_info = T.function(input_symbol_list, output_info_symbol_list + output_error_symbol_list, **params)
+            self.__step_without_info = T.function(input_symbol_list, output_error_symbol_list, **params)
+
+        @staticmethod
+        def get_symbols_list(symbolic_infos_list):
+            output_symbol_list = []
+            for s in symbolic_infos_list:
+                output_symbol_list += s.symbols
+            return output_symbol_list
 
         def step(self, inputs, outputs, mask, report_info: bool = True):
+
+            start_index = 0
+            output_list = []
             if report_info:
-                infos_symbols = self.__step_with_info(inputs, outputs, mask)
-                infos = self.__format_infos(infos_symbols)
-                return infos
+                filled_symbols = self.__step_with_info(inputs, outputs, mask)
+                infos, start_index = TrainingRule.TrainCompiled.__format_infos(self.__symbolic_infos_list, filled_symbols)
+                output_list.append(infos)
             else:
-                self.__step_without_info(inputs, outputs, mask)
-                return
+                filled_symbols = self.__step_without_info(inputs, outputs, mask)
+            errors, _ = TrainingRule.TrainCompiled.__format_infos(self.__symbolic_error_list, filled_symbols, start_index = start_index)
+            output_list.append(errors)
+            return output_list if len(output_list)>1 else output_list[0]
 
-        def __format_infos(self, filled_symbols):
-
-            start = 0
+        @staticmethod
+        def __format_infos(symbolic_infos_list, filled_symbols, start_index:int=0):
+            start = start_index
             info_list = []
-            for symbolic_info in self.__symbolic_infos_list:
+            for symbolic_info in symbolic_infos_list:
                 info_list.append(symbolic_info.fill_symbols(filled_symbols[start:]))
                 start += len(symbolic_info.symbols)
 
-            return InfoList(*info_list)
+            return InfoList(*info_list), start
 
         @property
         def mask(self):

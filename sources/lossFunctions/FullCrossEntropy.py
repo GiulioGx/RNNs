@@ -16,7 +16,7 @@ class FullCrossEntropy(LossFunction):
             c = -(t * TT.log(y) + (1 - t) * TT.log(1 - y))
         else:
             c = -(t * TT.log(y))
-        n_selected_temporal_losses = TT.switch(self.mask.norm(2, axis=1) > 0, 1, 0).sum().sum()
+        n_selected_temporal_losses = TT.switch(self.mask.sum(axis=1) > 0, 1, 0).sum().sum()
         s = (c * self.mask).sum().sum().sum() / n_selected_temporal_losses
         return s
 

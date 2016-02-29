@@ -6,7 +6,7 @@ from infos.InfoElement import PrintableInfoElement
 from metrics.MeasureMonitor import MeasureMonitor
 
 
-class RocMonitor(MeasureMonitor):
+class RocMonitor(MeasureMonitor): #TODO realvalue criterion
     def __init__(self):
         self.__value = numpy.inf
 

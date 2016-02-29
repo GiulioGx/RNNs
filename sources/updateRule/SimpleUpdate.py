@@ -4,7 +4,6 @@ from updateRule.UpdateRule import UpdateRule
 
 
 class SimpleUdpate(UpdateRule):
-
     def __init__(self):
         self.__updates = []
 

@@ -23,7 +23,7 @@ from metrics.LossMonitor import LossMonitor
 from metrics.RocMonitor import RocMonitor
 from metrics.ThresholdCriterion import ThresholdCriterion
 from model.RNNGrowingPolicy import RNNIncrementalGrowing
-from model.RNNInitializer import RNNInitializer, RNNVarsInitializer
+from model.RNNInitializer import RNNInitializer, RNNVarsInitializer, RNNLoader
 from model.RNNManager import RNNManager
 from output_fncs.Logistic import Logistic
 from output_fncs.Softmax import Softmax
@@ -50,6 +50,7 @@ print(separator)
 
 seed = 15
 Configs.seed = seed
+out_dir = Configs.output_dir + 'Lupus'
 
 # network setup
 std_dev = 0.14  # 0.14 Tanh # 0.21 Relu
@@ -60,13 +61,14 @@ vars_initializer = RNNVarsInitializer(
     W_out_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed), b_rec_init=ConstantInit(0),
     b_out_init=ConstantInit(0))
 net_initializer = RNNInitializer(vars_initializer, n_hidden=50)
+#net_initializer = RNNLoader(out_dir+'/best_model.npz')
+
 net_growing_policy = RNNIncrementalGrowing(n_hidden_incr=5, n_hidden_max=50, n_hidden_incr_freq=1000,
                                            initializer=vars_initializer)
 net_builder = RNNManager(initializer=net_initializer, activation_fnc=Tanh(),
                          output_fnc=Logistic())  # , growing_policy=net_growing_policy)
 
 # setup
-out_dir = Configs.output_dir + 'Lupus'
 loss_fnc = FullCrossEntropy(single_probability_ouput=True)
 
 # combining_rule = OnesCombination(normalize_components=False)
@@ -87,19 +89,19 @@ update_rule = SimpleUdpate()
 # update_rule = Momentum(gamma=0.1)
 
 
-train_rule = TrainingRule(dir_rule, lr_rule, update_rule, loss_fnc)
+train_rule = TrainingRule(dir_rule, lr_rule, update_rule, loss_fnc, nan_check=True)
 
 dataset = LupusDataset(mat_file=Paths.lupus_path)
 
 loss_monitor = LossMonitor(loss_fnc=loss_fnc)
 roc_monitor = RocMonitor()
 #stopping_criterion = ThresholdCriterion(monitor=error_monitor, threshold=1. / 100)
-#saving_criterion = BestValueFoundCriterion(monitor=error_monitor)
+saving_criterion = BestValueFoundCriterion(monitor=roc_monitor)
 
 trainer = SGDTrainer(train_rule, output_dir=out_dir, max_it=10 ** 10,
                      monitor_update_freq=50, batch_size=20)
 trainer.add_monitors(dataset.train_set, 'train', loss_monitor, roc_monitor)
-#trainer.set_saving_criterion(saving_criterion)
+trainer.set_saving_criterion(saving_criterion)
 #trainer.set_stopping_criterion(stopping_criterion)
 
 net = trainer.train(dataset, net_builder)

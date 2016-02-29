@@ -8,6 +8,7 @@ import theano as T
 from numpy.linalg import LinAlgError
 
 from Configs import Configs
+from infos.Info import Info
 from infos.InfoElement import PrintableInfoElement
 from infos.InfoGroup import InfoGroup
 from infos.InfoList import InfoList
@@ -137,7 +138,8 @@ class SGDTrainer(object):
 
             if i % self.__check_freq == 0:  # FIXME 1st iteration
 
-                train_info = train_step.step(batch.inputs, batch.outputs, batch.mask, report_info=True)
+                train_info, train_errors = train_step.step(batch.inputs, batch.outputs, batch.mask, report_info=True)
+                SGDTrainer.__log_error(train_errors, logger)
                 eval_start_time = time.time()
                 self.__update_monitors()
 
@@ -170,7 +172,8 @@ class SGDTrainer(object):
 
                     logger.warning('stopping training...')
             else:
-                train_step.step(batch.inputs, batch.outputs, batch.mask, report_info=False)
+                train_errors = train_step.step(batch.inputs, batch.outputs, batch.mask, report_info=False)
+                SGDTrainer.__log_error(train_errors, logger)
 
             i += 1
 
@@ -236,3 +239,8 @@ class SGDTrainer(object):
 
         info = InfoList(it_info, monitor_info, spectral_info, train_info, time_info)
         return info
+
+    @staticmethod
+    def __log_error(errors:Info, logger):
+        if errors.length > 0:
+            logger.error(str(errors))
