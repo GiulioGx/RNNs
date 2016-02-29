@@ -41,10 +41,10 @@ class LupusDataset(Dataset):
         names = []
         if isinstance(features, numpy.ndarray) or isinstance(features, numpy.void):
             for obj in features:
-                names += self.__find_features_names(obj)
+                names.extend(self.__find_features_names(obj))
             return numpy.unique(names)
         elif isinstance(features, numpy.str_):
-            return [features]
+            return [str(features)]
         else:
             raise TypeError('got type: {}, expected type is "numpy.str_"', type(features))
 
@@ -148,7 +148,6 @@ class LupusDataset(Dataset):
             max_length = max(len(e[max(e_indexes, key=lambda i: len(e[i]['targets']))]['targets']), max_length)
 
         return self.__build_batch(indexes, exs, max_length)
-        #return self.train_set[0]
 
     @property
     def n_in(self):
@@ -158,14 +157,29 @@ class LupusDataset(Dataset):
     def n_out(self):
         return self.__n_out
 
+    def __get_train_batch_from_whole_sets(self, sets: tuple, max_length: int):
+        indexes = []
+        for e in sets:
+            indexes.append(range(len(e)))
+        return [self.__build_batch(indexes, sets, max_length)]
+
     @property
     def train_set(self):
-        exs = (self.__early_positives, self.__late_positives, self.__negatives)
-        indexes = []
-        for e in exs:
-            indexes.append(range(len(e)))
+        sets = (self.__early_positives, self.__late_positives, self.__negatives)
         max_length = max(self.__max_visits_neg, self.__max_visits_pos)
-        return [self.__build_batch(indexes, exs, max_length)]
+        return self.__get_train_batch_from_whole_sets(sets, max_length)
+
+    @property
+    def late_positives(self):
+        return self.__get_train_batch_from_whole_sets((self.__late_positives,), self.__max_visits_pos)
+
+    @property
+    def early_positives(self):
+        return self.__get_train_batch_from_whole_sets((self.__early_positives,), self.__max_visits_pos)
+
+    @property
+    def late_positives(self):
+        return self.__get_train_batch_from_whole_sets((self.__negatives,), self.__max_visits_neg)
 
     @property
     def infos(self):

@@ -50,7 +50,7 @@ print(separator)
 
 seed = 15
 Configs.seed = seed
-out_dir = Configs.output_dir + 'Lupus3'
+out_dir = Configs.output_dir + 'Lupus'
 
 # network setup
 std_dev = 0.14  # 0.14 Tanh # 0.21 Relu
