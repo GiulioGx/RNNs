@@ -35,7 +35,7 @@
         <entry file="file://$PROJECT_DIR$/runMuse.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.6450512">
-              <caret line="63" column="64" selection-start-line="63" selection-start-column="64" selection-end-line="63" selection-end-column="64" />
+              <caret line="63" column="61" selection-start-line="63" selection-start-column="61" selection-end-line="63" selection-end-column="61" />
               <folding />
             </state>
           </provider>
@@ -1069,7 +1069,7 @@
     <entry file="file://$PROJECT_DIR$/runMuse.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.6450512">
-          <caret line="63" column="64" selection-start-line="63" selection-start-column="64" selection-end-line="63" selection-end-column="64" />
+          <caret line="63" column="61" selection-start-line="63" selection-start-column="61" selection-end-line="63" selection-end-column="61" />
           <folding />
         </state>
       </provider>
