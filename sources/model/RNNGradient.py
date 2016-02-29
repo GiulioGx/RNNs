@@ -108,9 +108,9 @@ class RNNGradient(object):
 
             norms_variance = PrintableInfoElement('g_var', ':02.2f', symbols_replacements[7].item())
             dots_variance = PrintableInfoElement('dots_var', ':02.2f', symbols_replacements[8].item())
-            grad_dots = NonPrintableInfoElement('grad_temporal_cos', symbols_replacements[6])
+            grad_dots = NonPrintableInfoElement('grad_temporal_cos', symbols_replacements[6]) # plug them in again when statistic is refactored
             separate_info = NonPrintableInfoElement('separate_norms', separate_norms_dict)
-            info = InfoList(grad_dots, norms_variance, dots_variance, separate_info)
+            info = InfoList(norms_variance, dots_variance)
             return info
 
     def temporal_combination(self, strategy):  # FIXME

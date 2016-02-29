@@ -31,11 +31,31 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Statistics.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="runMuse.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/runMuse.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.86006826">
+              <caret line="70" column="58" selection-start-line="70" selection-start-column="58" selection-end-line="70" selection-end-column="58" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Statistics.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/training/Statistics.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.18430035">
-              <caret line="11" column="29" selection-start-line="11" selection-start-column="29" selection-end-line="11" selection-end-column="29" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="7" column="54" selection-start-line="7" selection-start-column="54" selection-end-line="7" selection-end-column="54" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="RNNGradient.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/model/RNNGradient.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="105" column="68" selection-start-line="105" selection-start-column="68" selection-end-line="105" selection-end-column="68" />
               <folding />
             </state>
           </provider>
@@ -73,18 +93,6 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="InfoElement.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/infos/InfoElement.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding>
-                <element signature="e#0#10#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="InfoList.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/infos/InfoList.py">
           <provider selected="true" editor-type-id="text-editor">
@@ -117,16 +125,6 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Info.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/infos/Info.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
     </leaf>
   </component>
   <component name="FileTemplateManagerImpl">
@@ -139,7 +137,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/model/Variables.py" />
         <option value="$PROJECT_DIR$/task/Batch.py" />
         <option value="$PROJECT_DIR$/plotUtils/plot_stats.py" />
         <option value="$PROJECT_DIR$/lossFunctions/SquaredError.py" />
@@ -169,7 +166,6 @@
         <option value="$PROJECT_DIR$/ObjectiveFunction.py" />
         <option value="$PROJECT_DIR$/runExp.py" />
         <option value="$PROJECT_DIR$/descentDirectionRule/DropoutDirection.py" />
-        <option value="$PROJECT_DIR$/model/RNNGradient.py" />
         <option value="$PROJECT_DIR$/learningRule/ProbabilisticSearch.py" />
         <option value="$PROJECT_DIR$/task/Dataset.py" />
         <option value="$PROJECT_DIR$/Paths.py" />
@@ -190,6 +186,8 @@
         <option value="$PROJECT_DIR$/runLupus.py" />
         <option value="$PROJECT_DIR$/training/SGDTrainer.py" />
         <option value="$PROJECT_DIR$/training/TrainingRule.py" />
+        <option value="$PROJECT_DIR$/training/Statistics.py" />
+        <option value="$PROJECT_DIR$/model/RNNGradient.py" />
       </list>
     </option>
   </component>
@@ -260,6 +258,20 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="sources" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="sources" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="sources" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="model" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -870,26 +882,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/model/RNNGradient.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="17" column="31" selection-start-line="17" selection-start-column="31" selection-end-line="17" selection-end-column="31" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/metrics/ErrorMonitor.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="15" column="0" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/runMuse.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="64" column="50" selection-start-line="64" selection-start-column="0" selection-end-line="65" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -1056,8 +1052,24 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/training/Statistics.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.18430035">
-          <caret line="11" column="29" selection-start-line="11" selection-start-column="29" selection-end-line="11" selection-end-column="29" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="7" column="54" selection-start-line="7" selection-start-column="54" selection-end-line="7" selection-end-column="54" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/model/RNNGradient.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="105" column="68" selection-start-line="105" selection-start-column="68" selection-end-line="105" selection-end-column="68" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/runMuse.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.86006826">
+          <caret line="70" column="58" selection-start-line="70" selection-start-column="58" selection-end-line="70" selection-end-column="58" />
           <folding />
         </state>
       </provider>

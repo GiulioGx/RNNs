@@ -5,7 +5,7 @@ import os
 __author__ = 'giulio'
 
 
-class Statistics(object):
+class Statistics(object): #TODO maybe use numpt.memmap
     def __init__(self, max_it, check_freq, train_info: Info, net_info:Info):
         self.__dictionary = {}
         self.__check_freq = check_freq
