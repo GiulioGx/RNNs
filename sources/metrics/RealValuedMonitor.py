@@ -15,12 +15,9 @@ class RealValuedMonitor(MeasureMonitor):
     def value(self):
         return self._current_value
 
-    @abc.abstractmethod
-    def _update(self, new_value):
-        """define the update criterion given the compute mean value"""
-
-    def update(self, measures: list):
+    @staticmethod
+    def mean(measures: list, index:int=0):
         acc = 0.
         for val in measures:
-            acc += val[0].item()
-        self._update(acc / (len(measures)))
+            acc += val[index].item()
+        return acc / len(measures)

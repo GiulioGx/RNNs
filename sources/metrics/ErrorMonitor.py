@@ -7,13 +7,15 @@ from task.Dataset import Dataset
 
 
 class ErrorMonitor(RealValuedMonitor):
+
     def __init__(self, dataset: Dataset):
         super().__init__(100)
         self.__dataset = dataset
         self.__best_error = 100
 
-    def _update(self, new_value):
+    def update(self, measures: list):
 
+        new_value = RealValuedMonitor.mean(measures, 0)
         if new_value < self.__best_error:
             self.__best_error = new_value
         self._current_value = new_value

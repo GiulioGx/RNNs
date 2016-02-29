@@ -5,8 +5,7 @@ __author__ = 'giulio'
 '''
 This class represents input and target sequences for RNNs training. Both inputs and outputs structures are 3-dimensional
 matrices, the first dimension distinguish the time step, the second one corresponds to the dimension of one time step
-component of the sequence, and the third one to the different sequences of the batch. Note: is important that the first
-dimension is the time because theano scan can loop only on the first dimension.
+component of the sequence, and the third one to the different sequences of the batch.
 '''
 
 
@@ -16,6 +15,7 @@ class Batch:
         self.__outputs = outputs
         if mask is not None:
             self.__mask = mask
+            assert(mask.sum().sum().sum()>0)
         else:
             # if the mask is not specified all the target is relevant to the prediction
             self.__mask = numpy.ones(shape=self.__outputs.shape)

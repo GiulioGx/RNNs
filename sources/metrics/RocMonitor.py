@@ -3,16 +3,12 @@ from sklearn.metrics import roc_auc_score
 
 from infos.Info import Info
 from infos.InfoElement import PrintableInfoElement
-from metrics.MeasureMonitor import MeasureMonitor
+from metrics.RealValuedMonitor import RealValuedMonitor
 
 
-class RocMonitor(MeasureMonitor): #TODO realvalue criterion
+class RocMonitor(RealValuedMonitor):
     def __init__(self):
-        self.__value = numpy.inf
-
-    @property
-    def value(self):
-        return self.__value
+        super().__init__(numpy.inf)
 
     def get_symbols(self, y, t, mask) -> list:
         return [y, t, mask]
@@ -43,8 +39,8 @@ class RocMonitor(MeasureMonitor): #TODO realvalue criterion
 
                 scores.append(y_filtered[comparing_idx].item())
                 labels.append(t_filtered[comparing_idx].item())
-        self.__value = roc_auc_score(y_true=numpy.array(labels), y_score=numpy.array(scores))
+        self._current_value = roc_auc_score(y_true=numpy.array(labels), y_score=numpy.array(scores))
 
     @property
     def info(self) -> Info:
-        return PrintableInfoElement('roc_auc', ':2.2f', self.__value)
+        return PrintableInfoElement('roc_auc', ':2.2f', self._current_value)

@@ -27,10 +27,12 @@ class NanCheckInfo(SymbolicInfo):
         self.__codes = dict()
         self.__codes['1'] = 'nan'
         self.__codes['2'] = 'inf'
+        self.__names = []
 
         for t in tensors_to_check:
-            norm = t.norm(2)
+            norm = t['value'].norm(2)
             self.__symbols.append(ifelse(TT.isnan(norm), 1, ifelse(TT.isinf(norm), 2, 0)))
+            self.__names.append(t['name'])
 
     @property
     def symbols(self):
@@ -41,5 +43,5 @@ class NanCheckInfo(SymbolicInfo):
         for i in range(len(self.__symbols)):
             s = symbols_replacements[i]
             if str(s) in self.__codes.keys():
-                info_elements.append(PrintableInfoElement('#{}'.format(i), '', self.__codes[str(s)]))
+                info_elements.append(PrintableInfoElement(self.__names[i], '', self.__codes[str(s)]))
         return InfoList(*info_elements)

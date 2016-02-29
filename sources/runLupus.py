@@ -50,7 +50,7 @@ print(separator)
 
 seed = 15
 Configs.seed = seed
-out_dir = Configs.output_dir + 'Lupus'
+out_dir = Configs.output_dir + 'Lupus3'
 
 # network setup
 std_dev = 0.14  # 0.14 Tanh # 0.21 Relu
@@ -96,7 +96,7 @@ dataset = LupusDataset(mat_file=Paths.lupus_path)
 loss_monitor = LossMonitor(loss_fnc=loss_fnc)
 roc_monitor = RocMonitor()
 #stopping_criterion = ThresholdCriterion(monitor=error_monitor, threshold=1. / 100)
-saving_criterion = BestValueFoundCriterion(monitor=roc_monitor)
+saving_criterion = BestValueFoundCriterion(monitor=roc_monitor, mode='gt')
 
 trainer = SGDTrainer(train_rule, output_dir=out_dir, max_it=10 ** 10,
                      monitor_update_freq=50, batch_size=20)

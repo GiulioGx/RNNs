@@ -132,7 +132,6 @@ class LupusDataset(Dataset):
                 outputs[0:n_visits - 1, :, index] = targets[1:n_visits]
                 mask[0:n_visits - 1, :, index] = 1
             partial_idx += bs
-
         return Batch(inputs, outputs, mask)
 
     def get_train_batch(self, batch_size: int):
@@ -149,6 +148,7 @@ class LupusDataset(Dataset):
             max_length = max(len(e[max(e_indexes, key=lambda i: len(e[i]['targets']))]['targets']), max_length)
 
         return self.__build_batch(indexes, exs, max_length)
+        #return self.train_set[0]
 
     @property
     def n_in(self):
