@@ -178,11 +178,12 @@ class SGDTrainer(object):
             i += 1
 
         end_time = time.time()
-        if i == self.__max_it:
-            logger.warning('Maximum number of iterations reached, stopping training...')
-        elif self.__stopping_criterion.is_satisfied:
-            logger.info('Training succeded, stopping criterion satisfied')
-        logger.info('Elapsed time: {:2.2f} min'.format((end_time - start_time) / 60))
+        if not error_occured:
+            if i == self.__max_it:
+                logger.warning('Maximum number of iterations reached, stopping training...')
+            elif self.__stopping_criterion.is_satisfied:
+                logger.info('Training succeded, stopping criterion satisfied')
+            logger.info('Elapsed time: {:2.2f} min'.format((end_time - start_time) / 60))
         return net
 
     def __start_logger(self):
