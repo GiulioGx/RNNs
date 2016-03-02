@@ -74,7 +74,7 @@ Configs.seed = seed
 k = 4
 
 count = 0
-for d in LupusDataset.k_fold_test_datasets(Paths.lupus_path):
+for d in LupusDataset.k_fold_test_datasets(Paths.lupus_path, k=k):
     print('training net {}'.format(count))
     out_dir = Configs.output_dir + 'Lupus_k/' + str(count)
     net = thread_fnc(d, out_dir)

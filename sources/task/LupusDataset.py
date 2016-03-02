@@ -67,7 +67,6 @@ class LupusDataset(Dataset):
         early_positives, late_positives, negatives, max_visits_pos, max_visits_neg, features_names, infos = LupusDataset.__load_mat(
             mat_file)
         for i in range(k):
-
             eptr, epts = LupusDataset.__split_set(early_positives, i=i, k=k)
             lptr, lpts = LupusDataset.__split_set(late_positives, i=i, k=k)
             ntr, nts = LupusDataset.__split_set(negatives, i=i, k=k)
