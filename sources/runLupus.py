@@ -5,6 +5,7 @@ import theano
 from ActivationFunction import Tanh
 from Configs import Configs
 from Paths import Paths
+from combiningRule.OnesCombination import OnesCombination
 from combiningRule.SimplexCombination import SimplexCombination
 from descentDirectionRule.Antigradient import Antigradient
 from descentDirectionRule.CombinedGradients import CombinedGradients
@@ -71,11 +72,11 @@ net_builder = RNNManager(initializer=net_initializer, activation_fnc=Tanh(),
 # setup
 loss_fnc = FullCrossEntropy(single_probability_ouput=True)
 
-# combining_rule = OnesCombination(normalize_components=False)
-combining_rule = SimplexCombination(normalize_components=True, seed=seed)
+combining_rule = OnesCombination(normalize_components=True)
+#combining_rule = SimplexCombination(normalize_components=True, seed=seed)
 # combining_rule = SimpleSum()
 dir_rule = CombinedGradients(combining_rule)
-dir_rule = Antigradient()
+#dir_rule = Antigradient()
 # dir_rule = LBFGSDirection(n_pairs=7)
 
 # learning step rule
@@ -91,10 +92,10 @@ update_rule = SimpleUdpate()
 
 train_rule = TrainingRule(dir_rule, lr_rule, update_rule, loss_fnc, nan_check=True)
 
-dataset = LupusDataset(mat_file=Paths.lupus_path)
+dataset = LupusDataset.no_test_dataset(mat_file=Paths.lupus_path)
 
 loss_monitor = LossMonitor(loss_fnc=loss_fnc)
-roc_monitor = RocMonitor()
+roc_monitor = RocMonitor(score_fnc=LupusDataset.get_scores)
 #stopping_criterion = ThresholdCriterion(monitor=error_monitor, threshold=1. / 100)
 saving_criterion = BestValueFoundCriterion(monitor=roc_monitor, mode='gt')
 

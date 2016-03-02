@@ -7,39 +7,28 @@ from metrics.RealValuedMonitor import RealValuedMonitor
 
 
 class RocMonitor(RealValuedMonitor):
-    def __init__(self):
-        super().__init__(numpy.inf)
+    def __init__(self, score_fnc):
+        super().__init__(0)
+        self.__score_fnc = score_fnc
 
     def get_symbols(self, y, t, mask) -> list:
         return [y, t, mask]
 
     def update(self, measures: list):
-
-        scores = []
-        labels = []
+        scores_list = []
+        labels_list = []
 
         for measure in measures:
             y = measure[0]
             t = measure[1]
             mask = measure[2]
-            m = sum(mask, 1)
 
-            for i in range(y.shape[2]):
-                idx = sum(m[:, i])
-                y_filtered = y[0:idx, :, i]
-                t_filtered = t[0:idx, :, i]
+            scores, labels = self.__score_fnc(y, t, mask)
+            scores_list.append(scores)
+            labels_list.append(labels)
 
-                s = sum(t_filtered)
-                if s == 0:  # negatives
-                    comparing_idx = numpy.argmax(y_filtered)
-                elif s == len(t_filtered):  # early positives
-                    comparing_idx = numpy.argmin(y_filtered)
-                else:
-                    comparing_idx = numpy.min(numpy.nonzero(y_filtered))
-
-                scores.append(y_filtered[comparing_idx].item())
-                labels.append(t_filtered[comparing_idx].item())
-        self._current_value = roc_auc_score(y_true=numpy.array(labels), y_score=numpy.array(scores))
+        self._current_value = roc_auc_score(y_true=numpy.concatenate(*labels_list, axis=0),
+                                            y_score=numpy.concatenate(*scores_list, axis=0))
 
     @property
     def info(self) -> Info:

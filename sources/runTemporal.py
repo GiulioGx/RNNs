@@ -13,6 +13,7 @@ from initialization.GaussianInit import GaussianInit
 from initialization.SVDInit import SVDInit
 from initialization.SpectralInit import SpectralInit
 from initialization.UniformInit import UniformInit
+from learningRule.AdaptiveStep import AdaptiveStep
 from learningRule.GradientClipping import GradientClipping
 from learningRule.ProbabilisticSearch import ProbabilisticSearch
 from lossFunctions.FullCrossEntropy import FullCrossEntropy
@@ -44,7 +45,7 @@ print('device: ' + device)
 print('floatType: ' + floatX)
 print(separator)
 
-seed = 15
+seed = 13
 Configs.seed = seed
 
 # network setup
@@ -71,15 +72,6 @@ task = TemporalOrderTask(150, seed)
 out_dir = Configs.output_dir + str(task)
 loss_fnc = FullCrossEntropy(single_probability_ouput=False)
 
-# # HF init
-# bias_value = 0.5
-# n_conns = 25
-# std_dev = sqrt(0.12)
-# init_strategies = {'W_rec': RandomConnectionsInit(n_connections_per_unit=n_conns, std_dev=std_dev, columnwise=False),
-#                    'W_in': RandomConnectionsInit(n_connections_per_unit=n_conns, std_dev=0.1, columnwise=True),
-#                    'W_out': RandomConnectionsInit(n_connections_per_unit=n_conns, std_dev=std_dev, columnwise=False),
-#                    'b_rec': ConstantInit(bias_value), 'b_out': ConstantInit(bias_value)}
-
 # penalty strategy
 # penalty = MeanPenalty()
 # penalty = ConstantPenalty(c=5)
@@ -102,8 +94,8 @@ dir_rule = CombinedGradients(combining_rule)
 # learning step rule
 # lr_rule = WRecNormalizedStep(0.0001) #0.01
 # lr_rule = ConstantNormalizedStep(0.001)  # 0.01
-#lr_rule = GradientClipping(lr_value=0.005, clip_thr=1, normalize_wrt_dimension=False)  # 0.01
-lr_rule = ProbabilisticSearch(init_lr=0.001, prob_check=1., prob_augment=0.4,
+# lr_rule = GradientClipping(lr_value=0.005, clip_thr=1, normalize_wrt_dimension=False)  # 0.01
+lr_rule = AdaptiveStep(init_lr=0.001, num_tokens=50, prob_augment=0.4, sliding_window_size=50, steps_int_the_past=5,
                               beta_augment=1.1, beta_lessen=0.1, seed=seed)
 # lr_rule = ArmijoStep(alpha=0.5, beta=0.1, init_step=1, max_steps=50)
 
@@ -123,7 +115,7 @@ stopping_criterion = ThresholdCriterion(monitor=error_monitor, threshold=1. / 10
 saving_criterion = BestValueFoundCriterion(monitor=error_monitor)
 
 trainer = SGDTrainer(train_rule, output_dir=out_dir, max_it=10 ** 10,
-                     monitor_update_freq=200, batch_size=100)
+                     monitor_update_freq=50, batch_size=100)
 trainer.add_monitors(dataset.validation_set, "validation", loss_monitor, error_monitor)
 trainer.set_saving_criterion(saving_criterion)
 trainer.set_stopping_criterion(stopping_criterion)
