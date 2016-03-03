@@ -3,14 +3,15 @@ import numpy
 
 __author__ = 'giulio'
 
-stats_file = '/home/giulio/RNNs/models/temporal_order, min_length: 100/stats.npz'
+stats_file = '/home/giulio/tmp_models/stats.npz'
 
 # load npz archive
 npz = numpy.load(stats_file)
 
 # choose what and how to display it
 valid_error = {'label': 'validation_error_curr', 'legend': 'validation error', 'color': 'r', 'scale': 'linear'}
-valid_loss = {'label': 'validation_loss', 'legend': 'validation loss', 'color': 'm', 'scale': 'linear'}
+valid_loss = {'label': 'validation_loss', 'legend': 'validation loss', 'color': 'm', 'scale': 'log'}
+train_loss = {'label': 'train_loss', 'legend': 'train loss', 'color': 'b', 'scale': 'log'}
 dir_norm = {'label': 'dir_norm', 'legend': 'dir norm', 'color': 'c', 'scale': 'log'}
 grad_dot = {'label': 'grad_dot', 'legend': 'gradient dot', 'color': 'b', 'scale': 'linear'}
 equi_cos = {'label': 'W_rec_equi_cos', 'legend': 'equi_cos', 'color': 'b', 'scale': 'linear'}
@@ -19,8 +20,8 @@ grad_var = {'label': 'obj_g_var', 'legend': 'gradient var', 'color': 'g', 'scale
 dots_var = {'label': 'obj_dots_var', 'legend': 'dots var', 'color': 'b', 'scale': 'linear'}
 
 
-# only elements in this list gets displayed
-measures = [valid_error, valid_loss, dir_norm, rho, grad_var, dots_var]
+# only elements in this list gets displayed, elements in the same list get displayed togheter
+measures = [(train_loss, valid_loss)]
 
 # compute x-axis points
 check_freq = npz['settings_check_freq']
@@ -33,11 +34,17 @@ fig, axarr = plt.subplots(n_plots, sharex=True)
 
 for i in range(n_plots):
     measure = measures[i]
-    print(measure)
-    y_values = npz[measure['label']]
-    axarr[i].plot(x_values, y_values, measure['color'])
-    axarr[i].legend([measure['legend']], shadow=True, fancybox=True)
-    axarr[i].set_yscale(measure['scale'])
+    ax = axarr[i] if n_plots > 1 else axarr
+    legends = []
+    for m in measure:
+        print(m)
+        y_values = npz[m['label']]
+        ax.plot(x_values, y_values, m['color'])
+        ax.set_yscale(m['scale'])
+        legends.append(m['legend'])
+
+    ax.legend(legends, shadow=True, fancybox=True)
+
 
 
 # description
@@ -53,7 +60,8 @@ batch_size = npz['settings_batch_size']
 description = 'task: {}\ntraining time: {:2.2f} min,  num iterations: {:n}, batch_size: {}\nactivation fnc: {}  ' \
               'n_hidden: {:d}  n_in: {:d}  n_out: {:d}\n'.format(task, elapsed_time / 60, n_iterations, batch_size,
                                                                  activation_fnc, n_hidden, n_in, n_out)
-axarr[0].set_title(description, fontsize=14, ha='left', multialignment='left', loc='left')
+ax = axarr[0] if n_plots > 1 else axarr
+ax.set_title(description, fontsize=14, ha='left', multialignment='left', loc='left')
 
 plt.xlabel('iteration num')
 plt.grid(True)
