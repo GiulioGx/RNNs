@@ -233,7 +233,7 @@ class RNN(object):
                          b_out: self.__b_out})
 
             # compute_update numpy output function
-            self.net_output_numpy = T.function([self.u], [self.y_shared, self.h_shared])
+            self.net_output_numpy = T.function([self.u], [self.y_shared, self.h_shared], on_unused_input='warn')
 
             # compute_update extend step
             self.__extend_step = T.function([W_rec, W_in, W_out, b_rec, b_out], [],
