@@ -1,12 +1,11 @@
 import abc
-import logging
 
 from infos.Info import NullInfo
 from infos.InfoElement import PrintableInfoElement
 from infos.InfoGroup import InfoGroup
 from infos.InfoList import InfoList
 from infos.InfoProducer import SimpleInfoProducer
-from model import RNN, RNNInitializer
+from model import RNN
 from model.RNNInitializer import RNNVarsInitializer
 
 __author__ = 'giulio'
@@ -16,12 +15,12 @@ class RNNGrowingPolicy(SimpleInfoProducer):
     __metaclass__ = abc.ABCMeta
 
     @abc.abstractmethod
-    def grow(self, net: RNN):
+    def grow(self, net: RNN, logger):
         """expand the network according to some growing policy"""
 
 
 class RNNNullGrowing(RNNGrowingPolicy):
-    def grow(self, net: RNN):
+    def grow(self, net: RNN, logger):
         pass
 
     @property
@@ -30,11 +29,10 @@ class RNNNullGrowing(RNNGrowingPolicy):
 
 
 class RNNIncrementalGrowing(RNNGrowingPolicy):
-    def grow(self, net: RNN):
+    def grow(self, net: RNN, logger):
         if (self.__counter + 1) % self.__n_hidden_incr_freq == 0 and net.n_hidden < self.__n_hidden_max:
             new_hidden_number = net.n_hidden + self.__n_hidden_incr
             net.extend_hidden_units(n_hidden=new_hidden_number, initializer=self.__initializer)
-            logger = logging.getLogger('rnn.train')  # XXX
             logger.info('extending the number of hidden units to {}'.format(new_hidden_number))
         self.__counter += 1
 

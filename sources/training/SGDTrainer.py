@@ -132,7 +132,7 @@ class SGDTrainer(object):
 
             # this makes the network grow in size according to the policy
             # specified when instanziating the network manager (may be even a null grow)
-            net_manager.grow_net()
+            net_manager.grow_net(logger)
 
             batch = dataset.get_train_batch(self.__batch_size)
 
@@ -193,7 +193,7 @@ class SGDTrainer(object):
         formatter = logging.Formatter('%(levelname)s:%(message)s')
         file_handler.setFormatter(formatter)
 
-        logger = logging.getLogger('rnn.train')  # root logger
+        logger = logging.getLogger('rnn.train'+self.__output_dir)
         logger.setLevel(logging.INFO)
 
         for hdlr in logger.handlers:  # remove all old handlers

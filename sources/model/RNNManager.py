@@ -25,8 +25,8 @@ class RNNManager(NetManager):
         self.__net = rnn
         return rnn
 
-    def grow_net(self):
-        self.__growing_policy.grow(self.__net)
+    def grow_net(self, logger):
+        self.__growing_policy.grow(self.__net, logger)
 
     @property
     def activation_fnc(self):

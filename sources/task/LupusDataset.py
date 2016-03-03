@@ -1,11 +1,15 @@
 import math
+from random import shuffle
+
 import numpy
 from scipy.io import loadmat
 
 from Configs import Configs
 from Paths import Paths
 from infos.Info import Info, NullInfo
-from infos.InfoElement import SimpleDescription
+from infos.InfoElement import SimpleDescription, PrintableInfoElement
+from infos.InfoGroup import InfoGroup
+from infos.InfoList import InfoList
 from task.Batch import Batch
 from task.Dataset import Dataset
 
@@ -29,11 +33,13 @@ class LupusDataset(Dataset):
         positives, max_visits_pos = LupusDataset.__process_patients(positive_patients, features_names,
                                                                     features_normalizations)
         early_positives, late_positives = LupusDataset.__split_positive(positives)
+        shuffle(early_positives)
+        shuffle(late_positives)
 
         negatives, max_visits_neg = LupusDataset.__process_patients(negative_patients,
                                                                     features_names,
                                                                     features_normalizations)
-        # TODO random shuffle
+        shuffle(negatives)
 
         description = ['Lupus Dataset:\n', 'features: {}\n'.format(features_names),
                        'normalizations: {}\n'.format(features_normalizations),
@@ -60,7 +66,7 @@ class LupusDataset(Dataset):
         m = int(float(n) / k)
         start = m * i
         end = int(start + m if i < k - 1 else n)
-        return set[start:end], set[0:start]+set[end:]
+        return set[start:end], set[0:start] + set[end:]
 
     @staticmethod
     def k_fold_test_datasets(mat_file: str, k: int = 1, seed: int = Configs.seed):
@@ -74,9 +80,15 @@ class LupusDataset(Dataset):
             train_set = dict(early_pos=eptr, late_pos=lptr, neg=ntr, max_pos=max_visits_pos,
                              max_neg=max_visits_neg)
             test_set = dict(early_pos=epts, late_pos=lpts, neg=nts, max_pos=max_visits_pos,
-                             max_neg=max_visits_neg)
+                            max_neg=max_visits_neg)
             data_dict = dict(train=train_set, test=test_set, features=features_names)
             yield LupusDataset(data=data_dict, infos=infos, seed=seed)
+
+    @staticmethod
+    def get_set_info(set):
+        return InfoList(PrintableInfoElement('early_pos', ':d', len(set['early_pos'])),
+                        PrintableInfoElement('late_pos', ':d', len(set['late_pos'])),
+                        PrintableInfoElement('neg', ':d', len(set['neg'])))
 
     def __init__(self, data: dict, infos: Info = NullInfo(), seed: int = Configs.seed):
 
@@ -86,7 +98,10 @@ class LupusDataset(Dataset):
         self.__rng = numpy.random.RandomState(seed)
         self.__n_in = len(self.__features)
         self.__n_out = 1
-        self.__infos = infos
+
+        split_info = InfoGroup('split', InfoList(InfoGroup('train', InfoList(LupusDataset.get_set_info(self.__train))),
+                                                 InfoGroup('test', InfoList(LupusDataset.get_set_info(self.__test)))))
+        self.__infos = InfoList(infos, split_info)
 
     @staticmethod
     def __find_features_names(features):
@@ -248,6 +263,10 @@ class LupusDataset(Dataset):
     @property
     def split_train(self):
         return self.__get_set(self.__train, mode='split')
+
+    @property
+    def split_test(self):
+        return self.__get_set(self.__test, mode='split')
 
     @staticmethod
     def get_scores(y, t, mask):
