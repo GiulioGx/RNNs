@@ -127,8 +127,10 @@ k = 4
 # start main logger
 root_out_dir = Configs.output_dir + 'Lupus_k/'
 os.makedirs(root_out_dir, exist_ok=True)
-
-file_handler = logging.FileHandler(filename=root_out_dir + 'train_k.log', mode='a')
+log_filename = root_out_dir + 'train_k.log'
+if os.path.exists(log_filename):
+    os.remove(log_filename)
+file_handler = logging.FileHandler(filename=log_filename, mode='a')
 formatter = logging.Formatter('%(levelname)s:%(message)s')
 file_handler.setFormatter(formatter)
 logger = logging.getLogger('split.train')
