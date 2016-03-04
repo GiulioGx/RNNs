@@ -46,7 +46,7 @@ def train_run(seed: int, task_length: int, prefix: str):
     Configs.seed = seed
 
     # network setup
-    std_dev = 0.14  # 0.14 Tanh # 0.21 Relu
+    std_dev = 0.1  # 0.14 Tanh # 0.21 Relu
     mean = 0
     vars_initializer = RNNVarsInitializer(
         W_rec_init=SpectralInit(matrix_init=GaussianInit(seed=seed, std_dev=std_dev), rho=1.2),
