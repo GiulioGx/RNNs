@@ -15,7 +15,7 @@ from task.Dataset import Dataset
 
 
 class LupusDataset(Dataset):
-    num_min_visit = 3  # XXX 2 schould work
+    num_min_visit = 2  # XXX 2 schould work
 
     @staticmethod
     def __load_mat(mat_file: str):
@@ -269,50 +269,62 @@ class LupusDataset(Dataset):
         return self.__get_set(self.__test, mode='split')
 
     @staticmethod
+    def correct_prediction(y):
+        """correct the preidiction in such a way that the probabilities are monotonic non decreasing"""
+
+        max_val = 0.
+        result_y = y
+        for i in range(y.shape[0]):
+            i_val = result_y[i]
+            result_y[i] = max(i_val, max_val)
+            max_val = max(max_val, i_val)
+        return result_y
+
+    @staticmethod
     def get_scores(y, t, mask):
 
         n_examples = y.shape[2]
-        reduced_mask = sum(mask, 1)
+        reduced_mask = numpy.sum(mask, axis=1)
         scores = numpy.zeros(shape=(n_examples, 1), dtype=Configs.floatType)
         labels = numpy.zeros_like(scores)
 
-        for i in range(y.shape[2]):
-            idx = sum(reduced_mask[:, i])
-            y_filtered = y[0:idx, :, i]
-            t_filtered = t[0:idx, :, i]
+        for i in range(n_examples):
+            n_visits = sum(reduced_mask[:, i])
+            y_filtered = y[0:n_visits, :, i]
+            t_filtered = t[0:n_visits, :, i]
 
             non_zero_indexes = numpy.nonzero(t_filtered)[0]
             zero_indexes = numpy.nonzero(t_filtered < 1)[0]
 
-            assert (non_zero_indexes.shape[0] + zero_indexes.shape[0] == y_filtered.shape[0])
+            n_non_zero = non_zero_indexes.shape[0]
+            n_zero = zero_indexes.shape[0]
+            assert (n_zero + n_non_zero == n_visits)
 
-            to_compare_index = []
-            to_compare_values = []
-            if non_zero_indexes.shape[0] > 0:
-                p1_index = numpy.argmin(y_filtered[non_zero_indexes])
-                p1 = 1. - y_filtered[p1_index]
-                to_compare_index.append(p1_index)
-                to_compare_values.append(p1)
-            if zero_indexes.shape[0] > 0:
-                p2_index = numpy.argmax(y_filtered[zero_indexes])
-                p2 = y_filtered[p2_index]
-                to_compare_index.append(p2_index)
-                to_compare_values.append(p2)
+            if n_non_zero > 0 and n_zero > 0 and numpy.min(y_filtered[non_zero_indexes]) < numpy.max(
+                    y_filtered[zero_indexes]):
+                # in this case the prediction is non consistent whatever the threshold is
+                scores[i] = -1.
+                labels[i] = 1
+            else:
+                # in this case the probability are consistent, hence we choose as score (and label)
+                # for the patience that of the visit which has the farthest score from the label
+                to_compare_index = []
+                to_compare_values = []
+                if n_non_zero > 0:
+                    p1_index = numpy.argmin(y_filtered[non_zero_indexes])
+                    p1 = 1. - y_filtered[p1_index]
+                    to_compare_index.append(p1_index)
+                    to_compare_values.append(p1)
+                if n_zero > 0:
+                    p2_index = numpy.argmax(y_filtered[zero_indexes])
+                    p2 = y_filtered[p2_index]
+                    to_compare_index.append(p2_index)
+                    to_compare_values.append(p2)
 
-            j = to_compare_index[numpy.argmin(to_compare_values).item()]
-            scores[i] = y_filtered[j].item()
-            labels[i] = t_filtered[j].item()
+                j = to_compare_index[numpy.argmin(to_compare_values).item()]
+                scores[i] = y_filtered[j].item()
+                labels[i] = t_filtered[j].item()
 
-
-            # s = sum(t_filtered)
-            # if s == 0:  # negatives
-            #     comparing_idx = numpy.argmax(y_filtered)
-            # elif s == len(t_filtered):  # early positives
-            #     comparing_idx = numpy.argmin(y_filtered)
-            # else: # late positives
-            #     comparing_idx = numpy.min(numpy.nonzero(y_filtered))
-            # scores[i] = y_filtered[comparing_idx].item()
-            # labels[i] = t_filtered[comparing_idx].item()
         return scores, labels
 
     @property
