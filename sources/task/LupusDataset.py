@@ -234,7 +234,7 @@ class LupusDataset(Dataset):
     def n_out(self):
         return self.__n_out
 
-    def __get_train_batch_from_whole_sets(self, sets: tuple, max_length: int):
+    def __get_batch_from_whole_sets(self, sets: tuple, max_length: int):
         indexes = []
         for e in sets:
             indexes.append(range(len(e)))
@@ -244,11 +244,11 @@ class LupusDataset(Dataset):
         if mode == 'whole':
             sets = (set['early_pos'], set['late_pos'], set['neg'])
             max_length = max(set['max_pos'], set['max_neg'])
-            return [self.__get_train_batch_from_whole_sets(sets, max_length)]
+            return [self.__get_batch_from_whole_sets(sets, max_length)]
         elif mode == 'split':
-            return dict(early_pos=self.__get_train_batch_from_whole_sets((set['early_pos'],), set['max_pos']),
-                        late_pos=self.__get_train_batch_from_whole_sets((set['late_pos'],), set['max_pos']),
-                        neg=self.__get_train_batch_from_whole_sets((set['neg'],), set['max_neg']))
+            return dict(early_pos=self.__get_batch_from_whole_sets((set['early_pos'],), set['max_pos']),
+                        late_pos=self.__get_batch_from_whole_sets((set['late_pos'],), set['max_pos']),
+                        neg=self.__get_batch_from_whole_sets((set['neg'],), set['max_neg']))
         else:
             raise ValueError('unsupported value')  # TODO
 

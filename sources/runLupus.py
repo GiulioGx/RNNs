@@ -92,7 +92,7 @@ update_rule = SimpleUdpate()
 
 train_rule = TrainingRule(dir_rule, lr_rule, update_rule, loss_fnc, nan_check=True)
 
-dataset = LupusDataset.no_test_dataset(mat_file=Paths.lupus_path)
+dataset = next(LupusDataset.k_fold_test_datasets(mat_file=Paths.lupus_path, k=4))
 
 loss_monitor = LossMonitor(loss_fnc=loss_fnc)
 roc_monitor = RocMonitor(score_fnc=LupusDataset.get_scores)
