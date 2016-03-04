@@ -253,8 +253,8 @@ class LupusDataset(Dataset):
             raise ValueError('unsupported value')  # TODO
 
     @property
-    def test_set(self, mode: str):
-        return self.__get_set(self.__test, mode)
+    def test_set(self):
+        return self.__get_set(self.__test, mode='whole')
 
     @property
     def train_set(self):

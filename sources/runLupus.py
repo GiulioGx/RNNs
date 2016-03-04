@@ -72,11 +72,11 @@ net_builder = RNNManager(initializer=net_initializer, activation_fnc=Tanh(),
 # setup
 loss_fnc = FullCrossEntropy(single_probability_ouput=True)
 
-combining_rule = OnesCombination(normalize_components=True)
+#combining_rule = OnesCombination(normalize_components=True)
 #combining_rule = SimplexCombination(normalize_components=True, seed=seed)
 # combining_rule = SimpleSum()
-dir_rule = CombinedGradients(combining_rule)
-#dir_rule = Antigradient()
+#dir_rule = CombinedGradients(combining_rule)
+dir_rule = Antigradient()
 # dir_rule = LBFGSDirection(n_pairs=7)
 
 # learning step rule
@@ -102,6 +102,7 @@ saving_criterion = BestValueFoundCriterion(monitor=roc_monitor, mode='gt')
 trainer = SGDTrainer(train_rule, output_dir=out_dir, max_it=10 ** 10,
                      monitor_update_freq=50, batch_size=20)
 trainer.add_monitors(dataset.train_set, 'train', loss_monitor, roc_monitor)
+trainer.add_monitors(dataset.test_set, 'test', roc_monitor)
 trainer.set_saving_criterion(saving_criterion)
 #trainer.set_stopping_criterion(stopping_criterion)
 

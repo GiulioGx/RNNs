@@ -88,7 +88,7 @@ class SplitThread(Thread):
         scores, labels = self.__dataset.get_scores(y, batch.outputs, batch.mask)
         late_fpr, late_tpr, thresholds = metrics.roc_curve(labels, scores, pos_label=1)
 
-        batch = self.__dataset.train_set[0]
+        batch = self.__dataset.test_set[0]
         y = self.__net.net_ouput_numpy(batch.inputs)[0]
         scores, labels = self.__dataset.get_scores(y, batch.outputs, batch.mask)
         # fpr, tpr, thresholds = metrics.roc_curve(labels, scores, pos_label=1)
