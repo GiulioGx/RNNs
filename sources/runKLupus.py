@@ -122,7 +122,7 @@ print(separator)
 
 seed = 15
 Configs.seed = seed
-k = 4
+k = 8
 
 # start main logger
 root_out_dir = Configs.output_dir + 'Lupus_k/'

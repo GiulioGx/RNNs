@@ -61,7 +61,7 @@ vars_initializer = RNNVarsInitializer(
     W_in_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed),
     W_out_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed), b_rec_init=ConstantInit(0),
     b_out_init=ConstantInit(0))
-net_initializer = RNNInitializer(vars_initializer, n_hidden=50)
+net_initializer = RNNInitializer(vars_initializer, n_hidden=10)
 #net_initializer = RNNLoader(out_dir+'/best_model.npz')
 
 net_growing_policy = RNNIncrementalGrowing(n_hidden_incr=5, n_hidden_max=50, n_hidden_incr_freq=1000,
@@ -102,7 +102,7 @@ saving_criterion = BestValueFoundCriterion(monitor=roc_monitor, mode='gt')
 trainer = SGDTrainer(train_rule, output_dir=out_dir, max_it=10 ** 10,
                      monitor_update_freq=50, batch_size=20)
 trainer.add_monitors(dataset.train_set, 'train', loss_monitor, roc_monitor)
-trainer.add_monitors(dataset.test_set, 'test', roc_monitor)
+trainer.add_monitors(dataset.test_set, 'test', RocMonitor(score_fnc=LupusDataset.get_scores))
 trainer.set_saving_criterion(saving_criterion)
 #trainer.set_stopping_criterion(stopping_criterion)
 
