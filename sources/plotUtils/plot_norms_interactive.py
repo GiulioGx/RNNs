@@ -3,10 +3,7 @@ import matplotlib.pyplot as plt
 
 __author__ = 'giulio'
 
-#modelFile = '/home/giulio/RNNs/models/completed/100 hidden/add_task, min_length: 144_average/model.npz'
-modelFile = '/home/giulio/RNNs/models/temporal_order, min_length: 150/stats.npz'
-#modelFile = '/home/giulio/model_octopus.npz'
-#modelFile = '/home/giulio/RNNs/models/completed/temporal_order, min_length: 144/model.npz'
+modelFile = '/home/giulio/RNNs/models/temporal_order, min_length: 200/stats.npz'
 npz = numpy.load(modelFile)
 norms_dicts = npz['obj_separate_norms']
 check_freq = npz['settings_check_freq']
@@ -21,7 +18,7 @@ def on_button_press(event):
 
 
 x = range(length)
-x = reversed(x)
+#x = reversed(x)
 
 for i in x:
     dict = norms_dicts[i]
