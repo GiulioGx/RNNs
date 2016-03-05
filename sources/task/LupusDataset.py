@@ -66,7 +66,7 @@ class LupusDataset(Dataset):
         m = int(float(n) / k)
         start = m * i
         end = int(start + m if i < k - 1 else n)
-        return set[start:end], set[0:start] + set[end:]
+        return set[0:start] + set[end:], set[start:end]
 
     @staticmethod
     def k_fold_test_datasets(mat_file: str, k: int = 1, seed: int = Configs.seed):
