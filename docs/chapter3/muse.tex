@@ -1,0 +1,36 @@
+ 
+\section{Polyphonic music prediction}
+
+In this experiment we considered the task of polyphonic music prediction. The input sequences are polyphonic songs and the aim is, at each time step, to predict which notes are played next. More precisely the input sequences are obtained from a piano roll of MIDI files where each time step corresponds to a beat (usually a quarter or an octave): each step of the sequence is hence composed of $d$, the number of notes that can be played,  binary elements which specify if the correspondent note is played or not at the current beat.
+
+We use as a reference the work done in \cite{BoulangerMuse} which compares several different approaches, RNNs amongst them. We use the dataset \textsl{MuseData} made available by the authors on their website
+\url{http://www-etud.iro.umontreal.ca/~boulanni/icml2012}, using the provided split in train, set and validation sets.
+
+The RNN architecture we employed is a standard RNN with \textit{tanh} units, 88 input and output units (the total number of notes from A0 to C8). We use as output function the logistic function
+
+\begin{equation}
+	F(x)=\frac{1}{1+e^{-x}};
+\end{equation}
+in this way we can interpret the value of each output unit as the probability that such note is played. We used the cross-entropy as loss function for each time step, hence, the loss for the whole sequence is given by:
+
+\begin{equation}
+	L(\vec{y}) = \sum_t\sum_{i=1}^{88} \bar{y}_i \log(y_i) + (1-\bar{y}_i)\log(1-y_i)
+\end{equation}
+
+An important difference with the artificial tasks considered before is that in this case the loss is not computed only on the last step, hence the training does not suffer from the vanishing problem. ADD SOME JUSTIFICATION
+
+We trained the network with stochastic gradient descent with $lr=0.001$. We clipped the gradient at $3$. We explored different number of hidden units, namely 50, 100, 200, 300.
+
+Figure \ref{overfitting_muse} shows the loss function computed on both train and validation sets during the training for model with different hidden units. The most obvious observation is that at a certain point the training procedure starts to over-fit and that model with more hidden units start to over-fit sooner.
+
+\begin{figure}
+	\centering
+\resizebox{15cm}{!}{
+	\input{chapter3/overfitting_muse.py_.pgf}
+}
+\caption{loss on both train and validation set during training for models trained with different number of hidden units}
+\label{overfitting_muse}
+\end{figure}
+
+TABELLA RISULTATI TEST
+
