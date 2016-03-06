@@ -6,6 +6,7 @@ import theano
 from ActivationFunction import Tanh
 from Configs import Configs
 from combiningRule.SimplexCombination import SimplexCombination
+from descentDirectionRule.Antigradient import Antigradient
 from descentDirectionRule.CombinedGradients import CombinedGradients
 from initialization.ConstantInit import ConstantInit
 from initialization.GaussianInit import GaussianInit
@@ -64,6 +65,7 @@ def train_run(seed: int, task_length: int, prefix: str):
     combining_rule = SimplexCombination(normalize_components=True, seed=seed)
     # combining_rule = SimpleSum()
     dir_rule = CombinedGradients(combining_rule)
+    dir_rule = Antigradient()
 
     lr_rule = GradientClipping(lr_value=0.001, clip_thr=1, normalize_wrt_dimension=False)  # 0.01
 

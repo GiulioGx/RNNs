@@ -22,7 +22,7 @@ from metrics.ErrorMonitor import ErrorMonitor
 from metrics.LossMonitor import LossMonitor
 from metrics.ThresholdCriterion import ThresholdCriterion
 from model.RNNGrowingPolicy import RNNIncrementalGrowing
-from model.RNNInitializer import RNNInitializer, RNNVarsInitializer
+from model.RNNInitializer import RNNInitializer, RNNVarsInitializer, RNNLoader
 from model.RNNManager import RNNManager
 from output_fncs.Softmax import Softmax
 from task.Dataset import InfiniteDataset
@@ -48,6 +48,10 @@ print(separator)
 seed = 13
 Configs.seed = seed
 
+task = TemporalOrderTask(200, seed)
+out_dir = Configs.output_dir + str(task)
+out_dir = '/home/giulio/RNNs/models/tmp_200_b'
+
 # network setup
 std_dev = 0.1  # 0.14 Tanh # 0.21 Relu
 mean = 0
@@ -62,14 +66,14 @@ vars_initializer = RNNVarsInitializer(
     W_out_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed), b_rec_init=ConstantInit(0),
     b_out_init=ConstantInit(0))
 net_initializer = RNNInitializer(vars_initializer, n_hidden=50)
+net_initializer = RNNLoader(out_dir+'/best_model.npz')
 net_growing_policy = RNNIncrementalGrowing(n_hidden_incr=5, n_hidden_max=50, n_hidden_incr_freq=1000,
                                            initializer=vars_initializer)
 net_builder = RNNManager(initializer=net_initializer, activation_fnc=Tanh(),
                          output_fnc=Softmax())  # , growing_policy=net_growing_policy)
 
 # setup
-task = TemporalOrderTask(150, seed)
-out_dir = Configs.output_dir + str(task)
+
 loss_fnc = FullCrossEntropy(single_probability_ouput=False)
 
 # penalty strategy
@@ -88,13 +92,13 @@ loss_fnc = FullCrossEntropy(single_probability_ouput=False)
 combining_rule = SimplexCombination(normalize_components=True, seed=seed)
 # combining_rule = SimpleSum()
 dir_rule = CombinedGradients(combining_rule)
-# dir_rule = Antigradient()
+dir_rule = Antigradient()
 # dir_rule = LBFGSDirection(n_pairs=7)
 
 # learning step rule
 # lr_rule = WRecNormalizedStep(0.0001) #0.01
 # lr_rule = ConstantNormalizedStep(0.001)  # 0.01
-lr_rule = GradientClipping(lr_value=0.001, clip_thr=1, normalize_wrt_dimension=False)  # 0.01
+lr_rule = GradientClipping(lr_value=0.0001, clip_thr=1, normalize_wrt_dimension=False)  # 0.01
 # lr_rule = AdaptiveStep(init_lr=0.001, num_tokens=50, prob_augment=0.4, sliding_window_size=50, steps_int_the_past=5,
 #                               beta_augment=1.1, beta_lessen=0.1, seed=seed)
 # lr_rule = ArmijoStep(alpha=0.5, beta=0.1, init_step=1, max_steps=50)
@@ -123,4 +127,4 @@ trainer.set_stopping_criterion(stopping_criterion)
 net = trainer.train(dataset, net_builder)
 
 # net = RNN.load_model(out_dir+'/best_model.npz')
-# net = trainer.resume_training(dataset, net)
+net = trainer.resume_training(dataset, net)

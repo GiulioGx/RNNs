@@ -1,19 +1,36 @@
+import sys
+
 import theano
-from SGDTrainer import SGDTrainer
 
 from ActivationFunction import Tanh
 from Configs import Configs
 from combiningRule.SimplexCombination import SimplexCombination
+from descentDirectionRule.Antigradient import Antigradient
 from descentDirectionRule.CombinedGradients import CombinedGradients
+from descentDirectionRule.LBFGSDirection import LBFGSDirection
 from initialization.ConstantInit import ConstantInit
 from initialization.GaussianInit import GaussianInit
+from initialization.SVDInit import SVDInit
+from initialization.SpectralInit import SpectralInit
+from initialization.UniformInit import UniformInit
+from learningRule.AdaptiveStep import AdaptiveStep
 from learningRule.GradientClipping import GradientClipping
-from lossFunctions.SquaredError import SquaredError
-from model.RNNInitializer import RNNInitializer
+from learningRule.ProbabilisticSearch import ProbabilisticSearch
+from lossFunctions.FullCrossEntropy import FullCrossEntropy
+from lossFunctions.FullSquaredError import FullSquaredError
+from metrics.BestValueFoundCriterion import BestValueFoundCriterion
+from metrics.ErrorMonitor import ErrorMonitor
+from metrics.LossMonitor import LossMonitor
+from metrics.ThresholdCriterion import ThresholdCriterion
+from model.RNNGrowingPolicy import RNNIncrementalGrowing
+from model.RNNInitializer import RNNInitializer, RNNVarsInitializer, RNNLoader
 from model.RNNManager import RNNManager
 from output_fncs.Linear import Linear
+from output_fncs.Softmax import Softmax
 from task.AdditionTask import AdditionTask
 from task.Dataset import InfiniteDataset
+from task.TemporalOrderTask import TemporalOrderTask
+from training.SGDTrainer import SGDTrainer
 from training.TrainingRule import TrainingRule
 from updateRule.SimpleUpdate import SimpleUdpate
 
@@ -34,28 +51,29 @@ print(separator)
 seed = 13
 Configs.seed = seed
 
+task = AdditionTask(150, seed)
+out_dir = Configs.output_dir + str(task)+'_simplex'
+
 # network setup
-std_dev = 0.14  # 0.14 Tanh # 0.21 Relu
+std_dev = 0.1  # 0.14 Tanh # 0.21 Relu
 mean = 0
-rnn_initializer = RNNInitializer(W_rec_init=GaussianInit(mean=mean, std_dev=std_dev, seed=seed),
-                                 W_in_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed),
-                                 W_out_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed), b_rec_init=ConstantInit(0),
-                                 b_out_init=ConstantInit(0))
-net_builder = RNNManager(initializer=rnn_initializer, activation_fnc=Tanh(), output_fnc=Linear(), n_hidden=100)
+# vars_initializer = RNNVarsInitializer(
+#     W_rec_init=SpectralInit(matrix_init=GaussianInit(mean=mean, std_dev=std_dev, seed=seed), rho=1.2),
+#     W_in_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed),
+#     W_out_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed), b_rec_init=ConstantInit(0),
+#     b_out_init=ConstantInit(0))
+vars_initializer = RNNVarsInitializer(
+    W_rec_init=SpectralInit(matrix_init=GaussianInit(seed=seed, std_dev=std_dev), rho=1.2),
+    W_in_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed),
+    W_out_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed), b_rec_init=ConstantInit(0),
+    b_out_init=ConstantInit(0))
+net_initializer = RNNInitializer(vars_initializer, n_hidden=50)
+net_builder = RNNManager(initializer=net_initializer, activation_fnc=Tanh(),
+                         output_fnc=Linear())
 
 # setup
-task = AdditionTask(144, seed)
-out_dir = Configs.output_dir + str(task)
-loss_fnc = SquaredError()
 
-# # HF init
-# bias_value = 0.5
-# n_conns = 25
-# std_dev = sqrt(0.12)
-# init_strategies = {'W_rec': RandomConnectionsInit(n_connections_per_unit=n_conns, std_dev=std_dev, columnwise=False),
-#                    'W_in': RandomConnectionsInit(n_connections_per_unit=n_conns, std_dev=0.1, columnwise=True),
-#                    'W_out': RandomConnectionsInit(n_connections_per_unit=n_conns, std_dev=std_dev, columnwise=False),
-#                    'b_rec': ConstantInit(bias_value), 'b_out': ConstantInit(bias_value)}
+loss_fnc = FullSquaredError()
 
 # penalty strategy
 # penalty = MeanPenalty()
@@ -69,32 +87,41 @@ loss_fnc = SquaredError()
 # dir_rule = FrozenGradient(penalty)
 # dir_rule = SepareteGradient()
 
-#combining_rule = OnesCombination(normalize_components=False)
+# combining_rule = OnesCombination(normalize_components=False)
 combining_rule = SimplexCombination(normalize_components=True, seed=seed)
 # combining_rule = SimpleSum()
 dir_rule = CombinedGradients(combining_rule)
-#dir_rule = LBFGSDirection(n_pairs=20)
+#dir_rule = Antigradient()
+# dir_rule = LBFGSDirection(n_pairs=7)
 
 # learning step rule
 # lr_rule = WRecNormalizedStep(0.0001) #0.01
 # lr_rule = ConstantNormalizedStep(0.001)  # 0.01
-lr_rule = GradientClipping(lr_value=0.003, clip_thr=1, normalize_wrt_dimension=False)  # 0.01
+lr_rule = GradientClipping(lr_value=0.001, clip_thr=1, normalize_wrt_dimension=False)  # 0.01
+# lr_rule = AdaptiveStep(init_lr=0.001, num_tokens=50, prob_augment=0.4, sliding_window_size=50, steps_int_the_past=5,
+#                               beta_augment=1.1, beta_lessen=0.1, seed=seed)
 # lr_rule = ArmijoStep(alpha=0.5, beta=0.1, init_step=1, max_steps=50)
 
-#update_rule = FixedAveraging(t=10)
+# update_rule = FixedAveraging(t=10)
 update_rule = SimpleUdpate()
 # update_rule = Momentum(gamma=0.1)
 
 
 train_rule = TrainingRule(dir_rule, lr_rule, update_rule, loss_fnc)
 
-trainer = SGDTrainer(train_rule, output_dir=out_dir, max_it=10 ** 10,
-                     check_freq=200, batch_size=100, stop_error_thresh=1)
-
 # dataset = Dataset.no_valid_dataset_from_task(size=1000, task=task)
-dataset = InfiniteDataset(task=task, validation_size=10 ** 4)
+dataset = InfiniteDataset(task=task, validation_size=10 ** 4, n_batches=5)
 
-net = trainer.train(dataset, net_builder, seed=seed)
+loss_monitor = LossMonitor(loss_fnc=loss_fnc)
+error_monitor = ErrorMonitor(dataset=dataset)
+stopping_criterion = ThresholdCriterion(monitor=error_monitor, threshold=1. / 100)
+saving_criterion = BestValueFoundCriterion(monitor=error_monitor)
 
-#net = RNN.load_model(out_dir+'/best_model.npz')
+trainer = SGDTrainer(train_rule, output_dir=out_dir, max_it=10 ** 10,
+                     monitor_update_freq=200, batch_size=100)
+trainer.add_monitors(dataset.validation_set, "validation", loss_monitor, error_monitor)
+trainer.set_saving_criterion(saving_criterion)
+trainer.set_stopping_criterion(stopping_criterion)
+
+net = trainer.train(dataset, net_builder)
 #net = trainer.resume_training(dataset, net)

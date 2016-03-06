@@ -34,10 +34,13 @@ class MarkerBasedTask:
         # random inputs (channel 1)
         inputs[:, 1, :] = self.__input_fnc(batch_size, length)  # FIXME 1
 
+        mask = numpy.zeros_like(outputs)
+        mask[-1, :, :] = 1
+
         # outputs
         self.__output_fnc(inputs, outputs, p0, p1)
 
-        return Batch(inputs, outputs)
+        return Batch(inputs, outputs, mask)
 
     @property
     def n_in(self):
