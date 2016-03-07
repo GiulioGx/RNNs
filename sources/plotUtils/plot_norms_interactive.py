@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 __author__ = 'giulio'
 
-modelFile = '/home/giulio/RNNs/models/temporal_order, min_length: 200/stats.npz'
+modelFile = '/home/giulio/RNNs/models/Muse_bk/stats.npz'
 npz = numpy.load(modelFile)
 norms_dicts = npz['obj_separate_norms']
 check_freq = npz['settings_check_freq']

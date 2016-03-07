@@ -15,7 +15,7 @@ class RNNGradient(object):
     def __init__(self, net, gW_rec_T, gW_in_T, gW_out_T, gb_rec_T, gb_out_T, obj_fnc:ObjectiveFunction):
 
         self.__preserve_norm = True
-        self.__type = 'separate'  # FIXME
+        self.__type = 'togheter'  # FIXME
         self.__net = net
         self.__obj_fnc = obj_fnc
 
@@ -110,7 +110,7 @@ class RNNGradient(object):
             dots_variance = PrintableInfoElement('dots_var', ':02.2f', symbols_replacements[8].item())
             grad_dots = NonPrintableInfoElement('grad_temporal_cos', symbols_replacements[6]) # plug them in again when statistic is refactored
             separate_info = NonPrintableInfoElement('separate_norms', separate_norms_dict)
-            info = InfoList(norms_variance, dots_variance)
+            info = InfoList(norms_variance, dots_variance, grad_dots, separate_info)
             return info
 
     def temporal_combination(self, strategy):  # FIXME
@@ -121,8 +121,8 @@ class RNNGradient(object):
             combination, strategy_info = self.__separate_combination(strategy=strategy)
 
         if self.__preserve_norm:
-            # combination *= self.__.value.norm()/combination.norm() # XXX isnana
-            combination = combination.scale_norms_as(self.__value)
+            combination *= self.__value.norm()/combination.norm() # XXX isnana
+            #combination = combination.scale_norms_as(self.__value)
 
         return combination, strategy_info
 

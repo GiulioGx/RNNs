@@ -39,7 +39,7 @@ for i in range(n_models):
     legends.append('{} (validation)'.format(n_hidden))
     legends.append('{} (train)'.format(n_hidden))
 
-    best_valid_point_idx = numpy.argmin(valid_loss[0:6*10**5/check_freq])
+    best_valid_point_idx = numpy.argmin(valid_loss[0:6 * 10 ** 5 / check_freq])
     markers_x.append(x_values[best_valid_point_idx])
     markers_y.append(valid_loss[best_valid_point_idx])
 
@@ -48,7 +48,7 @@ plt.plot(markers_x, markers_y, '*', color='black', markersize=20)
 plt.yscale('log')
 plt.ylim(ymin=4, ymax=13)
 plt.yticks([4, 5, 6, 7, 8, 9, 10, 13])
-plt.xlim(xmin=0, xmax=6* 10 ** 5)
+plt.xlim(xmin=0, xmax=6 * 10 ** 5)
 plt.legend(legends, shadow=True, fancybox=True)
 plt.xlabel('iterations')
 plt.ylabel('negative log likelihood')
