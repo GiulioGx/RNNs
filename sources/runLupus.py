@@ -51,7 +51,7 @@ print(separator)
 
 seed = 15
 Configs.seed = seed
-out_dir = Configs.output_dir + 'Lupus'
+out_dir = Configs.output_dir + 'Lupus_vip'
 
 # network setup
 std_dev = 0.14  # 0.14 Tanh # 0.21 Relu
@@ -61,7 +61,7 @@ vars_initializer = RNNVarsInitializer(
     W_in_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed),
     W_out_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed), b_rec_init=ConstantInit(0),
     b_out_init=ConstantInit(0))
-net_initializer = RNNInitializer(vars_initializer, n_hidden=100)
+net_initializer = RNNInitializer(vars_initializer, n_hidden=50)
 #net_initializer = RNNLoader(out_dir+'/best_model.npz')
 
 net_growing_policy = RNNIncrementalGrowing(n_hidden_incr=5, n_hidden_max=50, n_hidden_incr_freq=1000,

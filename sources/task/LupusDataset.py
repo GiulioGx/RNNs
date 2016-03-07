@@ -24,8 +24,9 @@ class LupusDataset(Dataset):
         positive_patients = mat_obj['pazientiPositivi']
         negative_patients = mat_obj['pazientiNegativi']
 
-        feature_struct = mat_obj['selectedFeatures']
-        features_names = LupusDataset.__find_features_names(feature_struct)
+        #features_struct = mat_obj['selectedFeatures']
+        features_struct = mat_obj['featuresVip7']
+        features_names = LupusDataset.__find_features_names(features_struct)
 
         data = numpy.concatenate((positive_patients, negative_patients), axis=0)
         features_normalizations = LupusDataset.__find_normalization_factors(features_names, data)
@@ -333,7 +334,7 @@ class LupusDataset(Dataset):
 
 
 if __name__ == '__main__':
-    dataset = LupusDataset.no_test_dataset(Paths.lupus_path)
+    dataset = LupusDataset.no_test_dataset(Paths.lupus_path, seed=13)
     print(dataset.infos)
     batch = dataset.get_train_batch(batch_size=3)
     print(str(batch))
