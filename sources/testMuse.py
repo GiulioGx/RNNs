@@ -11,7 +11,7 @@ separator = '#####################'
 
 # setup
 seed = 22
-out_dir = '/home/giulio/RNNs/models/Muse/best_model.npz'
+out_dir = '/home/giulio/MuseCollection/2/best_model.npz'
 
 net = RNN.load_model(out_dir)
 
@@ -28,8 +28,13 @@ loss_np = T.function([net.symbols.u, net.symbols.t, loss_fnc.mask], loss, name='
 loss = 0.
 for b in dataset.test_set:
     loss += loss_np(b.inputs, b.outputs, b.mask).item()
+print('Test loss: {}'.format(loss/len(dataset.test_set)))
 
-print('Loss: {}'.format(loss/len(dataset.test_set)))
+loss = 0.
+for b in dataset.train_set:
+    loss += loss_np(b.inputs, b.outputs, b.mask).item()
+print('Train loss: {}'.format(loss/len(dataset.train_set)))
+
 
 
 

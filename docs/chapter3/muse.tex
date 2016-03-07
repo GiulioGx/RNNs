@@ -14,23 +14,37 @@ The RNN architecture we employed is a standard RNN with \textit{tanh} units, 88 
 in this way we can interpret the value of each output unit as the probability that such note is played. We used the cross-entropy as loss function for each time step, hence, the loss for the whole sequence is given by:
 
 \begin{equation}
-	L(\vec{y}) = \sum_t\sum_{i=1}^{88} \bar{y}_i \log(y_i) + (1-\bar{y}_i)\log(1-y_i)
+	L(\vec{y}) = \frac{1}{T}\sum_{t=1}^{T}\sum_{i=1}^{d} \bar{y}_i \log(y_i) + (1-\bar{y}_i)\log(1-y_i)
 \end{equation}
 
 An important difference with the artificial tasks considered before is that in this case the loss is not computed only on the last step, hence the training does not suffer from the vanishing problem. ADD SOME JUSTIFICATION
 
 We trained the network with stochastic gradient descent with $lr=0.001$. We clipped the gradient at $3$. We explored different number of hidden units, namely 50, 100, 200, 300.
 
-Figure \ref{overfitting_muse} shows the loss function computed on both train and validation sets during the training for model with different hidden units. The most obvious observation is that at a certain point the training procedure starts to over-fit and that model with more hidden units start to over-fit sooner.
+Figure \ref{fig:overfitting_muse} shows the loss function computed on both train and validation sets during the training for model with different hidden units. The most obvious observation is that at a certain point the training procedure starts to over-fit and that model with more hidden units start to over-fit sooner.
 
 \begin{figure}
 	\centering
 \resizebox{15cm}{!}{
 	\input{chapter3/overfitting_muse.py_.pgf}
 }
-\caption{loss on both train and validation set during training for models trained with different number of hidden units}
-\label{overfitting_muse}
+\caption{Loss on both train and validation sets during training for models with different number of hidden units. The stars mark the best values on the validation sets.}
+\label{fig:overfitting_muse}
 \end{figure}
+
+\begin{table}
+	\centering
+\begin{tabular}{c | c | c}
+	hidden units & train loss & validation loss \\
+	50 & 6.44 & 6.20  \\
+	100 & 6.53 & 6.10 \\
+	200 & 6.58 & 6.03 \\
+	300 & 6.82 & 6.21 \\
+\end{tabular}
+\caption{This table shows the loss (i.e. negative log-likelihood per time step) for both train and test sets for the models with different number of hidden units.}
+\label{table:losses_n_hidden}
+\end{table}
+
 
 TABELLA RISULTATI TEST
 
