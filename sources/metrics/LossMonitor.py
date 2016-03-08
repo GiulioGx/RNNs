@@ -11,7 +11,7 @@ class LossMonitor(RealValuedMonitor):
         self.__loss_fnc = loss_fnc
 
     def get_symbols(self, y, t, mask)->list:
-        return [self.__loss_fnc.value(y=y, t=t)]
+        return [self.__loss_fnc.value(y=y, t=t, mask=mask)]
 
     @property
     def info(self)->Info:

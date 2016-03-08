@@ -217,6 +217,8 @@ class RNN(object):
 
             self.u = TT.tensor3(name='u')  # input tensor
             self.t = TT.tensor3(name='t')  # target tensor
+            # The mask specifies which part of the target is not used in the computation
+            self.mask = TT.tensor3(name='mask')
 
             n_sequences = self.u.shape[2]
             # initial hidden values
@@ -279,15 +281,15 @@ class RNN(object):
             y_t = self.__net.y_t(h_t, W_out_fixes, b_out_fixes)
             return h_t, y_t
 
-        def gradient(self, u, t, params: RNNVars, obj_fnc: ObjectiveFunction):
+        def gradient(self, u, t, mask, params: RNNVars, obj_fnc: ObjectiveFunction):
             y, _, W_rec, W_in, W_out, b_rec, b_out = self.net_output(u=u, params=params)
-            cost = obj_fnc.value(y, t)
+            cost = obj_fnc.value(y, t, mask)
             gW_rec, gW_in, gW_out, gb_rec, gb_out = T.grad(cost=cost, wrt=[W_rec, W_in, W_out, b_rec, b_out])
             return RNNGradient(self.__net, gW_rec, gW_in, gW_out, gb_rec, gb_out, obj_fnc), cost
 
-        def failsafe_grad(self, u, t, params: RNNVars, obj_fnc: ObjectiveFunction):  # FIXME XXX remove me
+        def failsafe_grad(self, u, t, mask, params: RNNVars, obj_fnc: ObjectiveFunction):  # FIXME XXX remove me
             y, _, _ = self.__net.net_output(u=u, params=params, h_m1=self.__net.symbols.h_m1)
-            cost = obj_fnc.value(y, t)
+            cost = obj_fnc.value(y, t, mask)
             gW_rec, gW_in, gW_out, \
             gb_rec, gb_out = TT.grad(cost, [self.__W_rec, self.__W_in, self.__W_out, self.__b_rec, self.__b_out])
             return RNNVars(self.__net, W_rec=gW_rec, W_in=gW_in, W_out=gW_out, b_rec=gb_rec, b_out=gb_out), cost

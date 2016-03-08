@@ -10,14 +10,14 @@ class FullCrossEntropy(LossFunction):
         super().__init__()
         self.__single_probability_output = single_probability_ouput
 
-    def value(self, y, t):
+    def value(self, y, t, mask):
 
         if self.__single_probability_output:
             c = -(t * TT.log(y + 1e-10) + (1 - t) * TT.log((1 - y) + 1e-10))
         else:
             c = -(t * TT.log(y))
-        n_selected_temporal_losses = TT.switch(self.mask.sum(axis=1) > 0, 1, 0).sum().sum()
-        s = (c * self.mask).sum().sum().sum() / n_selected_temporal_losses
+        n_selected_temporal_losses = TT.switch(mask.sum(axis=1) > 0, 1, 0).sum().sum()
+        s = (c * mask).sum().sum().sum() / n_selected_temporal_losses
         return s
 
     @property

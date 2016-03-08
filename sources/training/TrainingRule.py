@@ -88,7 +88,7 @@ class TrainingRule(SimpleInfoProducer):
             self.__symbolic_error_list = []
             net_symbols = net.symbols
             self.__obj_fnc = ObjectiveFunction(rule.loss_fnc, net, net_symbols.current_params, net_symbols.u,
-                                               net_symbols.t)
+                                               net_symbols.t, net_symbols.mask)
             obj_fnc_symbolic_info = self.__obj_fnc.infos
             self.__symbolic_infos_list.append(obj_fnc_symbolic_info)
             direction, dir_symbolic_dir_infos = rule.desc_dir_rule.direction(net, self.__obj_fnc)
@@ -122,7 +122,7 @@ class TrainingRule(SimpleInfoProducer):
 
             params = dict(allow_input_downcast='true', on_unused_input='warn', updates=network_updates + rule_updates,
                           name='train_step')
-            input_symbol_list = [net_symbols.u, net_symbols.t, rule.loss_fnc.mask]
+            input_symbol_list = [net_symbols.u, net_symbols.t, net_symbols.mask]
 
             self.__step_with_info = T.function(input_symbol_list, output_info_symbol_list + output_error_symbol_list,
                                                **params)

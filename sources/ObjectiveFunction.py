@@ -15,7 +15,7 @@ __author__ = 'giulio'
 
 
 class ObjectiveFunction(SimpleInfoProducer):  # XXX is this class needed?
-    def __init__(self, loss_fnc: LossFunction, net, params: Variables, u, t):
+    def __init__(self, loss_fnc: LossFunction, net, params: Variables, u, t, mask):
         self.__net = net
         self.__loss_fnc = loss_fnc
 
@@ -26,8 +26,8 @@ class ObjectiveFunction(SimpleInfoProducer):  # XXX is this class needed?
         # XXX
 
         # XXX REMOVE (?)
-        self.failsafe_grad, _ = self.__net.symbols.failsafe_grad(u=u, t=t, params=self.__params, obj_fnc=self)
-        self.__grad,  self.__objective_value = self.__net.symbols.gradient(u=u, t=t, params=self.__params, obj_fnc=self)
+        self.failsafe_grad, _ = self.__net.symbols.failsafe_grad(u=u, t=t, mask=mask, params=self.__params, obj_fnc=self)
+        self.__grad,  self.__objective_value = self.__net.symbols.gradient(u=u, t=t, mask=mask, params=self.__params, obj_fnc=self)
 
         grad_norm = self.__grad.value.norm()
 
@@ -44,8 +44,8 @@ class ObjectiveFunction(SimpleInfoProducer):  # XXX is this class needed?
     def current_loss(self):
         return self.__objective_value
 
-    def value(self, y, t):
-        return self.__loss_fnc.value(y=y, t=t)
+    def value(self, y, t, mask):
+        return self.__loss_fnc.value(y=y, t=t, mask=mask)
 
     @property
     def loss_mask(self):

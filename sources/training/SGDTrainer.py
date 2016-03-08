@@ -63,7 +63,7 @@ class SGDTrainer(object):
         u = net.symbols.u
         t = net.symbols.t
         y = net.symbols.y_shared  # XXX
-        mask = self.__training_rule.loss_fnc.mask
+        mask = net.symbols.mask
 
         for d in self.__monitor_dicts:
 
