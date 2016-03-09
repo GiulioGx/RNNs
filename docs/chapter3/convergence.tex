@@ -1,0 +1,127 @@
+Consider the stochastic optimization problem 
+\begin{equation}
+\underset{\vec{x} \in \mathbb{R}^n}{\text{min}} f(\vec{x}) = \mathbb{E[F(\vec{x}, \vec{\xi})]},
+\label{eq:stochastic_prob}
+\end{equation}
+where $\vec{\xi} \in \Omega \subset \mathbb{R}^d$ is a random vector.
+Suppose $f(\cdot)$ is continuous, strongly convex (with constant $c$) and there exists a compact level set of $f(\cdot)$, hence (\ref{eq:stochastic_prob}) has a unique optimal solution $\vec{x}_*$. Let also $L$ be the Lipschitz constant of $\nabla f$.
+We make the following two assumptions:
+\begin{itemize}
+	\item	It is possible to generate independent identically distributed samples of $\vec{\xi}$
+	\item There exists an oracle which, for a given point $(\vec{x}, \vec{\xi})$ return a stochastic direction $D(\vec{x}, \vec{\xi})$ such that $d(\vec{x})\defeq\mathbb{E}[D(\vec{x}, \vec{\xi})]$ satisfies:
+	\begin{equation}
+	-(\vec{x}-\vec{x}_*)^T (\nabla f(\vec{x}) -g(\vec{x})) \geq -\mu L \norm{\vec{x}_j-\vec{x}_*}^2_2\quad \forall \vec{x} \in \mathbb{R}^n,
+	\label{eq:angular_condition}
+	\end{equation}
+	for some $\mu \in (0,\frac{c}{L}) $.
+\end{itemize}
+Consider the algorithm defined by
+\begin{equation}
+\vec{x}_{j+1} = \vec{x}_j -\gamma_j D(\vec{x}_j,\vec{\xi}_j).
+\label{eq:stochastic_algo}
+\end{equation}
+Each iterate $\vec{x}_j$ of such random process is a function of the history $\vec{\xi}_{[j-1]}=(\vec{\xi}_1,\dots, \vec{\xi}_{j-1})$
+
+Let $A_j\defeq \norm{\vec{x}_j-\vec{x}_*}^2_2$ and $a_j\defeq\mathbb{E}[A_j]$.
+From (\ref*{eq:stochastic_algo}) we get
+\begin{equation}
+\begin{aligned}
+A_{j+1} &= \frac{1}{2}\norm{\vec{x}_j - \gamma_jD(\vec{x}_j,\vec{\xi}_j) -\vec{x}_*}^2_2\\ 
+&= A_j +\frac{1}{2}\gamma_j^2\norm{D(\vec{x}_j,\vec{\xi}_j)}^2_2 - \gamma_j(\vec{x}_j-\vec{x}_*)^TD(\vec{x}_j,\vec{\xi}_j).
+\end{aligned}
+\label{eq:aj_rec}
+\end{equation}
+Since $\vec{x}_j = \vec{x}_j(\vec{\xi_{[j-1]}})$ is independent of $\vec{\xi}_j$ we have
+\begin{equation}
+\begin{aligned}
+\mathbb{E}_{\vec{\xi}_{[j]}}[(\vec{x}_j-\vec{x}_*)^TD(\vec{x}_j,\vec{\xi}_j)] &= \mathbb{E}_{\vec{\xi}_{[j-1]}}[\mathbb{E}_{\vec{\xi}_{[j]}}[(\vec{x}_j-\vec{x}_*)^TD(\vec{x}_j,\vec{\xi}_j)]|\vec{\xi}_{[j-1]}]\\
+&= \mathbb{E}_{\vec{\xi}_{[j-1]}}[(\vec{x}_j-\vec{x}_*)^T\mathbb{E}{\vec{\xi}_{[j]}}[D(\vec{x}_j,\vec{\xi}_j)]|\vec{\xi}_{[j-1]}]\\
+&=\mathbb{E}_{\vec{\xi}_{[j-1]}}[(\vec{x}_j-\vec{x}_*)^Td(\vec{x}_j)]\\
+\end{aligned}
+\label{eq:independece}
+\end{equation}
+Let now assume that there exists $M>0$ such that
+\begin{equation}
+\mathbb{E}[\norm{D(\vec{x},\vec{\xi})}^2_2]\leq M^2 \quad \forall \vec{x} \in \mathbb{R}^n.
+\label{eq:gradient_bound}
+\end{equation}
+Using (\ref{eq:independece}) and (\ref{eq:gradient_bound}) we obtain, taking expectation of both sides of (\ref{eq:aj_rec})
+\begin{equation}
+a_{j+1} \leq a_j - \gamma_j\mathbb{E}_{\vec{\xi}_{[j-1]}}[(\vec{x}_j-\vec{x}_*)^Td(\vec{x}_j)] + \frac{1}{2}\gamma_j^2M^2
+\label{eq:aj_rec_2}
+\end{equation}
+Since $f(\cdot)$ is strongly convex there exists $c>0$ such that
+\begin{equation}
+(\vec{y}-\vec{x})^T(\nabla f(\vec{y})- \nabla f(\vec{x}))\geq c \norm{\vec{y}-\vec{x}}^2_2
+\label{eq:strong_convexity}
+\end{equation}
+By optimality of $\vec{x}_*$ we have
+\begin{equation}
+(\vec{x}-\vec{x}_*)^T\nabla f(\vec{x}_*) \geq 0 \quad \vec{x} \in \mathbb{R}^n.
+\label{eq:optimality}
+\end{equation}
+Inequalities (\ref{eq:optimality}) and (\ref{eq:strong_convexity}) implies
+\begin{equation}
+(\vec{x}-\vec{x}_*)^T \nabla f(\vec{x}) \geq c \norm{\vec{x}-\vec{x}_*}^2_2 \quad \vec{x} \in \mathbb{R}^n.
+\end{equation}
+Adding and subtracting the direction $g(\vec{x})$ we get
+\begin{equation}
+(\vec{x}-\vec{x}_*)^T (\nabla f(\vec{x}) -g(\vec{x}) +g(\vec{x})) \geq c \norm{\vec{x}-\vec{x}_*}^2_2,
+\end{equation}
+which can be rewritten as
+\begin{equation}
+(\vec{x}-\vec{x}_*)^T g(\vec{x}) \geq c \norm{\vec{x}-\vec{x}_*}^2_2 - (\vec{x}-\vec{x}_*)^T (\nabla f(\vec{x}) -g(\vec{x}))
+\label{eq:angular_inequality}
+\end{equation}
+From assumption (\ref{eq:angular_condition}), taking expectations of both side of (\ref{eq:angular_inequality}) we obtain
+\begin{align}
+\mathbb{E}[(\vec{x}_j-\vec{x}_*)^T g(\vec{x}_j)] &\geq c \mathbb{E}[\norm{\vec{x}_j-\vec{x}_*}^2_2)] - \mathbb{E}[(\vec{x}_j-\vec{x}_*)^T (\nabla f(\vec{x}_j) -g(\vec{x}_j))]\\
+&\geq c(1-\frac{\mu L}{c}) \mathbb{E}[\norm{\vec{x}_j-\vec{x}_*}^2_2)]\\
+& = 2\bar{c}a_j,
+\end{align}
+with $\bar{c}=c(1-\frac{\mu L}{c})$.
+Hence from (\ref{eq:aj_rec_2}) follows 
+\begin{equation}
+a_{j+1} \leq (1-2\bar{c}\gamma_j)a_j + \frac{1}{2}\gamma_j^2M^2.
+\end{equation}
+Choosing the stepsizes as $\gamma_j = \frac{\beta}{j}$ for some constant $\beta>\frac{1}{2\bar{c}}$ we get
+\begin{equation}
+a_{j+1} \leq (1-2\bar{c}\gamma_j)a_j + \frac{1}{2}\frac{\beta^2M^2}{j^2}.
+\end{equation}
+It follows by induction that
+\begin{equation}
+\mathbb{E}[\norm{\vec{x}_j - \vec{x}_*}^2_2] = 2a_j\leq \frac{Q(\beta)}{j},
+\end{equation}
+where 
+\begin{equation}
+Q(\beta) = max\left\{\frac{\beta^2M^2}{2\bar{c}-1},\norm{\vec{x}_1 - \vec{x}_*}^2_2 \right\}.
+\end{equation}
+Hence, since
+\begin{equation}
+f(\vec{x})\leq f(\vec{x}_*) + \frac{1}{2}L\norm{\vec{x} - \vec{x}_*}^2_2, \quad \forall \vec{x} \in \mathbb{R}^n,
+\end{equation}
+we obtain
+\begin{equation}
+\mathbb{E}[f(\vec{x}_j)-f(\vec{x}_*)] \leq \frac{1}{2} L \mathbb{E}[\norm{\vec{x}_j - \vec{x}_*}^2_2] \leq \frac{1}{2}LQ(\beta)
+\end{equation}
+
+\paragraph{Sufficient stochastic direction condition} Assumption \ref{eq:angular_condition} can be further elaborated.
+Let $\theta$ be the angle between $\nabla f(\vec{x})$ and $g(\vec{x})$ and $\norm{g(\vec{x})} = \alpha \norm{\nabla f(\vec{x})}$ for some $\alpha>0$.
+Then,
+\begin{align}
+\norm{\nabla f(\vec{x}_j)-g(\vec{x}_j)}^2 &= \norm{\nabla f(\vec{x}_j)}^2 + \norm{g(\vec{x}_j)}^2 -2\norm{\nabla f(\vec{x}_j)}\norm{g(\vec{x}_j)}\cos\theta_j\\
+&=  \norm{\nabla f(\vec{x}_j)}^2(1+\alpha_j^2-2\alpha_j \cos\theta_j).
+\end{align}
+Since $\nabla f(\vec{x}_*)=0$, using Lipschitz continuity of $\nabla f$ (with constant L) we get
+\begin{equation}
+\norm{\nabla f(\vec{x}_j)-g(\vec{x})} \leq L\norm{\vec{x}-\vec{x}_*} (1+\alpha^2-2\alpha \cos\theta)^{\frac{1}{2}}
+\end{equation}
+Hence
+\begin{align}
+(\vec{x}-\vec{x}_*)^T (\nabla f(\vec{x}) -g(\vec{x})) &\leq \norm{\vec{x}-\vec{x}_*} \norm{\nabla f(\vec{x}) -g(\vec{x})}\\
+&\leq L\norm{\vec{x}-\vec{x}_*}^2 (1+\alpha^2-2\alpha \cos\theta)^{\frac{1}{2}}.
+\end{align}
+Hence a sufficient condition for assumption \ref{eq:angular_condition} to hold is
+\begin{equation}
+1+\alpha^2-2\alpha \cos\theta_j\leq \mu^2
+\end{equation} 

@@ -1,5 +1,48 @@
+The entirety of our work is based on the SGD framework described in section \ref{sec:sgd}. In particular we insisted on three phases of the algorithm, namely the initialization, the choice of the descent direction and the step size. We show that the initialization play a crucial role in the learning process and can, alone, dictate if the learning process will be "successful"\footnote{Here we refer to artificial task where a criterion for success is easily defined.} or not. We than propose a strategy to choose a descent direction which helps to deal with the vanishing gradient. As for the learning rate we use a technique which is entirely equivalent to the gradient clipping trick described and used in \cite{pascanu}.
+
+\section{Notation}
+Before focusing on each phase we will introduce some notation which we will need in the following sections.
+
+Consider a loss function $g$ for some time step $\tau$. Defining 
+\begin{equation}
+\nabla_{\mat{W_{rec}}} g_{|k}  \defeq \frac{\partial g}{\partial \vec{a}^{\tau}} \cdot \frac{\partial \vec{a}^{\tau}}{\partial \vec{a}^k} \cdot \frac{\partial^+ \vec{a}^k}{\partial \mat{W}^{rec}},
+\end{equation}
+and recalling the results of section \ref{sec:rnn_grad} we have
+\begin{equation}
+	\frac{\partial g_{\tau}}{\partial \mat{W}^{rec}} = \sum_{k=1}^{\tau} \nabla_{\mat{W_{rec}}} g_{|k}.
+\end{equation}
+We refer to $\nabla_{\vec{x}} g_{|k}$ as temporal gradient for time step $k$ w.r.t. the variable $\vec{x}$ and is easy to see that it is the gradient computed imagining to replicate variable $\vec{x}$ for each time step and taking the derivatives w.r.t. the variable for the step $k$.
+
+The \textbf{vanishing gradient} problem appears then, under this new notation, when the norm of the temporal components $\nabla_{\vec{x}} g_{|k}$ are exponentially bigger for more recent time steps.
+
 \section{Initialization}
+The first moment of the learning process is the initialization of the variables. We found that the choice of the initial value for the recurrent matrix $\mat{W_rec}$ has a big impact on the entire learning process. Recall the results from section  \ref{sec:vanishing} where we saw that too small singular values of such matrix are a sufficient condition for the gradient to vanish. Although a sufficient condition that guarantees the gradient not to vanish is not known, the results on the singular values encourage to explore initialization techniques with higher singular values and more in general spectral radius of the recurrent matrix. A similar suggestion, motivated by other consideration was given in the ESN field \cite{reservoirSummary}.
 
-\section{Simplex}
+We initialize the recurrent matrix sampling from a gaussian distribution of zero mean and variance equal to 0.1 and then scaling the matrix to have a specified spectral radius. In figure \ref{fig:temporal_norms} we show the temporal components w.r.t. all the variables of the model varying the spectral radius in [0.8, 0.9, 1, 1.1, 1.2] computed on a hundred samples for the temporal order task.
 
+\begin{figure}
+    \includegraphics[width=0.9\textwidth]{chapter3/temporal_components.eps}
+    \caption{Temporal components for the temporal order task varying the spectral radius of the recurrent matrix. y axis is in logarithmic scale.}
+    \label{fig:temporal_norms}
+\end{figure}
+
+The first two cases, the one with spectral radius less than one, are perfect example of vanishing gradient instances: more recent temporal components have norm exponentially bigger than the more distant ones (please note that the y axis is in logarithmic scale). On the contrary such phenomenon is not observed in the cases of spectral radius bigger than one where the temporal components have roughly the same norm.
+\\
+EXPERIMENTS HERE ?
+
+\section{Descent direction}
+
+\section{Learning rate}
+
+Given a direction $\vec{d}_k$ the step $\alpha_k$ is chosen as:
+
+\begin{equation}
+\alpha_k = 
+\begin{cases}
+	\mu \quad &\mbox{if} \norm{\vec{d}_k}_2 \leq c\\
+	\frac{\mu}{\norm{\vec{d}_k}_2} \quad & otherwise
+\end{cases},
+\end{equation}
+where $\mu$ and $c$ are some positive constants. The idea is to use a constant step when the direction has an enough small norm and vice-versa choose a step which inversely proportional when such norm is too big. The idea is that, if the descent direction has a too big norm we might take a too big step. This technique is know as \textit{gradient clipping} and has been used for RNNs training (with first oder methods) in \cite{pascanu} and \cite{mikolov}. We confirm, as found in these works, that this trick is essential for RNNs training where, considering the anti-gradient descent direction, we deal with fast changing norms.
 \section{Proof of convergence}
+\input{chapter3/convergence}
