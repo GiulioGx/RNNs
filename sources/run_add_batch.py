@@ -22,6 +22,7 @@ from metrics.ThresholdCriterion import ThresholdCriterion
 from model.RNNGrowingPolicy import RNNIncrementalGrowing
 from model.RNNInitializer import RNNInitializer, RNNVarsInitializer
 from model.RNNManager import RNNManager
+from output_fncs.Linear import Linear
 from output_fncs.Softmax import Softmax
 from task.AdditionTask import AdditionTask
 from task.Dataset import InfiniteDataset
@@ -59,7 +60,7 @@ def train_run(seed: int, task_length: int, prefix: str):
     net_initializer = RNNInitializer(vars_initializer, n_hidden=50)
     # net_growing_policy = RNNIncrementalGrowing(n_hidden_incr=5, n_hidden_max=50, n_hidden_incr_freq=500,
     #                                            initializer=vars_initializer)
-    net_builder = RNNManager(initializer=net_initializer, activation_fnc=Tanh(), output_fnc=Softmax())
+    net_builder = RNNManager(initializer=net_initializer, activation_fnc=Tanh(), output_fnc=Linear())
 
     loss_fnc = FullSquaredError()
 

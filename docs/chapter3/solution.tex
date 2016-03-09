@@ -27,11 +27,31 @@ We initialize the recurrent matrix sampling from a gaussian distribution of zero
 \end{figure}
 
 The first two cases, the one with spectral radius less than one, are perfect example of vanishing gradient instances: more recent temporal components have norm exponentially bigger than the more distant ones (please note that the y axis is in logarithmic scale). On the contrary such phenomenon is not observed in the cases of spectral radius bigger than one where the temporal components have roughly the same norm.
+
+This evidence suggest 
 \\
 EXPERIMENTS HERE ?
 
 \section{Descent direction}
 
+The idea is to use the structure of the gradient to compute a "descent" direction which does not suffer from the vanishing problem.
+\begin{itemize}
+	\item normalize the temporal components:
+	\begin{equation}
+	g_t(\vec{x}) = \frac{\nabla L_{|t}(\vec{x})}{\norm{\nabla L_{|t}(\vec{x})}}.
+	\end{equation}
+	
+	\item combine the normalized gradients in a simplex:
+	\begin{equation}
+	g(\vec{x}) = \sum_{t=1}^T \beta_t \cdot g_t(\vec{x}).
+	\end{equation}
+	
+	with $\sum_{t=1}^T\beta_t=1, \beta_t>0$ (randomly picked at each iteration).
+	\item exploit the gradient norm:
+	\begin{equation}
+	d(\vec{x}) = \norm{\nabla L (\vec{x})}\frac{g(\vec{x})}{\norm{g(\vec{x})}}.
+	\end{equation}
+\end{itemize}
 \section{Learning rate}
 
 Given a direction $\vec{d}_k$ the step $\alpha_k$ is chosen as:
