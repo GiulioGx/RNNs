@@ -52,11 +52,14 @@ if __name__ == '__main__':
     rho = 1.2
     print('Generating a matrix with size: {} with the spectral initialization strategy (radius: {:2.2f})'.format(size,
                                                                                                                  rho))
-    strategy = GaussianInit(mean=0, std_dev=0.3, seed=45435435)
+    strategy = GaussianInit(mean=0, std_dev=0.3, seed=455)
     strategy = SVDInit(matrix_init=strategy, rho=1.2)
     w = strategy.init_matrix(size, dtype='float32')
     print('generated matrix is\n', w)
     print('spectral radius of the generated matrix is {:2.2f}'.format(MatrixInit.spectral_radius(w)))
     _, s, _ = numpy.linalg.svd(w)
+    eigs = abs(numpy.linalg.eigvals(w))
+    rho = numpy.max(eigs)
     print('singular values:\n', s)
+    print('eigen values:\n', eigs)
     print('Done...')

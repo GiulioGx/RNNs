@@ -10,7 +10,7 @@ from task.Batch import Batch
 import numpy
 
 
-class Dataset(SimpleInfoProducer):  # TODO change name
+class Dataset(SimpleInfoProducer):
     __metaclass__ = abc.ABCMeta
 
     @abc.abstractproperty
@@ -21,17 +21,9 @@ class Dataset(SimpleInfoProducer):  # TODO change name
     def n_out(self):
         """"""
 
-    # @abc.abstractproperty
-    # def validation_set(self):
-    #     """returns a list of validation 'Batch'es"""
-
     @abc.abstractmethod
     def get_train_batch(self, batch_size: int):
         """returns a training batch"""
-
-    # @abc.abstractmethod
-    # def computer_error(self, t, y):
-    #     """return the 'true' error of output y wrt the labels t (theano symbols)"""
 
     @staticmethod
     def no_valid_dataset_from_task(task: Task, size: int):

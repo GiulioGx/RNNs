@@ -51,7 +51,7 @@ print(separator)
 seed = 13
 Configs.seed = seed
 
-task = AdditionTask(150, seed)
+task = AdditionTask(100, seed)
 out_dir = Configs.output_dir + str(task)
 
 # network setup
@@ -91,7 +91,7 @@ loss_fnc = FullSquaredError()
 combining_rule = SimplexCombination(normalize_components=True, seed=seed)
 # combining_rule = SimpleSum()
 dir_rule = CombinedGradients(combining_rule)
-#dir_rule = Antigradient()
+dir_rule = Antigradient()
 # dir_rule = LBFGSDirection(n_pairs=7)
 
 # learning step rule

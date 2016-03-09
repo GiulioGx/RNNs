@@ -6,7 +6,6 @@ from Configs import Configs
 from infos.InfoElement import SimpleDescription
 from task.Batch import Batch
 from task.Dataset import Dataset
-import theano.tensor as TT
 
 
 class MuseDataset(Dataset):
@@ -14,7 +13,7 @@ class MuseDataset(Dataset):
         dataset = pickle.load(open(pickle_file_path, "rb"))
         self.__min_note_index = 21  # inclusive
         self.__max_note_index = 108  # inclusive
-        self.__n_notes = self.__max_note_index - self.__min_note_index  # FOXME *2??
+        self.__n_notes = self.__max_note_index - self.__min_note_index
         self.__rng = numpy.random.RandomState(seed)
         self.__train_set = self.__pre_process_sequences(dataset['train'])
         self.__validation_set = self.__pre_process_sequences(dataset['valid'])
@@ -42,7 +41,7 @@ class MuseDataset(Dataset):
                 indexes = numpy.asarray(s[t], dtype='int32') - self.__min_note_index
                 inputs[t, indexes] = 1  # played note
             processed_sequences.append(inputs)
-        print('max_length: {}'.format(max_length))
+        print('max_length: {}'.format(max_length))  # TODO remove print
         return processed_sequences
 
     @staticmethod
@@ -64,15 +63,15 @@ class MuseDataset(Dataset):
         bacth_size = len(indexes)
         min_length = MuseDataset.__min_length(examples, indexes) - 1
         batch_length = min(min_length, fixed_length)
-        #print('bl', batch_length)
+        # print('bl', batch_length)
         inputs, outputs, mask = self.__init_batch(batch_length, bacth_size)
 
         for i in range(len(indexes)):
             example = examples[indexes[i]]
             length = len(example)
-            #print('l', length)
+            # print('l', length)
             start = self.__rng.randint(low=0, high=length - batch_length)
-            #print('start', start)
+            # print('start', start)
             inputs[0:batch_length, :, i] = example[start:start + batch_length, :]
             outputs[0:batch_length, :, i] = example[start + 1:start + batch_length + 1, :]
             mask[0:batch_length, :, i] = 1
@@ -96,16 +95,19 @@ class MuseDataset(Dataset):
     def n_in(self):
         return self.__n_notes
 
-    def computer_error(self, t, y):
-        return TT.alloc(1)  # XXX not sure what to do. is this meaningful for this dataset?
-
     @property
     def n_out(self):
         return self.__n_notes
 
     @property
     def infos(self):
-        return SimpleDescription('MuseDataset')
+
+        description = ['Muse Dataset:\n',
+                       '{} train sequences: \n'.format(len(self.__test_set)),
+                       '{} test sequences: \n'.format(len(self.__train_set)),
+                       '{} validation sequences: \n'.format(len(self.__validation_set))]
+
+        return SimpleDescription(''.join(description))
 
     def __process_set(self, set):
         batches = []
@@ -130,9 +132,9 @@ if __name__ == '__main__':
     numpy.set_printoptions(threshold=numpy.inf)
     seed = 545
     pickle_file_path = '/home/giulio/RNNs/datasets/polyphonic/musedata/MuseData.pickle'
-    print('Testing MuseDataset ...')
-    task = MuseDataset(seed=seed, pickle_file_path=pickle_file_path)
-    batch = task.get_train_batch(1)
+    dataset = MuseDataset(seed=seed, pickle_file_path=pickle_file_path)
+    print(str(dataset.infos))
+    batch = dataset.get_train_batch(1)
     print(str(batch))
     print('input batch shape: ', batch.inputs.shape)
     print('output batch shape: ', batch.outputs.shape)

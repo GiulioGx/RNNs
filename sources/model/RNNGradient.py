@@ -12,7 +12,7 @@ __author__ = 'giulio'
 
 
 class RNNGradient(object):
-    def __init__(self, net, gW_rec_T, gW_in_T, gW_out_T, gb_rec_T, gb_out_T, obj_fnc:ObjectiveFunction):
+    def __init__(self, net, gW_rec_T, gW_in_T, gW_out_T, gb_rec_T, gb_out_T, obj_fnc: ObjectiveFunction):
 
         self.__preserve_norm = True
         self.__type = 'togheter'  # FIXME
@@ -26,7 +26,7 @@ class RNNGradient(object):
         self.__gb_out_T = gb_out_T
 
         gW_rec_norms, gW_in_norms, gW_out_norms, \
-        gb_rec_norms, gb_out_norms, full_gradients_norms, self.__H = self.__compute_H() #self.__process_temporal_components()
+        gb_rec_norms, gb_out_norms, full_gradients_norms, self.__H = self.__compute_H()  # self.__process_temporal_components()
 
         self.__value = self.__net.from_tensor(self.__H.sum(axis=0))  # GRADIENT
 
@@ -39,13 +39,14 @@ class RNNGradient(object):
         G = self.__H / self.__H.norm(2, axis=1).reshape((self.__H.shape[0], 1))
         grad_dots = TT.dot(G, self.__value.as_tensor() / self.__value.norm())
 
-        self.__infos = RNNGradient.Info(gW_rec_norms, gW_in_norms, gW_out_norms, gb_rec_norms, gb_out_norms, grad_dots, full_gradients_norms)
+        self.__infos = RNNGradient.Info(gW_rec_norms, gW_in_norms, gW_out_norms, gb_rec_norms, gb_out_norms, grad_dots,
+                                        full_gradients_norms)
 
     def __compute_H(self):
         output_list = []
         to_concat = []
         for t in [self.__gW_rec_T, self.__gW_in_T, self.__gW_out_T, self.__gb_rec_T, self.__gb_out_T]:
-            vec_T = t.reshape(shape=(t.shape[0], t.shape[1]*t.shape[2]))
+            vec_T = t.reshape(shape=(t.shape[0], t.shape[1] * t.shape[2]))
             output_list.append(vec_T.norm(2, axis=1).squeeze())
             to_concat.append(vec_T)
         H = TT.concatenate(to_concat, axis=1)
@@ -89,11 +90,12 @@ class RNNGradient(object):
 
     class Info(SymbolicInfo):
 
-        def __init__(self, gW_rec_norms, gW_in_norms, gW_out_norms, gb_rec_norms, gb_out_norms, grad_dots, full_gradients_norms):
-
+        def __init__(self, gW_rec_norms, gW_in_norms, gW_out_norms, gb_rec_norms, gb_out_norms, grad_dots,
+                     full_gradients_norms):
             norm_variance = full_gradients_norms.var()
             dots_variance = grad_dots.var()
-            self.__symbols = [gW_rec_norms, gW_in_norms, gW_out_norms, gb_rec_norms, gb_out_norms, full_gradients_norms, grad_dots, norm_variance, dots_variance]
+            self.__symbols = [gW_rec_norms, gW_in_norms, gW_out_norms, gb_rec_norms, gb_out_norms, full_gradients_norms,
+                              grad_dots, norm_variance, dots_variance]
 
         @property
         def symbols(self):
@@ -108,7 +110,8 @@ class RNNGradient(object):
 
             norms_variance = PrintableInfoElement('g_var', ':02.2f', symbols_replacements[7].item())
             dots_variance = PrintableInfoElement('dots_var', ':02.2f', symbols_replacements[8].item())
-            grad_dots = NonPrintableInfoElement('grad_temporal_cos', symbols_replacements[6]) # plug them in again when statistic is refactored
+            grad_dots = NonPrintableInfoElement('grad_temporal_cos', symbols_replacements[
+                6])  # plug them in again when statistic is refactored
             separate_info = NonPrintableInfoElement('separate_norms', separate_norms_dict)
             info = InfoList(norms_variance, dots_variance, grad_dots, separate_info)
             return info
@@ -121,8 +124,8 @@ class RNNGradient(object):
             combination, strategy_info = self.__separate_combination(strategy=strategy)
 
         if self.__preserve_norm:
-            combination *= self.__value.norm()/combination.norm() # XXX isnana
-            #combination = combination.scale_norms_as(self.__value)
+            combination *= self.__value.norm() / combination.norm()  # XXX is nan?
+            # combination = combination.scale_norms_as(self.__value)
 
         return combination, strategy_info
 
@@ -140,7 +143,7 @@ class RNNGradient(object):
         gb_rec_tensor = flatten_list_element(self.__gb_rec_T).squeeze()
 
         # # these are the indexes where the loss is not null by design
-        indexes = (self.__obj_fnc.loss_mask.sum(axis=1).sum(axis=1)).nonzero()[0]
+        indexes = (self.__net.mask.sum(axis=1).sum(axis=1)).nonzero()[0]
         gW_out_tensor = flatten_list_element(self.__gW_out_T.take(indexes, axis=0)).squeeze()
         gb_out_tensor = flatten_list_element(self.__gb_out_T.take(indexes, axis=0)).squeeze()
 
