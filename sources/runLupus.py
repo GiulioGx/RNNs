@@ -51,7 +51,7 @@ print(separator)
 
 seed = 15
 Configs.seed = seed
-out_dir = Configs.output_dir + 'Lupus_vip'
+out_dir = Configs.output_dir + 'Lupus_100'
 
 # network setup
 std_dev = 0.14  # 0.14 Tanh # 0.21 Relu
@@ -61,7 +61,7 @@ vars_initializer = RNNVarsInitializer(
     W_in_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed),
     W_out_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed), b_rec_init=ConstantInit(0),
     b_out_init=ConstantInit(0))
-net_initializer = RNNInitializer(vars_initializer, n_hidden=50)
+net_initializer = RNNInitializer(vars_initializer, n_hidden=100)
 #net_initializer = RNNLoader(out_dir+'/best_model.npz')
 
 net_growing_policy = RNNIncrementalGrowing(n_hidden_incr=5, n_hidden_max=50, n_hidden_incr_freq=1000,
@@ -95,7 +95,7 @@ train_rule = TrainingRule(dir_rule, lr_rule, update_rule, loss_fnc, nan_check=Tr
 dataset = next(LupusDataset.k_fold_test_datasets(mat_file=Paths.lupus_path, k=4))
 
 loss_monitor = LossMonitor(loss_fnc=loss_fnc)
-roc_monitor = RocMonitor(score_fnc=LupusDataset.get_scores)
+roc_monitor = RocMonitor(score_fnc=LupusDataset.get_scores_visits)
 #stopping_criterion = ThresholdCriterion(monitor=error_monitor, threshold=1. / 100)
 saving_criterion = BestValueFoundCriterion(monitor=roc_monitor, mode='gt')
 

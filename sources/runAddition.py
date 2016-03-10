@@ -6,6 +6,7 @@ from ActivationFunction import Tanh
 from Configs import Configs
 from combiningRule.SimplexCombination import SimplexCombination
 from descentDirectionRule.Antigradient import Antigradient
+from descentDirectionRule.CheckedDirection import CheckedDirection
 from descentDirectionRule.CombinedGradients import CombinedGradients
 from descentDirectionRule.LBFGSDirection import LBFGSDirection
 from initialization.ConstantInit import ConstantInit
@@ -91,7 +92,8 @@ loss_fnc = FullSquaredError()
 combining_rule = SimplexCombination(normalize_components=True, seed=seed)
 # combining_rule = SimpleSum()
 dir_rule = CombinedGradients(combining_rule)
-dir_rule = Antigradient()
+dir_rule = CheckedDirection(dir_rule)
+# dir_rule = Antigradient()
 # dir_rule = LBFGSDirection(n_pairs=7)
 
 # learning step rule

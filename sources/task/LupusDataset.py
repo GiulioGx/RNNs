@@ -24,7 +24,7 @@ class LupusDataset(Dataset):
         positive_patients = mat_obj['pazientiPositivi']
         negative_patients = mat_obj['pazientiNegativi']
 
-        #features_struct = mat_obj['selectedFeatures']
+        # features_struct = mat_obj['selectedFeatures']
         features_struct = mat_obj['featuresVip7']
         features_names = LupusDataset.__find_features_names(features_struct)
 
@@ -280,6 +280,27 @@ class LupusDataset(Dataset):
             result_y[i] = max(i_val, max_val)
             max_val = max(max_val, i_val)
         return result_y
+
+    @staticmethod
+    def get_scores_visits(y, t, mask):
+
+        n_examples = y.shape[2]
+        n_visits_max = n_examples * y.shape[0]
+        reduced_mask = numpy.sum(mask, axis=1)
+        scores = numpy.zeros(shape=(n_visits_max, 1), dtype=Configs.floatType)
+        labels = numpy.zeros_like(scores)
+
+        visit_count = 0
+        for i in range(n_examples):
+            n_visits = sum(reduced_mask[:, i])
+            y_filtered = y[0:n_visits, :, i]
+            t_filtered = t[0:n_visits, :, i]
+
+            scores[visit_count:visit_count + n_visits] = y_filtered
+            labels[visit_count:visit_count + n_visits] = t_filtered
+            visit_count += n_visits
+
+        return scores[0:visit_count], labels[0:visit_count]
 
     @staticmethod
     def get_scores(y, t, mask):

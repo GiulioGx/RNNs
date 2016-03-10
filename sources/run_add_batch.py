@@ -7,6 +7,7 @@ from ActivationFunction import Tanh
 from Configs import Configs
 from combiningRule.SimplexCombination import SimplexCombination
 from descentDirectionRule.Antigradient import Antigradient
+from descentDirectionRule.CheckedDirection import CheckedDirection
 from descentDirectionRule.CombinedGradients import CombinedGradients
 from initialization.ConstantInit import ConstantInit
 from initialization.GaussianInit import GaussianInit
@@ -69,6 +70,7 @@ def train_run(seed: int, task_length: int, prefix: str):
     # combining_rule = SimpleSum()
     dir_rule = CombinedGradients(combining_rule)
     #dir_rule = Antigradient()
+    dir_rule = CheckedDirection(dir_rule)
 
     lr_rule = GradientClipping(lr_value=0.005, clip_thr=1, normalize_wrt_dimension=False)  # 0.01
 
