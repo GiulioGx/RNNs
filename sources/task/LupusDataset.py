@@ -1,3 +1,4 @@
+import abc
 import math
 from random import shuffle
 
@@ -14,8 +15,61 @@ from task.Batch import Batch
 from task.Dataset import Dataset
 
 
+class BuildBatchStrategy(object):
+    __metaclass__ = abc.ABCMeta
+
+    @abc.abstractmethod
+    def build_batch(self, patience):
+        """build up a batch according to the strategy"""
+
+    @abc.abstractmethod
+    def keys(self) -> list:
+        """return the keys of the sets to be used with this strategy"""
+
+
+class PerVisitTargets(BuildBatchStrategy):
+    def __init__(self):
+        pass
+
+    def keys(self) -> list:
+        return ['early_pos', 'late_pos', 'neg']
+
+    def build_batch(self, patience):
+        feats = patience['features']
+        targets = patience['targets']
+
+        n_visits = len(targets)
+        mask = numpy.ones_like(feats)
+        return feats[0:n_visits - 1, :], targets[1:n_visits, :], mask
+
+
+class PerPatienceTargets(BuildBatchStrategy):
+    def keys(self) -> list:
+        return ['neg', 'late_pos']
+
+    def build_batch(self, patience):
+        feats = patience['features']
+        targets = patience['targets']
+
+        non_zero_indexes = numpy.where(targets > 0)[0]
+
+        if len(non_zero_indexes) > 0:
+            first_positive_idx = numpy.min(non_zero_indexes)
+            assert (first_positive_idx > 0)
+            outputs = numpy.zeros(shape=(first_positive_idx, 1), dtype=Configs.floatType)
+            outputs[-1] = 1
+            inputs = feats[0:first_positive_idx, :]
+
+        else:
+            inputs = feats[0:-1, :]
+            outputs = targets[0:-1, :]
+        mask = numpy.zeros_like(outputs)
+        mask[-1, :] = 1
+        return inputs, outputs, mask
+
+
 class LupusDataset(Dataset):
-    num_min_visit = 2  # XXX 2 schould work
+    num_min_visit = 2  # dicard patients with lass than visits
 
     @staticmethod
     def __load_mat(mat_file: str):
@@ -53,13 +107,13 @@ class LupusDataset(Dataset):
         return early_positives, late_positives, negatives, max_visits_pos, max_visits_neg, features_names, infos
 
     @staticmethod
-    def no_test_dataset(mat_file: str, seed: int = Configs.seed):
+    def no_test_dataset(mat_file: str, strategy: BuildBatchStrategy = PerVisitTargets, seed: int = Configs.seed):
         early_positives, late_positives, negatives, max_visits_pos, max_visits_neg, features_names, infos = LupusDataset.__load_mat(
             mat_file)
         train_set = dict(early_pos=early_positives, late_pos=late_positives, neg=negatives, max_pos=max_visits_pos,
                          max_neg=max_visits_neg)
         data_dict = dict(train=train_set, test=train_set, features=features_names)
-        return LupusDataset(data=data_dict, infos=infos, seed=seed)
+        return LupusDataset(data=data_dict, infos=infos, seed=seed, strategy=strategy)
 
     @staticmethod
     def __split_set(set, i, k):
@@ -70,7 +124,8 @@ class LupusDataset(Dataset):
         return set[0:start] + set[end:], set[start:end]
 
     @staticmethod
-    def k_fold_test_datasets(mat_file: str, k: int = 1, seed: int = Configs.seed):
+    def k_fold_test_datasets(mat_file: str, k: int = 1, strategy: BuildBatchStrategy = PerVisitTargets(),
+                             seed: int = Configs.seed):
         early_positives, late_positives, negatives, max_visits_pos, max_visits_neg, features_names, infos = LupusDataset.__load_mat(
             mat_file)
         for i in range(k):
@@ -83,7 +138,7 @@ class LupusDataset(Dataset):
             test_set = dict(early_pos=epts, late_pos=lpts, neg=nts, max_pos=max_visits_pos,
                             max_neg=max_visits_neg)
             data_dict = dict(train=train_set, test=test_set, features=features_names)
-            yield LupusDataset(data=data_dict, infos=infos, seed=seed)
+            yield LupusDataset(data=data_dict, infos=infos, seed=seed, strategy=strategy)
 
     @staticmethod
     def get_set_info(set):
@@ -91,7 +146,8 @@ class LupusDataset(Dataset):
                         PrintableInfoElement('late_pos', ':d', len(set['late_pos'])),
                         PrintableInfoElement('neg', ':d', len(set['neg'])))
 
-    def __init__(self, data: dict, infos: Info = NullInfo(), seed: int = Configs.seed):
+    def __init__(self, data: dict, infos: Info = NullInfo(), strategy: BuildBatchStrategy = PerVisitTargets(),
+                 seed: int = Configs.seed):
 
         self.__train = data['train']
         self.__test = data['test']
@@ -99,6 +155,7 @@ class LupusDataset(Dataset):
         self.__rng = numpy.random.RandomState(seed)
         self.__n_in = len(self.__features)
         self.__n_out = 1
+        self.__build_batch_strategy = strategy  # TODO add infos
 
         split_info = InfoGroup('split', InfoList(InfoGroup('train', InfoList(LupusDataset.get_set_info(self.__train))),
                                                  InfoGroup('test', InfoList(LupusDataset.get_set_info(self.__test)))))
@@ -186,7 +243,7 @@ class LupusDataset(Dataset):
             print('\t{:01.2f},\t {:01.0f}'.format(y[i, :, patient_number].item(),
                                                   batch.outputs[i, :, patient_number].item()))
 
-    def __build_batch(self, indexes, sets, max_length):
+    def __build_batch(self, indexes, sets, max_length) -> Batch:
         max_length -= 1
         n_sets = len(sets)
         n_batch_examples = 0
@@ -202,26 +259,45 @@ class LupusDataset(Dataset):
             for j in range(bs):
                 idx = indexes[i][j]
                 pat = sets[i][idx]
-                feats = pat['features']
-                targets = pat['targets']
-                n_visits = len(targets)
+
+                feats, targets, pat_mask = self.__build_batch_strategy.build_batch(pat)
+                n = feats.shape[0]
+                assert (n == targets.shape[0])
+
                 index = partial_idx + j
-                inputs[0:n_visits - 1, :, index] = feats[0:n_visits - 1, :]
-                outputs[0:n_visits - 1, :, index] = targets[1:n_visits]
-                mask[0:n_visits - 1, :, index] = 1
+                inputs[0:n, :, index] = feats
+                outputs[0:n, :, index] = targets
+                mask[0:n, :, index] = pat_mask
             partial_idx += bs
         return Batch(inputs, outputs, mask)
 
-    def get_train_batch(self, batch_size: int):
+    def __sets_from_keys(self, data):
+        sets = []
+        for key in self.__build_batch_strategy.keys():
+            sets.append(data[key])
+        return sets
 
-        exs = (self.__train['early_pos'], self.__train['late_pos'], self.__train['neg'])
+    # def get_train_batch(self, batch_size:int):
+    #     exs = self.__sets_from_keys(self.__train)
+    #     pool = []
+    #     for e in exs:
+    #         pool += e
+    #
+    #     indexes = self.__rng.randint(size=(batch_size, 1), low=0, high=len(pool))
+    #     max_length = len(pool[max(indexes, key=lambda i: len(pool[i]['targets']))]['targets'])
+    #     return self.__build_batch([indexes], [pool], max_length)
+
+
+    def get_train_batch(self, batch_size: int) -> Batch:
+        """return a 'Batch' of size 'batch_size'"""
+        exs = self.__sets_from_keys(self.__train)
         bs = int(math.ceil(float(batch_size) / len(exs)))
 
         indexes = []
         max_length = 0
 
         for e in exs:
-            e_indexes = self.__rng.randint(size=(bs, 1), low=0, high=len(e))[0]
+            e_indexes = self.__rng.randint(size=(bs, 1), low=0, high=len(e))
             indexes.append(e_indexes)
             max_length = max(len(e[max(e_indexes, key=lambda i: len(e[i]['targets']))]['targets']), max_length)
 
@@ -235,21 +311,25 @@ class LupusDataset(Dataset):
     def n_out(self):
         return self.__n_out
 
-    def __get_batch_from_whole_sets(self, sets: tuple, max_length: int):
+    def __get_batch_from_whole_sets(self, sets: list, max_length: int) -> Batch:
         indexes = []
         for e in sets:
             indexes.append(range(len(e)))
         return self.__build_batch(indexes, sets, max_length)
 
     def __get_set(self, set, mode):
+        max_length = max(set['max_pos'], set['max_neg'])
         if mode == 'whole':
-            sets = (set['early_pos'], set['late_pos'], set['neg'])
-            max_length = max(set['max_pos'], set['max_neg'])
+            sets = self.__sets_from_keys(set)
             return [self.__get_batch_from_whole_sets(sets, max_length)]
         elif mode == 'split':
-            return dict(early_pos=self.__get_batch_from_whole_sets((set['early_pos'],), set['max_pos']),
-                        late_pos=self.__get_batch_from_whole_sets((set['late_pos'],), set['max_pos']),
-                        neg=self.__get_batch_from_whole_sets((set['neg'],), set['max_neg']))
+            keys = self.__build_batch_strategy.keys()
+            splits = self.__sets_from_keys(set)
+            assert (len(keys) == len(splits))
+            d = dict()
+            for i in range(len(keys)):
+                d[keys[i]] = self.__get_batch_from_whole_sets([splits[i]], max_length=max_length)
+            return d
         else:
             raise ValueError('unsupported value')  # TODO
 
@@ -301,6 +381,28 @@ class LupusDataset(Dataset):
             visit_count += n_visits
 
         return scores[0:visit_count], labels[0:visit_count]
+
+    @staticmethod
+    def get_scores_patients(y, t, mask):
+
+        if numpy.sum(numpy.sum(numpy.sum(t))) <= 0:
+            print('t', t)
+            print('t_size ', t.shape)
+        assert (numpy.sum(numpy.sum(numpy.sum(t))) > 0)
+
+        n_examples = y.shape[2]
+        reduced_mask = numpy.sum(mask, axis=1)
+        scores = numpy.zeros(shape=(n_examples, 1), dtype=Configs.floatType)
+        labels = numpy.zeros_like(scores)
+
+        for i in range(n_examples):
+            non_zero_indexes = numpy.where(reduced_mask[:, i] > 0)[0]
+            idx = numpy.min(non_zero_indexes)
+
+            scores[i] = y[idx, :, i]
+            labels[i] = t[idx, :, i]
+        assert (numpy.sum(scores) > 0 and numpy.sum(scores) != len(scores))
+        return scores, labels
 
     @staticmethod
     def get_scores(y, t, mask):
@@ -355,7 +457,7 @@ class LupusDataset(Dataset):
 
 
 if __name__ == '__main__':
-    dataset = LupusDataset.no_test_dataset(Paths.lupus_path, seed=13)
+    dataset = LupusDataset.no_test_dataset(Paths.lupus_path, seed=13, strategy=PerPatienceTargets())
     print(dataset.infos)
     batch = dataset.get_train_batch(batch_size=3)
     print(str(batch))

@@ -23,7 +23,7 @@ from metrics.ThresholdCriterion import ThresholdCriterion
 from model.RNNInitializer import RNNInitializer, RNNVarsInitializer
 from model.RNNManager import RNNManager
 from output_fncs.Logistic import Logistic
-from task.LupusDataset import LupusDataset
+from task.LupusDataset import LupusDataset, PerPatienceTargets
 from training.SGDTrainer import SGDTrainer
 from training.TrainingRule import TrainingRule
 from updateRule.SimpleUpdate import SimpleUdpate
@@ -70,8 +70,8 @@ class SplitThread(Thread):
         train_rule = TrainingRule(dir_rule, lr_rule, update_rule, loss_fnc, nan_check=True)
 
         loss_monitor = LossMonitor(loss_fnc=loss_fnc)
-        roc_monitor = RocMonitor(score_fnc=LupusDataset.get_scores)
-        stopping_criterion = ThresholdCriterion(monitor=roc_monitor, threshold=0.91, mode='>')
+        roc_monitor = RocMonitor(score_fnc=LupusDataset.get_scores_patients)
+        stopping_criterion = ThresholdCriterion(monitor=roc_monitor, threshold=0.1, mode='>')
         saving_criterion = BestValueFoundCriterion(monitor=roc_monitor, mode='gt')
 
         trainer = SGDTrainer(train_rule, output_dir=self.__out_dir, max_it=10 ** 10,
@@ -85,12 +85,12 @@ class SplitThread(Thread):
     def __test(self):
         batch = self.__dataset.split_test['late_pos']
         y = self.__net.net_ouput_numpy(batch.inputs)[0]
-        scores, labels = self.__dataset.get_scores(y, batch.outputs, batch.mask)
+        scores, labels = LupusDataset.get_scores_patients(y, batch.outputs, batch.mask)
         late_fpr, late_tpr, thresholds = metrics.roc_curve(labels, scores, pos_label=1)
 
         batch = self.__dataset.test_set[0]
         y = self.__net.net_ouput_numpy(batch.inputs)[0]
-        scores, labels = self.__dataset.get_scores(y, batch.outputs, batch.mask)
+        scores, labels = LupusDataset.get_scores_patients(y, batch.outputs, batch.mask)
         # fpr, tpr, thresholds = metrics.roc_curve(labels, scores, pos_label=1)
         score = roc_auc_score(y_true=labels, y_score=scores)
 
@@ -140,7 +140,7 @@ logger.info('Begin {}-split training'.format(k))
 
 count = 0
 thread_list = []
-for d in LupusDataset.k_fold_test_datasets(Paths.lupus_path, k=k):
+for d in LupusDataset.k_fold_test_datasets(Paths.lupus_path, k=k, strategy=PerPatienceTargets()):
     out_dir = root_out_dir + str(count)
     t = SplitThread(out_dir=out_dir, dataset=d, id=count, logger=logger)
     thread_list.append(t)
