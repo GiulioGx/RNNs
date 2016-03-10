@@ -69,8 +69,8 @@ def train_run(seed: int, task_length: int, prefix: str):
     combining_rule = SimplexCombination(normalize_components=True, seed=seed)
     # combining_rule = SimpleSum()
     dir_rule = CombinedGradients(combining_rule)
-    dir_rule = Antigradient()
-    # dir_rule = CheckedDirection(dir_rule)
+    dir_rule = CheckedDirection(dir_rule, max_cos=0, max_dir_norm=0.5)
+    # dir_rule = Antigradient()
 
     lr_rule = GradientClipping(lr_value=0.005, clip_thr=1, normalize_wrt_dimension=False)  # 0.01
 

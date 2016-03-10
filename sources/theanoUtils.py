@@ -86,3 +86,7 @@ def flatten_list_element(list_of_tensor_variables):
 
 def vec_dot(a, b):
     return TT.dot(a.flatten(), b.flatten())
+
+
+def ifelse_vars(condition, arg_if, arg_else, net):
+    return net.from_tensor(ifelse(condition, arg_if.as_tensor(), arg_else.as_tensor()))
