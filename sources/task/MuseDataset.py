@@ -103,9 +103,9 @@ class MuseDataset(Dataset):
     def infos(self):
 
         description = ['Muse Dataset:\n',
-                       '{} train sequences: \n'.format(len(self.__test_set)),
-                       '{} test sequences: \n'.format(len(self.__train_set)),
-                       '{} validation sequences: \n'.format(len(self.__validation_set))]
+                       '{} train sequences \n'.format(len(self.__train_set)),
+                       '{} test sequences \n'.format(len(self.__test_set)),
+                       '{} validation sequences \n'.format(len(self.__validation_set))]
 
         return SimpleDescription(''.join(description))
 
@@ -131,8 +131,8 @@ class MuseDataset(Dataset):
 if __name__ == '__main__':
     numpy.set_printoptions(threshold=numpy.inf)
     seed = 545
-    pickle_file_path = '/home/giulio/RNNs/datasets/polyphonic/musedata/MuseData.pickle'
-    dataset = MuseDataset(seed=seed, pickle_file_path=pickle_file_path)
+    data_path = '/home/giulio/RNNs/datasets/polyphonic/musedata/MuseData.pickle'
+    dataset = MuseDataset(seed=seed, pickle_file_path=data_path)
     print(str(dataset.infos))
     batch = dataset.get_train_batch(1)
     print(str(batch))

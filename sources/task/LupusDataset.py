@@ -271,7 +271,7 @@ class LupusDataset(Dataset):
 
     @staticmethod
     def correct_prediction(y):
-        """correct the preidiction in such a way that the probabilities are monotonic non decreasing"""
+        """correct the prediction in such a way that the probabilities are monotonic non decreasing"""
 
         max_val = 0.
         result_y = y
