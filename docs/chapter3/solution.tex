@@ -1,4 +1,4 @@
-The entirety of our work is based on the SGD framework described in section \ref{sec:sgd}. In particular we insisted on three phases of the algorithm, namely the initialization, the choice of the descent direction and the step size. We show that the initialization play a crucial role in the learning process and can, alone, dictate if the learning process will be "successful"\footnote{Here we refer to artificial task where a criterion for success is easily defined.} or not. We than propose a strategy to choose a descent direction which helps to deal with the vanishing gradient. As for the learning rate we use a technique which is entirely equivalent to the gradient clipping trick described and used in \cite{pascanu}.
+The entirety of our work is based on the SGD framework described in section \ref{sec:sgd}. In particular we insisted on three phases of the algorithm, namely the initialization, the choice of the descent direction and the step size. We show that the initialization play a crucial role in the learning process and can, alone, dictate if the learning process will be "successful"\footnote{Here we refer to artificial task where a criterion for success is easily defined.} or not. We than propose a strategy to choose a descent direction which helps to deal with the vanishing gradient. As for the learning rate we use a technique which is entirely equivalent to the gradient clipping trick proposed in \cite{understandingExplodingGradients} which helps dealing with exploding gradients.
 
 \section{Notation}
 Before focusing on each phase we will introduce some notation which we will need in the following sections.
@@ -16,9 +16,26 @@ We refer to $\nabla_{\vec{x}} g_{|k}$ as temporal gradient for time step $k$ w.r
 The \textbf{vanishing gradient} problem appears then, under this new notation, when the norm of the temporal components $\nabla_{\vec{x}} g_{|k}$ are exponentially bigger for more recent time steps.
 
 \section{Initialization}
-The first moment of the learning process is the initialization of the variables. We found that the choice of the initial value for the recurrent matrix $\mat{W_rec}$ has a big impact on the entire learning process. Recall the results from section  \ref{sec:vanishing} where we saw that too small singular values of such matrix are a sufficient condition for the gradient to vanish. Although a sufficient condition that guarantees the gradient not to vanish is not known, the results on the singular values encourage to explore initialization techniques with higher singular values and more in general spectral radius of the recurrent matrix. A similar suggestion, motivated by other consideration was given in the ESN field \cite{reservoirSummary}.
+The first moment of the learning process is the initialization of the variables. We found that the choice of the initial value for the recurrent matrix $\mat{W_{rec}}$ has a big impact on the entire learning process. Recall the results from section  \ref{sec:vanishing} where we saw that having such matrix too small singular values, more precisely $\sigma'_{max} \cdot \mu_{max} <1 $, is a sufficient condition for the gradient to vanish. Although a sufficient condition that, conversely, guarantees the gradient not to vanish is not known, the bounds on the singular values encourage to explore initialization techniques which produce matrices with higher singular values or more in general spectral radius. A similar suggestion, motivated by other consideration was given in the ESN field \cite{reservoirSummary}.
 
-We initialize the recurrent matrix sampling from a gaussian distribution of zero mean and variance equal to 0.1 and then scaling the matrix to have a specified spectral radius. In figure \ref{fig:temporal_norms} we show the temporal components w.r.t. all the variables of the model varying the spectral radius in [0.8, 0.9, 1, 1.1, 1.2] computed on a hundred samples for the temporal order task.
+We propose an initialization scheme where the recurrent matrix is firstly sampled from some distribution\footnote{In all the experiments we always sample from a zero mean gaussian, but others distribution can be used as well.} and scaled to have a specified spectral radius as shown in \ref{algo:init_scaling}.
+
+\begin{algorithm}[!h]
+	\KwData{\\
+		\Indp
+		$\rho = $ desired spectral radius
+	}
+	\BlankLine
+
+	$\mat{W_{rec}} \sim \mathcal{N}(0, \sigma^2)$\\
+	$r \gets \mbox{spectral\_radius}(\mat{W_{rec}})$\\
+	$\mat{W_{rec}}\gets \frac{\rho}{r} \cdot \mat{W_{rec}}$\\
+	\KwRet{$\mat{W_{rec}}$}
+	\caption{Recurrent weight matrix initialization scheme}
+	\label{algo:init_scaling}
+\end{algorithm}
+
+ In figure \ref{fig:temporal_norms} we show, as an example, the temporal components w.r.t. all the variables of the model varying the spectral radius in [0.8, 0.9, 1, 1.1, 1.2] computed on a hundred samples for the temporal order task (INTRODUCE TASK).
 
 \begin{figure}
     \includegraphics[width=0.9\textwidth]{chapter3/temporal_components.eps}
@@ -28,9 +45,7 @@ We initialize the recurrent matrix sampling from a gaussian distribution of zero
 
 The first two cases, the one with spectral radius less than one, are perfect example of vanishing gradient instances: more recent temporal components have norm exponentially bigger than the more distant ones (please note that the y axis is in logarithmic scale). On the contrary such phenomenon is not observed in the cases of spectral radius bigger than one where the temporal components have roughly the same norm.
 
-This evidence suggest 
-\\
-EXPERIMENTS HERE ?
+We found that, at least in the task we explored (SAY WHICH ONES), an appropriate spectral radius always allow the training process to start in a regime where the gradient does not vanish. We report some results on the effect of the initialization on the training process in chapter \ref{ch:experiments}
 
 \section{Descent direction}
 
@@ -54,15 +69,15 @@ The idea is to use the structure of the gradient to compute a "descent" directio
 \end{itemize}
 \section{Learning rate}
 
+The choice of the learning rate is crucial for the success of the training procedure. It is well known that RNNs give rise to gradients which change extremely fast in norm (the exploding gradient problem). This makes choosing a single constant step, or even designing an adaptive strategy, very difficult, at the least, for this kind of models. A simple trick which allow to choose a fixed step from the beginning is to \textit{clip the gradients}. This technique was introduced and used in slightly different forms in \cite{understandingExplodingGradients} and \cite{clippingMikolov} and we describe it in section \ref{algo:sgd}. We reformulate the version proposed in \cite{understandingExplodingGradients} as a learning rate selection strategy.
 Given a direction $\vec{d}_k$ the step $\alpha_k$ is chosen as:
-
 \begin{equation}
 \alpha_k = 
 \begin{cases}
-	\mu \quad &\mbox{if} \norm{\vec{d}_k}_2 \leq c\\
-	\frac{\mu}{\norm{\vec{d}_k}_2} \quad & otherwise
-\end{cases},
+	\mu  \quad &\mbox{if} \norm{\vec{d}_k}_2 \leq \tau\\
+	\frac{\mu \cdot \tau}{\norm{\vec{d}_k}_2} \quad & otherwise,
+\end{cases}
 \end{equation}
-where $\mu$ and $c$ are some positive constants. The idea is to use a constant step when the direction has an enough small norm and vice-versa choose a step which inversely proportional when such norm is too big. The idea is that, if the descent direction has a too big norm we might take a too big step. This technique is know as \textit{gradient clipping} and has been used for RNNs training (with first oder methods) in \cite{pascanu} and \cite{mikolov}. We confirm, as found in these works, that this trick is essential for RNNs training where, considering the anti-gradient descent direction, we deal with fast changing norms.
+where $\mu$ and $c$ are some positive constants. The parameter $\tau$ is the threshold on the direction norm; $\mu$ is instead the constant learning rate that is used when the norm of the direction is not above such threshold. The idea is to use a constant step when the direction has an enough small norm and vice-versa choose a step which inversely proportional when such norm is too big. We confirm, as found in works cited above, that this trick is essential to train RNNs in a stochastic framework.
 \section{Proof of convergence}
 \input{chapter3/convergence}
