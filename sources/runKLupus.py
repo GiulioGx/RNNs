@@ -71,7 +71,7 @@ class SplitThread(Thread):
 
         loss_monitor = LossMonitor(loss_fnc=loss_fnc)
         roc_monitor = RocMonitor(score_fnc=LupusDataset.get_scores_patients)
-        stopping_criterion = ThresholdCriterion(monitor=roc_monitor, threshold=0.91, mode='>')
+        stopping_criterion = ThresholdCriterion(monitor=roc_monitor, threshold=0.96, mode='>')
         saving_criterion = BestValueFoundCriterion(monitor=roc_monitor, mode='gt')
 
         trainer = SGDTrainer(train_rule, output_dir=self.__out_dir, max_it=10 ** 10,

@@ -61,10 +61,10 @@ vars_initializer = RNNVarsInitializer(
     W_in_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed),
     W_out_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed), b_rec_init=ConstantInit(0),
     b_out_init=ConstantInit(0))
-net_initializer = RNNInitializer(vars_initializer, n_hidden=200)
+net_initializer = RNNInitializer(vars_initializer, n_hidden=100)
 #net_initializer = RNNLoader(out_dir+'/best_model.npz')
 
-net_growing_policy = RNNIncrementalGrowing(n_hidden_incr=5, n_hidden_max=50, n_hidden_incr_freq=1000,
+net_growing_policy = RNNIncrementalGrowing(n_hidden_incr=5, n_hidden_max=100, n_hidden_incr_freq=1000,
                                            initializer=vars_initializer)
 net_builder = RNNManager(initializer=net_initializer, activation_fnc=Tanh(),
                          output_fnc=Logistic())  # , growing_policy=net_growing_policy)
@@ -82,7 +82,7 @@ dir_rule = Antigradient()
 # learning step rule
 # lr_rule = WRecNormalizedStep(0.0001) #0.01
 # lr_rule = ConstantNormalizedStep(0.001)  # 0.01
-lr_rule = GradientClipping(lr_value=0.0001, clip_thr=1, normalize_wrt_dimension=False)  # 0.01
+lr_rule = GradientClipping(lr_value=0.001, clip_thr=1, normalize_wrt_dimension=False)  # 0.01
 # lr_rule = ArmijoStep(alpha=0.5, beta=0.1, init_step=1, max_steps=50)
 
 # update_rule = FixedAveraging(t=10)
