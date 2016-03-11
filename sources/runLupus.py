@@ -95,8 +95,6 @@ train_rule = TrainingRule(dir_rule, lr_rule, update_rule, loss_fnc, nan_check=Tr
 dataset = next(LupusDataset.k_fold_test_datasets(mat_file=Paths.lupus_path, k=4, strategy=PerPatienceTargets()))
 
 batch = dataset.train_set[0]
-print('shape', batch.outputs.shape)
-print(sum(sum(sum(batch.outputs))))
 
 loss_monitor = LossMonitor(loss_fnc=loss_fnc)
 roc_monitor = RocMonitor(score_fnc=LupusDataset.get_scores_patients)

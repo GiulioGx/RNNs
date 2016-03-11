@@ -57,7 +57,7 @@ mean = 0
 #     W_out_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed), b_rec_init=ConstantInit(0),
 #     b_out_init=ConstantInit(0))
 vars_initializer = RNNVarsInitializer(
-    W_rec_init=SpectralInit(matrix_init=GaussianInit(seed=seed, std_dev=0.14), rho=1.2),
+    W_rec_init=SpectralInit(matrix_init=GaussianInit(seed=seed, std_dev=0.14), rho=0.8),
     W_in_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed),
     W_out_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed), b_rec_init=ConstantInit(0),
     b_out_init=ConstantInit(0))
