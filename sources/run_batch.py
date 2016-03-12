@@ -94,7 +94,7 @@ def train_run(seed: int, task_length: int, prefix: str):
     return net
 
 
-seeds = [16]
+seeds = [17]
 lengths = [200, 150, 100, 50]
 prefix = 'train_run'
 
