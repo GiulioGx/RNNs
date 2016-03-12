@@ -1,5 +1,6 @@
 The entirety of our work is based on the SGD framework described in section \ref{sec:sgd}. In particular we insisted on three phases of the algorithm, namely the initialization, the choice of the descent direction and the step size. We show that the initialization play a crucial role in the learning process and can, alone, dictate if the learning process will be "successful"\footnote{Here we refer to artificial task where a criterion for success is easily defined.} or not. We than propose a strategy to choose a descent direction which helps to deal with the vanishing gradient. As for the learning rate we use a technique which is entirely equivalent to the gradient clipping trick proposed in \cite{understandingExplodingGradients} which helps dealing with exploding gradients.
 
+
 \section{Notation}
 Before focusing on each phase we will introduce some notation which we will need in the following sections.
 
@@ -49,7 +50,15 @@ We found that, at least in the task we explored (SAY WHICH ONES), an appropriate
 
 \section{Descent direction}
 
+\begin{figure}
+	\includegraphics[width=1.4\textwidth]{chapter3/compare_add_temp_norms_1.eps}
+	\caption{Temporal components for the temporal order task varying the spectral radius of the recurrent matrix. y axis is in logarithmic scale.}
+	\label{fig:}
+\end{figure}
+
+
 The idea is to use the structure of the gradient to compute a "descent" direction which does not suffer from the vanishing problem.
+
 \begin{itemize}
 	\item normalize the temporal components:
 	\begin{equation}
@@ -79,5 +88,9 @@ Given a direction $\vec{d}_k$ the step $\alpha_k$ is chosen as:
 \end{cases}
 \end{equation}
 where $\mu$ and $c$ are some positive constants. The parameter $\tau$ is the threshold on the direction norm; $\mu$ is instead the constant learning rate that is used when the norm of the direction is not above such threshold. The idea is to use a constant step when the direction has an enough small norm and vice-versa choose a step which inversely proportional when such norm is too big. We confirm, as found in works cited above, that this trick is essential to train RNNs in a stochastic framework.
+
+\section{Putting all togheter}
+TODO
+
 \section{Proof of convergence}
 \input{chapter3/convergence}

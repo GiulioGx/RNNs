@@ -22,7 +22,8 @@ class TemporalOrderTask(Task):
         return TT.neq(TT.argmax(y[-1, :, :], axis=0), TT.argmax(t[-1, :, :], axis=0)).mean()
 
     def get_batch(self, batch_size: int):
-        length = self.__min_length
+        # length = self.__min_length
+        length = self.__rng.randint(int(self.__min_length * .1)) + self.__min_length
 
         inputs = numpy.zeros((length, self.__n_in, batch_size), dtype=Configs.floatType)
         outputs = numpy.zeros((length, self.__n_out, batch_size), dtype=Configs.floatType)
