@@ -57,8 +57,8 @@ class Batch:
     # utitilities
     @staticmethod
     def reshape(mat):
-        r = mat.dimshuffle(1, 0, 2)
-        r.reshape(shape=(mat.shape[1], mat.shape[0] * mat.shape[2]))
+        r = mat.dimshuffle(0, 2, 1)
+        r = r.reshape(shape=(mat.shape[0] * mat.shape[2], mat.shape[1]))
         return r
 
     # commonly used error functions
@@ -69,6 +69,7 @@ class Batch:
         t_ = Batch.reshape(t)
         y_ = Batch.reshape(y)
 
-        indexes = mask_.sum(axis=0).nonzero()[0]
+        indexes = mask_.sum(axis=1).nonzero()[0]
+        error = TT.neq(TT.argmax(y_.take(indexes, axis=0), axis=1), TT.argmax(t_.take(indexes, axis=0), axis=1)).mean()
         # return TT.neq(TT.argmax(y[-1, :, :], axis=0), TT.argmax(t[-1, :, :], axis=0)).mean()
-        return TT.neq(TT.argmax(y_.take(indexes, axis=1), axis=0), TT.argmax(t_.take(indexes, axis=1), axis=0)).mean()
+        return error

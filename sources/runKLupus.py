@@ -105,7 +105,7 @@ class SplitThread(Thread):
         pickle.dump(d, pickfile)
         self.__logger.info('Thread {} has fineshed training -> beginning test'.format(self.__id))
         self.__results = self.__test()
-        self.__logger.info('Partial results for thread {} are:\n {}'.format(self.__id, self.__results))
+        self.__logger.info('Partial score for thread {} is:\n {}'.format(self.__id, self.__results['score']))
         self.__logger.info('Thread {} has finished....'.format(self.__id))
 
 
@@ -161,9 +161,9 @@ for t in thread_list:
     masks.append(batch.mask)
     outputs.append(batch.outputs)
 
-y = numpy.concatenate(*ys, axis=2)
-mask = numpy.concatenate(*masks, axis=2)
-output = numpy.concatenate(*outputs, axis=2)
+y = numpy.concatenate(ys, axis=2)
+mask = numpy.concatenate(masks, axis=2)
+output = numpy.concatenate(outputs, axis=2)
 scores, labels = LupusDataset.get_scores_patients(y, output, mask)
 # fpr, tpr, thresholds = metrics.roc_curve(labels, scores, pos_label=1)
 cum_score = roc_auc_score(y_true=labels, y_score=scores)

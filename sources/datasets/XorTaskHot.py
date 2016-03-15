@@ -1,4 +1,5 @@
 import numpy
+import theano
 
 from datasets.Batch import Batch
 from infos.InfoElement import SimpleDescription, PrintableInfoElement
@@ -98,7 +99,22 @@ class XorTaskHot(Task):
 
 if __name__ == '__main__':
     seed = 78
-    print('Testing XOR datasets ...')
+    print('Testing XOR task ...')
     task = XorTaskHot(22, seed)
     batch = task.get_batch(3)
     print(str(batch))
+
+    u = TT.tensor3(name='u')  # input tensor
+    t = TT.tensor3(name='t')  # target tensor
+    y = TT.tensor3(name='y')  # target tensor
+    mask = TT.tensor3(name='mask')
+
+
+    error = Batch.last_step_one_hot(t=t, y=y, mask=mask)
+
+
+    f = theano.function([t, mask, y], error)
+
+    y1 = numpy.copy(batch.outputs)
+
+    print( f(batch.outputs, batch.mask, y1))
