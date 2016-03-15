@@ -70,7 +70,7 @@ class PerPatienceTargets(BuildBatchStrategy):
 
 class LupusDataset(Dataset):
     num_min_visit = 2  # dicard patients with lass than visits
-    num_min_visit_negative = 7  # discard negative patience with lass than visits
+    num_min_visit_negative = 5  # discard negative patience with lass than visits
 
     @staticmethod
     def __load_mat(mat_file: str):
