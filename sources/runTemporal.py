@@ -49,7 +49,7 @@ print(separator)
 seed = 13
 Configs.seed = seed
 
-task = TemporalOrderTask(150, seed)
+task = TemporalOrderTask(40, seed)
 out_dir = Configs.output_dir + str(task)
 # network setup
 std_dev = 0.1  # 0.14 Tanh # 0.21 Relu

@@ -70,7 +70,7 @@ class PerPatienceTargets(BuildBatchStrategy):
 
 class LupusDataset(Dataset):
     num_min_visit = 2  # dicard patients with lass than visits
-    num_min_visit_negative = 5  # discard negative patience with lass than visits
+    num_min_visit_negative = 7  # discard negative patience with lass than visits
 
     @staticmethod
     def __load_mat(mat_file: str):
@@ -79,8 +79,8 @@ class LupusDataset(Dataset):
         positive_patients = mat_obj['pazientiPositivi']
         negative_patients = mat_obj['pazientiNegativi']
 
-        features_struct = mat_obj['selectedFeatures']
-        # features_struct = mat_obj['featuresVip7']
+        # features_struct = mat_obj['selectedFeatures']
+        features_struct = mat_obj['featuresVip7']
         features_names = LupusDataset.__find_features_names(features_struct)
 
         data = numpy.concatenate((positive_patients, negative_patients), axis=0)
