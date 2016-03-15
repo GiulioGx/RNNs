@@ -82,7 +82,7 @@ class ObjectiveFunction(SimpleInfoProducer):  # XXX is this class needed?
             loss_info = InfoGroup('loss', InfoList(loss_value_info, loss_grad_info))
             obj_info = InfoGroup('obj', InfoList(loss_info, gradient_info))
 
-            info = InfoList(obj_info, norm_diff_info, n_loss_info)
+            info = InfoList(obj_info, norm_diff_info)
             return info
 
         @property

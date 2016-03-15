@@ -22,6 +22,8 @@ class FullCrossEntropy(LossFunction):
         # n_selected_temporal_losses = TT.switch(mask.sum(axis=1) > 0, 1, 0).sum(axis=1)
         # s = (c * mask).sum(axis=2).sum(axis=1) / TT.switch(n_selected_temporal_losses>0, n_selected_temporal_losses, 1)
         # return s.sum()
+        # s = (c * mask).sum(axis=2).sum(axis=1) / LossFunction.num_examples_insting_temp_loss(mask)
+        # return s.sum()
 
     @property
     def infos(self):

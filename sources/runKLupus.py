@@ -172,3 +172,9 @@ cum_score = roc_auc_score(y_true=labels, y_score=scores)
 logger.info("All thread finished...")
 logger.info('ROC_AUC mean score: {:.2f}'.format(score / len(thread_list)))
 logger.info('ROC_AUC cumulative score: {:.2f}'.format(cum_score))
+
+# save scores to file
+npz_file = root_out_dir + 'scores.npz'
+os.makedirs(os.path.dirname(npz_file), exist_ok=True)
+d = dict(scores=scores, labels=labels)
+numpy.savez(npz_file, **d)
