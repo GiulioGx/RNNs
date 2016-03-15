@@ -1,5 +1,5 @@
 \section{Experiments on the synthetic tasks}
-In this subsection we report some experiments which highlights the effects of the proposed techniques on the training process.
+In this subsection we report some experiments which highlights the effects of the proposed techniques on the training process. In all the experiments with artificial dataset we employed a potentially infinite training-set, since we generate data on the fly. We used a validation set to determine the success of the training process. We define a training run to be successful if the error on the validation set if less than 1\%. The error is clearly defined for each task, see appendix \ref{app:tasks} for more details on the tasks. The validation test is composed by $10^4$ exampled of different lengths sampled once at the beginning. In all the experiments we used a learning rate of $10^{-3}$, clipping threshold of $1$, batch-size equal to $100$. We did not run much experiment on the batch size. We found instead that the combination of this learning rate and threshold is generally good for all the task and length, although for tasks with smaller length more aggressive learning rate can be used.
 
 \subsection{The effect of the spectral initialization}
 
@@ -8,7 +8,20 @@ In \cite{advancesInOptimizingRnns}, for instance, are reported the rate of succe
 
 \begin{figure}
 	\centering
-	\includegraphics[width= 0.8\textwidth]{chapter4/spectral_init_exp.eps}
+	\includegraphics[width= 0.9\textwidth]{chapter4/spectral_init_exp.eps}
 	\caption{Number of iterations (means of 5 different random seed) needed to solve the task for different lengths}
 	\label{fig:spectral_init_effect}
+\end{figure}
+
+
+\subsection{The effect of using the simplex direction}
+The first experiment we ran is developed to compare the simplex strategy and the variant with the conditional switching to the anti-gradient with the standard SGD. We tested the three algorithms on the addition problem (T=100), since the plain SGD converges as we discovered from the previous experiments. In Figure \ref{fig:comparisong_add_simplex} is shown the loss on the validation set during the training process (until convergence). Aside from the obvious consideration that the conditioned simplex strategy converges first, and the anti-gradient for last, we can notice that the simplex direction is particularly beneficial in the first part of the training process, which is when the effect of the vanishing gradient is more evident. This confirms that the simplex direction helps when dealing with vanishing gradients. Moreover the idea to switch back to the anti-gradient when the gradient has a sufficiently high norm seems to be effective.
+
+Motivated by this first experiment we ...
+
+\begin{figure}
+	\centering
+	\includegraphics[width= 0.8\textwidth]{chapter4/compare_add_simplex.png}
+	\caption{Comparison between SGD using a descent direction the anti-gradient, the simplex direction and the simplex direction conditioned for the addition task (T=100). In y axis the loss (mean squared error) in logarithmic scale}
+	\label{fig:comparisong_add_simplex}
 \end{figure}

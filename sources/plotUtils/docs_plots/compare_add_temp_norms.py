@@ -10,10 +10,12 @@ stats_file = ['/home/giulio/RNNs/models/train_run/temporal_order, min_length: 10
 
 labels = ['temp', 'add']
 n_files = len(stats_file)
-iteration = 0
+iteration = 5
 
 fig, (ax_r1, ax_r2) = plt.subplots(2, n_files, sharex='col', sharey='row')
 x_max_length = 220
+
+plt.rcParams.update({'font.size': 18})
 
 for i in range(n_files):
     npz = numpy.load(stats_file[i])
@@ -34,10 +36,8 @@ for i in range(n_files):
     ax_r2[i].set_ylim(ymin=-0.2, ymax=1)
     # ax_r2[i].set_ylim(ymin=1e-2)
 
-
-
 filename = sys.argv[0]
 save_multiple_formats(filename)
-plt.tight_layout(pad=0.1, w_pad=0.1, h_pad=1)
-# plt.tight_layout()
+plt.tight_layout(pad=0, w_pad=0.3, h_pad=1)
+plt.tight_layout()
 plt.show()

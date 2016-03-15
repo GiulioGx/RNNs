@@ -45,6 +45,7 @@ for i in range(n_models):
 
 plt.plot(markers_x, markers_y, '*', color='black', markersize=20)
 
+
 plt.yscale('log')
 plt.ylim(ymin=4, ymax=13)
 plt.yticks([4, 5, 6, 7, 8, 9, 10, 13])

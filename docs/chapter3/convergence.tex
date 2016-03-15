@@ -1,5 +1,5 @@
+In this section we demonstrate that, under favorable assumptions, convexity amongst them, SGD convergences even for biased descent direction. This should help understand and motivate our work, in particular why picking a descent direction different from the anti-gradient works. Is important to note that RNNs give rise to non convex function, even when the loss function is convex, so this proof is not directly applicable, in any case, to our scenario.  We start from the work of Nemirowski \cite{Nemirovski} and modify the proof of convergence for the unbiased case. In here we report all of the proof for sake of completeness, but our addition is limited to equations (\ref{eq:begin_modification} - \ref{eq:end_modification})
 
-CITE NEMIROVSKI\cite{Nemirovski} + INTROUDCTION 
 
 Consider the stochastic optimization problem 
 \begin{equation}
@@ -70,6 +70,7 @@ Inequalities (\ref{eq:optimality}) and (\ref{eq:strong_convexity}) implies
 Adding and subtracting the direction $g(\vec{x})$ we get
 \begin{equation}
 (\vec{x}-\vec{x}_*)^T (\nabla f(\vec{x}) -g(\vec{x}) +g(\vec{x})) \geq c \norm{\vec{x}-\vec{x}_*}^2_2,
+\label{eq:begin_modification}
 \end{equation}
 which can be rewritten as
 \begin{equation}
@@ -90,6 +91,7 @@ a_{j+1} \leq (1-2\bar{c}\gamma_j)a_j + \frac{1}{2}\gamma_j^2M^2.
 Choosing the stepsizes as $\gamma_j = \frac{\beta}{j}$ for some constant $\beta>\frac{1}{2\bar{c}}$ we get
 \begin{equation}
 a_{j+1} \leq (1-2\bar{c}\gamma_j)a_j + \frac{1}{2}\frac{\beta^2M^2}{j^2}.
+\label{eq:end_modification}
 \end{equation}
 It follows by induction that
 \begin{equation}

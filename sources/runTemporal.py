@@ -6,6 +6,7 @@ from ActivationFunction import Tanh
 from Configs import Configs
 from combiningRule.SimplexCombination import SimplexCombination
 from descentDirectionRule.Antigradient import Antigradient
+from descentDirectionRule.CheckedDirection import CheckedDirection
 from descentDirectionRule.CombinedGradients import CombinedGradients
 from descentDirectionRule.LBFGSDirection import LBFGSDirection
 from initialization.ConstantInit import ConstantInit
@@ -48,10 +49,8 @@ print(separator)
 seed = 13
 Configs.seed = seed
 
-task = TemporalOrderTask(200, seed)
+task = TemporalOrderTask(150, seed)
 out_dir = Configs.output_dir + str(task)
-out_dir = '/home/giulio/RNNs/models/tmp_200_b'
-
 # network setup
 std_dev = 0.1  # 0.14 Tanh # 0.21 Relu
 mean = 0
@@ -91,7 +90,8 @@ loss_fnc = FullCrossEntropy(single_probability_ouput=False)
 combining_rule = SimplexCombination(normalize_components=True, seed=seed)
 # combining_rule = SimpleSum()
 dir_rule = CombinedGradients(combining_rule)
-dir_rule = Antigradient()
+dir_rule = CheckedDirection(dir_rule, max_cos=0, max_dir_norm=0.9)
+# dir_rule = Antigradient()
 # dir_rule = LBFGSDirection(n_pairs=7)
 
 # learning step rule
@@ -113,7 +113,7 @@ train_rule = TrainingRule(dir_rule, lr_rule, update_rule, loss_fnc)
 dataset = InfiniteDataset(task=task, validation_size=10 ** 4, n_batches=5)
 
 loss_monitor = LossMonitor(loss_fnc=loss_fnc)
-error_monitor = ErrorMonitor(dataset=dataset)
+error_monitor = ErrorMonitor(dataset=dataset, error_fnc=task.error_fnc)
 stopping_criterion = ThresholdCriterion(monitor=error_monitor, threshold=1. / 100)
 saving_criterion = BestValueFoundCriterion(monitor=error_monitor)
 
@@ -126,4 +126,4 @@ trainer.set_stopping_criterion(stopping_criterion)
 net = trainer.train(dataset, net_builder)
 
 # net = RNN.load_model(out_dir+'/best_model.npz')
-net = trainer.resume_training(dataset, net)
+# net = trainer.resume_training(dataset, net_builder)

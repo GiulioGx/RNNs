@@ -11,17 +11,71 @@ __author__ = 'giulio'
 
 
 class TemporalOrderTask(Task):
+
     # TODO readme
     def __init__(self, min_length: int, seed: int):
         self.__min_length = min_length
         self.__n_in = 6
         self.__n_out = 4
         self.__rng = numpy.random.RandomState(seed)
+        self.__mode = 'mixed'
 
-    def error_fnc(self, t, y):  # FIXME moveme somewhere
-        return TT.neq(TT.argmax(y[-1, :, :], axis=0), TT.argmax(t[-1, :, :], axis=0)).mean()
+    def __reshape(self, mat):
+        r = mat.dimshuffle(1, 0, 2)
+        r.reshape(shape=(mat.shape[1], mat.shape[0]*mat.shape[2]))
+        return r
 
-    def get_batch(self, batch_size: int):
+    def error_fnc(self, t, y, mask):  # FIXME moveme somewhere + CONSIDER MASK
+
+        mask_ = self.__reshape(mask)
+        t_ = self.__reshape(t)
+        y_ = self.__reshape(y)
+
+        indexes = mask_.sum(axis=0).nonzero()[0]
+        # return TT.neq(TT.argmax(y[-1, :, :], axis=0), TT.argmax(t[-1, :, :], axis=0)).mean()
+        return TT.neq(TT.argmax(y_.take(indexes, axis=1), axis=0), TT.argmax(t_.take(indexes, axis=1), axis=0)).mean()
+
+
+    def get_batch(self, batch_size: int) -> Batch:
+        if self.__mode == 'mixed':
+            return self.__get_batch_mixed(batch_size)
+        elif self.__mode == 'plain':
+            return self.__get_batch_plain(batch_size)
+        else:
+            raise ValueError('unsupported mode {}'.format(self.__mode))  # FOXME
+
+    def __get_batch_mixed(self, batch_size: int) -> Batch:
+        lengths = self.__rng.randint(int(self.__min_length * .1), size=(batch_size, 1)) + self.__min_length
+        max_length = max(lengths)
+        inputs = numpy.zeros((max_length, self.__n_in, batch_size), dtype=Configs.floatType)
+        outputs = numpy.zeros((max_length, self.__n_out, batch_size), dtype=Configs.floatType)
+        mask = numpy.zeros_like(outputs, dtype=Configs.floatType)
+
+        encodings = self.__rng.randint(4, size=(max_length, batch_size)) + 2
+
+        for i in range(batch_size):
+            length = lengths[i]
+
+            # marker positions
+            p0 = self.__rng.randint(int(length * .1))
+            v0 = self.__rng.randint(2)
+            p1 = self.__rng.randint(int(length * .4)) + int(length * .1)
+            v1 = self.__rng.randint(2)
+
+            encodings[p0, i] = v0
+            encodings[p1, i] = v1
+            outputs[length-1, v0 + 2 * v1, i] = 1
+
+            mask[length - 1, :, i] = 1
+
+        batch_size_indexes = numpy.arange(batch_size)
+        indexes_1 = numpy.repeat(numpy.arange(max_length), batch_size)
+        indexes_2 = numpy.tile(batch_size_indexes, max_length)
+        inputs[indexes_1, encodings.flatten(), indexes_2] = 1
+
+        return Batch(inputs.astype(dtype=Configs.floatType), outputs.astype(Configs.floatType), mask)
+
+    def __get_batch_plain(self, batch_size: int):
         # length = self.__min_length
         length = self.__rng.randint(int(self.__min_length * .1)) + self.__min_length
 
@@ -66,7 +120,7 @@ class TemporalOrderTask(Task):
 
     @property
     def infos(self):
-        return InfoList(SimpleDescription('temporal_order'),
+        return InfoList(SimpleDescription('temporal_order_'+self.__mode),
                         PrintableInfoElement('min_length', ':d', self.__min_length))
 
 

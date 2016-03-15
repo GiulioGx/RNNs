@@ -11,7 +11,7 @@ separator = '#####################'
 
 # setup
 seed = 22
-out_dir = '/home/giulio/MuseCollection/2/best_model.npz'
+out_dir = '/home/giulio/MuseCollection/0/best_model.npz'
 
 net = RNN.load_model(out_dir)
 
@@ -21,8 +21,8 @@ dataset = MuseDataset(seed=seed, pickle_file_path=Paths.muse_path, mode='full')
 loss_fnc = FullCrossEntropy(single_probability_ouput=True)
 
 
-loss = loss_fnc.value(t=net.symbols.t, y=net.symbols.y_shared)
-loss_np = T.function([net.symbols.u, net.symbols.t, loss_fnc.mask], loss, name='loss_fnc')
+loss = loss_fnc.value(t=net.symbols.t, y=net.symbols.y_shared, mask=net.symbols.mask)
+loss_np = T.function([net.symbols.u, net.symbols.t, net.symbols.mask], loss, name='loss_fnc')
 
 
 loss = 0.

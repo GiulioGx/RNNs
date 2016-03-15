@@ -8,10 +8,11 @@ from task.Dataset import Dataset
 
 class ErrorMonitor(RealValuedMonitor):
 
-    def __init__(self, dataset: Dataset):
+    def __init__(self, dataset: Dataset, error_fnc):
         super().__init__(100)
         self.__dataset = dataset
         self.__best_error = 100
+        self.__error_fnc = error_fnc
 
     def update(self, measures: list):
 
@@ -21,7 +22,7 @@ class ErrorMonitor(RealValuedMonitor):
         self._current_value = new_value
 
     def get_symbols(self, y, t, mask) -> list:
-        return [self.__dataset.computer_error(y=y, t=t)]  # XXX
+        return [self.__error_fnc(y=y, t=t, mask=mask)]  # XXX
 
     @property
     def info(self) -> Info:

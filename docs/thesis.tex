@@ -1,9 +1,9 @@
 
-\documentclass{book}
-
+%\documentclass[titlepage]{book}
+\documentclass[english,laurea,twoside,10pt]{UFtesi}
 %%Packages:
 \usepackage[utf8]{inputenc}
-\usepackage[UKenglish]{babel}
+%\usepackage[UKenglish]{babel}
 \usepackage{graphicx}
 \usepackage{cite}
 \usepackage[hidelinks]{hyperref}
@@ -16,7 +16,7 @@
 \usepackage{pgf}
 \usepackage{tikz}
 %\usepackage{pgfplots}
-
+\usepackage{setspace}
 
 % \usepackage{algorithm}
 \usepackage[noend]{algpseudocode}
@@ -62,14 +62,24 @@
 %Paths:
 \graphicspath{ {./images/} }
 
+% Title Page
 \title{On recurrent neural networks}
 \author{Giulio Galvan}
+\titolocorso{Ingegneria Informatica}
+\degreeyear{2014/2015}
+\date{}
+\chair{Prof. Marco Sciandrone}
+\othermembers{Prof. Fabio Schoen}
+\numberofmembers{2}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{document}
 \maketitle
+\frontmatter
+
 \tableofcontents
+\mainmatter
 \chapter{Artificial neural networks}
   \section{A family of models}
   \input{chapter1/introduction_ann}
@@ -116,6 +126,7 @@
 \chapter{Notation}
 \input{notation_appendix/notation}
 \chapter{Details for the synthetic tasks}
+\label{app:tasks}
 \input{synthetic_tasks_appendix/artificial_datasets}
 
 

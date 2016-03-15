@@ -38,7 +38,7 @@ class ObjectiveFunction(SimpleInfoProducer):  # XXX is this class needed?
         #debug_diff = (self.grad.value - self.failsafe_grad).norm()
         debug_diff = TT.alloc(-1)
 
-        self.__infos = ObjectiveFunction.Info(gradient_info, self.__objective_value, grad_norm, debug_diff)
+        self.__infos = ObjectiveFunction.Info(gradient_info, self.__objective_value, grad_norm, debug_diff, net.symbols.mask)
 
     @property
     def current_loss(self):
@@ -60,21 +60,24 @@ class ObjectiveFunction(SimpleInfoProducer):  # XXX is this class needed?
         return self.__grad
 
     class Info(SymbolicInfo):
-        def __init__(self, gradient_info, objective_value, grad_norm, debug_diff):
-            self.__symbols = [objective_value, grad_norm, debug_diff] + gradient_info.symbols
+        def __init__(self, gradient_info, objective_value, grad_norm, debug_diff, mask):
+            n_selected_temporal_losses = TT.switch(mask.sum(axis=1) > 0, 1, 0).sum(axis=1).sum()
+
+            self.__symbols = [objective_value, grad_norm, debug_diff, n_selected_temporal_losses] + gradient_info.symbols
             self.__symbolic_gradient_info = gradient_info
 
         def fill_symbols(self, symbols_replacements: list) -> Info:
             loss_value_info = PrintableInfoElement('value', ':07.3f', symbols_replacements[0].item())
             loss_grad_info = PrintableInfoElement('grad', ':07.3f', symbols_replacements[1].item())
             norm_diff_info = PrintableInfoElement('@@', '', symbols_replacements[2].item())
+            n_loss_info = PrintableInfoElement('##n', '', symbols_replacements[3].item())
 
-            gradient_info = self.__symbolic_gradient_info.fill_symbols(symbols_replacements[3:])
+            gradient_info = self.__symbolic_gradient_info.fill_symbols(symbols_replacements[4:])
 
             loss_info = InfoGroup('loss', InfoList(loss_value_info, loss_grad_info))
             obj_info = InfoGroup('obj', InfoList(loss_info, gradient_info))
 
-            info = InfoList(obj_info, norm_diff_info)
+            info = InfoList(obj_info, norm_diff_info, n_loss_info)
             return info
 
         @property

@@ -1,0 +1,91 @@
+\documentclass[english,laurea,twoside,10pt]{UFtesi}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{algpseudocode}
+\usepackage[ruled,noline]{algorithm2e}
+%\usepackage{graphicx}
+%\usepackage{epstopdf}
+\usepackage{mathtools} %dcases
+\usepackage{bbm} % indicator function
+%\usepackage{setspace} %to increase space between lines in algorithms
+\usepackage[hidelinks]{hyperref} %hyperref should go last
+\usepackage[nameinlink, noabbrev]{cleveref} %... but cleveref should go after hyperref
+
+\graphicspath{ {./images/} }
+
+\renewcommand*{\algorithmautorefname}{Algorithm}
+
+\newtheorem{prop}{Proposition}
+\newtheorem{theorem}{Theorem}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+
+% Definition of environment optproblem for optimization problems
+\newcounter{optproblem}
+\renewcommand*{\theoptproblem}{P\arabic{optproblem}}
+%\newcommand*{\optproblemautorefname}{Problem}
+\crefname{optproblem}{problem}{problems}
+
+
+\makeatletter
+\renewcommand*{\p@optproblem}{%
+  \expandafter\p@@optproblem
+}
+\newcommand*{\p@@optproblem}[1]{%
+  (#1)%
+}
+\makeatother
+
+\newenvironment{optproblem}[1][]{%
+  \ifx\\#1\\%
+  \else
+  	\refstepcounter{optproblem}%
+    #1%
+  \fi
+  \begin{equation}%
+  \ifx\\#1\\
+  	\notag%
+  \else
+  	\tag{\theoptproblem}%
+  \fi
+}{%
+  \end{equation}\ignorespacesafterend %
+}%
+
+% Title Page
+\title{Second order methods for \\ \vspace{0.3em}Support Vector Regression}
+\author{Alessio Sarullo}
+\titolocorso{Ingegneria Informatica}
+\degreeyear{2014/2015}
+\date{}
+\chair{Prof. Marco Sciandrone}
+\othermembers{Prof. Fabio Schoen}
+\numberofmembers{2}
+
+
+\begin{document}
+\maketitle
+\frontmatter
+
+
+
+\tableofcontents
+\mainmatter
+\chapter{Introduction}
+\input{introduction}
+\chapter{Unconstrained formulation of SVM}
+\input{unconstrainedSVM}
+\chapter{Training SVMs}
+\input{training_svm}
+\chapter{Second order methods for SVR}
+\input{som_svr}
+
+\nocite{*}		 % Mostra in bibliografia anche gli oggetti non citati 
+\bibliography{biblio}{}
+\bibliographystyle{plain}
+
+
+\end{document}       

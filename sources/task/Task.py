@@ -15,7 +15,7 @@ class Task(SimpleInfoProducer):
         return
 
     @abc.abstractmethod
-    def error_fnc(self, t, y):
+    def error_fnc(self, t, y, mask):
         """return the 'true' error of output y wrt the labels t (theano symbols)"""
         return
 

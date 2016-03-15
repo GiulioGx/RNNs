@@ -51,9 +51,15 @@ We found that, at least in the task we explored (SAY WHICH ONES), an appropriate
 \section{Descent direction}
 
 \begin{figure}
-	\includegraphics[width=1.4\textwidth]{chapter3/compare_add_temp_norms_1.eps}
-	\caption{Temporal components for the temporal order task varying the spectral radius of the recurrent matrix. y axis is in logarithmic scale.}
-	\label{fig:}
+	\includegraphics[width=1\textwidth]{chapter3/compare_add_temp_norms_0.eps}
+	\caption{Comparison between the temporal order task (first column) and the addition task (second column). First row shows the norms of the temporal components, while he second the cosine between each temporal component and the gradient. This is a snopshot taken at the first iteration of the training process.}
+	\label{fig:comparison_add_temp_0}
+\end{figure}
+
+\begin{figure}
+	\includegraphics[width=1\textwidth]{chapter3/compare_add_temp_norms_1.eps}
+	\caption{Like in figure \ref{fig:comparison_add_temp_0}. This is a snapshot taken after a few iterations of the training process.}
+	\label{fig:comparison_add_temp_1}
 \end{figure}
 
 
@@ -89,8 +95,59 @@ Given a direction $\vec{d}_k$ the step $\alpha_k$ is chosen as:
 \end{equation}
 where $\mu$ and $c$ are some positive constants. The parameter $\tau$ is the threshold on the direction norm; $\mu$ is instead the constant learning rate that is used when the norm of the direction is not above such threshold. The idea is to use a constant step when the direction has an enough small norm and vice-versa choose a step which inversely proportional when such norm is too big. We confirm, as found in works cited above, that this trick is essential to train RNNs in a stochastic framework.
 
-\section{Putting all togheter}
-TODO
+\section{Putting all together}
+Now that we have described all the three phases of the algorithm we can put them together, as done in algorithm \ref{algo:complete_solution} with a few additions. The main one them being a condition to switch the strategy used to compute the descent direction. The idea is to use the simplex combination at the beginning of the training process, or whenever the gradient is vanishing and switch back to the anti-gradient when appropriate. This is done by checking the norm of the gradient, as in line \ref{algo:line:condition}.
+
+
+\begin{algorithm}[]
+	\KwData{\\
+		\Indp
+		$D=\{\pair{\vec{x}^{(i)}}{\vec{y}^{(i)}}\}$: training set\\
+		$m$: size of each mini-batch\\
+		$\mu$: constant learning rate\\
+		$\tau$: gradient clipping threshold \\
+		$\rho$: initial spectral radius \\
+		$\psi$ threshold for the direction norm
+	}
+	
+	\KwResult{\\
+		\Indp $\theta$: solution
+	}
+	\BlankLine
+	
+	$\mat{W_{rec}}, \mat{W_{in}, \mat{W_{out}}} \sim \mathcal{N}(0, \sigma^2)$\\
+	$\vec{b}_{out}, \vec{b}_{rec} \gets 0$\\
+	$r \gets \mbox{spectral\_radius}(\mat{W_{rec}})$\\
+	$\mat{W_{rec}}\gets \frac{\rho}{r} \cdot \mat{W_{rec}}$\\
+	$\theta_0 = [\mat{W_{rec}}, \mat{W_{in}}, \mat{W_{out}},\vec{b}_{out}, \vec{b}_{rec}]$
+
+	
+	\BlankLine
+	\While{stop criterion}{
+		
+		$I$ $\gets$ sample $m$ training example $\in D$  \\
+		$\{\nabla_\theta L_{|t}\} \gets \mbox{compute\_temporal\_gradients}(\theta_k, I)$\\
+		$\vec{d}_k \gets \mbox{simplex\_combination}(\{\nabla_\theta L_{|t}\})$\\
+		$\alpha \gets$ compute learning rate \\
+		
+		\If{$\norm{\nabla_{\theta_k}}_2 > \psi$}
+			{$\vec{d}_k \gets \nabla_{\theta_k}$ \\
+			\label{algo:line:condition}
+		}
+		
+		$\alpha_k = 
+		\begin{cases}
+			\mu  \quad &\mbox{if} \norm{\vec{d}_k}_2 \leq \tau\\
+			\frac{\mu \cdot \tau}{\norm{\vec{d}_k}_2} \quad & \mbox{otherwise}
+		\end{cases}$\\
+		
+		$\theta_{k+1} \gets \theta_k - \alpha_k \vec{d}_k$\\
+		$k\gets k+1$
+	}
+	\KwRet{$\theta_k$}
+	\caption{RNN training}
+	\label{algo:complete_solution}
+\end{algorithm}
 
 \section{Proof of convergence}
 \input{chapter3/convergence}
