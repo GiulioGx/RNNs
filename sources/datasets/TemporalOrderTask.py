@@ -11,7 +11,6 @@ __author__ = 'giulio'
 
 
 class TemporalOrderTask(Task):
-
     # TODO readme
     def __init__(self, min_length: int, seed: int):
         self.__min_length = min_length
@@ -20,21 +19,8 @@ class TemporalOrderTask(Task):
         self.__rng = numpy.random.RandomState(seed)
         self.__mode = 'mixed'
 
-    def __reshape(self, mat):
-        r = mat.dimshuffle(1, 0, 2)
-        r.reshape(shape=(mat.shape[1], mat.shape[0]*mat.shape[2]))
-        return r
-
-    def error_fnc(self, t, y, mask):  # FIXME moveme somewhere + CONSIDER MASK
-
-        mask_ = self.__reshape(mask)
-        t_ = self.__reshape(t)
-        y_ = self.__reshape(y)
-
-        indexes = mask_.sum(axis=0).nonzero()[0]
-        # return TT.neq(TT.argmax(y[-1, :, :], axis=0), TT.argmax(t[-1, :, :], axis=0)).mean()
-        return TT.neq(TT.argmax(y_.take(indexes, axis=1), axis=0), TT.argmax(t_.take(indexes, axis=1), axis=0)).mean()
-
+    def error_fnc(self, t, y, mask):
+        return Batch.last_step_one_hot(t=t, y=y, mask=mask)
 
     def get_batch(self, batch_size: int) -> Batch:
         if self.__mode == 'mixed':
@@ -64,7 +50,7 @@ class TemporalOrderTask(Task):
 
             encodings[p0, i] = v0
             encodings[p1, i] = v1
-            outputs[length-1, v0 + 2 * v1, i] = 1
+            outputs[length - 1, v0 + 2 * v1, i] = 1
 
             mask[length - 1, :, i] = 1
 
@@ -120,7 +106,7 @@ class TemporalOrderTask(Task):
 
     @property
     def infos(self):
-        return InfoList(SimpleDescription('temporal_order_'+self.__mode),
+        return InfoList(SimpleDescription('temporal_order_' + self.__mode),
                         PrintableInfoElement('min_length', ':d', self.__min_length))
 
 

@@ -1,4 +1,6 @@
 import numpy
+
+from datasets.Batch import Batch
 from infos.InfoElement import SimpleDescription, PrintableInfoElement
 from infos.InfoList import InfoList
 from datasets.MarkerBasedTask import MarkerBasedTask
@@ -34,15 +36,49 @@ class XorTaskHot(Task):
         batch_size_indexes = numpy.arange(n)
         outputs[-1, numpy.bitwise_xor(a, b), batch_size_indexes] = 1
 
-    def error_fnc(self, t, y):  # FIXME moveme somewhere
-        # return (abs(t[-1:, :, :] - y[-1:, :, :]).sum(axis=0) > .2).mean()
-        return TT.neq(TT.argmax(y[-1, :, :], axis=0), TT.argmax(t[-1, :, :], axis=0)).mean()
-        #a = -1. + 2. * t[-1, 0, :]  # FIXME
-        #b = -1. + 2. * y[-1, 0, :]
-        #return TT.switch(TT.sgn(a * b) > 0, 0, 1).mean()
+    def error_fnc(self, t, y, mask):
+        return Batch.last_step_one_hot(t=t, y=y, mask=mask)
+
+    # def error_fnc(self, t, y, mask):
+    #     # return (abs(t[-1:, :, :] - y[-1:, :, :]).sum(axis=0) > .2).mean()
+    #     return TT.neq(TT.argmax(y[-1, :, :], axis=0), TT.argmax(t[-1, :, :], axis=0)).mean()
+    #     # a = -1. + 2. * t[-1, 0, :]  # FIXME
+    #     # b = -1. + 2. * y[-1, 0, :]
+    #     # return TT.switch(TT.sgn(a * b) > 0, 0, 1).mean()
 
     def get_batch(self, batch_size: int):
-        return self.__marker_based_task.get_batch(batch_size)
+        return self.get_batch_mixed(batch_size) # XXX
+        # return self.__marker_based_task.get_batch(batch_size)
+
+    def get_batch_mixed(self, batch_size):
+        lengths = self.__rng.randint(int(self.__min_length * .1), size=(batch_size, 1)) + self.__min_length
+        max_length = max(lengths)
+        # data init
+        inputs = numpy.zeros((max_length, self.__n_in, batch_size), dtype=Configs.floatType)
+        outputs = numpy.zeros((max_length, self.__n_out, batch_size), dtype=Configs.floatType)
+        mask = numpy.zeros_like(outputs)
+
+        # random inputs (channel 1)
+        inputs[:, 1, :] = self.input_fnc(batch_size, max_length)  # FIXME 1
+
+        for i in range(batch_size):
+            length = lengths[i]
+
+            # marker positions
+            p0 = self.__rng.randint(int(length * .1))
+            p1 = self.__rng.randint(int(length * .4)) + int(length * .1)
+
+            # markers value (channel 0)
+            inputs[p0, 0, i] = 1
+            inputs[p1, 0, i] = 1
+
+            a = inputs[p0, 1, i]
+            b = inputs[p1, 1, i]
+            outputs[length - 1, numpy.bitwise_xor(int(a), int(b)), i] = 1
+
+            mask[length - 1, :, i] = 1
+
+        return Batch(inputs, outputs, mask)
 
     def __str__(self):
         return str(self.infos)
@@ -61,7 +97,7 @@ class XorTaskHot(Task):
 
 
 if __name__ == '__main__':
-    seed = 99
+    seed = 78
     print('Testing XOR datasets ...')
     task = XorTaskHot(22, seed)
     batch = task.get_batch(3)

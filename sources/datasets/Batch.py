@@ -1,4 +1,5 @@
 import numpy
+import theano.tensor as TT
 
 __author__ = 'giulio'
 
@@ -52,3 +53,22 @@ class Batch:
             s.append(str(self.__mask[:, :, i]))
             s.append('\n\n')
         return ''.join(s)
+
+    # utitilities
+    @staticmethod
+    def reshape(mat):
+        r = mat.dimshuffle(1, 0, 2)
+        r.reshape(shape=(mat.shape[1], mat.shape[0] * mat.shape[2]))
+        return r
+
+    # commonly used error functions
+    @staticmethod
+    def last_step_one_hot(t, y, mask):
+
+        mask_ = Batch.reshape(mask)
+        t_ = Batch.reshape(t)
+        y_ = Batch.reshape(y)
+
+        indexes = mask_.sum(axis=0).nonzero()[0]
+        # return TT.neq(TT.argmax(y[-1, :, :], axis=0), TT.argmax(t[-1, :, :], axis=0)).mean()
+        return TT.neq(TT.argmax(y_.take(indexes, axis=1), axis=0), TT.argmax(t_.take(indexes, axis=1), axis=0)).mean()

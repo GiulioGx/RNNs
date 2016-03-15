@@ -25,8 +25,30 @@
         <entry file="file://$PROJECT_DIR$/runTemporal.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="94" column="25" selection-start-line="94" selection-start-column="25" selection-end-line="94" selection-end-column="25" />
+              <caret line="108" column="0" selection-start-line="108" selection-start-column="0" selection-end-line="108" selection-end-column="0" />
               <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="runXor.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/runXor.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="107" column="35" selection-start-line="107" selection-start-column="35" selection-end-line="107" selection-end-column="35" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="XorTaskHot.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/datasets/XorTaskHot.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="54" column="0" selection-start-line="54" selection-start-column="0" selection-end-line="54" selection-end-column="0" />
+              <folding>
+                <element signature="e#0#12#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -35,7 +57,7 @@
         <entry file="file://$PROJECT_DIR$/datasets/LupusDataset.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="83" column="28" selection-start-line="83" selection-start-column="28" selection-end-line="83" selection-end-column="28" />
+              <caret line="77" column="0" selection-start-line="77" selection-start-column="0" selection-end-line="77" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -44,18 +66,8 @@
       <file leaf-file-name="runKLupus.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/runKLupus.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.2845787">
-              <caret line="120" column="16" selection-start-line="120" selection-start-column="16" selection-end-line="120" selection-end-column="16" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ErrorMonitor.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/metrics/ErrorMonitor.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="24" column="36" selection-start-line="24" selection-start-column="36" selection-end-line="24" selection-end-column="36" />
+            <state vertical-scroll-proportion="-1.2321144">
+              <caret line="98" column="21" selection-start-line="98" selection-start-column="21" selection-end-line="98" selection-end-column="21" />
               <folding />
             </state>
           </provider>
@@ -65,58 +77,20 @@
         <entry file="file://$PROJECT_DIR$/datasets/TemporalOrderTask.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="15" column="51" selection-start-line="15" selection-start-column="51" selection-end-line="15" selection-end-column="51" />
+              <caret line="113" column="13" selection-start-line="113" selection-start-column="13" selection-end-line="113" selection-end-column="13" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Task.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/datasets/Task.py">
+      <file leaf-file-name="Batch.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/datasets/Batch.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="14" column="14" selection-start-line="14" selection-start-column="14" selection-end-line="14" selection-end-column="14" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="RNNGradient.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/model/RNNGradient.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="116" column="23" selection-start-line="116" selection-start-column="23" selection-end-line="116" selection-end-column="23" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="FullCrossEntropy.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lossFunctions/FullCrossEntropy.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="18" column="10" selection-start-line="18" selection-start-column="10" selection-end-line="20" selection-end-column="16" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="TrainingRule.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/training/TrainingRule.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="124" column="74" selection-start-line="124" selection-start-column="74" selection-end-line="124" selection-end-column="74" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="plot_grad_norms_it0.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/plotUtils/docs_plots/plot_grad_norms_it0.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="23" column="86" selection-start-line="23" selection-start-column="86" selection-end-line="23" selection-end-column="86" />
-              <folding />
+              <caret line="65" column="25" selection-start-line="65" selection-start-column="8" selection-end-line="65" selection-end-column="25" />
+              <folding>
+                <element signature="e#0#12#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -133,10 +107,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/infos/Error.py" />
-        <option value="$PROJECT_DIR$/training/Statistics.py" />
-        <option value="$PROJECT_DIR$/training/NanCheckRule.py" />
-        <option value="$PROJECT_DIR$/metrics/BestValueFoundCriterion.py" />
         <option value="$PROJECT_DIR$/metrics/RealValuedMonitor.py" />
         <option value="$PROJECT_DIR$/task/Batch.py" />
         <option value="$PROJECT_DIR$/learningRule/AdaptiveStep.py" />
@@ -166,7 +136,6 @@
         <option value="$PROJECT_DIR$/descentDirectionRule/CheckedDirection.py" />
         <option value="$PROJECT_DIR$/task/MuseDataset.py" />
         <option value="$PROJECT_DIR$/runLupus.py" />
-        <option value="$PROJECT_DIR$/runKLupus.py" />
         <option value="$PROJECT_DIR$/runMuse.py" />
         <option value="$PROJECT_DIR$/task/LupusDataset.py" />
         <option value="$PROJECT_DIR$/plotUtils/docs_plots/spectral_init_exp.py" />
@@ -184,6 +153,11 @@
         <option value="$PROJECT_DIR$/lossFunctions/FullCrossEntropy.py" />
         <option value="$PROJECT_DIR$/runTemporal.py" />
         <option value="$PROJECT_DIR$/datasets/LupusDataset.py" />
+        <option value="$PROJECT_DIR$/datasets/Batch.py" />
+        <option value="$PROJECT_DIR$/datasets/TemporalOrderTask.py" />
+        <option value="$PROJECT_DIR$/runXor.py" />
+        <option value="$PROJECT_DIR$/datasets/XorTaskHot.py" />
+        <option value="$PROJECT_DIR$/runKLupus.py" />
       </list>
     </option>
   </component>
@@ -305,24 +279,7 @@
       <recent name="$PROJECT_DIR$/test" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.LupusDataset">
-    <configuration default="false" name="plot_norms_interactive" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/plotUtils" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="sources" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/plotUtils/plot_norms_interactive.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <method />
-    </configuration>
+  <component name="RunManager" selected="Python.XorTaskHot">
     <configuration default="false" name="TemporalOrderTask" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -387,6 +344,23 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="sources" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/datasets/LupusDataset.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <method />
+    </configuration>
+    <configuration default="false" name="XorTaskHot" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/datasets" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="sources" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/datasets/XorTaskHot.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <method />
@@ -586,19 +560,19 @@
       <item index="1" class="java.lang.String" itemvalue="Python.test" />
       <item index="2" class="java.lang.String" itemvalue="Python.testScanShared" />
       <item index="3" class="java.lang.String" itemvalue="Python.plot_stats" />
-      <item index="4" class="java.lang.String" itemvalue="Python.plot_norms_interactive" />
-      <item index="5" class="java.lang.String" itemvalue="Python.TemporalOrderTask" />
-      <item index="6" class="java.lang.String" itemvalue="Python.runTemporal" />
-      <item index="7" class="java.lang.String" itemvalue="Python.compare_simplex_add" />
-      <item index="8" class="java.lang.String" itemvalue="Python.LupusDataset" />
+      <item index="4" class="java.lang.String" itemvalue="Python.TemporalOrderTask" />
+      <item index="5" class="java.lang.String" itemvalue="Python.runTemporal" />
+      <item index="6" class="java.lang.String" itemvalue="Python.compare_simplex_add" />
+      <item index="7" class="java.lang.String" itemvalue="Python.LupusDataset" />
+      <item index="8" class="java.lang.String" itemvalue="Python.XorTaskHot" />
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Python.LupusDataset" />
-        <item index="1" class="java.lang.String" itemvalue="Python.compare_simplex_add" />
-        <item index="2" class="java.lang.String" itemvalue="Python.TemporalOrderTask" />
-        <item index="3" class="java.lang.String" itemvalue="Python.runTemporal" />
-        <item index="4" class="java.lang.String" itemvalue="Python.plot_norms_interactive" />
+        <item index="0" class="java.lang.String" itemvalue="Python.XorTaskHot" />
+        <item index="1" class="java.lang.String" itemvalue="Python.LupusDataset" />
+        <item index="2" class="java.lang.String" itemvalue="Python.compare_simplex_add" />
+        <item index="3" class="java.lang.String" itemvalue="Python.TemporalOrderTask" />
+        <item index="4" class="java.lang.String" itemvalue="Python.runTemporal" />
       </list>
     </recent_temporary>
   </component>
@@ -671,30 +645,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/model/RNNManager.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="28" column="53" selection-start-line="28" selection-start-column="53" selection-end-line="28" selection-end-column="53" />
-          <folding>
-            <element signature="e#0#55#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/model/RNNGrowingPolicy.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="9" column="0" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/infos/InfoElement.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="76" column="0" selection-start-line="76" selection-start-column="0" selection-end-line="76" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/infos/InfoProducer.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -865,13 +815,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/datasets/MarkerBasedTask.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="20" column="45" selection-start-line="20" selection-start-column="0" selection-end-line="21" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/plotUtils/plot_norms_interactive.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1000,14 +943,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/metrics/ErrorMonitor.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="24" column="36" selection-start-line="24" selection-start-column="36" selection-end-line="24" selection-end-column="36" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/lossFunctions/FullCrossEntropy.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1016,10 +951,36 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/datasets/TemporalOrderTask.py">
+    <entry file="file://$PROJECT_DIR$/metrics/ErrorMonitor.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="15" column="51" selection-start-line="15" selection-start-column="51" selection-end-line="15" selection-end-column="51" />
+          <caret line="24" column="36" selection-start-line="24" selection-start-column="36" selection-end-line="24" selection-end-column="36" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/datasets/MarkerBasedTask.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="19" column="0" selection-start-line="19" selection-start-column="0" selection-end-line="40" selection-end-column="50" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/datasets/Batch.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="65" column="25" selection-start-line="65" selection-start-column="8" selection-end-line="65" selection-end-column="25" />
+          <folding>
+            <element signature="e#0#12#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/runXor.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="107" column="35" selection-start-line="107" selection-start-column="35" selection-end-line="107" selection-end-column="35" />
           <folding />
         </state>
       </provider>
@@ -1027,23 +988,41 @@
     <entry file="file://$PROJECT_DIR$/runTemporal.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="94" column="25" selection-start-line="94" selection-start-column="25" selection-end-line="94" selection-end-column="25" />
+          <caret line="108" column="0" selection-start-line="108" selection-start-column="0" selection-end-line="108" selection-end-column="0" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/datasets/TemporalOrderTask.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="113" column="13" selection-start-line="113" selection-start-column="13" selection-end-line="113" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/datasets/XorTaskHot.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="54" column="0" selection-start-line="54" selection-start-column="0" selection-end-line="54" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#12#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/datasets/LupusDataset.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="83" column="28" selection-start-line="83" selection-start-column="28" selection-end-line="83" selection-end-column="28" />
+          <caret line="77" column="0" selection-start-line="77" selection-start-column="0" selection-end-line="77" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/runKLupus.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.2845787">
-          <caret line="120" column="16" selection-start-line="120" selection-start-column="16" selection-end-line="120" selection-end-column="16" />
+        <state vertical-scroll-proportion="-1.2321144">
+          <caret line="98" column="21" selection-start-line="98" selection-start-column="21" selection-end-line="98" selection-end-column="21" />
           <folding />
         </state>
       </provider>

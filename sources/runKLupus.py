@@ -3,6 +3,7 @@ import os
 import pickle
 from threading import Thread
 
+import numpy
 import theano
 from sklearn import metrics
 from sklearn.metrics import roc_auc_score
@@ -94,7 +95,7 @@ class SplitThread(Thread):
         # fpr, tpr, thresholds = metrics.roc_curve(labels, scores, pos_label=1)
         score = roc_auc_score(y_true=labels, y_score=scores)
 
-        result = dict(score=score, late_pos_fpr=late_fpr, late_pos_tpr=late_tpr)
+        result = dict(score=score, late_pos_fpr=late_fpr, late_pos_tpr=late_tpr, y=y, batch=batch)
         return result
 
     def run(self):
@@ -147,11 +148,27 @@ for d in LupusDataset.k_fold_test_datasets(Paths.lupus_path, k=k, strategy=PerPa
     t.start()
     count += 1
 
+ys = []
+masks = []
+outputs = []
 score = 0.
 # Wait for all threads to complete
 for t in thread_list:
     t.join()
     score += t.results['score']
+    ys.append(t.results['y'])
+    batch = t.results['batch']
+    masks.append(batch.mask)
+    outputs.append(batch.outputs)
+
+y = numpy.concatenate(*ys, axis=2)
+mask = numpy.concatenate(*masks, axis=2)
+output = numpy.concatenate(*outputs, axis=2)
+scores, labels = LupusDataset.get_scores_patients(y, output, mask)
+# fpr, tpr, thresholds = metrics.roc_curve(labels, scores, pos_label=1)
+cum_score = roc_auc_score(y_true=labels, y_score=scores)
+
 
 logger.info("All thread finished...")
-logger.info('ROC_AUC score: {:.2f}'.format(score / len(thread_list)))
+logger.info('ROC_AUC mean score: {:.2f}'.format(score / len(thread_list)))
+logger.info('ROC_AUC cumulative score: {:.2f}'.format(cum_score))
