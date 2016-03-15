@@ -4,13 +4,13 @@ from PIL import Image
 
 from Configs import Configs
 from model import RNN
-from task.AdditionTask import AdditionTask
-from task.XorTaskHot import XorTaskHot
+from datasets.AdditionTask import AdditionTask
+from datasets.XorTaskHot import XorTaskHot
 import numpy
 
 seed = 132
 task = AdditionTask(144, seed)
-#out_dir = Configs.output_dir + str(task)
+#out_dir = Configs.output_dir + str(datasets)
 #net = Rnn.load_model('/home/giulio/RNNs/models/completed/100 hidden/add_task, min_length: 144_average/model.npz')
 net = RNN.load_model('/home/giulio/RNNs/models/add_task, min_length: 144/current_model.npz')
 batch = task.get_batch(1)

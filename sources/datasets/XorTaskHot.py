@@ -1,8 +1,8 @@
 import numpy
 from infos.InfoElement import SimpleDescription, PrintableInfoElement
 from infos.InfoList import InfoList
-from task.MarkerBasedTask import MarkerBasedTask
-from task.Task import Task
+from datasets.MarkerBasedTask import MarkerBasedTask
+from datasets.Task import Task
 from Configs import Configs
 import theano.tensor as TT
 
@@ -62,7 +62,7 @@ class XorTaskHot(Task):
 
 if __name__ == '__main__':
     seed = 99
-    print('Testing XOR task ...')
+    print('Testing XOR datasets ...')
     task = XorTaskHot(22, seed)
     batch = task.get_batch(3)
     print(str(batch))

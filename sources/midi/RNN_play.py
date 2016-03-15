@@ -3,7 +3,7 @@ import numpy
 from Paths import Paths
 from midi.MidiWriter import MidiWriter
 from model import RNN
-from task.MuseDataset import MuseDataset
+from datasets.MuseDataset import MuseDataset
 
 seed = 676768
 out_dir = '/home/giulio/RNNs/models/Bach/best_model.npz'

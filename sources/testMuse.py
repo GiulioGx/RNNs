@@ -3,7 +3,7 @@ import theano as T
 from Paths import Paths
 from lossFunctions.FullCrossEntropy import FullCrossEntropy
 from model.RNN import RNN
-from task.MuseDataset import MuseDataset
+from datasets.MuseDataset import MuseDataset
 
 __author__ = 'giulio'
 

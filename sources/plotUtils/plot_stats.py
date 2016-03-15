@@ -53,11 +53,11 @@ n_hidden = npz['net_n_hidden'].item()
 n_in = npz['net_n_in'].item()
 n_out = npz['net_n_out'].item()
 activation_fnc = npz['net_activation_fnc']
-task = npz['task'].item()
+task = npz['datasets'].item()
 n_iterations = check_freq * length
 batch_size = npz['settings_batch_size']
 
-description = 'task: {}\ntraining time: {:2.2f} min,  num iterations: {:n}, batch_size: {}\nactivation fnc: {}  ' \
+description = 'datasets: {}\ntraining time: {:2.2f} min,  num iterations: {:n}, batch_size: {}\nactivation fnc: {}  ' \
               'n_hidden: {:d}  n_in: {:d}  n_out: {:d}\n'.format(task, elapsed_time / 60, n_iterations, batch_size,
                                                                  activation_fnc, n_hidden, n_in, n_out)
 ax = axarr[0] if n_plots > 1 else axarr

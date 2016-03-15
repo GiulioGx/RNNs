@@ -1,8 +1,8 @@
 import theano as T
 
 from model.RNN import RNN
-from task.AdditionTask import AdditionTask
-from task.TemporalOrderTask import TemporalOrderTask
+from datasets.AdditionTask import AdditionTask
+from datasets.TemporalOrderTask import TemporalOrderTask
 
 __author__ = 'giulio'
 

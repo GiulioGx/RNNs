@@ -1,7 +1,7 @@
 import abc
 
 from infos.InfoProducer import SimpleInfoProducer
-from task import Batch
+from datasets import Batch
 
 __author__ = 'giulio'
 
@@ -21,8 +21,8 @@ class Task(SimpleInfoProducer):
 
     @abc.abstractproperty
     def n_in(self):
-        """return the number of input units used for this task"""
+        """return the number of input units used for this datasets"""
 
     @abc.abstractproperty
     def n_out(self):
-        """return the number of ouyput units used for this task"""
+        """return the number of ouyput units used for this datasets"""

@@ -3,7 +3,7 @@ from infos.InfoElement import PrintableInfoElement
 from infos.InfoGroup import InfoGroup
 from infos.InfoList import InfoList
 from metrics.RealValuedMonitor import RealValuedMonitor
-from task.Dataset import Dataset
+from datasets.Dataset import Dataset
 
 
 class ErrorMonitor(RealValuedMonitor):

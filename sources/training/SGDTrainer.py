@@ -15,8 +15,8 @@ from infos.InfoList import InfoList
 from metrics.Criterion import Criterion, AlwaysFalseCriterion, AlwaysTrueCriterion
 from metrics.MeasureMonitor import MeasureMonitor
 from model import NetManager
-from task.BatchPolicer import RepetitaPolicer
-from task.Dataset import Dataset
+from datasets.BatchPolicer import RepetitaPolicer
+from datasets.Dataset import Dataset
 from training.Statistics import Statistics
 from training.TrainingRule import TrainingRule
 
@@ -102,9 +102,9 @@ class SGDTrainer(object):
 
         net = net_manager.get_net(n_in=dataset.n_in, n_out=dataset.n_out)
 
-        # add task description to infos
+        # add datasets description to infos
         self.__training_settings_info = InfoList(self.__training_settings_info,
-                                                 PrintableInfoElement('task', '', str(dataset)))
+                                                 PrintableInfoElement('datasets', '', str(dataset)))
 
         # compute_update symbols
         logger.info('Compiling theano functions for the training step...')

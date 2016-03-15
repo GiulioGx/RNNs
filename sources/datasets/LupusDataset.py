@@ -11,8 +11,8 @@ from infos.Info import Info, NullInfo
 from infos.InfoElement import SimpleDescription, PrintableInfoElement
 from infos.InfoGroup import InfoGroup
 from infos.InfoList import InfoList
-from task.Batch import Batch
-from task.Dataset import Dataset
+from datasets.Batch import Batch
+from datasets.Dataset import Dataset
 
 
 class BuildBatchStrategy(object):
@@ -70,6 +70,7 @@ class PerPatienceTargets(BuildBatchStrategy):
 
 class LupusDataset(Dataset):
     num_min_visit = 2  # dicard patients with lass than visits
+    num_min_visit_negative = 7  # discard negative patience with lass than visits
 
     @staticmethod
     def __load_mat(mat_file: str):
@@ -78,8 +79,8 @@ class LupusDataset(Dataset):
         positive_patients = mat_obj['pazientiPositivi']
         negative_patients = mat_obj['pazientiNegativi']
 
-        features_struct = mat_obj['selectedFeatures']
-        # features_struct = mat_obj['featuresVip7']
+        # features_struct = mat_obj['selectedFeatures']
+        features_struct = mat_obj['featuresVip7']
         features_names = LupusDataset.__find_features_names(features_struct)
 
         data = numpy.concatenate((positive_patients, negative_patients), axis=0)
@@ -93,7 +94,8 @@ class LupusDataset(Dataset):
 
         negatives, max_visits_neg = LupusDataset.__process_patients(negative_patients,
                                                                     features_names,
-                                                                    features_normalizations)
+                                                                    features_normalizations,
+                                                                    LupusDataset.num_min_visit_negative)
         shuffle(negatives)
 
         description = ['Lupus Dataset:\n', 'features: {}\n'.format(features_names),
@@ -198,7 +200,7 @@ class LupusDataset(Dataset):
         return early_positives, late_positives
 
     @staticmethod
-    def __process_patients(mat_data, features_names, features_normalizations):
+    def __process_patients(mat_data, features_names, features_normalizations, min_visits: int = num_min_visit):
 
         patients_datas = []
         max_visits = 0
@@ -210,7 +212,7 @@ class LupusDataset(Dataset):
             visits = mat_data[visits_indexes]
             visits = sorted(visits, key=lambda visit: visit['numberVisit'].item())
             n_visits = len(visits)
-            if n_visits >= LupusDataset.num_min_visit:
+            if n_visits >= min_visits:
                 max_visits = max(max_visits, n_visits)
                 pat_matrix = numpy.zeros(shape=(n_visits, n_features))
                 target_vec = numpy.zeros(shape=(n_visits, 1))

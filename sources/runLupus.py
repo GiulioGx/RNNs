@@ -28,9 +28,9 @@ from model.RNNInitializer import RNNInitializer, RNNVarsInitializer, RNNLoader
 from model.RNNManager import RNNManager
 from output_fncs.Logistic import Logistic
 from output_fncs.Softmax import Softmax
-from task.Dataset import InfiniteDataset
-from task.LupusDataset import LupusDataset, PerPatienceTargets
-from task.TemporalOrderTask import TemporalOrderTask
+from datasets.Dataset import InfiniteDataset
+from datasets.LupusDataset import LupusDataset, PerPatienceTargets
+from datasets.TemporalOrderTask import TemporalOrderTask
 from training.SGDTrainer import SGDTrainer
 from training.TrainingRule import TrainingRule
 from updateRule.SimpleUpdate import SimpleUdpate

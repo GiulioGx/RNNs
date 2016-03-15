@@ -25,9 +25,9 @@ from model.RNNInitializer import RNNInitializer, RNNVarsInitializer
 from model.RNNManager import RNNManager
 from output_fncs.Linear import Linear
 from output_fncs.Softmax import Softmax
-from task.AdditionTask import AdditionTask
-from task.Dataset import InfiniteDataset
-from task.TemporalOrderTask import TemporalOrderTask
+from datasets.AdditionTask import AdditionTask
+from datasets.Dataset import InfiniteDataset
+from datasets.TemporalOrderTask import TemporalOrderTask
 from training.SGDTrainer import SGDTrainer
 from training.TrainingRule import TrainingRule
 from updateRule.SimpleUpdate import SimpleUdpate

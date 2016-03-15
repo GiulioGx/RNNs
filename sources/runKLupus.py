@@ -23,7 +23,7 @@ from metrics.ThresholdCriterion import ThresholdCriterion
 from model.RNNInitializer import RNNInitializer, RNNVarsInitializer
 from model.RNNManager import RNNManager
 from output_fncs.Logistic import Logistic
-from task.LupusDataset import LupusDataset, PerPatienceTargets
+from datasets.LupusDataset import LupusDataset, PerPatienceTargets
 from training.SGDTrainer import SGDTrainer
 from training.TrainingRule import TrainingRule
 from updateRule.SimpleUpdate import SimpleUdpate

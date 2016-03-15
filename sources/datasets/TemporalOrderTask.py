@@ -1,9 +1,9 @@
 import numpy
 from infos.InfoElement import SimpleDescription, PrintableInfoElement
 from infos.InfoList import InfoList
-from task.Batch import Batch
-from task.MarkerBasedTask import MarkerBasedTask
-from task.Task import Task
+from datasets.Batch import Batch
+from datasets.MarkerBasedTask import MarkerBasedTask
+from datasets.Task import Task
 from Configs import Configs
 import theano.tensor as TT
 
@@ -126,7 +126,7 @@ class TemporalOrderTask(Task):
 
 if __name__ == '__main__':
     seed = 13
-    print('Testing Temporal Order task ...')
+    print('Testing Temporal Order datasets ...')
     task = TemporalOrderTask(25, seed)
     batch = task.get_batch(3)
     print(str(batch))

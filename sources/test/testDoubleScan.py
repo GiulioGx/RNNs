@@ -19,13 +19,13 @@ from model.RNNManager import RNNManager
 from model.RNNInitializer import RNNInitializer
 from output_fncs.Linear import Linear
 from output_fncs.Softmax import Softmax
-from task.AdditionTask import AdditionTask
-from task.Dataset import InfiniteDataset
+from datasets.AdditionTask import AdditionTask
+from datasets.Dataset import InfiniteDataset
 import theano as T
 import theano.gradient as TG
 import theano.tensor as TT
 import numpy.linalg as li
-from task.XorTaskHot import XorTaskHot
+from datasets.XorTaskHot import XorTaskHot
 
 __author__ = 'giulio'
 

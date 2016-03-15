@@ -28,9 +28,9 @@ from model.RNNInitializer import RNNInitializer, RNNVarsInitializer, RNNLoader
 from model.RNNManager import RNNManager
 from output_fncs.Linear import Linear
 from output_fncs.Softmax import Softmax
-from task.AdditionTask import AdditionTask
-from task.Dataset import InfiniteDataset
-from task.TemporalOrderTask import TemporalOrderTask
+from datasets.AdditionTask import AdditionTask
+from datasets.Dataset import InfiniteDataset
+from datasets.TemporalOrderTask import TemporalOrderTask
 from training.SGDTrainer import SGDTrainer
 from training.TrainingRule import TrainingRule
 from updateRule.SimpleUpdate import SimpleUdpate
@@ -111,7 +111,7 @@ update_rule = SimpleUdpate()
 
 train_rule = TrainingRule(dir_rule, lr_rule, update_rule, loss_fnc)
 
-# dataset = Dataset.no_valid_dataset_from_task(size=1000, task=task)
+# dataset = Dataset.no_valid_dataset_from_task(size=1000, datasets=datasets)
 dataset = InfiniteDataset(task=task, validation_size=10 ** 4, n_batches=5)
 
 loss_monitor = LossMonitor(loss_fnc=loss_fnc)

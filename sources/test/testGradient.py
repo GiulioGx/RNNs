@@ -12,8 +12,8 @@ from model.RNN import RNN
 from model.RNNManager import RNNManager
 from model.RNNInitializer import RNNInitializer
 from output_fncs.Linear import Linear
-from task.AdditionTask import AdditionTask
-from task.Dataset import InfiniteDataset
+from datasets.AdditionTask import AdditionTask
+from datasets.Dataset import InfiniteDataset
 
 __author__ = 'giulio'
 

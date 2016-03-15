@@ -4,11 +4,11 @@ from initialization.ZeroInit import ZeroInit
 from lossFunctions.CrossEntropy import CrossEntropy
 from lossFunctions.HingeLoss import HingeLoss
 from model import RNN
-from task.XorTask import XorTask
+from datasets.XorTask import XorTask
 import theano as T
 import numpy
 seed = 15
-print('Testing XOR task ...')
+print('Testing XOR datasets ...')
 task = XorTask(22, seed)
 batch = task.get_batch(5)
 print(str(batch))

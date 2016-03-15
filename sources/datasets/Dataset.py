@@ -5,8 +5,8 @@ from infos.InfoElement import PrintableInfoElement
 from infos.InfoGroup import InfoGroup
 from infos.InfoList import InfoList
 from infos.InfoProducer import SimpleInfoProducer
-from task import Task
-from task.Batch import Batch
+from datasets import Task
+from datasets.Batch import Batch
 import numpy
 
 

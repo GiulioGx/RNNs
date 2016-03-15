@@ -25,7 +25,7 @@ from model.RNNInitializer import RNNInitializer, RNNVarsInitializer, RNNLoader
 from model.RNNManager import RNNManager
 from output_fncs.Logistic import Logistic
 from output_fncs.Softmax import Softmax
-from task.MuseDataset import MuseDataset
+from datasets.MuseDataset import MuseDataset
 from training.SGDTrainer import SGDTrainer
 from training.TrainingRule import TrainingRule
 from updateRule.SimpleUpdate import SimpleUdpate

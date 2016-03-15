@@ -4,8 +4,8 @@ import numpy
 
 from Configs import Configs
 from infos.InfoElement import SimpleDescription
-from task.Batch import Batch
-from task.Dataset import Dataset
+from datasets.Batch import Batch
+from datasets.Dataset import Dataset
 
 
 class MuseDataset(Dataset):

@@ -1,7 +1,7 @@
 import numpy
 from midiutil.MidiFile3 import MIDIFile
 from Paths import Paths
-from task.MuseDataset import MuseDataset
+from datasets.MuseDataset import MuseDataset
 
 
 class MidiWriter(object):

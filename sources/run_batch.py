@@ -22,8 +22,8 @@ from model.RNNGrowingPolicy import RNNIncrementalGrowing
 from model.RNNInitializer import RNNInitializer, RNNVarsInitializer
 from model.RNNManager import RNNManager
 from output_fncs.Softmax import Softmax
-from task.Dataset import InfiniteDataset
-from task.TemporalOrderTask import TemporalOrderTask
+from datasets.Dataset import InfiniteDataset
+from datasets.TemporalOrderTask import TemporalOrderTask
 from training.SGDTrainer import SGDTrainer
 from training.TrainingRule import TrainingRule
 from updateRule.SimpleUpdate import SimpleUdpate

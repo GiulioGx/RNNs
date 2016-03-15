@@ -4,11 +4,11 @@ from infos.InfoElement import SimpleDescription, PrintableInfoElement
 from infos.InfoGroup import InfoGroup
 from infos.InfoList import InfoList
 from infos.InfoProducer import SimpleInfoProducer
-from task.Batch import Batch
-from task.Task import Task
+from datasets.Batch import Batch
+from datasets.Task import Task
 import numpy
 
-from task.XorTaskHot import XorTaskHot
+from datasets.XorTaskHot import XorTaskHot
 
 __author__ = 'giulio'
 
@@ -28,7 +28,7 @@ class PreTrainTask(Task): # XXX per ora funziona solo se hanno le stesse unità 
 
         return Batch(batch.inputs, new_targets)
 
-    def error_fnc(self, t, y):  # not really relevant for this task
+    def error_fnc(self, t, y):  # not really relevant for this datasets
         return ((abs(t[:, :, :] - y[:, :, :])).sum(axis=0).sum(axis=0) > .04).mean()
 
     @property
@@ -46,7 +46,7 @@ class PreTrainTask(Task): # XXX per ora funziona solo se hanno le stesse unità 
 
 if __name__ == '__main__':
     seed = 13
-    print('Testing Pretrain task ...')
+    print('Testing Pretrain datasets ...')
     orig_task = XorTaskHot(144, seed)
     task = PreTrainTask(orig_task)
     batch = task.get_batch(1)

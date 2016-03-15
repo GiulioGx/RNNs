@@ -4,7 +4,7 @@ from sklearn.metrics import roc_auc_score
 from Configs import Configs
 from Paths import Paths
 from model import RNN
-from task.LupusDataset import LupusDataset
+from datasets.LupusDataset import LupusDataset
 import matplotlib.pyplot as plt
 
 file = Configs.output_dir + 'Lupus3/best_model.npz'
