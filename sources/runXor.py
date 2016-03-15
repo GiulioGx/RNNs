@@ -50,7 +50,7 @@ print(separator)
 seed = 13
 Configs.seed = seed
 
-task = XorTaskHot(50, seed)
+task = XorTaskHot(100, seed)
 out_dir = Configs.output_dir + str(task)
 # network setup
 std_dev = 0.1  # 0.14 Tanh # 0.21 Relu
