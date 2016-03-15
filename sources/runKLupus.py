@@ -105,7 +105,7 @@ class SplitThread(Thread):
         pickle.dump(d, pickfile)
         self.__logger.info('Thread {} has fineshed training -> beginning test'.format(self.__id))
         self.__results = self.__test()
-        self.__logger.info('Partial score for thread {} is:\n {}'.format(self.__id, self.__results['score']))
+        self.__logger.info('Partial score for thread {} is: {:.2f}'.format(self.__id, self.__results['score']))
         self.__logger.info('Thread {} has finished....'.format(self.__id))
 
 

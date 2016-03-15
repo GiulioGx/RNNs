@@ -79,8 +79,8 @@ class LupusDataset(Dataset):
         positive_patients = mat_obj['pazientiPositivi']
         negative_patients = mat_obj['pazientiNegativi']
 
-        # features_struct = mat_obj['selectedFeatures']
-        features_struct = mat_obj['featuresVip7']
+        features_struct = mat_obj['selectedFeatures']
+        # features_struct = mat_obj['featuresVip7']
         features_names = LupusDataset.__find_features_names(features_struct)
 
         data = numpy.concatenate((positive_patients, negative_patients), axis=0)
