@@ -289,7 +289,6 @@ class LupusDataset(Dataset):
     #     max_length = len(pool[max(indexes, key=lambda i: len(pool[i]['targets']))]['targets'])
     #     return self.__build_batch([indexes], [pool], max_length)
 
-
     def get_train_batch(self, batch_size: int) -> Batch:
         """return a 'Batch' of size 'batch_size'"""
         exs = self.__sets_from_keys(self.__train)
