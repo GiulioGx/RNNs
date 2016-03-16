@@ -79,40 +79,35 @@ class LupusDataset(Dataset):
         positive_patients = mat_obj['pazientiPositivi']
         negative_patients = mat_obj['pazientiNegativi']
 
-        # features_struct = mat_obj['selectedFeatures']
-        features_struct = mat_obj['featuresVip7']
+        features_struct = mat_obj['selectedFeatures']
+        # features_struct = mat_obj['featuresVip7']
         features_names = LupusDataset.__find_features_names(features_struct)
 
         data = numpy.concatenate((positive_patients, negative_patients), axis=0)
         features_normalizations = LupusDataset.__find_normalization_factors(features_names, data)
 
-        positives, max_visits_pos = LupusDataset.__process_patients(positive_patients, features_names,
-                                                                    features_normalizations)
+        positives, max_visits_pos, pos_stats = LupusDataset.__process_patients(positive_patients, features_names,
+                                                                               features_normalizations)
         early_positives, late_positives = LupusDataset.__split_positive(positives)
         shuffle(early_positives)
         shuffle(late_positives)
 
-        negatives, max_visits_neg = LupusDataset.__process_patients(negative_patients,
-                                                                    features_names,
-                                                                    features_normalizations,
-                                                                    LupusDataset.num_min_visit_negative)
+        negatives, max_visits_neg, neg_stats = LupusDataset.__process_patients(negative_patients,
+                                                                               features_names,
+                                                                               features_normalizations,
+                                                                               LupusDataset.num_min_visit_negative)
         shuffle(negatives)
 
         description = ['Lupus Dataset:\n', 'features: {}\n'.format(features_names),
                        'normalizations: {}\n'.format(features_normalizations),
                        '{} early positive patients found\n'.format(len(early_positives)),
                        '{} late positive patients found\n'.format(len(late_positives)),
-                       '{} negative patients found\n'.format(len(negatives))]
+                       '{} negative patients found\n'.format(len(negatives)), 'positives stats:\n' + str(pos_stats),
+                       'negatives stats:\n' + str(neg_stats)]
 
         infos = SimpleDescription(''.join(description))
 
         return early_positives, late_positives, negatives, max_visits_pos, max_visits_neg, features_names, infos
-
-    @staticmethod
-    def stats(example_set):
-
-        max_
-
 
     @staticmethod
     def no_test_dataset(mat_file: str, strategy: BuildBatchStrategy = PerVisitTargets, seed: int = Configs.seed):
@@ -211,12 +206,15 @@ class LupusDataset(Dataset):
         patients_datas = []
         max_visits = 0
 
+        stats = LupusDataset.Stats()
+
         n_features = len(features_names)
         patients_ids = numpy.unique(mat_data['PazienteId'])
         for id in patients_ids:
             visits_indexes = mat_data['PazienteId'] == id.item()
             visits = mat_data[visits_indexes]
             visits = sorted(visits, key=lambda visit: visit['numberVisit'].item())
+            stats.add_patience(visits)
             n_visits = len(visits)
             if n_visits >= min_visits:
                 max_visits = max(max_visits, n_visits)
@@ -231,7 +229,7 @@ class LupusDataset(Dataset):
                         pat_matrix[j, k] = (visits[j][f_name].item() - a) / (b - a)
                 patients_datas.append(dict(features=pat_matrix, targets=target_vec))
 
-        return patients_datas, max_visits
+        return patients_datas, max_visits, stats
 
     @staticmethod
     def __print_patience(pat_dict):
@@ -461,6 +459,46 @@ class LupusDataset(Dataset):
     @property
     def infos(self):
         return self.__infos
+
+    class Stats(object):
+
+        class Measure(object):
+            def __init__(self, name: str):
+                self.__min = numpy.inf
+                self.__max = 0
+                self.__acc = 0.
+                self.__count = 0
+                self.__name = name
+
+            def add_sample(self, value):
+                self.__max = max(self.__max, value)
+                self.__min = min(self.__min, value)
+                self.__acc += value
+                self.__count += 1
+
+            @property
+            def value(self):
+                d = dict()
+                d['min_' + self.__name] = self.__min
+                d['max_' + self.__name] = self.__max
+                d['mean_' + self.__name] = self.__acc / self.__count
+                return d
+
+        def __init__(self):
+            self.__visit_measure = LupusDataset.Stats.Measure('num_visits')
+            self.__age_measure = LupusDataset.Stats.Measure('age_span')
+
+        def add_patience(self, visits):
+            if not visits[0]['sdi'] > 0:  # discard early positives
+                n_visits = len(visits)
+                self.__visit_measure.add_sample(n_visits)
+                age_span = visits[-1]['age'] - visits[0]['age']
+                self.__age_measure.add_sample(age_span)
+
+        def __str__(self):
+            d = self.__age_measure.value
+            d.update(self.__visit_measure.value)
+            return str(d)
 
 
 if __name__ == '__main__':
