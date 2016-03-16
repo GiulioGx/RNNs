@@ -109,6 +109,12 @@ class LupusDataset(Dataset):
         return early_positives, late_positives, negatives, max_visits_pos, max_visits_neg, features_names, infos
 
     @staticmethod
+    def stats(example_set):
+
+        max_
+
+
+    @staticmethod
     def no_test_dataset(mat_file: str, strategy: BuildBatchStrategy = PerVisitTargets, seed: int = Configs.seed):
         early_positives, late_positives, negatives, max_visits_pos, max_visits_neg, features_names, infos = LupusDataset.__load_mat(
             mat_file)
