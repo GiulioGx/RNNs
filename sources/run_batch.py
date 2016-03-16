@@ -79,7 +79,7 @@ def train_run(seed: int, task_length: int, prefix: str):
     dataset = InfiniteDataset(task=task, validation_size=10 ** 4, n_batches=5)
 
     loss_monitor = LossMonitor(loss_fnc=loss_fnc)
-    error_monitor = ErrorMonitor(dataset=dataset)
+    error_monitor = ErrorMonitor(dataset=dataset, error_fnc=task.error_fnc)
     stopping_criterion = ThresholdCriterion(monitor=error_monitor, threshold=1. / 100)
     saving_criterion = BestValueFoundCriterion(monitor=error_monitor)
 
