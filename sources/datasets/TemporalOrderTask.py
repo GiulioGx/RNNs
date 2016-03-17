@@ -17,7 +17,7 @@ class TemporalOrderTask(Task):
         self.__n_in = 6
         self.__n_out = 4
         self.__rng = numpy.random.RandomState(seed)
-        self.__mode = 'plain'
+        self.__mode = 'mixed'
 
     def error_fnc(self, t, y, mask):
         return Batch.last_step_one_hot(t=t, y=y, mask=mask)

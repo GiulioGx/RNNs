@@ -1,3 +1,5 @@
+import numpy
+
 from Configs import Configs
 from combiningRule.LinearCombination import LinearCombination
 from infos.InfoGroup import InfoGroup
@@ -12,9 +14,9 @@ class SimplexCombination(LinearCombination):
     def get_linear_coefficients(self, H):
         n = H.shape[0]
         u = self.__srng.uniform(low=0, high=1, size=(n, 1))
-        # x = TT.exp(1.-u)
-        # r = x/x.sum()
-        r = u / u.sum()  # XXX simplex
+        x = TT.exp(1. - u)
+        r = x / (x.sum() + 1e-10)
+        # r = u / u.sum()  # XXX simplex
         return r
 
     def __init__(self, normalize_components: bool = True, seed=Configs.seed):
@@ -35,3 +37,4 @@ if __name__ == '__main__':
 
     betas_numpy = f(200)
     print('betas', betas_numpy)
+    print('sum: ', numpy.sum(betas_numpy))
