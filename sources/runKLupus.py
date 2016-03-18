@@ -11,6 +11,7 @@ from sklearn.metrics import roc_auc_score
 from ActivationFunction import Tanh
 from Configs import Configs
 from Paths import Paths
+from datasets.LupusFilter import TemporalSpanSelector
 from descentDirectionRule.Antigradient import Antigradient
 from initialization.ConstantInit import ConstantInit
 from initialization.GaussianInit import GaussianInit
@@ -72,7 +73,7 @@ class SplitThread(Thread):
 
         loss_monitor = LossMonitor(loss_fnc=loss_fnc)
         roc_monitor = RocMonitor(score_fnc=LupusDataset.get_scores_patients)
-        stopping_criterion = ThresholdCriterion(monitor=roc_monitor, threshold=0.98, mode='>')
+        stopping_criterion = ThresholdCriterion(monitor=roc_monitor, threshold=0.92, mode='>')
         saving_criterion = BestValueFoundCriterion(monitor=roc_monitor, mode='gt')
 
         trainer = SGDTrainer(train_rule, output_dir=self.__out_dir, max_it=10 ** 10,
@@ -102,79 +103,96 @@ class SplitThread(Thread):
         self.__train()
         # save dataset to disk
         pickfile = open(self.__out_dir + '/dataset.pkl', "wb")
-        pickle.dump(d, pickfile)
+        pickle.dump(self.__dataset, pickfile)
         self.__logger.info('Thread {} has fineshed training -> beginning test'.format(self.__id))
         self.__results = self.__test()
         self.__logger.info('Partial score for thread {} is: {:.2f}'.format(self.__id, self.__results['score']))
         self.__logger.info('Thread {} has finished....'.format(self.__id))
 
 
-separator = '#####################'
+def run_experiment(min_age_lower, min_age_upper, min_visits, id: int):
+    # start main logger
+    root_out_dir = Configs.output_dir + 'Lupus_k/run_{}/'.format(id)
+    os.makedirs(root_out_dir, exist_ok=True)
+    log_filename = root_out_dir + 'train_k.log'
+    if os.path.exists(log_filename):
+        os.remove(log_filename)
+    file_handler = logging.FileHandler(filename=log_filename, mode='a')
+    formatter = logging.Formatter('%(levelname)s:%(message)s')
+    file_handler.setFormatter(formatter)
+    logger = logging.getLogger('split.train_{}'.format(id))
+    logger.setLevel(logging.INFO)
+    logger.addHandler(file_handler)
+    logger.info('Begin {}-split training'.format(k))
 
-# ###THEANO CONFIG ### #
-floatX = theano.config.floatX
-device = theano.config.device
-Configs.floatType = floatX
-print(separator)
-print('THEANO CONFIG')
-print('device: ' + device)
-print('floatType: ' + floatX)
-print(separator)
+    thread_count = 0
+    thread_list = []
+    for d in LupusDataset.k_fold_test_datasets(Paths.lupus_path, k=k, strategy=PerPatienceTargets(),
+                                               visit_selector=TemporalSpanSelector(
+                                                   min_age_span_upper=min_age_upper,
+                                                   min_age_span_lower=min_age_lower, min_visits=min_visits)):
+        out_dir = root_out_dir + str(thread_count)
+        t = SplitThread(out_dir=out_dir, dataset=d, id=thread_count, logger=logger)
+        thread_list.append(t)
+        t.start()
+        thread_count += 1
 
-seed = 15
-Configs.seed = seed
-k = 8
+    ys = []
+    masks = []
+    outputs = []
+    score = 0.
+    # Wait for all threads to complete
+    for t in thread_list:
+        t.join()
+        score += t.results['score']
+        ys.append(t.results['y'])
+        batch = t.results['batch']
+        masks.append(batch.mask)
+        outputs.append(batch.outputs)
 
-# start main logger
-root_out_dir = Configs.output_dir + 'Lupus_k/'
-os.makedirs(root_out_dir, exist_ok=True)
-log_filename = root_out_dir + 'train_k.log'
-if os.path.exists(log_filename):
-    os.remove(log_filename)
-file_handler = logging.FileHandler(filename=log_filename, mode='a')
-formatter = logging.Formatter('%(levelname)s:%(message)s')
-file_handler.setFormatter(formatter)
-logger = logging.getLogger('split.train')
-logger.setLevel(logging.INFO)
-logger.addHandler(file_handler)
-logger.info('Begin {}-split training'.format(k))
+    y = numpy.concatenate(ys, axis=2)
+    mask = numpy.concatenate(masks, axis=2)
+    output = numpy.concatenate(outputs, axis=2)
+    scores, labels = LupusDataset.get_scores_patients(y, output, mask)
+    # fpr, tpr, thresholds = metrics.roc_curve(labels, scores, pos_label=1)
+    cum_score = roc_auc_score(y_true=labels, y_score=scores)
 
-count = 0
-thread_list = []
-for d in LupusDataset.k_fold_test_datasets(Paths.lupus_path, k=k, strategy=PerPatienceTargets()):
-    out_dir = root_out_dir + str(count)
-    t = SplitThread(out_dir=out_dir, dataset=d, id=count, logger=logger)
-    thread_list.append(t)
-    t.start()
-    count += 1
+    logger.info("All thread finished...")
+    logger.info('ROC_AUC mean score: {:.2f}'.format(score / len(thread_list)))
+    logger.info('ROC_AUC cumulative score: {:.2f}'.format(cum_score))
 
-ys = []
-masks = []
-outputs = []
-score = 0.
-# Wait for all threads to complete
-for t in thread_list:
-    t.join()
-    score += t.results['score']
-    ys.append(t.results['y'])
-    batch = t.results['batch']
-    masks.append(batch.mask)
-    outputs.append(batch.outputs)
-
-y = numpy.concatenate(ys, axis=2)
-mask = numpy.concatenate(masks, axis=2)
-output = numpy.concatenate(outputs, axis=2)
-scores, labels = LupusDataset.get_scores_patients(y, output, mask)
-# fpr, tpr, thresholds = metrics.roc_curve(labels, scores, pos_label=1)
-cum_score = roc_auc_score(y_true=labels, y_score=scores)
+    # save scores to file
+    npz_file = root_out_dir + 'scores.npz'
+    os.makedirs(os.path.dirname(npz_file), exist_ok=True)
+    d = dict(scores=scores, labels=labels)
+    numpy.savez(npz_file, **d)
 
 
-logger.info("All thread finished...")
-logger.info('ROC_AUC mean score: {:.2f}'.format(score / len(thread_list)))
-logger.info('ROC_AUC cumulative score: {:.2f}'.format(cum_score))
+if __name__ == '__main__':
 
-# save scores to file
-npz_file = root_out_dir + 'scores.npz'
-os.makedirs(os.path.dirname(npz_file), exist_ok=True)
-d = dict(scores=scores, labels=labels)
-numpy.savez(npz_file, **d)
+    separator = '#####################'
+
+    # ###THEANO CONFIG ### #
+    floatX = theano.config.floatX
+    device = theano.config.device
+    Configs.floatType = floatX
+    print(separator)
+    print('THEANO CONFIG')
+    print('device: ' + device)
+    print('floatType: ' + floatX)
+    print(separator)
+
+    seed = 15
+    Configs.seed = seed
+    k = 8
+
+    min_age_span_lower_list = [1, 2]
+    min_age_span_upper_list = [1, 2]
+    min_num_visits = [2, 3, 4]
+
+    count = 0
+    for min_age_l in min_age_span_lower_list:
+        for min_age_u in min_age_span_upper_list:
+            for min_v in min_num_visits:
+                run_experiment(min_age_lower=min_age_l, min_age_upper=min_age_u, min_visits=min_v, id=count)
+                count += 1
