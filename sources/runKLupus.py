@@ -187,9 +187,9 @@ if __name__ == '__main__':
     Configs.seed = seed
     k = 8
 
-    min_age_span_lower_list = [1, 2]
-    min_age_span_upper_list = [1, 2]
-    min_num_visits = [5]
+    min_age_span_lower_list = [0.8]
+    min_age_span_upper_list = [0.8]
+    min_num_visits = [5, 6, 7]
 
     root_dir = Configs.output_dir + 'Lupus_k/'
     shutil.rmtree(root_dir, ignore_errors=True)

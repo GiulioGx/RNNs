@@ -91,7 +91,7 @@ combining_rule = SimplexCombination(normalize_components=True, seed=seed)
 # combining_rule = SimpleSum()
 dir_rule = CombinedGradients(combining_rule)
 dir_rule = CheckedDirection(dir_rule, max_cos=0, max_dir_norm=0.9)
-# dir_rule = Antigradient()
+dir_rule = Antigradient()
 # dir_rule = LBFGSDirection(n_pairs=7)
 
 # learning step rule

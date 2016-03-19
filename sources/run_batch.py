@@ -95,7 +95,7 @@ def train_run(seed: int, task_length: int, prefix: str):
 
 
 seeds = [13, 14, 15, 16, 17]
-lengths = [150]
+lengths = [200]
 prefix = 'train_run'
 
 print('Beginning train run...')

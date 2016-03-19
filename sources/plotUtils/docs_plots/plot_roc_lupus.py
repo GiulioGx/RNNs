@@ -5,7 +5,7 @@ from sklearn.metrics import roc_auc_score
 
 from Configs import Configs
 
-file = Configs.output_dir + 'Lupus_k/scores.npz'
+file = '/home/giulio/lupus_runs/run_0/scores.npz'
 npz = numpy.load(file)
 scores = npz['scores']
 labels = npz['labels']
