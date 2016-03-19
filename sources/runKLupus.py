@@ -198,5 +198,5 @@ if __name__ == '__main__':
     for min_age_l in min_age_span_lower_list:
         for min_age_u in min_age_span_upper_list:
             for min_v in min_num_visits:
-                run_experiment(min_age_lower=min_age_l, min_age_upper=min_age_u, min_visits=min_v, id=count)
+                run_experiment(root_dir=root_dir, min_age_lower=min_age_l, min_age_upper=min_age_u, min_visits=min_v, id=count)
                 count += 1
