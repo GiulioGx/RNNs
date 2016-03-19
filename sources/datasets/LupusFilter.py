@@ -77,7 +77,7 @@ class LupusStats(object):
     def __init__(self, mat_file: str):
         positive_patients, negative_patients, features_names = datasets.LupusDataset.parse_mat(mat_file=mat_file)
         mat_data = numpy.concatenate((positive_patients, negative_patients), axis=0)
-        mat_data = negative_patients
+        mat_data = positive_patients
 
         self.__n_visits = []
         self.__age_spans = []
@@ -89,11 +89,13 @@ class LupusStats(object):
             visits = mat_data[visits_indexes]
             visits = sorted(visits, key=lambda visit: visit['numberVisit'].item())
 
-            self.__n_visits.append(len(visits))
-            ages = [v["age"].item() for v in visits]
+            if visits[0]["sdi"] <= 0:
+                cutoff = numpy.min(numpy.nonzero([v["sdi"].item() for v in visits]))
+                self.__n_visits.append(cutoff)
+                ages = [v["age"].item() for v in visits]
 
-            age_span = max(ages) - min(ages)
-            self.__age_spans.append(age_span)
+                age_span = max(ages) - min(ages)
+                self.__age_spans.append(age_span)
 
     def plot_hists(self):
         plt.figure(1)
@@ -129,8 +131,8 @@ class TemporalSpanSelector(VisitsSelector):
     @property
     def infos(self):
         return InfoGroup("temporal span visits filter",
-                         InfoList(PrintableInfoElement("min age span upper", ':d', self.__min_age_span_upper),
-                                  PrintableInfoElement("min age span lower", ':d', self.__min_age_span_lower),
+                         InfoList(PrintableInfoElement("min age span upper", ':.1', self.__min_age_span_upper),
+                                  PrintableInfoElement("min age span lower", ':.1', self.__min_age_span_lower),
                                   PrintableInfoElement("min visits", ':d', self.__min_visits)))
 
     def __init__(self, min_age_span_upper, min_age_span_lower, min_visits: int = 2):
