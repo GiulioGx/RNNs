@@ -4,6 +4,7 @@ import pickle
 from threading import Thread
 
 import numpy
+import shutil
 import theano
 from sklearn import metrics
 from sklearn.metrics import roc_auc_score
@@ -110,11 +111,11 @@ class SplitThread(Thread):
         self.__logger.info('Thread {} has finished....'.format(self.__id))
 
 
-def run_experiment(min_age_lower, min_age_upper, min_visits, id: int):
+def run_experiment(root_dir, min_age_lower, min_age_upper, min_visits, id: int):
     # start main logger
-    root_out_dir = Configs.output_dir + 'Lupus_k/run_{}/'.format(id)
-    os.makedirs(root_out_dir, exist_ok=True)
-    log_filename = root_out_dir + 'train_k.log'
+    run_out_dir = root_dir + 'run_{}/'.format(id)
+    os.makedirs(run_out_dir, exist_ok=True)
+    log_filename = run_out_dir + 'train_k.log'
     if os.path.exists(log_filename):
         os.remove(log_filename)
     file_handler = logging.FileHandler(filename=log_filename, mode='a')
@@ -131,7 +132,7 @@ def run_experiment(min_age_lower, min_age_upper, min_visits, id: int):
                                                visit_selector=TemporalSpanSelector(
                                                    min_age_span_upper=min_age_upper,
                                                    min_age_span_lower=min_age_lower, min_visits=min_visits)):
-        out_dir = root_out_dir + str(thread_count)
+        out_dir = run_out_dir + str(thread_count)
         t = SplitThread(out_dir=out_dir, dataset=d, id=thread_count, logger=logger)
         thread_list.append(t)
         t.start()
@@ -162,7 +163,7 @@ def run_experiment(min_age_lower, min_age_upper, min_visits, id: int):
     logger.info('ROC_AUC cumulative score: {:.2f}'.format(cum_score))
 
     # save scores to file
-    npz_file = root_out_dir + 'scores.npz'
+    npz_file = run_out_dir + 'scores.npz'
     os.makedirs(os.path.dirname(npz_file), exist_ok=True)
     d = dict(scores=scores, labels=labels)
     numpy.savez(npz_file, **d)
@@ -188,7 +189,10 @@ if __name__ == '__main__':
 
     min_age_span_lower_list = [1, 2]
     min_age_span_upper_list = [1, 2]
-    min_num_visits = [2, 3, 4]
+    min_num_visits = [5]
+
+    root_dir = Configs.output_dir + 'Lupus_k/'
+    shutil.rmtree(root_dir, ignore_errors=True)
 
     count = 0
     for min_age_l in min_age_span_lower_list:
