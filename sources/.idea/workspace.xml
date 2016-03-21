@@ -83,10 +83,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="overfitting_muse.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="overfitting_muse.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/plotUtils/docs_plots/overfitting_muse.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.85714287">
+            <state vertical-scroll-proportion="0.0">
               <caret line="63" column="22" selection-start-line="63" selection-start-column="22" selection-end-line="63" selection-end-column="22" />
               <folding />
             </state>
@@ -105,11 +105,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="runKLupus.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="runKLupus.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/runKLupus.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="43" column="29" selection-start-line="43" selection-start-column="29" selection-end-line="43" selection-end-column="29" />
+            <state vertical-scroll-proportion="0.71428573">
+              <caret line="76" column="83" selection-start-line="76" selection-start-column="83" selection-end-line="76" selection-end-column="83" />
               <folding />
             </state>
           </provider>
@@ -180,7 +180,6 @@
         <option value="$PROJECT_DIR$/datasets/__init__.py" />
         <option value="$PROJECT_DIR$/datasets/LupusDataset.py" />
         <option value="$PROJECT_DIR$/plotUtils/docs_plots/plot_roc_lupus.py" />
-        <option value="$PROJECT_DIR$/runKLupus.py" />
         <option value="$PROJECT_DIR$/run_batch.py" />
         <option value="$PROJECT_DIR$/datasets/LupusFilter.py" />
         <option value="$PROJECT_DIR$/descentDirectionRule/LBFGSDirection.py" />
@@ -188,6 +187,7 @@
         <option value="$PROJECT_DIR$/datasets/TemporalOrderTask.py" />
         <option value="$PROJECT_DIR$/plotUtils/docs_plots/compare_simplex_add.py" />
         <option value="$PROJECT_DIR$/plotUtils/docs_plots/overfitting_muse.py" />
+        <option value="$PROJECT_DIR$/runKLupus.py" />
       </list>
     </option>
   </component>
@@ -1096,14 +1096,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/runKLupus.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="43" column="29" selection-start-line="43" selection-start-column="29" selection-end-line="43" selection-end-column="29" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/runAddition.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1146,8 +1138,16 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/plotUtils/docs_plots/overfitting_muse.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.85714287">
+        <state vertical-scroll-proportion="0.0">
           <caret line="63" column="22" selection-start-line="63" selection-start-column="22" selection-end-line="63" selection-end-column="22" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/runKLupus.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.71428573">
+          <caret line="76" column="83" selection-start-line="76" selection-start-column="83" selection-end-line="76" selection-end-column="83" />
           <folding />
         </state>
       </provider>
