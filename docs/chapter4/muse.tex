@@ -1,7 +1,7 @@
  
 \section{Polyphonic music prediction}
 
-In this experiment we considered the task of polyphonic music prediction. The input sequences are polyphonic songs and the aim is, at each time step, to predict which notes are played next. More precisely the input sequences are obtained from a piano roll of MIDI files where each time step corresponds to a beat (usually a quarter or an octave): each step of the sequence is hence composed of $d$, the number of notes that can be played,  binary elements which specify if the correspondent note is played or not at the current beat.
+In this experiment we considered the task of polyphonic music prediction. The input sequences are polyphonic songs and the aim is, at each time step, to predict which notes are going to be played next. More precisely the input sequences are obtained from a piano roll of MIDI files where each time step corresponds to a beat (usually a quarter or an octave): each step of the sequence is hence composed of $d$, the number of notes that can be played,  binary elements which specify if the correspondent note is played or not at the current beat.
 
 We use as a reference the work done in \cite{BoulangerMuse} which compares several different approaches, RNNs amongst them. We use the dataset \textsl{MuseData} made available by the authors on their website
 \url{http://www-etud.iro.umontreal.ca/~boulanni/icml2012}, using the provided split in train, set and validation sets.
@@ -17,9 +17,9 @@ in this way we can interpret the value of each output unit as the probability th
 	L(\vec{y}) = \frac{1}{T}\sum_{t=1}^{T}\sum_{i=1}^{d} \bar{y}_i \log(y_i) + (1-\bar{y}_i)\log(1-y_i)
 \end{equation}
 
-An important difference with the artificial tasks considered before is that in this case the loss is not computed only on the last step, hence the training does not suffer from the vanishing problem. ADD SOME JUSTIFICATION
+An important difference with the artificial tasks considered before is that in this case the loss is not computed only on the last step. This has, of course, a big impact on the temporal gradients. In fact the gradient seems not to vanish in this scenario. 
 
-We trained the network with stochastic gradient descent with $lr=0.001$. We clipped the gradient at $3$. We explored different number of hidden units, namely 50, 100, 200, 300.
+We trained the network with stochastic gradient descent with $lr=0.001$. We clipped the gradient at $3$. We explored different number of hidden units, namely 50, 100, 200, 300. We compose the batch with sequences of different lengths, up to 300 steps, cutting the original songs if they are longer than 300 steps.
 
 Figure \ref{fig:overfitting_muse} shows the loss function computed on both train and validation sets during the training for model with different hidden units. The most obvious observation is that at a certain point the training procedure starts to over-fit and that model with more hidden units start to over-fit sooner.
 
@@ -36,15 +36,26 @@ Figure \ref{fig:overfitting_muse} shows the loss function computed on both train
 	\centering
 \begin{tabular}{c | c | c}
 	hidden units & test loss & train loss \\
-	50 & 6.44 & 6.20  \\
+	50 & \textbf{6.44} & 6.20  \\
 	100 & 6.53 & 6.10 \\
-	200 & 6.58 & 6.03 \\
+	200 & 6.58 & \textbf{6.03} \\
 	300 & 6.82 & 6.21 \\
 \end{tabular}
 \caption{This table shows the loss (i.e. negative log-likelihood per time step) for both train and test sets for the models with different number of hidden units.}
 \label{table:losses_n_hidden}
 \end{table}
 
+In Table \ref{table:muse_state_of_art} are shown the test and train error for state of art approaches compared to our result. Although our result is worse than the state of the art we improve the best result obtained with vanilla RNNs. The reason for this (partial) success can be attribute to the choice of the hyper-parameters or the way we build up the batches.
 
-TABELLA RISULTATI TEST
+\begin{table}
+	\centering
+	\begin{tabular}{c | c | c | c}
+		& State of art & State of art (RNN) & Our result\\
+		Train & \textbf{5.20} & 6.43 & 6.20\\
+		Test & \textbf{5.60} & 6.97 & 6.44\\
+	\end{tabular}
+	\caption{Comparison between test and train error with state of results.}
+	\label{table:muse_state_of_art}
+	
+\end{table}
 

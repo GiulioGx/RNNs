@@ -5,72 +5,71 @@ import numpy
 from Paths import Paths
 import datasets
 import matplotlib.pyplot as plt
-
 from infos.InfoElement import PrintableInfoElement
 from infos.InfoGroup import InfoGroup
 from infos.InfoList import InfoList
 from infos.InfoProducer import SimpleInfoProducer
 
 
-class LupusFilter(object):
-    __metaclass__ = abc.ABCMeta
-
-    @abc.abstractmethod
-    def is_to_discard(self, visits) -> bool:
-        """return True or False whether the patience schould be be discarde or not"""
-
-
-class NullFilter(LupusFilter):
-    def is_to_discard(self, visits) -> bool:
-        return False
-
-
-class TemporalSpanFilter(LupusFilter):
-    def __init__(self, min_age_span, min_visits_before_status_change: int = 2):
-        self.__min_age_span = min_age_span
-        self.__min_visits_before_status_change = min_visits_before_status_change
-
-    def is_to_discard(self, visits) -> bool:
-
-        if visits[0]["sdi"] > 0:
-            return True
-        elif sum([v["sdi"].item() for v in visits]) > 0:
-            return False
-        else:
-
-            last_sdi = 1 if visits[-1]["sdi"].item() > 0 else 0
-            count = len(visits) - 1
-            last_visit_age = visits[-1]["age"].item()
-            sdi_change_found = False
-            age_span = 0
-            while age_span < self.__min_age_span and count >= 0 and not sdi_change_found:
-                curr_sdi = 1 if visits[count]["sdi"].item() > 0 else 0
-                if curr_sdi != last_sdi:
-                    sdi_change_found = True
-                age_span = last_visit_age - visits[count]["age"].item()
-                count -= 1
-        return age_span < self.__min_age_span or count <= self.__min_visits_before_status_change
-
-
-class MinVisitsFilter(LupusFilter):
-    def __init__(self, n):
-        self.__n = n
-
-    def is_to_discard(self, visits) -> bool:
-        return len(visits) < self.__n
-
-
-class AggregateFilter(LupusFilter):
-    def is_to_discard(self, visits) -> bool:
-        discard = False
-        count = 0
-        while not discard and count < len(filter):
-            discard = discard or self.__filters[count]
-            count += 1
-        return discard
-
-    def __init__(self, *filters: LupusFilter):
-        self.__filters = filters
+# class LupusFilter(object):
+#     __metaclass__ = abc.ABCMeta
+#
+#     @abc.abstractmethod
+#     def is_to_discard(self, visits) -> bool:
+#         """return True or False whether the patience schould be be discarde or not"""
+#
+#
+# class NullFilter(LupusFilter):
+#     def is_to_discard(self, visits) -> bool:
+#         return False
+#
+#
+# class TemporalSpanFilter(LupusFilter):
+#     def __init__(self, min_age_span, min_visits_before_status_change: int = 2):
+#         self.__min_age_span = min_age_span
+#         self.__min_visits_before_status_change = min_visits_before_status_change
+#
+#     def is_to_discard(self, visits) -> bool:
+#
+#         if visits[0]["sdi"] > 0:
+#             return True
+#         elif sum([v["sdi"].item() for v in visits]) > 0:
+#             return False
+#         else:
+#
+#             last_sdi = 1 if visits[-1]["sdi"].item() > 0 else 0
+#             count = len(visits) - 1
+#             last_visit_age = visits[-1]["age"].item()
+#             sdi_change_found = False
+#             age_span = 0
+#             while age_span < self.__min_age_span and count >= 0 and not sdi_change_found:
+#                 curr_sdi = 1 if visits[count]["sdi"].item() > 0 else 0
+#                 if curr_sdi != last_sdi:
+#                     sdi_change_found = True
+#                 age_span = last_visit_age - visits[count]["age"].item()
+#                 count -= 1
+#         return age_span < self.__min_age_span or count <= self.__min_visits_before_status_change
+#
+#
+# class MinVisitsFilter(LupusFilter):
+#     def __init__(self, n):
+#         self.__n = n
+#
+#     def is_to_discard(self, visits) -> bool:
+#         return len(visits) < self.__n
+#
+#
+# class AggregateFilter(LupusFilter):
+#     def is_to_discard(self, visits) -> bool:
+#         discard = False
+#         count = 0
+#         while not discard and count < len(filter):
+#             discard = discard or self.__filters[count]
+#             count += 1
+#         return discard
+#
+#     def __init__(self, *filters: LupusFilter):
+#         self.__filters = filters
 
 
 class LupusStats(object):

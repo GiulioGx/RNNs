@@ -104,7 +104,8 @@ class LupusDataset(Dataset):
         #                                                                        features_normalizations,
         #                                                                        LupusDataset.num_min_visit_negative)
 
-        result = LupusDataset.__process_patients(data, features_names, features_normalizations, visit_selector=visit_selector)
+        result = LupusDataset.__process_patients(data, features_names, features_normalizations,
+                                                 visit_selector=visit_selector)
 
         early_positives = result["early_pos"]
         late_positives = result["late_pos"]
@@ -232,8 +233,8 @@ class LupusDataset(Dataset):
             n_visits = len(visits)
 
             if n_visits > 0:
-                pat_matrix = numpy.zeros(shape=(n_visits , n_features))
-                target_vec = numpy.zeros(shape=(n_visits , 1))
+                pat_matrix = numpy.zeros(shape=(n_visits, n_features))
+                target_vec = numpy.zeros(shape=(n_visits, 1))
                 for j in range(n_visits):
                     target_vec[j] = 1 if visits[j]['sdi'] > 0 else 0  # sdi is greater than one for positive patients
                     for k in range(n_features):
@@ -485,7 +486,8 @@ class LupusDataset(Dataset):
 
 if __name__ == '__main__':
     formatter = TemporalSpanSelector(min_age_span_upper=2, min_age_span_lower=2, min_visits=4)
-    dataset = LupusDataset.no_test_dataset(Paths.lupus_path, seed=13, strategy=PerPatienceTargets(), visit_selector=formatter)
+    dataset = LupusDataset.no_test_dataset(Paths.lupus_path, seed=13, strategy=PerPatienceTargets(),
+                                           visit_selector=formatter)
     print(dataset.infos)
     batch = dataset.get_train_batch(batch_size=3)
     print(str(batch))
