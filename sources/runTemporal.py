@@ -49,8 +49,8 @@ print(separator)
 seed = 13
 Configs.seed = seed
 
-task = TemporalOrderTask(200, seed)
-out_dir = Configs.output_dir + str(task)
+task = TemporalOrderTask(50, seed)
+out_dir = Configs.output_dir + str(task) + '_rhosba'
 # network setup
 std_dev = 0.1  # 0.14 Tanh # 0.21 Relu
 mean = 0
@@ -60,7 +60,7 @@ mean = 0
 #     W_out_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed), b_rec_init=ConstantInit(0),
 #     b_out_init=ConstantInit(0))
 vars_initializer = RNNVarsInitializer(
-    W_rec_init=SpectralInit(matrix_init=GaussianInit(seed=seed, std_dev=std_dev), rho=1.2),
+    W_rec_init=SpectralInit(matrix_init=GaussianInit(seed=seed, std_dev=std_dev), rho=0.7),
     W_in_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed),
     W_out_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed), b_rec_init=ConstantInit(0),
     b_out_init=ConstantInit(0))

@@ -1,8 +1,8 @@
-The entirety of our work is based on the SGD framework described in section \ref{sec:sgd}. In particular we insisted on three phases of the algorithm, namely the initialization, the choice of the descent direction and the step size. We show that the initialization play a crucial role in the learning process and can, alone, dictate if the learning process will be "successful"\footnote{Here we refer to artificial task where a criterion for success is easily defined.} or not. We than propose a strategy to choose a descent direction which helps to deal with the vanishing gradient. As for the learning rate we use a technique which is entirely equivalent to the gradient clipping trick proposed in \cite{understandingExplodingGradients} which helps dealing with exploding gradients.
+The entirety of our work is based on the SGD framework described in section \ref{sec:sgd}. In particular we focus, separately, on three phases of the algorithm, namely the initialization, the choice of the descent direction and the step size. We show that the initialization play a crucial role in the learning process and can, alone, dictate if the learning process will be "successful"\footnote{Here we refer to artificial tasks where a criterion for success is easily defined.} or not. We than propose a strategy to choose a descent direction which helps to deal with the vanishing gradient. As for the learning rate we use a technique which is entirely equivalent to the gradient clipping trick proposed in \cite{understandingExplodingGradients} which helps dealing with exploding gradients.
 
 
-\section{Notation}
-Before focusing on each phase we will introduce some notation which we will need in the following sections.
+\section{Preliminaries}
+Before focusing on each phase we will introduce some notation which we will need in the following sections, and two artificial tasks which we will use as examples.
 
 Consider a loss function $g$ for some time step $\tau$. Defining 
 \begin{equation}
@@ -14,10 +14,32 @@ and recalling the results of section \ref{sec:rnn_grad} we have
 \end{equation}
 We refer to $\nabla_{\vec{x}} g_{|k}$ as temporal gradient for time step $k$ w.r.t. the variable $\vec{x}$ and is easy to see that it is the gradient computed imagining to replicate variable $\vec{x}$ for each time step and taking the derivatives w.r.t. the variable for the step $k$.
 
-The \textbf{vanishing gradient} problem appears then, under this new notation, when the norm of the temporal components $\nabla_{\vec{x}} g_{|k}$ are exponentially bigger for more recent time steps.
+The \textbf{vanishing gradient} problem appears then, under this new notation, when the norm of the temporal components $\nabla_{\vec{x}} g_{|k}$ of recent time steps  are exponentially bigger than the ones of more distant in time ones.
+
+Two task, designed to enhance the vanishing problem, are the \textit{addition} and the \textit{temporal order} task. They belong to a set tasks proposed by Hochreiter\cite{lstm} in 1991 and used as benchmarks ever since. Please see appendix \ref{app:tasks} for more details.
+
+\paragraph{The Addition task.}
+The sequence is composed $\mathbb{R}^2$ vector. The first position is a marker which can be $0$ or $1$ and the second position is a real number $\in (0,1)$. The goal is to predict the sum of the only two numbers marked with $1$. The task is difficult because such markers are placed one at the beginning and one at the end of very long sequences.
+
+\begin{table}[h]
+	\centering
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c}
+	\hline  marker & 0&  1&  0&  $\hdots$& 0 & 1 & 0 & 0  \\ 
+	value & 0.3&  \textbf{0.7}&  0.1&  $\hdots$& 0.2& \textbf{0.4} & 0.6& 0.9  \\ 
+	\hline 
+\end{tabular}
+\caption{An example for the addition task. The predicted output should be the sum of the two one-marked positions (1.1). }
+\label{table:add_example}
+\end{table}
+
+
+\paragraph{The Temporal order task}
+The input sequence are composed of repetitions of six different symbols $\{a, b, c, d , x, y\}$.
+There are only two $\{x, y\}$ symbols in the entire sequence. The goal of this task is to predict the relative order of such symbols, i.e. $\{xx, xy, yx, yy\}$, which as in the addition task, are one at the beginning and one at the end of the sequence.
+
 
 \section{Initialization}
-The first moment of the learning process is the initialization of the variables. We found that the choice of the initial value for the recurrent matrix $\mat{W_{rec}}$ has a big impact on the entire learning process. Recall the results from section  \ref{sec:vanishing} where we saw that having such matrix too small singular values, more precisely $\sigma'_{max} \cdot \mu_{max} <1 $, is a sufficient condition for the gradient to vanish. Although a sufficient condition that, conversely, guarantees the gradient not to vanish is not known, the bounds on the singular values encourage to explore initialization techniques which produce matrices with higher singular values or more in general spectral radius. A similar suggestion, motivated by other consideration was given in the ESN field \cite{reservoirSummary}.
+The first phase of the learning process is the initialization of the variables. We found that the choice of the initial value for the recurrent matrix $\mat{W_{rec}}$ has a big impact on the entire learning process. Recall the results from section  \ref{sec:vanishing} where we saw that having such matrix too small singular values, more precisely $\sigma'_{max} \cdot \mu_{max} <1 $, is a sufficient condition for the gradient to vanish. Although a sufficient condition that, conversely, guarantees the gradient not to vanish is not known, the bounds on the singular values encourage to explore initialization techniques which produce matrices with higher singular values or more in general spectral radius. A similar suggestion, motivated by other consideration was given in the ESN field \cite{reservoirSummary}.
 
 We propose an initialization scheme where the recurrent matrix is firstly sampled from some distribution\footnote{In all the experiments we always sample from a zero mean gaussian, but others distribution can be used as well.} and scaled to have a specified spectral radius as shown in \ref{algo:init_scaling}.
 
@@ -36,7 +58,7 @@ We propose an initialization scheme where the recurrent matrix is firstly sample
 	\label{algo:init_scaling}
 \end{algorithm}
 
- In figure \ref{fig:temporal_norms} we show, as an example, the temporal components w.r.t. all the variables of the model varying the spectral radius in [0.8, 0.9, 1, 1.1, 1.2] computed on a hundred samples for the temporal order task (INTRODUCE TASK).
+ In Figure \ref{fig:temporal_norms} we show, as an example, the temporal components, w.r.t. all the variables of the model, varying the spectral radius in [0.8, 0.9, 1, 1.1, 1.2], computed on a hundred samples for the temporal order task.
 
 \begin{figure}
     \includegraphics[width=0.9\textwidth]{chapter3/temporal_components.eps}
@@ -46,24 +68,28 @@ We propose an initialization scheme where the recurrent matrix is firstly sample
 
 The first two cases, the one with spectral radius less than one, are perfect example of vanishing gradient instances: more recent temporal components have norm exponentially bigger than the more distant ones (please note that the y axis is in logarithmic scale). On the contrary such phenomenon is not observed in the cases of spectral radius bigger than one where the temporal components have roughly the same norm.
 
-We found that, at least in the task we explored (SAY WHICH ONES), an appropriate spectral radius always allow the training process to start in a regime where the gradient does not vanish. We report some results on the effect of the initialization on the training process in chapter \ref{ch:experiments}
+We found that, at least in the task we explored, an appropriate spectral radius always allow the training process to start in a regime where the gradient does not vanish. We report some results on the effect of the initialization on the training process in chapter \ref{ch:experiments}
 
 \section{Descent direction}
+In the previous section we have seen how providing a proper initialization of the recurrent matrix can lead to a starting point where gradient does not vanish. However, not matter how we choose the starting point we have no guarantees that the gradient wont vanish after some iterations. In Figure \ref{fig:comparison_add_temp_0} and \ref{fig:comparison_add_temp_1} we compare the temporal components of two different tasks (the addition and the temporal order ones) at the beginning and after a few iterations.
+We notice that, although they have comparable temporal components norms at the beginning, they behave very differently after a few iterations: in the case of the addition task we can surely say that after a few iteration the gradient start to vanish.
 
-\begin{figure}
+\begin{figure}[h]
 	\includegraphics[width=1\textwidth]{chapter3/compare_add_temp_norms_0.eps}
-	\caption{Comparison between the temporal order task (first column) and the addition task (second column). First row shows the norms of the temporal components, while he second the cosine between each temporal component and the gradient. This is a snopshot taken at the first iteration of the training process.}
+	\caption{Comparison between the temporal order task (first column) and the addition task (second column). First row shows the norms of the temporal components, while he second the cosine between each temporal component and the gradient. This is a snapshot taken at the first iteration of the training process.}
 	\label{fig:comparison_add_temp_0}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[h]
 	\includegraphics[width=1\textwidth]{chapter3/compare_add_temp_norms_1.eps}
 	\caption{Like in figure \ref{fig:comparison_add_temp_0}. This is a snapshot taken after a few iterations of the training process.}
 	\label{fig:comparison_add_temp_1}
 \end{figure}
 
 
-The idea is to use the structure of the gradient to compute a "descent" direction which does not suffer from the vanishing problem.
+Motivated by this, we introduce a new descent direction, which we will call the \textit{simplex direction},
+which should not suffer from the vanishing problem. The simplex direction is obtained with the following steps:
+
 
 \begin{itemize}
 	\item normalize the temporal components:
@@ -79,12 +105,16 @@ The idea is to use the structure of the gradient to compute a "descent" directio
 	with $\sum_{t=1}^T\beta_t=1, \beta_t>0$ (randomly picked at each iteration).
 	\item exploit the gradient norm:
 	\begin{equation}
-	d(\vec{x}) = \norm{\nabla L (\vec{x})}\frac{g(\vec{x})}{\norm{g(\vec{x})}}.
+	d(\vec{x}) = - \norm{\nabla L (\vec{x})}\frac{g(\vec{x})}{\norm{g(\vec{x})}}.
 	\end{equation}
 \end{itemize}
+
+As we have seen in section \ref{sec:rnn_grad} the anti-gradient direction is the sum of all temporal components. The idea is to combine the gradients in such a way that the gradient contains information about all time steps, i.e. does not suffer from the vanishing problem. This is achieved by normalizing all the temporal components. The idea to combine them in a simplex add some robustness to the method. Finally since we discard any information about the norms in the normalization process, we choose to give the simplex direction the norm of the gradient. In this way we can see the obtained direction as a projection of the gradient.
+
+
 \section{Learning rate}
 
-The choice of the learning rate is crucial for the success of the training procedure. It is well known that RNNs give rise to gradients which change extremely fast in norm (the exploding gradient problem). This makes choosing a single constant step, or even designing an adaptive strategy, very difficult, at the least, for this kind of models. A simple trick which allow to choose a fixed step from the beginning is to \textit{clip the gradients}. This technique was introduced and used in slightly different forms in \cite{understandingExplodingGradients} and \cite{clippingMikolov} and we describe it in section \ref{algo:sgd}. We reformulate the version proposed in \cite{understandingExplodingGradients} as a learning rate selection strategy.
+The choice of the learning rate is crucial for the success of the training procedure. It is well known that RNNs give rise to gradients which change extremely fast in norm (the exploding gradient problem). This makes choosing a single constant step, or even designing an adaptive strategy, very difficult, at the least, for this kind of models. A simple trick which allow to choose a fixed step from the beginning is to \textit{clip the gradients}. This technique was introduced and used in slightly different forms in \cite{understandingExplodingGradients} and \cite{clippingMikolov} and we describe it in section \ref{sec:clipping}. We reformulate the version proposed in \cite{understandingExplodingGradients} as a learning rate selection strategy.
 Given a direction $\vec{d}_k$ the step $\alpha_k$ is chosen as:
 \begin{equation}
 \alpha_k = 
@@ -93,10 +123,10 @@ Given a direction $\vec{d}_k$ the step $\alpha_k$ is chosen as:
 	\frac{\mu \cdot \tau}{\norm{\vec{d}_k}_2} \quad & otherwise,
 \end{cases}
 \end{equation}
-where $\mu$ and $c$ are some positive constants. The parameter $\tau$ is the threshold on the direction norm; $\mu$ is instead the constant learning rate that is used when the norm of the direction is not above such threshold. The idea is to use a constant step when the direction has an enough small norm and vice-versa choose a step which inversely proportional when such norm is too big. We confirm, as found in works cited above, that this trick is essential to train RNNs in a stochastic framework.
+where $\mu$ and $c$ are some positive constants. The parameter $\tau$ is the threshold on the direction norm; $\mu$, instead, is the constant learning rate that is used when the norm of the direction is not above such threshold. The idea is to use a constant step when the direction has an enough small norm and vice-versa choose a step which inversely proportional when such norm is too big. We confirm, as found in works cited above, that this trick is essential to train RNNs in a stochastic framework.
 
 \section{Putting all together}
-Now that we have described all the three phases of the algorithm we can put them together, as done in algorithm \ref{algo:complete_solution} with a few additions. The main one them being a condition to switch the strategy used to compute the descent direction. The idea is to use the simplex combination at the beginning of the training process, or whenever the gradient is vanishing and switch back to the anti-gradient when appropriate. This is done by checking the norm of the gradient, as in line \ref{algo:line:condition}.
+Now that we have described all the three phases of the algorithm we can put them together, as done in algorithm \ref{algo:complete_solution} with an important addition. The idea is to use the simplex combination at the beginning of the training process, or whenever the gradient is vanishing and switch back to the anti-gradient when appropriate. This is done by checking the norm of the gradient, as in line \ref{algo:line:condition}.
 
 
 \begin{algorithm}[]

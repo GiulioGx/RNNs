@@ -28,7 +28,7 @@ for i in range(n_models):
     x_values = numpy.arange(length) * check_freq
     n_points = x_values.shape[0]
     valid_loss = npz['validation_loss']
-    plt.plot(x_values, valid_loss, color=colors[i], linewidth=0.5)
+    plt.plot(x_values, valid_loss, 'o', color=colors[i])
     legends.append(legends[i])
 
 plt.rcParams.update({'font.size': 24})

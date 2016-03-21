@@ -1,5 +1,5 @@
 \subsection{Preserve norm by regularization and gradient clipping} 
-
+\label{sec:clipping}
 In 2013 Pascanu \cite{pascanu} proposed a regularization term $\Omega$ for the loss function $L(\theta)$ which should address the vanishing gradient problem.
 The objective function hence become:
 \begin{equation}
@@ -26,5 +26,5 @@ $\vec{g} \gets \nabla_{\theta} L$\\
 \end{algorithm}
 
 A drawback of such an approach is the introduction of another hyper-parameter, the threshold, however in \cite{pascanu} is said that a good heuristic
-is to choose a value from half to ten timea the average gradient norm over a sufficiently large number of updates.
+is to choose a value from half to ten times the average gradient norm over a sufficiently large number of updates.
 The algorithm can be described also in terms of adjusting the learning rate monitoring the gradient. Our understanding is that such escamotage is not necessary at all when, for instance, using a line search algorithm for setting the learning rate.

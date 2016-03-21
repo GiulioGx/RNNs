@@ -43,7 +43,8 @@ for i in range(n_models):
     markers_x.append(x_values[best_valid_point_idx])
     markers_y.append(valid_loss[best_valid_point_idx])
 
-plt.plot(markers_x, markers_y, '*', color='black', markersize=20)
+for i in range(n_models):
+    plt.plot(markers_x[i], markers_y[i], '*', color=colors[i], markersize=20)
 
 
 plt.yscale('log')
@@ -55,9 +56,11 @@ plt.xlabel('iterations')
 plt.ylabel('negative log likelihood')
 
 ax = plt.gca()
-# ax.yaxis.set_minor_formatter(FormatStrFormatter("%.1f"))
-ax.yaxis.set_major_formatter(FormatStrFormatter("%.1f"))
-
+ax.xaxis.set_major_formatter(FormatStrFormatter("%.0e"))
+formatter = FormatStrFormatter("%.1f")
+# formatter.set_useOffset(True)
+ax.yaxis.set_major_formatter(formatter)
+# ax.xaxis.get_major_formatter().set_useOffset(False)
 filename = sys.argv[0]
 save_multiple_formats(filename)
 plt.show()
