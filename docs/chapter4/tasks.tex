@@ -1,4 +1,4 @@
-\section{Experiments on the synthetic tasks}
+\section{Experiments on synthetic datasets}
 In this section we report some experiments which highlights the effects of the proposed techniques on the training process. In all the experiments with artificial dataset we employed a potentially infinite training-set, since we generate data on the fly. We used a validation set to determine the success of the training process. We define a training run to be successful if the error on the validation set if less than 1\%. The error is clearly defined for each task, see appendix \ref{app:tasks} for more details on the tasks. The validation test is composed by $10^4$ examples of different lengths sampled once at the beginning. In all the experiments we used a learning rate of $10^{-3}$, clipping threshold of $1$, batch-size equal to $100$. We did not experiment much on the batch size. We found instead that the this combination of learning rate and threshold is generally good for all the task and lengths, although for tasks with smaller sequences more aggressive learning rate can be used.
 
 \subsection{The effect of the spectral initialization}

@@ -132,12 +132,14 @@ class TemporalSpanSelector(VisitsSelector):
         return InfoGroup("temporal span visits filter",
                          InfoList(PrintableInfoElement("min age span upper", ':.1', self.__min_age_span_upper),
                                   PrintableInfoElement("min age span lower", ':.1', self.__min_age_span_lower),
-                                  PrintableInfoElement("min visits", ':d', self.__min_visits)))
+                                  PrintableInfoElement("min visits neg", ':d', self.__min_visits),
+                                  PrintableInfoElement("min visits pos", ":d", self.__min_visits_pos)))
 
-    def __init__(self, min_age_span_upper, min_age_span_lower, min_visits: int = 2):
+    def __init__(self, min_age_span_upper, min_age_span_lower, min_visits_neg: int = 2, min_visits_pos=1):
         self.__min_age_span_upper = float(min_age_span_upper)
-        self.__min_visits = min_visits
+        self.__min_visits = min_visits_neg
         self.__min_age_span_lower = float(min_age_span_lower)
+        self.__min_visits_pos = min_visits_pos
 
     def select_visits(self, visits):
         targets = [v["sdi"].item() for v in visits]
@@ -146,6 +148,8 @@ class TemporalSpanSelector(VisitsSelector):
             cut_index = -1
         elif sum(targets) > 0:
             cut_index = numpy.min(numpy.nonzero(targets))  # this is the first visits where the patience is positive
+            if cut_index <= self.__min_visits_pos:
+                cut_index = -1
         else:  # this is the case of always negative patients
             n_visits = len(visits)
             cut_index = n_visits

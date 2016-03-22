@@ -485,7 +485,7 @@ class LupusDataset(Dataset):
 
 
 if __name__ == '__main__':
-    formatter = TemporalSpanSelector(min_age_span_upper=2, min_age_span_lower=2, min_visits=4)
+    formatter = TemporalSpanSelector(min_age_span_upper=2, min_age_span_lower=2, min_visits_neg=4)
     dataset = LupusDataset.no_test_dataset(Paths.lupus_path, seed=13, strategy=PerPatienceTargets(),
                                            visit_selector=formatter)
     print(dataset.infos)

@@ -131,7 +131,7 @@ def run_experiment(root_dir, min_age_lower, min_age_upper, min_visits, id: int):
     for d in LupusDataset.k_fold_test_datasets(Paths.lupus_path, k=k, strategy=PerPatienceTargets(),
                                                visit_selector=TemporalSpanSelector(
                                                    min_age_span_upper=min_age_upper,
-                                                   min_age_span_lower=min_age_lower, min_visits=min_visits)):
+                                                   min_age_span_lower=min_age_lower, min_visits_neg=min_visits)):
         out_dir = run_out_dir + str(thread_count)
         t = SplitThread(out_dir=out_dir, dataset=d, id=thread_count, logger=logger)
         thread_list.append(t)
@@ -187,9 +187,9 @@ if __name__ == '__main__':
     Configs.seed = seed
     k = 8
 
-    min_age_span_lower_list = [0.8, 1, 2]
-    min_age_span_upper_list = [0.8, 1, 2]
-    min_num_visits = [2, 3, 4, 5]
+    min_age_span_lower_list = [0.8]
+    min_age_span_upper_list = [0.8]
+    min_num_visits = [5]
 
     root_dir = Configs.output_dir + 'Lupus_k/'
     shutil.rmtree(root_dir, ignore_errors=True)
