@@ -1,17 +1,28 @@
 \section{Experiments on the synthetic tasks}
-In this subsection we report some experiments which highlights the effects of the proposed techniques on the training process. In all the experiments with artificial dataset we employed a potentially infinite training-set, since we generate data on the fly. We used a validation set to determine the success of the training process. We define a training run to be successful if the error on the validation set if less than 1\%. The error is clearly defined for each task, see appendix \ref{app:tasks} for more details on the tasks. The validation test is composed by $10^4$ exampled of different lengths sampled once at the beginning. In all the experiments we used a learning rate of $10^{-3}$, clipping threshold of $1$, batch-size equal to $100$. We did not run much experiment on the batch size. We found instead that the combination of this learning rate and threshold is generally good for all the task and length, although for tasks with smaller length more aggressive learning rate can be used.
+In this section we report some experiments which highlights the effects of the proposed techniques on the training process. In all the experiments with artificial dataset we employed a potentially infinite training-set, since we generate data on the fly. We used a validation set to determine the success of the training process. We define a training run to be successful if the error on the validation set if less than 1\%. The error is clearly defined for each task, see appendix \ref{app:tasks} for more details on the tasks. The validation test is composed by $10^4$ examples of different lengths sampled once at the beginning. In all the experiments we used a learning rate of $10^{-3}$, clipping threshold of $1$, batch-size equal to $100$. We did not experiment much on the batch size. We found instead that the this combination of learning rate and threshold is generally good for all the task and lengths, although for tasks with smaller sequences more aggressive learning rate can be used.
 
 \subsection{The effect of the spectral initialization}
 
-For this experiment we consider the temporal order task which has always been considered impossible to solve using the a plain version of the stochastic  gradient descent algorithm.
-In \cite{advancesInOptimizingRnns}, for instance, are reported the rate of success of SGD and SGD modified with gradient clipping technique for such task with different input lengths. It shows that for sequences longer than 20 neither one of the algorithms can solve the problem. We repeated the same experiment, namely training the network varying the length\footnote{Here we refer as the length of the task to the minim length of the input sequences} of the input sequences, with the SGD algorithm modified with the gradient clipping technique using our initialization scheme. In figure \ref{fig:spectral_init_effect} are shown the number of iterations (means of 5 different runs with different random seeds) required to solve the problem for lengths in [50 100 150 200]. The important thing to notice is that, contrarily to what commonly believed, it is possible to train RNNs with SGD (with gradient clipping): not one of the runs for any length failed.
+For this experiment we consider the temporal order task which has always been considered effectively impossible to solve using the a plain version of the stochastic  gradient descent algorithm.
+In \cite{advancesInOptimizingRnns}, for instance, are reported the rate of success of SGD and SGD modified with gradient clipping technique for such task with different input lengths. It shows that for sequences longer than 20 neither one of the algorithms can solve the problem. We repeated the same experiment, namely training the network varying the length\footnote{Here we refer as the length of the task to the minim length of the input sequences} of the input sequences, with the SGD algorithm modified with the gradient clipping technique using our initialization scheme. 
+%In figure \ref{fig:spectral_init_effect} are shown the number of iterations (means of 5 different runs with different random seeds) required to solve the problem for lengths in [50 100 150 200]. The important thing to notice is that, contrarily to what commonly believed, it is possible to train RNNs with SGD (with gradient clipping): not one of the runs for any length failed.
+
+In Figure \ref{fig:temporal_rates} we compare the rate of success for different initialization schemes, namely a standard gaussian initialization, and the initialization scheme we propose, i.e. scaling $\mat{W}_{rec}$ to have spectral radius bigger than one. We can notice that scaling the recurrent matrix has a huge effect on the rate of convergence: where the standard scheme fails for sequences longer than 20, with the spectral initialization we manage to succeed up to sequence of length 150.
+
 
 \begin{figure}
 	\centering
-	\includegraphics[width= 0.9\textwidth]{chapter4/spectral_init_exp.eps}
-	\caption{Number of iterations (means of 5 different random seed) needed to solve the task for different lengths}
-	\label{fig:spectral_init_effect}
+	\includegraphics[width= 0.9\textwidth]{chapter4/temporal_rates.png}
+	\caption{Rate of success (mean of 5 runs) for the temporal order task for various lengths with SGD modified with gradient clipping. In blue and red the results when $W_rec$ is initialized with spectral radius bigger and smaller than one respectively}
+	\label{fig:temporal_rates}
 \end{figure}
+
+%\begin{figure}
+%	\centering
+%	\includegraphics[width= 0.9\textwidth]{chapter4/spectral_init_exp.eps}
+%	\caption{Number of iterations (means of 5 different random seed) needed to solve the task for different lengths}
+%	\label{fig:spectral_init_effect}
+%\end{figure}
 
 
 \subsection{The effect of using the simplex direction}

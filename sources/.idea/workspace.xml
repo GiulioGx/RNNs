@@ -31,16 +31,6 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="LBFGSDirection.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/descentDirectionRule/LBFGSDirection.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="125" column="26" selection-start-line="125" selection-start-column="26" selection-end-line="125" selection-end-column="26" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="runAddition.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/runAddition.py">
           <provider selected="true" editor-type-id="text-editor">
@@ -51,14 +41,24 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="LupusDataset.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="LupusDataset.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/datasets/LupusDataset.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.74285716">
+            <state vertical-scroll-proportion="0.0">
               <caret line="26" column="23" selection-start-line="26" selection-start-column="23" selection-end-line="26" selection-end-column="23" />
               <folding>
                 <element signature="e#0#10#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="rate_success_temporal.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/plotUtils/docs_plots/rate_success_temporal.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="27" column="29" selection-start-line="27" selection-start-column="29" selection-end-line="27" selection-end-column="29" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -87,7 +87,7 @@
         <entry file="file://$PROJECT_DIR$/plotUtils/docs_plots/overfitting_muse.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="63" column="22" selection-start-line="63" selection-start-column="22" selection-end-line="63" selection-end-column="22" />
+              <caret line="40" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="66" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -105,11 +105,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="runKLupus.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="runKLupus.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/runKLupus.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="76" column="83" selection-start-line="76" selection-start-column="83" selection-end-line="76" selection-end-column="83" />
+            <state vertical-scroll-proportion="0.51428574">
+              <caret line="191" column="33" selection-start-line="191" selection-start-column="33" selection-end-line="191" selection-end-column="33" />
               <folding />
             </state>
           </provider>
@@ -137,7 +137,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/test/testyield.py" />
         <option value="$PROJECT_DIR$/model/RNNManager.py" />
         <option value="$PROJECT_DIR$/model/RNNGrowingPolicy.py" />
         <option value="$PROJECT_DIR$/plotUtils/plotOverfitting.py" />
@@ -185,9 +184,10 @@
         <option value="$PROJECT_DIR$/datasets/TemporalOrderTask.py" />
         <option value="$PROJECT_DIR$/plotUtils/docs_plots/compare_simplex_add.py" />
         <option value="$PROJECT_DIR$/plotUtils/docs_plots/overfitting_muse.py" />
-        <option value="$PROJECT_DIR$/runKLupus.py" />
         <option value="$PROJECT_DIR$/datasets/LupusFilter.py" />
         <option value="$PROJECT_DIR$/datasets/LupusDataset.py" />
+        <option value="$PROJECT_DIR$/plotUtils/docs_plots/rate_success_temporal.py" />
+        <option value="$PROJECT_DIR$/runKLupus.py" />
       </list>
     </option>
   </component>
@@ -242,8 +242,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
-      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -380,6 +378,8 @@
           </PATH>
         </subPane>
       </pane>
+      <pane id="Scope" />
+      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -411,24 +411,7 @@
       <recent name="$PROJECT_DIR$/test" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.overfitting_muse">
-    <configuration default="false" name="runKLupus" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="/usr/bin/python3.4" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="sources" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/runKLupus.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <method />
-    </configuration>
+  <component name="RunManager" selected="Python.rate_success_temporal">
     <configuration default="false" name="LupusFilter" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -493,6 +476,23 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="sources" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/plotUtils/docs_plots/overfitting_muse.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <method />
+    </configuration>
+    <configuration default="false" name="rate_success_temporal" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="/usr/bin/python3.4" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/plotUtils/docs_plots" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="sources" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/plotUtils/docs_plots/rate_success_temporal.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <method />
@@ -692,19 +692,19 @@
       <item index="1" class="java.lang.String" itemvalue="Python.test" />
       <item index="2" class="java.lang.String" itemvalue="Python.testScanShared" />
       <item index="3" class="java.lang.String" itemvalue="Python.plot_stats" />
-      <item index="4" class="java.lang.String" itemvalue="Python.runKLupus" />
-      <item index="5" class="java.lang.String" itemvalue="Python.LupusFilter" />
-      <item index="6" class="java.lang.String" itemvalue="Python.runTemporal" />
-      <item index="7" class="java.lang.String" itemvalue="Python.compare_simplex_add" />
-      <item index="8" class="java.lang.String" itemvalue="Python.overfitting_muse" />
+      <item index="4" class="java.lang.String" itemvalue="Python.LupusFilter" />
+      <item index="5" class="java.lang.String" itemvalue="Python.runTemporal" />
+      <item index="6" class="java.lang.String" itemvalue="Python.compare_simplex_add" />
+      <item index="7" class="java.lang.String" itemvalue="Python.overfitting_muse" />
+      <item index="8" class="java.lang.String" itemvalue="Python.rate_success_temporal" />
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Python.overfitting_muse" />
-        <item index="1" class="java.lang.String" itemvalue="Python.compare_simplex_add" />
-        <item index="2" class="java.lang.String" itemvalue="Python.runTemporal" />
-        <item index="3" class="java.lang.String" itemvalue="Python.LupusFilter" />
-        <item index="4" class="java.lang.String" itemvalue="Python.runKLupus" />
+        <item index="0" class="java.lang.String" itemvalue="Python.rate_success_temporal" />
+        <item index="1" class="java.lang.String" itemvalue="Python.overfitting_muse" />
+        <item index="2" class="java.lang.String" itemvalue="Python.compare_simplex_add" />
+        <item index="3" class="java.lang.String" itemvalue="Python.runTemporal" />
+        <item index="4" class="java.lang.String" itemvalue="Python.LupusFilter" />
       </list>
     </recent_temporary>
   </component>
@@ -731,7 +731,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="0" width="1920" height="1046" extended-state="7" />
+    <frame x="0" y="0" width="1920" height="1046" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.15595363" sideWeight="0.47294372" order="0" side_tool="false" content_ui="combo" />
@@ -777,13 +777,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/metrics/LossMonitor.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="21" column="0" selection-start-line="21" selection-start-column="0" selection-end-line="21" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/model/Variables.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1062,25 +1055,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="34" column="62" selection-start-line="34" selection-start-column="53" selection-end-line="34" selection-end-column="62" />
-          <folding>
-            <element signature="e#0#31#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/run_batch.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="97" column="14" selection-start-line="97" selection-start-column="14" selection-end-line="97" selection-end-column="14" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/runAddition.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="96" column="3" selection-start-line="96" selection-start-column="3" selection-end-line="96" selection-end-column="3" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1100,6 +1074,24 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/runAddition.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="96" column="3" selection-start-line="96" selection-start-column="3" selection-end-line="96" selection-end-column="3" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/datasets/LupusDataset.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="26" column="23" selection-start-line="26" selection-start-column="23" selection-end-line="26" selection-end-column="23" />
+          <folding>
+            <element signature="e#0#10#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/datasets/TemporalOrderTask.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1116,22 +1108,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/plotUtils/docs_plots/overfitting_muse.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="63" column="22" selection-start-line="63" selection-start-column="22" selection-end-line="63" selection-end-column="22" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/runKLupus.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="76" column="83" selection-start-line="76" selection-start-column="83" selection-end-line="76" selection-end-column="83" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/datasets/LupusFilter.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1142,13 +1118,35 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/datasets/LupusDataset.py">
+    <entry file="file://$PROJECT_DIR$/run_batch.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.74285716">
-          <caret line="26" column="23" selection-start-line="26" selection-start-column="23" selection-end-line="26" selection-end-column="23" />
-          <folding>
-            <element signature="e#0#10#0" expanded="true" />
-          </folding>
+        <state vertical-scroll-proportion="0.0">
+          <caret line="97" column="14" selection-start-line="97" selection-start-column="14" selection-end-line="97" selection-end-column="14" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/plotUtils/docs_plots/overfitting_muse.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="40" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="66" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/plotUtils/docs_plots/rate_success_temporal.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="27" column="29" selection-start-line="27" selection-start-column="29" selection-end-line="27" selection-end-column="29" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/runKLupus.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.51428574">
+          <caret line="191" column="33" selection-start-line="191" selection-start-column="33" selection-end-line="191" selection-end-column="33" />
+          <folding />
         </state>
       </provider>
     </entry>
