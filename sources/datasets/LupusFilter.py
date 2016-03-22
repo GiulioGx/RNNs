@@ -135,8 +135,8 @@ class TemporalSpanSelector(VisitsSelector):
                                   PrintableInfoElement("min visits", ':d', self.__min_visits)))
 
     def __init__(self, min_age_span_upper, min_age_span_lower, min_visits: int = 2):
-        self.__min_age_span_upper = min_age_span_upper
-        self.__min_visits = min_visits
+        self.__min_age_span_upper = float(min_age_span_upper)
+        self.__min_visits = float(min_visits)
         self.__min_age_span_lower = min_age_span_lower
 
     def select_visits(self, visits):
