@@ -74,7 +74,7 @@ class SplitThread(Thread):
 
         loss_monitor = LossMonitor(loss_fnc=loss_fnc)
         roc_monitor = RocMonitor(score_fnc=LupusDataset.get_scores_patients)
-        stopping_criterion = ThresholdCriterion(monitor=roc_monitor, threshold=0.92, mode='>')
+        stopping_criterion = ThresholdCriterion(monitor=roc_monitor, threshold=0.2, mode='>')
         saving_criterion = BestValueFoundCriterion(monitor=roc_monitor, mode='gt')
 
         trainer = SGDTrainer(train_rule, output_dir=self.__out_dir, max_it=10 ** 10,
@@ -168,7 +168,7 @@ def run_experiment(root_dir, min_age_lower, min_age_upper, min_visits_neg, min_v
     # save scores to file
     npz_file = run_out_dir + 'scores.npz'
     os.makedirs(os.path.dirname(npz_file), exist_ok=True)
-    save_info = dict(scores=scores, labels=labels)
+    save_info = dict(scores=scores, labels=labels, cum_score=cum_score, mean_score=score)
     save_info.update(dataset_infos.dictionary)
     numpy.savez(npz_file, **save_info)
 

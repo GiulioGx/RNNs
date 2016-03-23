@@ -1,4 +1,5 @@
 import abc
+import os
 
 import numpy
 
@@ -70,6 +71,34 @@ from infos.InfoProducer import SimpleInfoProducer
 #
 #     def __init__(self, *filters: LupusFilter):
 #         self.__filters = filters
+
+def format_table(results_dir: str):
+    lup_prefix = 'Lupus Dataset_'
+    filter_prefix = lup_prefix + 'temporal span visits filter_'
+
+    table_entries = []
+    subdir = next(os.walk(results_dir))[1]
+    print('subdirs', subdir)
+    for run_dir in subdir:
+        npz_file = numpy.load(results_dir + run_dir + '/scores.npz')
+        d = dict(pos=npz_file[lup_prefix + 'late positives'],
+                 neg=npz_file[lup_prefix + 'negatives'],
+                 min_v_pos=npz_file[filter_prefix + 'min visits pos'],
+                 min_v_neg=npz_file[filter_prefix + 'min visits neg'],
+                 lower_span=npz_file[filter_prefix + 'min age span lower'],
+                 upper_span=npz_file[filter_prefix + 'min age span upper'],
+                 score=npz_file['cum_score']
+                 )
+        table_entries.append(d)
+
+    rows = []
+    for e in table_entries:
+        sep = " & "
+        s = e['upper_span'] + sep + e['lower_span'] + sep + e['min_v_pos'] + sep + e['min_v_neg'] + sep + e['score'] + \
+            sep + e['pos'] + sep + e['neg'] + """\\""" + '\n'
+        rows.append(s)
+    result = "".join(rows)
+    print(result)
 
 
 class LupusStats(object):
@@ -173,5 +202,7 @@ class NullSelector(VisitsSelector):
 
 
 if __name__ == '__main__':
-    stats = LupusStats(Paths.lupus_path)
-    stats.plot_hists()
+    # stats = LupusStats(Paths.lupus_path)
+    # stats.plot_hists()
+
+    format_table('/home/giulio/RNNs/models/Lupus_k/')
