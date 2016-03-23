@@ -71,8 +71,8 @@ class PerPatienceTargets(BuildBatchStrategy):
 
 
 class LupusDataset(Dataset):
-    num_min_visit = 2  # dicard patients with lass than visits
-    num_min_visit_negative = 7  # discard negative patience with lass than visits
+    # num_min_visit = 2  # dicard patients with lass than visits
+    # num_min_visit_negative = 7  # discard negative patience with lass than visits
 
     @staticmethod
     def parse_mat(mat_file: str):
@@ -114,13 +114,13 @@ class LupusDataset(Dataset):
         shuffle(late_positives)
         shuffle(negatives)
 
-        description = ['Lupus Dataset:\n', 'features: {}\n'.format(features_names),
-                       'normalizations: {}\n'.format(features_normalizations),
-                       '{} early positive patients\n'.format(len(early_positives)),
-                       '{} late positive patients\n'.format(len(late_positives)),
-                       '{} negatives patients\n'.format(len(negatives))]
-
-        infos = InfoList(SimpleDescription(''.join(description)), visit_selector.infos)
+        infos = InfoGroup('Lupus Dataset', InfoList(PrintableInfoElement('features', '', features_names),
+                                                    PrintableInfoElement('normalizations', '', features_normalizations),
+                                                    PrintableInfoElement('early positives', ':d',
+                                                                         len(early_positives)),
+                                                    PrintableInfoElement('late positives', ':d', len(late_positives)),
+                                                    PrintableInfoElement('negatives', ':d', len(negatives)),
+                                                    visit_selector.infos))
 
         return early_positives, late_positives, negatives, result["max_visits_late_pos"], result[
             "max_visits_neg"], features_names, infos

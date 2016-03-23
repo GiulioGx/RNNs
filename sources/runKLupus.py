@@ -111,7 +111,7 @@ class SplitThread(Thread):
         self.__logger.info('Thread {} has finished....'.format(self.__id))
 
 
-def run_experiment(root_dir, min_age_lower, min_age_upper, min_visits, id: int):
+def run_experiment(root_dir, min_age_lower, min_age_upper, min_visits_neg, min_visits_pos, id: int):
     # start main logger
     run_out_dir = root_dir + 'run_{}/'.format(id)
     os.makedirs(run_out_dir, exist_ok=True)
@@ -128,15 +128,18 @@ def run_experiment(root_dir, min_age_lower, min_age_upper, min_visits, id: int):
 
     thread_count = 0
     thread_list = []
+    dataset_infos = None
     for d in LupusDataset.k_fold_test_datasets(Paths.lupus_path, k=k, strategy=PerPatienceTargets(),
                                                visit_selector=TemporalSpanSelector(
                                                    min_age_span_upper=min_age_upper,
-                                                   min_age_span_lower=min_age_lower, min_visits_neg=min_visits)):
+                                                   min_age_span_lower=min_age_lower, min_visits_neg=min_visits_neg,
+                                                   min_visits_pos=min_visits_pos)):
         out_dir = run_out_dir + str(thread_count)
         t = SplitThread(out_dir=out_dir, dataset=d, id=thread_count, logger=logger)
         thread_list.append(t)
         t.start()
         thread_count += 1
+        dataset_infos = d.infos
 
     ys = []
     masks = []
@@ -165,8 +168,9 @@ def run_experiment(root_dir, min_age_lower, min_age_upper, min_visits, id: int):
     # save scores to file
     npz_file = run_out_dir + 'scores.npz'
     os.makedirs(os.path.dirname(npz_file), exist_ok=True)
-    d = dict(scores=scores, labels=labels)
-    numpy.savez(npz_file, **d)
+    save_info = dict(scores=scores, labels=labels)
+    save_info.update(dataset_infos.dictionary)
+    numpy.savez(npz_file, **save_info)
 
 
 if __name__ == '__main__':
@@ -189,7 +193,8 @@ if __name__ == '__main__':
 
     min_age_span_lower_list = [0.8]
     min_age_span_upper_list = [0.8]
-    min_num_visits = [5]
+    min_num_visits_neg = [4, 5]
+    min_num_visits_pos = [2]
 
     root_dir = Configs.output_dir + 'Lupus_k/'
     shutil.rmtree(root_dir, ignore_errors=True)
@@ -197,6 +202,8 @@ if __name__ == '__main__':
     count = 0
     for min_age_l in min_age_span_lower_list:
         for min_age_u in min_age_span_upper_list:
-            for min_v in min_num_visits:
-                run_experiment(root_dir=root_dir, min_age_lower=min_age_l, min_age_upper=min_age_u, min_visits=min_v, id=count)
-                count += 1
+            for min_v_n in min_num_visits_neg:
+                for min_v_p in min_num_visits_pos:
+                    run_experiment(root_dir=root_dir, min_age_lower=min_age_l, min_age_upper=min_age_u,
+                                   min_visits_neg=min_v_n, min_visits_pos=min_v_p, id=count)
+                    count += 1
