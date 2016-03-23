@@ -1,10 +1,10 @@
-Consider a $\net{FFNN}=<\vec{p},\set{W},\set{B},\sigma(\cdot),F(\cdot)>$, let $L:\mathbb{R}^{p(U)} \times \mathbb{R}^{p(U)} \rightarrow \mathbb{R}$ a loss function and 
+Consider a $\net{FFNN}=\langle\vec{p},\set{W},\set{B},\sigma(\cdot),F(\cdot)\rangle$, let $L:\mathbb{R}^{p(U)} \times \mathbb{R}^{p(U)} \rightarrow \mathbb{R}$ a loss function and 
 $g(\cdot):\mathbb{R}^{\mathcal{N}(\set{W})+\mathcal{N}(\set{B})} \rightarrow \mathbb{R}$ be the function defined by
 \begin{equation}
-g(\set{W},\set{B}) \defeq L(F(a^U( \overline{\vec{y}}^{(i)} )),\vec{y}^{(i)}(\set{W},\set{B}) )
+g(\set{W},\set{B}) \defeq L(F(a^U( \overline{\vec{y}}^{(i)} )),\vec{y}^{(i)}(\set{W},\set{B}) ).
 \label{loss_over_y_i}
 \end{equation}
-Equation $\ref{loss_over_y_i}$, tough it seems rather scary, express a very simple thing: we consider a single input example 
+Equation (\ref{loss_over_y_i}), tough it seems rather scary, express a very simple thing: we consider a single input example 
 $\overline{\vec{x}}^{(i)}$, we run it through the network and we confront it's output $F(a^U( \overline{\vec{x}}^{(i)}) $ with it's label
 $\overline{\vec{y}}^{(i)}$ using the loss function $L$; the function $g(\set{W},\set{B})$ it's simply the loss function computed on the $i^{th}$ example
 which of course depends only on the weights and biases of network since the training examples are fixed within the dataset. In the following we will derive an expression for gradient with respect to a weight matrix $\mat{W}^{i}$ and a bias vector $\vec{b}^i$. Before reading further consider taking a look at the notation appendix.
@@ -17,14 +17,14 @@ which of course depends only on the weights and biases of network since the trai
 To help clarify the notation we provide just for equation \ref{eq:ffnnGradientJacobian} the dimensions of the matrices involved in the product:
 $$[1\times p(i+1)\cdot p(i)] = [p(U)\times 1] \cdot [p(U)\times p(U)] \cdot [p(U)\times p(i+1)\cdot p(i)].$$ 
 
-We can easily compute the gradient of $L$, $\nabla L$, and the jacobian of $F$, $J(F)$, once we define $F(\cdot)$ and $L(\cdot)$; note that the weights are not involved in such computation.
-Let's derive an expression for $\frac{\partial \vec{a}^U}{\partial \mat{W}^i}$.
-We will start deriving such derivative using global notation. Let's consider a single output unit $u$ and a weight $w_{lj}$ linking neuron $j$ to neuron $l$.
+We can easily compute the gradient of $L$, $\nabla L$, and the jacobian of $F$, $J(F)$, once we define $F(\cdot)$ and $L(\cdot)$. Note that the weights are not involved in such computation.
+Let us derive an expression for $\frac{\partial \vec{a}^U}{\partial \mat{W}^i}$.
+We will start deriving such derivative using the global notation. Consider a single output unit $u$ and a weight $w_{lj}$ linking neuron $j$ to neuron $l$.
 
 
 \begin{align}
 \frac{\partial a_u}{\partial w_{lj}} &= \frac{\partial a_u}{\partial a_l} \cdot \frac{\partial a_l}{\partial w_{lj}}\\
-&=\delta_{ul} \cdot h_j
+&=\delta_{ul} \cdot h_j,
 \end{align}
 
 where we put $$\delta_{ul} \defeq \frac{\partial a_u}{\partial a_l}.$$
@@ -97,7 +97,7 @@ We can compute $\delta_{ul}$ simply applying the chain rule, if we write it down
 \label{deriv_arcs}
 \end{figure}
 
-The derivatives with respect to biases are compute in the same way:
+The derivatives with respect to biases are computed in the same way:
 
 \begin{align}
 \frac{\partial a_u}{\partial b_{l}} &= \frac{\partial a_u}{\partial a_l} \cdot \frac{\partial a_l}{\partial b_{l}}\\
@@ -108,7 +108,7 @@ The derivatives with respect to biases are compute in the same way:
 
 In layered notation we can rewrite the previous equations as:
 \begin{equation}
- \frac{\partial a^U}{\partial \mat{W}^i} = \frac{\partial a^U}{\partial a^{i+1}} \cdot \frac{\partial^{+} a^{i+1}}{\partial \mat{W}^i}
+ \frac{\partial a^U}{\partial \mat{W}^i} = \frac{\partial a^U}{\partial a^{i+1}} \cdot \frac{\partial^{+} a^{i+1}}{\partial \mat{W}^i},
 \end{equation}
 
 
@@ -119,7 +119,7 @@ In layered notation we can rewrite the previous equations as:
    0               & h_j^{i}     & \cdots      & \cdots       & 0  \\
    \vdots          & \vdots           & \ddots      & \vdots       &\vdots\\
    0               & \cdots           & \cdots      & \cdots       & h^{i}_{j}
-\end{bmatrix}
+\end{bmatrix},
 \end{equation}
 
 \begin{equation}
@@ -127,11 +127,10 @@ In layered notation we can rewrite the previous equations as:
 \begin{cases}
       \Delta^{i+1} \cdot diag(\sigma'(\vec{a}^{i+1})) \cdot W^{i}  & \text{if } i<U,\\
       Id & \text{if } i==U,\\
-    0 & \text{otherwise}.
+    0 & \text{otherwise},
 \end{cases}
 \label{fnn_delta}
 \end{equation}
-
 where
 \begin{equation}
 diag(\sigma'(\vec{a}^{i})) =
@@ -140,9 +139,10 @@ diag(\sigma'(\vec{a}^{i})) =
    0                     & \sigma'(a^{i}_2)     & \cdots      & \cdots       & 0  \\
    \vdots                & \vdots           & \ddots      & \vdots       &\vdots\\
    0                     & \cdots           & \cdots      & \cdots       &\sigma'(a^{i}_{p(i)})
-\end{bmatrix}
+\end{bmatrix}.
 \end{equation}
 
+The derivatives w.r.t the biases are instead:
 \begin{align}
 \frac{\partial a^U}{\partial b^i} &= \frac{\partial a^U}{\partial a^i} \cdot \frac{\partial a^i}{\partial b^i}\\
 &= \Delta^{i} \cdot Id.
@@ -151,11 +151,11 @@ diag(\sigma'(\vec{a}^{i})) =
 
 \paragraph{Backpropagation}
 
-Previous equations are the core of the famous \textit{back-propagation} algorithm which was first introduced by Rumelhart et al. \cite{Rumelhart86}.
+Previous equations are the core of the famous \textit{back-propagation} algorithm which was first introduced by Rumelhart et al.\cite{Rumelhart86}.
 The algorithm consists in two \textit{passes}, a \textit{forward pass} and a \textit{backward pass} which give the name to the algorithm.
 The \textit{forward pass} start from the first layer, compute the hidden units values and the proceed to upper layers using the value of the hidden units 
 $\vec{a^i}$ of previous layers which have already been computed. The \textit{backward pass} instead, start from the topmost layer and computes $\Delta^{i}$
-which can be computed, as we can see from equation \ref{fnn_delta} , once it's known $\Delta^{i+1}$, which has been computed in the previous step, and $\vec{a^i}$ which
+which can be computed, as we can see from equation \ref{fnn_delta} , once it is known $\Delta^{i+1}$, which has been computed in the previous step, and $\vec{a^i}$ which
 has been computed in the \textit{forward pass}.
 
 \textit{Backpropagation} algorithm has time complexity $\mathcal{O}(\mathcal{N}(\set{W}))$.

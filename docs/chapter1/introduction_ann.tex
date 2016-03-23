@@ -1,5 +1,5 @@
  
-An artificial neural network is a network of connected units called neurons or perceptrons, as can be seen in Figure \ref{fully_connected}; the link which connects neurons $i$ and $j$, is associated with a weight $w_{ji}$. Perceptrons share the same
+An artificial neural network is a network of connected units called neurons or perceptrons, as can be seen in Figure \ref{fully_connected}. The link which connects neurons $i$ and $j$, is associated with a weight $w_{ji}$. Perceptrons share the same
 structure for all models, what really distinguish a particular model, in the family of artificial neural networks, is how the perceptron units are arranged and connected together, for example whether there are cycles
 or not, and how data inputs are \textit{fed} to the network. 
 
@@ -66,7 +66,7 @@ is defined as:
 &\phi_j \defeq \sigma(a_j)\label{def_perceptron_1}\\
 &a_j \defeq \sum_l w_{jl}\phi_l +b_j \label{def_perceptron_2}
 \end{align}
-where $w_{jl}$ is the weight of the connection between neuron $l$ and neuron $j$, $\sigma(\cdot)$ is a non linear function and $b_j \in \mathbb{R}$ is a bias term.
+where $w_{jl}$ is the weight of the connection between neuron $l$ and neuron $j$, $\sigma(\cdot)$ is some non linear function and $b_j \in \mathbb{R}$ is a bias term.
 It's worth noticing that in this formulation the inputs $\phi_l$ can be the outputs of other neurons or provided external inputs.
 
 
@@ -120,13 +120,13 @@ It's worth noticing that in this formulation the inputs $\phi_l$ can be the outp
 \end{figure}
 
 So, given a set of inputs $\{x\}_i$ which are \textit{fed} to some of the units of the net which we call \textit{input units} the output of the network $\{y\}_i$ is given by the
-some of units of the network, the "upper" ones which we call \textit{output units}. All remaining units, i.e the ones which are neither input nor output units
+some of units of the network, the "upper" ones, which we call \textit{output units}. All remaining units, i.e. the ones which are neither input nor output units
 are called \textit{hidden units} because their value is not \textit{observed} from the outside.
 
 \paragraph{The activation function}
-The $\sigma$ function is called \textit{activation} function and should determine whether a perceptron unit is \textit{active} or not. When artificial neural networks where first conceived,
-trying to mimic the brain structure, such function was a simple threshold function, trying to reproduce the behavior of brain neurons: a neuron is \textit{active}, i.e it's output $\phi_j$ is $1$, if
-the sum of input stimuli $\sum_l w_{jl}\phi_l +b_j$ is greater than a given threshold $\tau$.
+The $\sigma(\cdot)$ function is called \textit{activation function} and should determine whether a perceptron unit is \textit{active} or not. When artificial neural networks where first conceived,
+trying to mimic the brain structure, such function was a simple threshold function, trying to reproduce the behavior of brain neurons: a neuron is \textit{active}, i.e. it's output $\phi_j$ is $1$, if
+the sum of the input stimuli $\sum_l w_{jl}\phi_l +b_j$ is greater than a given threshold $\tau$.
 
 \begin{equation}
   \sigma_{\tau}(x)=\begin{cases}

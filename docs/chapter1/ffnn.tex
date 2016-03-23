@@ -5,13 +5,13 @@ next one and connections to earlier layers are not possible.
 
 \begin{defn}[Feed forward neural network]
 \label{def_ffnn}
-A feed forward neural network is tuple:
-$$\net{FFNN}\defeq \langle\vec{p},\set{W},\set{B},\sigma(\cdot),F(\cdot)\rangle$$
+A feed forward neural network is a tuple:
+$$\net{FFNN}\defeq \langle\vec{p},\set{W},\set{B},\sigma(\cdot),F(\cdot)\rangle.$$
 \begin{itemize}
- \item $\vec{p} \in \mathbb{N}^U$ is the vector whose elements $p(k)$ are the number of neurons of layer $k$; $U$ is the number of layers
- \item $\set{W} \defeq \{W^k_{p(k+1) \times p(k)}, k=1,...,U-1 \}$ is the set of weight matrices of each layer
- \item $\set{B} \defeq \{\vec{b}^k \in \mathbb{R}^{p(k)}, k=1,...,U \} $ is the set of bias vectors
- \item $\sigma(\cdot): \mathbb{R}\rightarrow \mathbb{R}$ is the activation function
+ \item $\vec{p} \in \mathbb{N}^U$ is the vector whose elements $p(k)$ are the number of neurons of layer $k$; $U$ is the number of layers.
+ \item $\set{W} \defeq \{W^k_{p(k+1) \times p(k)}, k=1,...,U-1 \}$ is the set of weight matrices of each layer.
+ \item $\set{B} \defeq \{\vec{b}^k \in \mathbb{R}^{p(k)}, k=1,...,U \} $ is the set of bias vectors.
+ \item $\sigma(\cdot): \mathbb{R}\rightarrow \mathbb{R}$ is the activation function.
  \item $F(\cdot): \mathbb{R}^{p(U)}\rightarrow \mathbb{R}^{p(U)}$ is the output function.
 \end{itemize}
 \end{defn}
@@ -19,9 +19,9 @@ $$\net{FFNN}\defeq \langle\vec{p},\set{W},\set{B},\sigma(\cdot),F(\cdot)\rangle$
 \begin{remark}{}
 Given a $\net{FFNN}$:
 \begin{itemize}
- \item The number of output units is $p(U)$
- \item The number of input units is $p(1)$
- \item The total number of weights is $\mathcal{N}(\set{W}) \defeq \sum_{k=1}^{U-1} p(k+1)p(k)$
+ \item The number of output units is $p(U)$.
+ \item The number of input units is $p(1)$.
+ \item The total number of weights is $\mathcal{N}(\set{W}) \defeq \sum_{k=1}^{U-1} p(k+1)p(k)$.
  \item The total number of biases is $\mathcal{N}(\set{B}) \defeq \sum_{k=2}^{U} p(k)$.
 \end{itemize}
 \end{remark}
@@ -47,9 +47,9 @@ The dataset $D$ is composed of $N$ training examples $\overline{\vec{x}}^{(i)}$,
 
 Then we need a loss function $L_D:\mathbb{R}^{\mathcal{N}(\set{W})+\mathcal{N}(\set{B})} \rightarrow \mathbb{R}_{\geq 0}$ over $D$ defined as
 \begin{equation}
-L_D(\set{W},\set{B})\defeq\frac{1}{N}\sum_{i=1}^N L(\overline{\vec{y}}^{(i)},\vec{y}^{(i)}(\set{W},\set{B})) 
+L_D(\set{W},\set{B})\defeq\frac{1}{N}\sum_{i=1}^N L(\overline{\vec{y}}^{(i)},\vec{y}^{(i)}(\set{W},\set{B})), 
 \end{equation}
-$L(\overline{\vec{y}},\vec{y}):\mathbb{R}^{p(U)} \times \mathbb{R}^{p(U)} \rightarrow \mathbb{R}$ is an arbitrary loss function computed on the $i^{th}$ example. Note that $\vec{y}$ is the output of the
+where $L(\overline{\vec{y}},\vec{y}):\mathbb{R}^{p(U)} \times \mathbb{R}^{p(U)} \rightarrow \mathbb{R}$ is an arbitrary loss function computed on the $i^{th}$ example. Note that $\vec{y}$ is the output of the
 network, so it depends on $\set{W}$ and $\set{B}$ whether $\overline{\vec{y}}$ is fixed within the dataset.
 
 
@@ -60,7 +60,7 @@ is generally used the \textit{softmax} function \begin{equation}
 softmax(x)_i\defeq \frac{e^{\vec{x}_i}}{\sum_{j=1}^k e^{\vec{x}_j} },
 \end{equation} for regression a simple identity function.
 For what concerns the number of layers and the number of units per layers they are chosen relying on experience or performing some kind of hyper-parameter tuning, which usually consists on training nets
-with some different configurations of such parameters and choosing the 'best one'.
+with different configurations of such parameters and choosing the 'best one'.
 
 Once we have selected the values for all hyper-parameters the optimization problem becomes:
 

@@ -19,7 +19,7 @@ F(\vec{x}) = (f_1(\vec{x}),f_2(\vec{x}),\cdots,f_M(\vec{x}))) \text{    for some
 
 
 \begin{defn}[Derivative with respect to a matrix]
-We define the derivative of $F(x(\mat{W}))$ with respect to a matrix $\mat{W}$, being $W_j$ the $j^{th}$ column of a 
+We define the derivative of $F(\vec{x}(\mat{W}))$ with respect to a matrix $\mat{W}$, being $W_j$ the $j^{th}$ column of a 
 $p\times m$ matrix $W$ as the $M\times (p \cdot m )$ matrix:
 \begin{equation}
 \frac{\partial F}{\partial \mat{W}} \triangleq
@@ -32,6 +32,14 @@ $p\times m$ matrix $W$ as the $M\times (p \cdot m )$ matrix:
 \end{defn}
 Please note that according to this definitions $\nabla f(x)$ with $f:\mathbb{R}^N \rightarrow \mathbb{R}$ corresponds to $\frac{\partial f}{\partial\vec{x}}^T$.
 
-
+\begin{defn}[Immediate derivative]
+Consider a recurrence 
+$$a^k(\vec{x}) =F(\vec{x}(\vec{w})) +  R(a^{k-1}(\vec{x}(\vec{w})), \dots, a^0(\vec{x}(\vec{w})))$$
+We define the immediate derivative of $a^k(\vec{x}(\vec{w})))$ with respect to the vector $\vec{w}$
+the matrix 
+\begin{equation}
+	\frac{\partial^+ a^k}{\partial \vec{w}} \defeq \frac{\partial F}{\partial \vec{w}}.
+\end{equation}
+\end{defn}
 
 
