@@ -1,11 +1,11 @@
 Consider a $\net{RNN}=\langle\set{W},\set{B},\sigma(\cdot),F(\cdot)\rangle$. Let $L_t:\mathbb{R}^o \times \mathbb{R}^o \rightarrow \mathbb{R}$ a loss function and  $g_t(\cdot):\mathbb{R}^{\mathcal{N}(\set{W})+\mathcal{N}(\set{B})} \rightarrow \mathbb{R}$ be the function defined by
-$$g_t(\set{W},\set{B}) \triangleq L_t(F(\vec{y}^t(\set{W},\set{B})))$$
+$$g_t(\set{W},\set{B}) \triangleq L_t(F(\vec{z}^t(\set{W},\set{B})))$$
 and $$g(\set{W},\set{B}) \triangleq \sum_{t=1}^T g_t(\set{W},\set{B})$$
 
 
 \begin{align}
-\frac{\partial g}{\partial \mat{W}^{rec}} &= \sum_{t=1}^T \nabla L_t^T \cdot J(F) \cdot \frac{\partial \vec{y}^t}{\partial \vec{a}^t} \cdot \frac{\partial \vec{a}^t}{\partial \mat{W}^{rec}}\\
-&= \sum_{t=1}^T\frac{\partial g_t}{\partial \vec{a}^t} \cdot \frac{\partial \vec{a}^t}{\partial \mat{W^{rec}}}
+\frac{\partial g}{\partial \mat{W}^{rec}} &= \sum_{t=1}^T \nabla L_t^T \cdot J(F) \cdot \frac{\partial \vec{z}^t}{\partial \vec{a}^t} \cdot \frac{\partial^+ \vec{a}^t}{\partial \mat{W}^{rec}}\\
+&= \sum_{t=1}^T\frac{\partial g_t}{\partial \vec{a}^t} \cdot \frac{\partial^+ \vec{a}^t}{\partial \mat{W^{rec}}}
 \end{align}
 
 As we noticed for $\net{FNNs}$ it's easy to compute $\frac{\partial g_t}{\partial \vec{a}^t}$ once we define $F(\cdot)$ and $L(\cdot)$, note that the weights are not involved in such computation.
@@ -157,17 +157,17 @@ The derivatives with respect to $\mat{W}^{in}$ and $\vec{b}^{rec}$ have the same
 The derivatives with respect to $W^{out}, b^{out}$ are straightforward:
 
 \begin{equation}
-\frac{\partial \vec{g}}{\partial \mat{W}^{out}} = \sum_{t=1}^T \frac{\partial g_t}{\partial \vec{y}^t} \cdot J(F) \cdot \frac{\partial \vec{y}^t}{\partial \mat{W}^{out}}
+\frac{\partial \vec{g}}{\partial \mat{W}^{out}} = \sum_{t=1}^T \frac{\partial g_t}{\partial \vec{y}^t} \cdot J(F) \cdot \frac{\partial \vec{z}^t}{\partial \mat{W}^{out}}
 \end{equation}
 
 \begin{equation}
-\frac{\partial \vec{g}}{\partial \vec{b}^{out}} = \sum_{t=1}^T \frac{\partial g_t}{\partial \vec{y}^t} \cdot J(F) \cdot \frac{\partial \vec{y}^t}{\partial \vec{b}^{out}}.
+\frac{\partial \vec{g}}{\partial \vec{b}^{out}} = \sum_{t=1}^T \frac{\partial g_t}{\partial \vec{y}^t} \cdot J(F) \cdot \frac{\partial \vec{z}^t}{\partial \vec{b}^{out}}.
 \end{equation}
 
 \paragraph{Back-propagation through time (BPTT)}
-\textit{Back-propagation through time} is an extension of the \textit{back-propagation} algorithm we described for FNNs, we can think of BPTT
-simply as a standard BP in the unfolded network. The same considerations done for BP also apply for BPTT, the difference is of course in how derivatives
-are computed, equation \ref{rnn_delta}. Time complexity is easily derived noticing that in the unfolded network there are $n \cdot T$ units, where $n$ is the number of units of the RNN .This
+\textit{Back-propagation through time} is an extension of the \textit{back-propagation} algorithm we described for FNNs. We can think of BPTT
+simply as a standard BP in the unfolded network. The same considerations done for BP also apply for BPTT, the difference is, of course, in how derivatives
+are computed. Time complexity is easily derived noticing that in the unfolded network there are $n \cdot T$ units, where $n$ is the number of units of the RNN. This
 yields time complexity $\mathcal{O}(\mathcal{N}(\set{W})\cdot T)$. Please see \cite{Williams90anefficient} for more details.
 
 

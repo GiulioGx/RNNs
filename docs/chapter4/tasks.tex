@@ -26,13 +26,24 @@ In Figure \ref{fig:temporal_rates} we compare the rate of success for different 
 
 
 \subsection{The effect of using the simplex direction}
-The first experiment we ran is developed to compare the simplex strategy and the variant with the conditional switching to the anti-gradient with the standard SGD. We tested the three algorithms on the addition problem (T=100), since the plain SGD converges as we discovered from the previous experiments. In Figure \ref{fig:comparisong_add_simplex} is shown the loss on the validation set during the training process (until convergence). Aside from the obvious consideration that the conditioned simplex strategy converges first, and the anti-gradient for last, we can notice that the simplex direction is particularly beneficial in the first part of the training process, which is when the effect of the vanishing gradient is more evident. This confirms that the simplex direction helps when dealing with vanishing gradients. Moreover the idea to switch back to the anti-gradient when the gradient has a sufficiently high norm seems to be effective.
-
-Motivated by this first experiment we ...
+The first experiment we ran is developed to compare the simplex strategy and the variant with the conditional switching to the anti-gradient with the standard SGD. We tested the three algorithms on the addition problem (T=100). In Figure \ref{fig:comparisong_add_simplex} is shown the loss on the validation set during the training process (until convergence). Aside from the obvious consideration that the conditioned simplex strategy converges first, and the anti-gradient for last, we can notice that the simplex direction is particularly beneficial in the first part of the training process, which is when the effect of the vanishing gradient is more evident. This confirms that the simplex direction helps when dealing with vanishing gradients. Moreover the idea to switch back to the anti-gradient when the gradient has a sufficiently high norm seems to be effective.
 
 \begin{figure}
 	\centering
 	\includegraphics[width= 0.8\textwidth]{chapter4/compare_add_simplex.png}
-	\caption{Comparison between SGD using a descent direction the anti-gradient, the simplex direction and the simplex direction conditioned for the addition task (T=100). In y axis the loss (mean squared error) in logarithmic scale}
+	\caption{Comparison between SGD using a descent direction the anti-gradient, the simplex direction and the simplex direction conditioned for the addition task (T=100). In y axis the loss (mean squared error) in logarithmic scale.}
 	\label{fig:comparisong_add_simplex}
 \end{figure}
+
+In Table \ref{table:add_100_comparison_iterations} are shown the number of iterations (mean values of 5 runs) needed for convergence for each strategy. Note that, although in the table are reported for simplicity only the mean values, each run follows the trend of Figure \ref{fig:comparisong_add_simplex}.
+\begin{table}
+	\centering
+	\begin{tabular}{C{2cm} | C{2cm} | C{4cm}}
+		anti-gradient & simplex & simplex with conditional switching \\
+		1807466 & 2338500 & 1332866 \\
+	\end{tabular}
+	\caption{Number of iterations until convergence for the addition task (T=100). Mean of 5 runs. TODO UPDATE RESULTS WITH NEW RUNS}
+	\label{table:add_100_comparison_iterations}
+\end{table}
+
+We repeated the experiment also for the temporal order task and ... ADD RESULTS WHEN READY

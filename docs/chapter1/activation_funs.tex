@@ -1,5 +1,5 @@
 Activation functions play a central role in artificial neural networks as they are responsible for the non linearity of the model.
-In the history of neural networks several activation functions have been proposed and used; in the following some of them are taken into consideration,
+In the history of neural networks several activation functions have been proposed and used. In the following some of them are taken into consideration,
 underling the difference between them, with a special focus on their derivative expression.
 
 A special class of activation function, is that of \textit{squashing} functions.
@@ -24,7 +24,7 @@ An important property of a \textit{squashing} function $\sigma(\cdot)$ is that
 \end{equation}
 being $\sigma_{\tau}$ the usual step function.
 This property is extensively used in several proofs of the universal approximator property of neural networks. Roughly speaking we can say that \textit{squashing} functions act as step functions
-at the limit; please note that this property has a practical use since inputs of activation functions are the weighted sum of some neurons output,
+at the limit. This property has a practical use since inputs of activation functions are the weighted sum of neurons output,
 so activation function inputs can be arbitrarily big or small.
 \end{remark}
 
@@ -35,7 +35,7 @@ so activation function inputs can be arbitrarily big or small.
 sigmoid(x)&= \frac{1}{1+e^{-x}},  \\ 
 \frac{d}{dx}sigmoid(x)&= sigmoid(x) \cdot (1-sigmoid(x)).
 \end{align}
-As we can see from Figure \ref{sigmoid_plot}, the sigmoid derivative has only one maximum in 0 where it assume value 0.25. Receding from 0, in both direction leads to regions where
+As we can see from Figure \ref{sigmoid_plot} the sigmoid derivative has only one maximum in 0 where it assume value 0.25. Receding from 0, in both direction leads to regions where
 the the derivative take zero value, such regions are called \textit{saturation} regions. If we happen to be in such regions, for a given neuron, we cannot learn anything since that neuron doesn't contribute
 to the gradient.
 
@@ -52,7 +52,7 @@ to the gradient.
  \frac{d}{dx}tanh(x)&= 1 - tanh^2(x).  
 \end{align}
 As we can see from Figure \ref{tanh_plot} $tanh$ (and it's derivative) have a behavior similar to the sigmoid one; again we have two saturation region towards
-infinity: that's typical of all squashing functions.
+infinity: that is typical of all squashing functions.
 
 
 
@@ -78,7 +78,7 @@ infinity: that's typical of all squashing functions.
     0 & \text{otherwise}.
   \end{cases}
 \end{align}
-ReLU is a bit different from the activation function seen so far: the main difference is that's it's not a squashing function.
+ReLU is a bit different from the activation function seen so far: the main difference is that is not a squashing function.
 As we can see from Figure \ref{relu_plot}, ReLU's derivative is the step function; it has only one \textit{saturation} region $(-\infty, 0]$ and a region in which is always takes value 1, $(0,+\infty]$.
 This implies that we cannot learn to \textit{turn on} a switched off neuron ($x<0$), but we have no \textit{saturation} region toward infinity.
 

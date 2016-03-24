@@ -1,7 +1,6 @@
 Recurrent neural networks differ from feed forward neural networks because of the presence of recurrent connections: at least one perceptron output at a given layer $i$ is \textit{fed} to another perceptron
 at a level $j<i$, as can be seen in Figure \ref{rnn_model}. 
-This is a key difference, as we will see in later sections, because it introduces \textit{memory} in the network, changing, somehow, the expressiveness
-of the model.
+This is a key difference, as we will see in later sections, because it introduces \textit{memory} in the network, changing, somehow, the expressivenessof the model.
 
 
 \tikzstyle{rnn_style}=[->,shorten >=1pt,auto,node distance=1.5cm,
@@ -71,11 +70,10 @@ of the model.
 \label{rnn_model}
 \end{figure}
 
-
 This difference in topology reflects also on the network's input and output domain: where, in feed forward neural networks, inputs and outputs were real valued vectors, recurrent neural networks deal with
 sequences of vectors; in other words time is also considered. One may argue that, taking time (and sequences) into consideration, is some sort of a limitation, because it restricts our model to deal only
-with temporal inputs; however that's not the case, in fact we can apply RNNs to non temporal data by considering space as the temporal dimension, for example imagine feeding the network with the pixels of an image one column at a time; or we can feed the network with the same input for all time steps or simply
-providing no input at all after the first step.
+with temporal inputs; however that is not the case, in fact we can apply RNNs to non temporal data by considering space as the temporal dimension, for example imagine feeding the network with the pixels of an image one column at a time; or we can feed the network with the same input for all time steps or simply
+providing no input at all after the first one.
 
 \begin{defn}[Recurrent neural network]
 \label{def_rnn}
@@ -84,16 +82,16 @@ $$\net{RNN}\defeq\langle \set{W},\set{B} ,\sigma(\cdot),F(\cdot)\rangle$$
 \begin{itemize}
  \item $\set{W} \defeq \{\mat{W}^{in},\mat{W^{rec},\mat{W^{out}}}\}$ where
  \begin{itemize}
-  \item $W^{in}$ is the $r\times p$ input weight matrix
-  \item $W^{rec}$ is the $r\times r$ recurrent weight matrix
-  \item $W^{out}$ is the $o \times r$ output weight matrix
+  \item $W^{in}$ is the $r\times p$ input weight matrix,
+  \item $W^{rec}$ is the $r\times r$ recurrent weight matrix,
+  \item $W^{out}$ is the $o \times r$ output weight matrix.
  \end{itemize}
  \item $\set{B} \defeq \{\vec{b^{rec},\vec{b^{out}}}\}$ where
  \begin{itemize}
-   \item $\vec{b}^{rec} \in \mathbb{R}^{r}$ is the bias vector for the recurrent layer
-   \item $\vec{b}^{out} \in \mathbb{R}^{o}$ is the bias vector for the output layer
+   \item $\vec{b}^{rec} \in \mathbb{R}^{r}$ is the bias vector for the recurrent layer,
+   \item $\vec{b}^{out} \in \mathbb{R}^{o}$ is the bias vector for the output layer.
  \end{itemize}
- \item $\sigma(\cdot): \mathbb{R}\rightarrow \mathbb{R}$ is the activation function
+ \item $\sigma(\cdot): \mathbb{R}\rightarrow \mathbb{R}$ is the activation function.
  \item $F(\cdot): \mathbb{R}^{o}\rightarrow \mathbb{R}^{o}$ is the output function.
 \end{itemize}
 \end{defn}
@@ -101,10 +99,10 @@ $$\net{RNN}\defeq\langle \set{W},\set{B} ,\sigma(\cdot),F(\cdot)\rangle$$
 \begin{remark}{}
 Given a $\net{RNN}$
 \begin{itemize}
- \item the total number of weights is given by $\mathcal{N}(W) \defeq rp+r^2+ro$
- \item the number of biases by $\mathcal{N}(b) \defeq r+o $
- \item $p$ is the size of input vectors
- \item$r$ is the number of hidden units
+ \item The total number of weights is given by $\mathcal{N}(W) \defeq rp+r^2+ro$.
+ \item The number of biases by $\mathcal{N}(b) \defeq r+o $.
+ \item $p$ is the size of input vectors.
+ \item$r$ is the number of hidden units.
  \item $o$ is the size of output vectors. 
 \end{itemize}
 \end{remark}
@@ -113,14 +111,15 @@ Given a $\net{RNN}$
 \label{def_rnn_output}
 Given a $\net{RNN}$ and an input sequence $\{\vec{x}\}_{t=1,...,T}$, with $ \vec{x}_t \in \mathbb{R}^p$, the output sequence of the net $\{\vec{y}\}_{t=1,...,T}$, with $\vec{y}_t \in \mathbb{R}^o$,  is defined by the following:
 \begin{align}
-&\vec{y}^t \defeq F(W^{out}\cdot\vec{a}^t + \vec{b}^{out})\\
+&\vec{y}^t \defeq F(\vec{z}^t)\\
+&\vec{z}^t \defeq \mat{W}^{out}\cdot\vec{a}^t + \vec{b}^{out}\\
 &\vec{a}^t \defeq W^{rec}\cdot\vec{h}^{t-1}+W^{in}\cdot\vec{x}^t+\vec{b}^{rec}\\
 &\vec{h}^t \defeq  \sigma(\vec{a}^t) \\
 &\vec{h}^0 \defeq \overrightarrow{0}.
 \end{align}
 \end{defn}
 As we can understand from definition \ref{def_rnn_output}, there is only one recurrent layer, whose weights are the same for each time step, so one could asks where does the deepness of the network come from.
-The answer lies in the temporal unfolding of the network, in fact if we unfold the network step by step we obtain a structure similar to that of a feed forward neural network. As we can observe
+The answer lies in the temporal unfolding of the network. In fact if we unfold the network step by step we obtain a structure similar to that of a feed forward neural network. As we can observe
 in Figure \ref{rnn_unfolding}, the unfolding of the network through time consist of putting identical version of the same recurrent layer one on top of each other and linking the inputs of one layer to the
 next one. The key difference from feed forward neural networks is, as we have already observed, that the weights in each layer are identical; another
 important unlikeness is of course the presence of additional timed inputs for each unfolded layer.
