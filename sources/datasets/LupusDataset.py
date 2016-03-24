@@ -7,8 +7,8 @@ from scipy.io import loadmat
 
 from Configs import Configs
 from Paths import Paths
-from datasets.LupusFilter import VisitsSelector, \
-    NullSelector, TemporalSpanSelector
+from datasets.LupusFilter import VisitsFilter, \
+    NullFIlter, TemporalSpanFilter
 from infos.Info import Info, NullInfo
 from infos.InfoElement import SimpleDescription, PrintableInfoElement
 from infos.InfoGroup import InfoGroup
@@ -87,7 +87,7 @@ class LupusDataset(Dataset):
         return positive_patients, negative_patients, features_names
 
     @staticmethod
-    def load_mat(mat_file: str, visit_selector: VisitsSelector = NullSelector()):
+    def load_mat(mat_file: str, visit_selector: VisitsFilter = NullFIlter()):
 
         positive_patients, negative_patients, features_names = LupusDataset.parse_mat(mat_file=mat_file)
 
@@ -135,7 +135,7 @@ class LupusDataset(Dataset):
 
     @staticmethod
     def no_test_dataset(mat_file: str, strategy: BuildBatchStrategy = PerVisitTargets, seed: int = Configs.seed,
-                        visit_selector: VisitsSelector = NullSelector()):
+                        visit_selector: VisitsFilter = NullFIlter()):
         early_positives, late_positives, negatives, max_visits_pos, max_visits_neg, features_names, infos = LupusDataset.load_mat(
             mat_file, visit_selector=visit_selector)
         train_set = dict(early_pos=early_positives, late_pos=late_positives, neg=negatives, max_pos=max_visits_pos,
@@ -145,7 +145,7 @@ class LupusDataset(Dataset):
 
     @staticmethod
     def k_fold_test_datasets(mat_file: str, k: int = 1, strategy: BuildBatchStrategy = PerVisitTargets(),
-                             seed: int = Configs.seed, visit_selector: VisitsSelector = NullSelector()):
+                             seed: int = Configs.seed, visit_selector: VisitsFilter = NullFIlter()):
         early_positives, late_positives, negatives, max_visits_pos, max_visits_neg, features_names, infos = LupusDataset.load_mat(
             mat_file, visit_selector=visit_selector)
         for i in range(k):
@@ -485,7 +485,7 @@ class LupusDataset(Dataset):
 
 
 if __name__ == '__main__':
-    formatter = TemporalSpanSelector(min_age_span_upper=2, min_age_span_lower=2, min_visits_neg=4)
+    formatter = TemporalSpanFilter(min_age_span_upper=2, min_age_span_lower=2, min_visits_neg=4)
     dataset = LupusDataset.no_test_dataset(Paths.lupus_path, seed=13, strategy=PerPatienceTargets(),
                                            visit_selector=formatter)
     print(dataset.infos)

@@ -6,71 +6,11 @@ import numpy
 from Paths import Paths
 import datasets
 import matplotlib.pyplot as plt
-from infos.InfoElement import PrintableInfoElement
+from infos.InfoElement import PrintableInfoElement, SimpleDescription
 from infos.InfoGroup import InfoGroup
 from infos.InfoList import InfoList
 from infos.InfoProducer import SimpleInfoProducer
 
-
-# class LupusFilter(object):
-#     __metaclass__ = abc.ABCMeta
-#
-#     @abc.abstractmethod
-#     def is_to_discard(self, visits) -> bool:
-#         """return True or False whether the patience schould be be discarde or not"""
-#
-#
-# class NullFilter(LupusFilter):
-#     def is_to_discard(self, visits) -> bool:
-#         return False
-#
-#
-# class TemporalSpanFilter(LupusFilter):
-#     def __init__(self, min_age_span, min_visits_before_status_change: int = 2):
-#         self.__min_age_span = min_age_span
-#         self.__min_visits_before_status_change = min_visits_before_status_change
-#
-#     def is_to_discard(self, visits) -> bool:
-#
-#         if visits[0]["sdi"] > 0:
-#             return True
-#         elif sum([v["sdi"].item() for v in visits]) > 0:
-#             return False
-#         else:
-#
-#             last_sdi = 1 if visits[-1]["sdi"].item() > 0 else 0
-#             count = len(visits) - 1
-#             last_visit_age = visits[-1]["age"].item()
-#             sdi_change_found = False
-#             age_span = 0
-#             while age_span < self.__min_age_span and count >= 0 and not sdi_change_found:
-#                 curr_sdi = 1 if visits[count]["sdi"].item() > 0 else 0
-#                 if curr_sdi != last_sdi:
-#                     sdi_change_found = True
-#                 age_span = last_visit_age - visits[count]["age"].item()
-#                 count -= 1
-#         return age_span < self.__min_age_span or count <= self.__min_visits_before_status_change
-#
-#
-# class MinVisitsFilter(LupusFilter):
-#     def __init__(self, n):
-#         self.__n = n
-#
-#     def is_to_discard(self, visits) -> bool:
-#         return len(visits) < self.__n
-#
-#
-# class AggregateFilter(LupusFilter):
-#     def is_to_discard(self, visits) -> bool:
-#         discard = False
-#         count = 0
-#         while not discard and count < len(filter):
-#             discard = discard or self.__filters[count]
-#             count += 1
-#         return discard
-#
-#     def __init__(self, *filters: LupusFilter):
-#         self.__filters = filters
 
 def format_table(results_dir: str):
     lup_prefix = 'Lupus Dataset_'
@@ -94,23 +34,19 @@ def format_table(results_dir: str):
     rows = []
     for e in table_entries:
         sep = " & "
-        s = e['upper_span'] + sep + e['lower_span'] + sep + e['min_v_pos'] + sep + e['min_v_neg'] + sep + e['score'] + \
-            sep + e['pos'] + sep + e['neg'] + """\\""" + '\n'
+        s = str(e['upper_span'].item()) + sep + str(e['lower_span'].item()) + sep + str(
+            e['min_v_pos'].item()) + sep + str(e['min_v_neg'].item()) + sep + "{:.2f}".format(e['score'].item()) + \
+            sep + str(e['pos'].item()) + sep + str(e['neg'].item()) + """\\\\""" + '\n'
         rows.append(s)
     result = "".join(rows)
     print(result)
 
 
 class LupusStats(object):
-    def __init__(self, mat_file: str):
-        positive_patients, negative_patients, features_names = datasets.LupusDataset.parse_mat(mat_file=mat_file)
-        mat_data = numpy.concatenate((positive_patients, negative_patients), axis=0)
-        mat_data = positive_patients
-
+    def __init__(self, mat_data):
         self.__n_visits = []
         self.__age_spans = []
 
-        n_features = len(features_names)
         patients_ids = numpy.unique(mat_data['PazienteId'])
         for id in patients_ids:
             visits_indexes = mat_data['PazienteId'] == id.item()
@@ -147,7 +83,7 @@ class LupusStats(object):
         plt.show()
 
 
-class VisitsSelector(SimpleInfoProducer):
+class VisitsFilter(SimpleInfoProducer):
     __metaclass__ = abc.ABCMeta
 
     @abc.abstractmethod
@@ -155,7 +91,7 @@ class VisitsSelector(SimpleInfoProducer):
         """return a list of visits acordind to some criterion"""
 
 
-class TemporalSpanSelector(VisitsSelector):
+class TemporalSpanFilter(VisitsFilter):
     @property
     def infos(self):
         return InfoGroup("temporal span visits filter",
@@ -196,13 +132,19 @@ class TemporalSpanSelector(VisitsSelector):
         return visits[0:cut_index + 1]
 
 
-class NullSelector(VisitsSelector):
+class NullFIlter(VisitsFilter):
+    @property
+    def infos(self):
+        return SimpleDescription("NullFilter")
+
     def select_visits(self, visits):
         return visits
 
 
 if __name__ == '__main__':
-    # stats = LupusStats(Paths.lupus_path)
+    # positive_patients, negative_patients, _ = datasets.LupusDataset.parse_mat(mat_file=Paths.lupus_path)
+    # mat_data = numpy.concatenate((positive_patients, negative_patients), axis=0)
+    # stats = LupusStats(mat_data=mat_data)
     # stats.plot_hists()
 
-    format_table('/home/giulio/RNNs/models/Lupus_k/')
+    format_table('/home/giulio/lupustmp/')

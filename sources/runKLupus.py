@@ -12,7 +12,7 @@ from sklearn.metrics import roc_auc_score
 from ActivationFunction import Tanh
 from Configs import Configs
 from Paths import Paths
-from datasets.LupusFilter import TemporalSpanSelector
+from datasets.LupusFilter import TemporalSpanFilter
 from descentDirectionRule.Antigradient import Antigradient
 from initialization.ConstantInit import ConstantInit
 from initialization.GaussianInit import GaussianInit
@@ -130,7 +130,7 @@ def run_experiment(root_dir, min_age_lower, min_age_upper, min_visits_neg, min_v
     thread_list = []
     dataset_infos = None
     for d in LupusDataset.k_fold_test_datasets(Paths.lupus_path, k=k, strategy=PerPatienceTargets(),
-                                               visit_selector=TemporalSpanSelector(
+                                               visit_selector=TemporalSpanFilter(
                                                    min_age_span_upper=min_age_upper,
                                                    min_age_span_lower=min_age_lower, min_visits_neg=min_visits_neg,
                                                    min_visits_pos=min_visits_pos)):
@@ -191,10 +191,10 @@ if __name__ == '__main__':
     Configs.seed = seed
     k = 8
 
-    min_age_span_lower_list = [0.8, 1, 2]
-    min_age_span_upper_list = [0.8, 1, 2]
+    min_age_span_lower_list = [0.8]  # [0.8, 1, 2]
+    min_age_span_upper_list = [0.8, 1, 2]  # [0.8, 1, 2]
     min_num_visits_neg = [1, 2, 3, 4, 5]
-    min_num_visits_pos = [1, 2, 3]
+    min_num_visits_pos = [1]
 
     root_dir = Configs.output_dir + 'Lupus_k/'
     shutil.rmtree(root_dir, ignore_errors=True)
