@@ -1,6 +1,6 @@
 import numpy
 
-run_cheked_val = [1075800, 1075800, 1847000]
+run_cheked_val = [1075800, 1969200, 1847000]
 run_cos_vals = [1659000, 3018000]
 run_anti = [1538800, 1853800, 2029800]
 
