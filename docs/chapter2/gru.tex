@@ -1,14 +1,14 @@
  
 \subsection{Gated recurrent units}
 
-Gated recurrent units (GRU) were introduced by Cho et al. in 2014 \cite{gru} as units similar to LTSM, with same purpose, 
+Gated recurrent units (GRU) were introduced by Cho et al.\cite{gru} in 2014  as units similar to LTSM, with the same purpose, 
 but claimed to simpler to compute and implement. A GRU unit $j$ make use of two gate units, $z$, the 
 \textit{update} gate, and $r$, the \textit{reset} gate, which are standard neurons.
 \begin{align}
  &z_j^t = [\sigma(\mat{W_z}\vec{x_t} + \mat{U}_z\vec{h}_{t-1})]_j\\
  &r_j^t = [\sigma(\mat{W_r}\vec{x_t} + \mat{U}_r\vec{h}_{t-1})]_j.\\
 \end{align}
-As in LSTM units, the gates are used to manage the access to memory cell, but in GRU they are used a little bit 
+As in LSTM units, the gates manage the access to memory cell, but in GRU they are used a little bit 
 differently. The update gate is used to decide how to update the memory cell: the activation value of the cell 
 $h_j^{t}$ is a linear interpolation between the previous activation $h_j^{t-1}$ and the candidate activation 
 $\tilde{h}_j^t$.
@@ -19,7 +19,7 @@ $\tilde{h}_j^t$.
 \end{align}
 where $\odot$ symbolize the element-wise product.
 
-As we can see from equation \ref{candidateEq}, when the reset gate $r_j^t$ is close to zero, the units acts as if 
+As we can see from Equation (\ref{candidateEq}), when the reset gate $r_j^t$ is close to zero, the units acts as if 
 reading the first symbol of the input sequence \textit{forgetting} the previous state.
 
 \paragraph{Architecture comparison}
@@ -30,4 +30,4 @@ lacking of an output gate in GRU, which hence expose the content of the memory c
 performance of a network composed of traditional units; The comparison results obtained were however mixed, and in the 
 end they could not demonstrate the superiority of one of the two approaches.
 
-In 2015 interesting work was done \cite{architectureMutations} on neural network architectures. The aim of the work was to determine if LSTM or GRU were optimal, or whether a better architecture exists. This was accomplished by comparing thousands of randomly generated architectures using the best hyper-parameter setting for each one. The architectures were generated randomly mutating a given architecture, replacing it's activation function nodes, choosing from ReLU, tanh, sigmoid etc., and it's operation nodes, with multiplication, subtraction or addition. The result of the experiment is that no one of mutated architectures constantly performed better than LTSM and GRU in all the considered tasks; Moreover the best randomly generated architectures were very similar to the GRU architecture. The conclusion drawn in \cite{architectureMutations}  is that either architectures better than LSTM and GRU  either don't exist or are difficult to find. 
+In 2015 an interesting work\cite{architectureMutations} was done  on neural network architectures. The aim of the work was to determine if LSTM or GRU were optimal, or whether a better architecture exists. This was accomplished by comparing thousands of randomly generated architectures using the best hyper-parameter setting for each one. The architectures were generated randomly mutating a given architecture, replacing its activation function nodes, choosing from ReLU, tanh, sigmoid etc., and its operation nodes, with multiplication, subtraction or addition. The result of the experiment is that no one of mutated architectures constantly performed better than LTSM and GRU in all the considered tasks. Moreover the best randomly generated architectures were very similar to the GRU architecture. The conclusion drawn in \cite{architectureMutations}  is that architectures better than LSTM and GRU  either do not exist or are difficult to find. 

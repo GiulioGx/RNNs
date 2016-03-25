@@ -127,8 +127,8 @@ The memory cell and the gate units behave accordingly to the following:
 %  \phi_j\defeq h(m_j^t)\cdot o^t_j
 % \end{equation}
 
-As we can see from equation \ref{mem_update}, the value of the memory cell $m(t)$ remains constant as long as the input 
-gate $u$ doesn't ``open'' causing a ``write'' operation. Similarly the output $o$ of the memory cell, which is 
+As we can see from Equation (\ref{mem_update}), the value of the memory cell $m(t)$ remains constant as long as the input 
+gate $u$ does not ``open'' causing a ``write'' operation. Similarly the output $o$ of the memory cell, which is 
 connected with 
 the other neurons of the network, is controlled by an output gate: the memory will have a non zero output only if the 
 output gate opens, which we could call a ``read'' operation. As for constant error flow it is ensured because the 
@@ -144,13 +144,10 @@ gates however are no different from other units, apart from the fact they are mu
 further precautions, the networks would incur in the same vanishing problem it aimed to resolve. In fact LSTM comes with 
 a proper, specifically designed, learning algorithm: essentially errors, i.e. gradients of the loss function, arriving at memory cells inputs are not propagated back in time, only 
 the error within the memory cell gets propagated; in other words gradients are truncated taking into account only the 
-self-connection of the memory cells and not it's other input connections, hence providing constant error flow.
+self-connection of the memory cells and not its other input connections, hence providing constant error flow.
 \\\\
-LSTM units have proven to be very successful reaching state-of-art results in various tasks and even at present times 
-(2015), they continue to be largely
-employed. In recent implementations however, alongside small modifications, as the introduction of other gates, LSTM 
-architecture is often used without the original learning algorithm which is often replaced by a standard stochastic 
-gradient descend as done in \cite{lstmGraves}.
+LSTM units have proven to be very successful reaching state-of-art results in various tasks and even at the present time (2015), they continue to be largely
+employed. In recent implementations however, alongside small modifications, as the introduction of other gates, the LSTM architecture is often used without the original learning algorithm which is often replaced by a standard stochastic gradient descend as done in \cite{lstmGraves}.
 
 
 
