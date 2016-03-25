@@ -68,12 +68,22 @@ thin_edge/.style={line width=0.5pt}
 \end{figure}
 
 We normalized all the data to be in range (0,1).
-We explored all the combination for \texttt{upper span age} in [1, 2], \texttt{lower span age} in [1, 2], \texttt{min visits} in [2, 3, 4, 5]. Since the number of available patients is not big enough to allow a split in train and test set, we repeated the training procedure eight times with different splits of train e test then we put together the predictions on the eight test sets.  The results are shown in Table \ref{table:exp_res}. We repeated the experiment twice: on time with all the features and next with the subset of selected features.
+We explored all the combination for \texttt{upper span age} in [1, 2], \texttt{lower span age} in [1, 2], \texttt{min visits} in [2, 3, 4, 5]. Since the number of available patients is not big enough to allow a split in train and test set, we repeated the training procedure eight times with different splits of train e test then we put together the predictions on the eight test sets. We repeated the experiment twice: on time with all the features and next with the subset of selected features.
+
+\paragraph{Metrics}
+We employed the following metrics to evaluate the results of the experiments:
+\begin{itemize}
+	\item $precision \defeq \frac{TP}{TP+FP}$,
+	\item $recall(sensitivity) \defeq \frac{TP}{P}$,
+	\item $specificity \defeq 	\frac{TN}{N}$,
+	\item area under curve (AUC): the area under the curve obtained plotting recall and specificity varying the threshold of the classifier,
+\end{itemize}
+where $TP, TN, P, N$ are the true positive, true negative, number of positive and number of negatives respectively. See \cite{RocMetrics} for more details on these metrics.
 
 \begin{table}[!h]
 	\centering
 	\begin{tabular}{C{1.5cm}  C{1.5cm}  c | C{2cm}  C{2cm} |  c  c}
-		upper span age & lower span age & min visits & auc roc score all feats & auc roc score subset feats& pos & neg\\
+		upper span age & lower span age & min visits & AUC all feats & AUC subset feats& pos & neg\\
 		\hline
 		1 & 1 & 2  & x & 0.62 & 43 & 127\\
 		1 & 1 & 3  & x & 0.71 & 43 & 118\\
@@ -120,4 +130,5 @@ We explored all the combination for \texttt{upper span age} in [1, 2], \texttt{l
 \end{figure}
 
 \paragraph{Analysis}
+The results are shown in Table \ref{table:exp_res}.
 From the results seems clear that using the selected features...TODO
