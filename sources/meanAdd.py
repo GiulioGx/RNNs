@@ -7,3 +7,8 @@ run_anti = [1538800, 1853800, 2029800]
 print("mean_cos: {}".format(int(numpy.mean(run_cos_vals))))
 print("mean_checked: {}".format(int(numpy.mean(run_cheked_val))))
 print("mean_anti: {}".format(int(numpy.mean(run_anti))))
+
+
+temp_50 = [211200, 827600, 58200, 175400, 738200]
+temp_100 = [2396800, 1932800, 'x']
+temp_150 = [3529800, ]

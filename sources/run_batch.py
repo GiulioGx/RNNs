@@ -67,7 +67,7 @@ def train_run(seed: int, task_length: int, prefix: str):
     # combining_rule = SimpleSum()
     dir_rule = CombinedGradients(combining_rule)
     dir_rule = CheckedDirection(dir_rule, max_cos=0, max_dir_norm=0.9)
-    # dir_rule = Antigradient()
+    dir_rule = Antigradient()
 
     lr_rule = GradientClipping(lr_value=0.001, clip_thr=1, normalize_wrt_dimension=False)  # 0.01
 
@@ -96,8 +96,8 @@ def train_run(seed: int, task_length: int, prefix: str):
     return net
 
 
-seeds = [13, 14, 15, 16, 17]
-lengths = [100]
+seeds = [15, 16, 17]
+lengths = [150]
 prefix = 'train_run'
 
 print('Beginning train run...')
