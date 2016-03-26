@@ -87,11 +87,11 @@ We can write:
 	&= \mathbb{E}_{\vec{\xi}_{[j-1]}}[(\vec{x}_j-\vec{x}_*)^T\mathbb{E}_{\vec{\xi}_{[j]}}[D(\vec{x}_j,\vec{\xi}_j)]|\vec{\xi}_{[j-1]}]\label{eq:independece_2} \\ 	
 	&=\mathbb{E}_{\vec{\xi}_{[j-1]}}[(\vec{x}_j-\vec{x}_*)^Td(\vec{x}_j)].	\label{eq:independece}
 \end{align}
-Equation (\ref{eq:independece_1}) is given by the law of total expectation, (\ref{eq:independece_2}) holds because $\vec{x}_j = \vec{x}_j(\vec{\xi_{[j-1]}})$ is not function of $\vec{\xi}_j$, hence independent.
+Equation (\ref{eq:independece_1}) is given by the law of total expectation, (\ref{eq:independece_2}) holds because $\vec{x}_j = \vec{x}_j(\vec{\xi_{[j-1]}})$ is not function of $\vec{\xi}_j$, hence independent of it.
 %\end{equation}
-Using (\ref{eq:gradient_bound}) and (\ref{eq:independece}) we obtain, taking expectation of both sides of (\ref{eq:aj_rec})
+Using (\ref{eq:gradient_bound}) and (\ref{eq:independece}) we obtain, taking expectation on both sides of (\ref{eq:aj_rec})
 \begin{equation}
-	a_{j+1} \leq a_j - \gamma_j\mathbb{E}_{\vec{\xi}_{[j-1]}}[(\vec{x}_j-\vec{x}_*)^Td(\vec{x}_j)] + \frac{1}{2}\gamma_j^2M^2
+	a_{j+1} \leq a_j - \gamma_j\mathbb{E}_{\vec{\xi}_{[j-1]}}[(\vec{x}_j-\vec{x}_*)^Td(\vec{x}_j)] + \frac{1}{2}\gamma_j^2M^2.
 	\label{eq:aj_rec_2}
 \end{equation}
 Since $f(\cdot)$ is strongly convex with constant $c>0$,
@@ -104,7 +104,7 @@ By optimality of $\vec{x}_*$ we have
 	(\vec{x}-\vec{x}_*)^T f^\prime \geq 0 \quad \forall \vec{x} \in \mathbb{R}^n, \forall f^\prime\in\partial f(\vec{x}_*).
 	\label{eq:optimality}
 \end{equation}
-Inequalities (\ref{eq:strong_convexity}) and (\ref{eq:optimality}) imply
+Inequalities (\ref{eq:strong_convexity}) and (\ref{eq:optimality}) together imply
 \begin{equation}
 	(\vec{x}-\vec{x}_*)^T f^\prime \geq c \norm{\vec{x}-\vec{x}_*}^2_2 \quad \forall \vec{x} \in \mathbb{R}^n, \forall f^\prime\in\partial f(\vec{x}).
 \end{equation}
@@ -117,10 +117,10 @@ which can be rewritten as
 		(\vec{x}-\vec{x}_*)^T d(\vec{x}) \geq c \norm{\vec{x}-\vec{x}_*}^2_2 - (\vec{x}-\vec{x}_*)^T (f^\prime -d(\vec{x})).
 		\label{eq:angular_inequality}
 \end{equation}
-From Assumption (\ref{eq:angular_condition}), and by taking expectations on both side of (\ref{eq:angular_inequality}), we obtain
+From Assumption (\ref{eq:angular_condition}), and by taking expectations (from now on we will write $\mathbb{E}$ in place of $\mathbb{E}_{\vec{\xi}_{[j-1]}}$ for ease of notation) on both side of (\ref{eq:angular_inequality}), we obtain
 \begin{align}
-\mathbb{E}[(\vec{x}_j-\vec{x}_*)^T g(\vec{x}_j)] &\geq c \mathbb{E}[\norm{\vec{x}_j-\vec{x}_*}^2_2)] - \mathbb{E}[(\vec{x}_j-\vec{x}_*)^T (f_j^\prime -d(\vec{x}_j))]\\
- &\geq c(1-\frac{\mu L}{c}) \mathbb{E}[\norm{\vec{x}_j-\vec{x}_*}^2_2]\\
+\mathbb{E}[(\vec{x}_j-\vec{x}_*)^T (\vec{x}_j)] &\geq c \mathbb{E}[\norm{\vec{x}_j-\vec{x}_*}^2_2)] - \mathbb{E}[(\vec{x}_j-\vec{x}_*)^T (f_j^\prime -d(\vec{x}_j))]\\
+ &\geq c\left(1-\frac{\mu L}{c}\right) \mathbb{E}[\norm{\vec{x}_j-\vec{x}_*}^2_2]\\
  & = 2\bar{c}a_j,
 \end{align}
 with $\bar{c}=c(1-\frac{\mu L }{c})$ and $f_j^\prime \in \partial f(\vec{x}_j)$.
@@ -128,7 +128,7 @@ Hence from (\ref{eq:aj_rec_2}) it follows
 \begin{equation}
 	a_{j+1} \leq (1-2\bar{c}\gamma_j)a_j + \frac{1}{2}\gamma_j^2M^2.
 \end{equation}
-Choosing the stepsizes as $\gamma_j = \frac{\beta}{j}$ for some constant $\beta>\frac{1}{2\bar{c}}$ we get
+Choosing now the stepsizes as $\gamma_j = \frac{\beta}{j}$ for some constant $\beta>\frac{1}{2\bar{c}}$ we get
 \begin{equation}
 		a_{j+1} \leq (1-2\bar{c}\gamma_j)a_j + \frac{1}{2}\frac{\beta^2M^2}{j^2}.
 \end{equation}
@@ -146,10 +146,10 @@ When $\nabla f$ is Lipschitz continuous we also have
 \end{equation}
 hence we can get a bound also on the function value:
 \begin{equation}
-	\mathbb{E}[f(\vec{x}_j)-f(\vec{x}_*)] \leq \frac{1}{2} L \mathbb{E}[\norm{\vec{x}_j - \vec{x}_*}^2_2] \leq \frac{1}{2}LQ(\beta).
+	\mathbb{E}[f(\vec{x}_j)-f(\vec{x}_*)] \leq \frac{1}{2} L\, \mathbb{E}[\norm{\vec{x}_j - \vec{x}_*}^2_2] \leq \frac{1}{2}L\,Q(\beta).
 \end{equation}
 
-Assumption \ref{eq:angular_condition} can be further elaborated.
+Assumption (\ref{eq:angular_condition}) can be further elaborated.
 Let $\theta$ be the angle between $f^\prime \in\partial f(\vec{x})$ and $g(\vec{x})$. Write $\norm{g(\vec{x}_j)} = \alpha \norm{\nabla f(\vec{x}_j)}$ for some $\alpha>0$,
 then
 \begin{align}
@@ -166,10 +166,10 @@ Assume
 \norm{f^\prime}_2\leq L \norm{\vec{x}-\vec{x}_*}_2.
 \label{eq:lipschitz continuity}
 \end{equation}
-Note that equation (\ref{eq:lipschitz continuity}) resolves simply to Lipschitz continuity in the differentiable case.
+Note that Equation (\ref{eq:lipschitz continuity}) is implied simply by Lipschitz continuity in the differentiable case.
 A sufficient condition is thus
 \begin{equation}
-	1+\alpha^2-2\alpha \cos\theta_j\leq (\frac{\mu}{L})^2.
+	1+\alpha^2-2\alpha \cos\theta_j\leq \left(\frac{\mu}{L}\right)^2.
 \end{equation}
 
 \end{document}      

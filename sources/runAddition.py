@@ -53,7 +53,7 @@ seed = 13
 Configs.seed = seed
 
 task = AdditionTask(100, seed)
-out_dir = Configs.output_dir + str(task)
+out_dir = Configs.output_dir + str(task) + '_' + str(seed)
 
 # network setup
 std_dev = 0.1  # 0.14 Tanh # 0.21 Relu
@@ -92,7 +92,7 @@ loss_fnc = FullSquaredError()
 combining_rule = SimplexCombination(normalize_components=True, seed=seed)
 # combining_rule = SimpleSum()
 dir_rule = CombinedGradients(combining_rule)
-dir_rule = CheckedDirection(dir_rule)
+dir_rule = CheckedDirection(dir_rule, max_cos=0, max_dir_norm=0.5)
 # dir_rule = Antigradient()
 # dir_rule = LBFGSDirection(n_pairs=7)
 

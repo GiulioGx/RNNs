@@ -71,7 +71,7 @@ The first two cases, the one with spectral radius less than one, are perfect exa
 We found that, at least in the task we explored, an appropriate spectral radius always allows the training process to start in a regime where the gradient does not vanish. We report some results on the effect of the initialization on the training process in Chapter \ref{ch:experiments}.
 
 \section{Descent direction}
-In the previous section we have seen how providing a proper initialization of the recurrent matrix can lead to a starting point where gradient does not vanish. However, no matter how we choose the starting point we have no guarantees that the gradient will not vanish after some iterations. In Figures \ref{fig:comparison_add_temp_0} and \ref{fig:comparison_add_temp_1}, we compare the temporal gradients of two different tasks (the addition and the temporal order ones) at the beginning and after a few iterations.
+In the previous section we have seen how providing a proper initialization of the recurrent matrix can lead to a starting point where gradient does not vanish. However, no matter how we choose the starting point, we have no guarantees that the gradient will not vanish after some iterations. In Figures \ref{fig:comparison_add_temp_0} and \ref{fig:comparison_add_temp_1}, we compare the temporal gradients of two different tasks (the addition and the temporal order ones) at the beginning and after a few iterations.
 We notice that, although they have comparable temporal gradients norms at the beginning, they behave very differently after a few iterations: in the case of the addition task we can surely say that after a few iterations the gradient start to vanish.
 
 \begin{figure}[h]
@@ -88,16 +88,16 @@ We notice that, although they have comparable temporal gradients norms at the be
 
 
 Motivated by this, we introduce a new descent direction, which we will call the \textit{simplex direction},
-which should not suffer from the vanishing problem. The simplex direction is obtained by the following steps:
+which should not suffer from the vanishing problem. In the following we will consider only the case where there is a single loss function $L$ on the last time step, as in the artificial tasks, but the approach is easily generalizable to problems where a loss function is defined also for the intermediate time steps. The simplex direction is obtained by the following steps:
 
 
 \begin{itemize}
-	\item Normalize the temporal components:
+	\item Normalize the temporal gradients:
 	\begin{equation}
 	g_t(\vec{x}) = \frac{\nabla L_{|t}(\vec{x})}{\norm{\nabla L_{|t}(\vec{x})}}.
 	\end{equation}
 	
-	\item Combine the normalized gradients in a complex way:
+	\item Combine the normalized gradients in a convex way:
 	\begin{equation}
 	g(\vec{x}) = \sum_{t=1}^T \beta_t \cdot g_t(\vec{x}).
 	\end{equation}
@@ -156,7 +156,8 @@ Now that we have described all the three main components of the algorithm we can
 	\While{stop criterion}{
 		
 		$I$ $\gets$ sample $m$ training example $\in D$  \\
-		$\{\nabla_\theta L_{|t}\} \gets \mbox{compute\_temporal\_gradients}(\theta_k, I)$\\
+		$\{\nabla_\theta L_{|t}\}_{t=1}^{T} \gets \mbox{compute\_temporal\_gradients}(\theta_k, I)$\\
+		\tcc{T is the length of the sequences. All sequences in a batch have the same length}
 		$\vec{d}_k \gets \mbox{simplex\_combination}(\{\nabla_\theta L_{|t}\})$\\
 		$\alpha \gets$ compute learning rate \\
 		
@@ -171,7 +172,7 @@ Now that we have described all the three main components of the algorithm we can
 			\frac{\mu \cdot \tau}{\norm{\vec{d}_k}_2} \quad & \mbox{otherwise}
 		\end{cases}$\\
 		
-		$\theta_{k+1} \gets \theta_k - \alpha_k \vec{d}_k$\\
+		$\theta_{k+1} \gets \theta_k + \alpha_k \vec{d}_k$\\
 		$k\gets k+1$
 	}
 	\KwRet{$\theta_k$}
