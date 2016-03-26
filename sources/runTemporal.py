@@ -46,10 +46,10 @@ print('device: ' + device)
 print('floatType: ' + floatX)
 print(separator)
 
-seed = 15
+seed = 13
 Configs.seed = seed
 
-task = TemporalOrderTask(150, seed)
+task = TemporalOrderTask(200, seed)
 out_dir = Configs.output_dir + str(task) + '_' + str(seed)
 # network setup
 std_dev = 0.1  # 0.14 Tanh # 0.21 Relu
