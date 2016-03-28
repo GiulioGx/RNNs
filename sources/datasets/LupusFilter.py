@@ -147,4 +147,4 @@ if __name__ == '__main__':
     # stats = LupusStats(mat_data=mat_data)
     # stats.plot_hists()
 
-    format_table('/home/giulio/Dropbox/completed/LupusDataset/lupusVip7/')
+    format_table('/home/giulio/Dropbox/completed/LupusDataset/lupusAll_thr92/')
