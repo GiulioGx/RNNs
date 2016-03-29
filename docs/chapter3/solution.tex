@@ -12,6 +12,10 @@ and recalling the results of Section \ref{sec:rnn_grad}, we have
 \begin{equation}
 	\frac{\partial g_{\tau}}{\partial \mat{W}^{rec}} = \sum_{k=1}^{\tau} \nabla_{\mat{W_{rec}}} g_{|k}.
 \end{equation}
+Same definition applies for $\vec{b}_{rec}$ and $\mat{W}_{in}$. For $\mat{W}_{out}$ (and in an analogous way $\vec{b}_{out}$) we put
+\begin{equation}
+\nabla_{\mat{W_{out}}} g_{|k}  \defeq \frac{\partial g}{\partial \vec{z}^{\tau}} \cdot \frac{\partial^+ \vec{z}^k}{\partial \mat{W}^{out}}.
+\end{equation}
 We refer to $\nabla_{\vec{x}} g_{|k}$ as the temporal gradient for time step $k$ w.r.t. the variable $\vec{x}$, and it is easy to see that it is the gradient computed if we would replicate the variable $\vec{x}$  and take the derivatives w.r.t. to its k-th replicate.
 
 The \textbf{vanishing gradient} problem appears then, under this new notation, when the norm of the temporal components $\nabla_{\vec{x}} g_{|k}$ of recent time steps  are exponentially bigger than the ones of more distant ones.
@@ -76,7 +80,7 @@ We notice that, although they have comparable temporal gradients norms at the be
 
 \begin{figure}[h]
 	\includegraphics[width=1\textwidth]{chapter3/compare_add_temp_norms_0.eps}
-	\caption{Comparison between the temporal order task (first column) and the addition task (second column). First row shows the norms of the temporal components, while the second shows the cosine between each temporal component and the gradient. This is a snapshot taken at the first iteration of the training process.}
+	\caption{Comparison between the temporal order task (first column) and the addition task (second column). First row shows the norms of the temporal gradients, while the second shows the cosine between each temporal component and the gradient. This is a snapshot taken at the first iteration of the training process.}
 	\label{fig:comparison_add_temp_0}
 \end{figure}
 

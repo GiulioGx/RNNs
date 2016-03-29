@@ -1,0 +1,111 @@
+  
+\documentclass{book}
+%%Packages:
+\usepackage[utf8]{inputenc}
+%\usepackage[UKenglish]{babel}
+\usepackage{graphicx}
+\usepackage{cite}
+\usepackage[hidelinks]{hyperref}
+\usepackage{listings}
+\usepackage{latexsym}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage{proof}
+\usepackage{stmaryrd}
+\usepackage{epstopdf}
+\usepackage{pgf}
+\usepackage{tikz}
+%\usepackage{pgfplots}
+\usepackage{setspace}
+\usepackage{array}
+
+% \usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+\usepackage[ruled,noline,linesnumbered,algochapter]{algorithm2e}
+\usetikzlibrary{automata,arrows,decorations.pathreplacing}
+\usetikzlibrary{positioning}
+
+%trick to avoid floating images trespassing sections boundaries
+\usepackage[section]{placeins}
+
+%table utils
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+  
+  %%Notation:
+  
+  %%vectors
+  \renewcommand{\vec}[1]{\boldsymbol{#1}}
+  %%sets
+  \newcommand{\set}[1]{\mathcal{#1}}
+  %%matrixes
+  \newcommand{\mat}[1]{#1}
+  %%norm
+  \newcommand{\norm}[1]{\left\Vert #1 \right\Vert}
+  %%defeq
+  \newcommand{\defeq}{\triangleq}
+  %%
+  \newcommand{\net}[1]{\mathrm{#1}}
+  %% pair<x,y>
+  \newcommand{\pair}[2]{\langle#1,#2\rangle}
+  
+  \title{Lupus prospect}
+  \author{Giulio Galvan}
+
+\begin{document}
+  
+  \begin{table}[!h]
+  	\centering
+  	\begin{tabular}{C{1.5cm}  C{1.5cm}  c | C{2cm}  C{2cm} |  c  c}
+  		upper span age & lower span age & min visits & AUC all feats & AUC subset feats& pos & neg\\
+  		\hline
+  		0.8 & 0.8 & 1 & 0.63 & 0.65 & 38 & 143\\
+  		0.8 & 0.8 & 2 & 0.66 & 0.63 & 38 & 138\\
+  		0.8 & 0.8 & 3 & 0.71 & 0.67 & 38 & 124\\
+  		0.8 & 0.8 & 4 & 0.69 & 0.75 & 38 & 115\\
+  		0.8 & 0.8 & 5 & 0.74 & 0.77 & 38 & 94\\
+  		1.0 & 0.8 & 1 & 0.69 & 0.61 & 38 & 141\\
+  		1.0 & 0.8 & 2 & 0.68 & 0.60 & 38 & 133\\
+  		1.0 & 0.8 & 3 & 0.68 & 0.67 & 38 & 121\\
+  		1.0 & 0.8 & 4 & 0.69 & 0.73 & 38 & 108\\
+  		1.0 & 0.8 & 5 & 0.74 & 0.76 & 38 & 88\\
+  		2.0 & 0.8 & 1 & 0.72 & 0.68 & 38 & 99\\
+  		2.0 & 0.8 & 2 & 0.71 & 0.67 & 38 & 97\\
+  		2.0 & 0.8 & 3 & 0.73 & 0.72 & 38 & 90\\
+  		2.0 & 0.8 & 4 & 0.74 & 0.73 & 38 & 70\\
+  		2.0 & 0.8 & 5 & 0.69 & 0.77 & 38 & 48\\
+  		0.8 & 1.0 & 1 & 0.64 & 0.65 & 38 & 138\\
+  		0.8 & 1.0 & 2 & 0.69 & 0.68 & 38 & 133\\
+  		0.8 & 1.0 & 3 & 0.66 & 0.69 & 38 & 122\\
+  		0.8 & 1.0 & 4 & 0.67 & 0.69 & 38 & 114\\
+  		0.8 & 1.0 & 5 & 0.69 & 0.72 & 38 & 93\\
+  		1.0 & 1.0 & 1 & 0.67 & 0.60 & 38 & 134\\
+  		1.0 & 1.0 & 2 & 0.64 & 0.52 & 38 & 127\\
+  		1.0 & 1.0 & 3 & 0.73 & 0.68 & 38 & 118\\
+  		1.0 & 1.0 & 4 & 0.73 & 0.73 & 38 & 107\\
+  		1.0 & 1.0 & 5 & 0.70 & 0.73 & 38 & 87\\
+  		2.0 & 1.0 & 1 & 0.69 & 0.62 & 38 & 89\\
+  		2.0 & 1.0 & 2 & 0.72 & 0.59 & 38 & 87\\
+  		2.0 & 1.0 & 3 & 0.73 & 0.63 & 38 & 83\\
+  		2.0 & 1.0 & 4 & 0.74 & 0.67 & 38 & 67\\
+  		2.0 & 1.0 & 5 & 0.69 & 0.75 & 38 & 48\\
+  		0.8 & 2.0 & 1 & 0.63 & 0.72 & 38 & 97\\
+  		0.8 & 2.0 & 2 & 0.67 & 0.66 & 38 & 95\\
+  		0.8 & 2.0 & 3 & 0.70 & 0.73 & 38 & 92\\
+  		0.8 & 2.0 & 4 & 0.68 & 0.69 & 38 & 91\\
+  		0.8 & 2.0 & 5 & 0.70 & 0.76 & 38 & 83\\
+  		1.0 & 2.0 & 1 & 0.64 & 0.66 & 38 & 88\\
+  		1.0 & 2.0 & 2 & 0.64 & 0.69 & 38 & 86\\
+  		1.0 & 2.0 & 3 & 0.66 & 0.66 & 38 & 85\\
+  		1.0 & 2.0 & 4 & 0.62 & 0.71 & 38 & 84\\
+  		1.0 & 2.0 & 5 & 0.67 & 0.74 & 38 & 74\\
+  		2.0 & 2.0 & 1 & 0.64 & 0.67 & 38 & 45\\
+  		2.0 & 2.0 & 2 & 0.68 & 0.58 & 38 & 44\\
+  		2.0 & 2.0 & 3 & 0.68 & 0.67 & 38 & 43\\
+  		2.0 & 2.0 & 4 & 0.70 & 0.64 & 38 & 41\\
+  		2.0 & 2.0 & 5 & 0.66 & 0.69 & 38 & 35\\
+  	\end{tabular}
+  	\caption{AUC core for different training sets. Best score in bold.}
+  	\label{table:exp_res}
+  \end{table}
+\end{document}      
+  
+  

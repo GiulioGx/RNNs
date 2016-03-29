@@ -18,6 +18,7 @@
 %\usepackage{pgfplots}
 \usepackage{setspace}
 \usepackage{array}
+\usepackage{ragged2e} 
 
 % \usepackage{algorithm}
 \usepackage[noend]{algpseudocode}
@@ -81,10 +82,12 @@
 
 \begin{document}
 \maketitle
-\frontmatter
-
+%\frontmatter
+\setcounter{page}{0}
+\chapter*{Abstract}
+	\input{abstract}
 \tableofcontents
-\mainmatter
+%\mainmatter
 \chapter{Artificial neural networks}
   \section{A family of models}
   \input{chapter1/introduction_ann}
@@ -117,7 +120,7 @@
   \input{chapter2/dropout}
 \chapter{A new SGD approach for training RNNs}
   \input{chapter3/solution}
-\chapter{Experiments}
+\chapter{Numerical experiments}
   \label{ch:experiments}
   \input{chapter4/tasks} 
   \input{chapter4/muse}

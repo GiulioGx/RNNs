@@ -12,7 +12,7 @@ __author__ = 'giulio'
 
 
 lengths = [10, 20, 50, 100, 150, 200]
-rates_rho = [100, 100, 100, 100, 100, 0]
+rates_rho = [100, 100, 100, 66, 66, 0]
 rates_old = [100, 100, 0, 0, 0, 0]
 
 plt.plot(lengths, rates_rho, '--o', color='b', linewidth=1)
