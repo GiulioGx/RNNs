@@ -78,7 +78,8 @@ where $TP, TN, P, N$ are the true positive, true negative, number of positive an
 We normalized all the data to lie in range (0,1). 
 We used RNNs with 50 hidden units trained with SGD paired with the gradient clipping technique (learning rate 0.001 and threshold 1).
 
-Since the number of available patients is not big enough to allow a split in train, validation and test sets, we repeated the training procedure eight times with different splits of train and test, and then we put together the predictions on the eight test sets to compute the scores. We stopped each training procedure when the AUC score on the training set was below 0.92.
+Since the number of available patients is not big enough to allow a split in train, validation and test sets, each experiment was done according to the following procedure. The entire dataset is split in train e test sets, we train the model until the
+AUC score on the training set is below 0.92. Then we compute the predictions of the trained model on the test set. We repeat this procedure 8 times with 8 different split in train and test in such a way that all the examples are used once as test examples. We then aggregate all the predictions on the 8 different test sets to compute the final score.
  
 We explored all the combination for \texttt{upper span age} in [1, 2], \texttt{lower span age} in [1, 2], \texttt{min visits} in [2, 3, 4, 5].  We repeated the experiment twice: on time with all the features and next with the subset of selected features.
 

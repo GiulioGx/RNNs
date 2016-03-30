@@ -30,7 +30,7 @@ The first experiment we ran is developed to compare the simplex strategy and the
 \begin{figure}
 	\centering
 	\includegraphics[width= 0.8\textwidth]{chapter4/compare_add_simplex.png}
-	\caption{Comparison between SGD using a descent direction the anti-gradient, the simplex direction and the simplex direction conditioned for the addition task (T=100). In y axis the loss (mean squared error) in logarithmic scale.}
+	\caption{Comparison between SGD using as descent direction the anti-gradient (in yellow, converges for last), the simplex direction (in purple, converges for second) and the simplex direction with conditional switching (in red, converges for first) for the addition task (T=100). In y axis the loss (mean squared error) in logarithmic scale.}
 	\label{fig:comparisong_add_simplex}
 \end{figure}
 
@@ -41,7 +41,7 @@ In Table \ref{table:add_100_comparison_iterations} are shown the number of itera
 		anti-gradient & simplex & simplex with conditional switching \\
 		1807466 & 2338500 & 1630666 \\
 	\end{tabular}
-	\caption{Number of iterations until convergence for the addition task (T=100). Mean of 3 runs. TODO UPDATE RESULTS WITH NEW RUNS}
+	\caption{Number of iterations until convergence for the addition task (T=100). Mean of 3 runs.}
 	\label{table:add_100_comparison_iterations}
 \end{table}
 

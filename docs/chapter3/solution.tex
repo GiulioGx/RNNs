@@ -3,8 +3,7 @@ Our approach for training RNNs is based entirely on the SGD framework described 
 
 \section{Preliminaries}
 Before focusing on each of the three above mentioned components we will introduce some notation needed in the following sections, as well as two artificial tasks which we will use as examples.
-
-Consider a loss function $g$ for some time step $\tau$. Defining 
+Recall from Section \ref{sec:rnn_intro} that each time step is associated with a loss function. It could be zero for all time steps but for the last, for example if we want to classify the whole sequences, or it could be defined for all the time steps if each intermediate output is relevant. Consider now a loss function $g$ for a generic time step $\tau$. Defining 
 \begin{equation}
 \nabla_{\mat{W_{rec}}} g_{|k}  \defeq \frac{\partial g}{\partial \vec{a}^{\tau}} \cdot \frac{\partial \vec{a}^{\tau}}{\partial \vec{a}^k} \cdot \frac{\partial^+ \vec{a}^k}{\partial \mat{W}^{rec}},
 \end{equation}
