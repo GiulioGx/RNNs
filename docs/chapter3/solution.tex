@@ -112,7 +112,7 @@ which should not suffer from the vanishing problem. In the following we will con
 	\end{equation}
 \end{itemize}
 
-As we have seen in Section \ref{sec:rnn_grad} the anti-gradient direction is the sum of all temporal gradients. The idea is to combine the gradients in such a way that the gradient contains information about all time steps, i.e. does not suffer from the vanishing problem. This is achieved by normalizing all the temporal gradients. The idea to combine them in a simplex adds some robustness to the method. Finally since we discard any information about the norms in the normalization process, we choose to give the simplex direction the norm of the gradient. In this way we can see the obtained direction as a projection of the gradient.
+As we have seen in Section \ref{sec:rnn_grad} the anti-gradient direction is the sum of all temporal gradients. The idea is to combine the gradients in such a way that the gradient contains information about all time steps, i.e. does not suffer from the vanishing problem. This is achieved by normalizing all the temporal gradients. The idea to combine them in a convex, simplex-type way, as suggested by some numerical evidence, adds some robustness to the method. Finally since we discard any information about the norms in the normalization process, we choose to give the simplex direction the norm of the gradient. In this way we can see the obtained direction as a projection of the gradient.
 
 
 \section{Learning rate}
