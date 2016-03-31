@@ -47,12 +47,12 @@ Figure \ref{fig:overfitting_muse} shows the loss function computed on both train
 \label{table:losses_n_hidden}
 \end{table}
 
-In Table \ref{table:muse_state_of_art} the test and train error for state of art approaches as well as our as shown. Although our result is worse than the state of the art we improve the best result obtained with vanilla RNNs. The reason for this (partial) success can be attributed to the choice of the hyper-parameters or the way we build up the batches.
+In Table \ref{table:muse_state_of_art} the test and train error for state of art approaches as well as our as shown. Although our result is worse than the state of the art, which is held by RNN-NADE\cite{BoulangerMuse} trained with HF optimization,  we improve the best result obtained with vanilla RNNs. The reason for this (partial) success can be attributed to the choice of the hyper-parameters or the way we build up the batches.
 
 \begin{table}
 	\centering
 	\begin{tabular}{c | c | c | c}
-		& State of art & State of art (RNN) & Our result\\
+		& State of art (RNN-NADE) & State of art for vanilla RNN & Our result\\
 		Train & \textbf{5.20} & 6.43 & 6.20\\
 		Test & \textbf{5.60} & 6.97 & 6.44\\
 	\end{tabular}

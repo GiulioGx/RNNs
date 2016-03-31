@@ -10,9 +10,15 @@ __author__ = 'giulio'
 
 """This script plots train and validation losses for models trained with different number of hidden units"""
 
+folder1 = '/home/giulio/Dropbox/completed/add_task_100_comparison/antigradient/'
+folder2 = '/home/giulio/Dropbox/completed/add_task_100_comparison/checked_cos_only/'
+folder3 = '/home/giulio/Dropbox/completed/add_task_100_comparison/checked_all/'
+seed = 15
+prefix = 'add_task, min_length: 100_'
+suffix = '/stats.npz'
+
 # saved file containing the statistics fo the model to compare
-stats_files = ['/home/giulio/tmpOct/oct1/stats.npz', '/home/giulio/tmpOct/oct2/stats.npz',
-               '/home/giulio/tmpOct/oct3/stats.npz']
+stats_files = [folder1+prefix+str(seed)+suffix, folder2+prefix+str(seed)+suffix, folder3+prefix+str(seed)+suffix]
 # color for each model
 colors = ['y', 'm', 'r']
 assert (len(colors) == len(stats_files))
@@ -31,7 +37,7 @@ for i in range(n_models):
     plt.plot(x_values, valid_loss, 'o', color=colors[i])
     legends.append(legends[i])
 
-plt.rcParams.update({'font.size': 24})
+# plt.rcParams.update({'font.size': 24})
 plt.yscale('log')
 # plt.ylim(ymin=4, ymax=13)
 # plt.yticks([4, 5, 6, 7, 8, 9, 10, 13])
