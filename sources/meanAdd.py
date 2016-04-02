@@ -13,3 +13,9 @@ print("mean_anti: {}".format(int(numpy.mean(run_anti))))
 temp_50 = [211200, 827600, 58200, 175400, 738200]
 temp_100 = [2396800, 1932800, 'x']
 temp_150 = [3529800, ]
+
+temp_100_simplex = [973000, 923400, 1133600]
+
+print('tOrderTask...')
+print('mean_anti: {}'.format(int(numpy.mean(temp_100[0:2]))))
+print("mean_checked: {}".format(int(numpy.mean(temp_100_simplex))))

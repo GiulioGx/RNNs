@@ -73,4 +73,14 @@ In Table \ref{table:add_100_comparison_iterations} are shown the number of itera
 	\label{table:add_100_comparison_iterations}
 \end{table}
 
-We repeated the experiment also for the temporal order task and ... ADD RESULTS WHEN READY
+We repeated the experiment also for the temporal order task (T=100) and we found that also in this case the simplex direction with conditional switching outperforms the anti-gradient. In particular the anti-gradient strategy succeeded in only two out of three runs while the simplex with conditional switching managed to succeed in all the three runs. Furthermore such strategy is sensibly faster than the anti-gradient one. In Table \ref{table:torder_100_comparison_iterations} is shown the mean, computed only on the successful runs, number of iterations needed for convergence for the anti-gradient and the simplex with conditional switching strategies.
+
+\begin{table}
+	\centering
+	\begin{tabular}{C{2cm} | C{4cm}}
+		anti-gradient & simplex with conditional switching \\
+		2164800 & 1010000 \\
+	\end{tabular}
+	\caption{Number of iterations until convergence for the temporal order task (T=100). The mean is computed only on the successful runs: 2/3 for the anti-gradient and 3/3 for the simplex with conditional switching.}
+	\label{table:torder_100_comparison_iterations}
+\end{table}

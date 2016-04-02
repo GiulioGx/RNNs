@@ -57,7 +57,7 @@ for f in files:
     plt.figure(3)
     plt.plot(specificity, sensitivity, colors[i], linewidth=2)
     plt.legend(legends, shadow=True, fancybox=True, loc=1)
-    plt.ylabel('sensibility')
+    plt.ylabel('sensitivity')
     plt.xlabel('specificity')
 
     i+=1
