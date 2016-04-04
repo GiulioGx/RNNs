@@ -12,7 +12,7 @@ In Figure \ref{fig:temporal_rates} we compare the rate of success between an ini
 \begin{figure}
 	\centering
 	\includegraphics[width= 0.9\textwidth]{chapter4/temporal_rates.png}
-	\caption{Rate of success (mean of 5 runs) for the temporal order task for various lengths with SGD modified with gradient clipping. In blue and red the results when $W_{rec}$ is initialized with spectral radius bigger and smaller than one respectively.}
+	\caption{Rate of success (mean of 3 runs) for the temporal order task for various lengths with SGD modified with gradient clipping. In blue and red the results when $W_{rec}$ is initialized with spectral radius bigger and smaller than one respectively.}
 	\label{fig:temporal_rates}
 \end{figure}
 
@@ -39,7 +39,7 @@ In the second part of the training process, i.e., when the loss is decreasing, r
 %\end{figure}
 
 
-\begin{figure}
+\begin{figure}[h]
 	\begin{subfigure}{1.\textwidth}
 		\centering
 		\includegraphics[width= 1\textwidth]{chapter4/compare_add_simplex_13.png}
@@ -63,7 +63,7 @@ In the second part of the training process, i.e., when the loss is decreasing, r
 \end{figure}
 
 In Table \ref{table:add_100_comparison_iterations} are shown the number of iterations (mean values of 3 runs) needed for convergence for each strategy. Notice that the simplex direction with conditional switching obtains the best result.
-\begin{table}
+\begin{table}[h]
 	\centering
 	\begin{tabular}{C{2cm} | C{2cm} | C{4cm}}
 		anti-gradient & simplex & simplex with conditional switching \\
@@ -75,7 +75,7 @@ In Table \ref{table:add_100_comparison_iterations} are shown the number of itera
 
 We repeated the experiment also for the temporal order task (T=100) and we found that also in this case the simplex direction with conditional switching outperforms the anti-gradient. In particular the anti-gradient strategy succeeded in only two out of three runs while the simplex with conditional switching managed to succeed in all the three runs. Furthermore such strategy is sensibly faster than the anti-gradient one. In Table \ref{table:torder_100_comparison_iterations} is shown the mean, computed only on the successful runs, number of iterations needed for convergence for the anti-gradient and the simplex with conditional switching strategies.
 
-\begin{table}
+\begin{table}[h]
 	\centering
 	\begin{tabular}{C{2cm} | C{4cm}}
 		anti-gradient & simplex with conditional switching \\

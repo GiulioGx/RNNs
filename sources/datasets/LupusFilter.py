@@ -1,7 +1,9 @@
 import abc
 import os
 
+import matplotlib
 import numpy
+from mpl_toolkits.mplot3d import Axes3D
 
 from Paths import Paths
 import datasets
@@ -11,9 +13,10 @@ from infos.InfoGroup import InfoGroup
 from infos.InfoList import InfoList
 from infos.InfoProducer import SimpleInfoProducer
 
-from natsort import natsorted, ns
+from natsort import natsorted
 
-def format_table(*results_dirs: str):
+
+def load_entries(*results_dirs: str):
     lup_prefix = 'Lupus Dataset_'
     filter_prefix = lup_prefix + 'temporal span visits filter_'
 
@@ -25,23 +28,58 @@ def format_table(*results_dirs: str):
         npz_file = numpy.load(results_dir + run_dir + '/scores.npz')
         npz_file2 = numpy.load(results_dirs[1] + run_dir + '/scores.npz')
 
-        d = dict(pos=npz_file[lup_prefix + 'late positives'],
-                 neg=npz_file[lup_prefix + 'negatives'],
-                 min_v_pos=npz_file[filter_prefix + 'min visits pos'],
-                 min_v_neg=npz_file[filter_prefix + 'min visits neg'],
-                 lower_span=npz_file[filter_prefix + 'min age span lower'],
-                 upper_span=npz_file[filter_prefix + 'min age span upper'],
-                 score=npz_file['cum_score'],
-                 score2 = npz_file2['cum_score']
+        d = dict(pos=npz_file[lup_prefix + 'late positives'].item(),
+                 neg=npz_file[lup_prefix + 'negatives'].item(),
+                 min_v_pos=npz_file[filter_prefix + 'min visits pos'].item(),
+                 min_v_neg=npz_file[filter_prefix + 'min visits neg'].item(),
+                 lower_span=npz_file[filter_prefix + 'min age span lower'].item(),
+                 upper_span=npz_file[filter_prefix + 'min age span upper'].item(),
+                 score=npz_file['cum_score'].item(),
+                 score2=npz_file2['cum_score'].item()
                  )
         table_entries.append(d)
+    return table_entries
+
+
+def plot4d_scores(*results_dirs: str):
+
+    table_entries = load_entries(*results_dirs)
+    x = [e['upper_span'] for e in table_entries]
+    y = [e['lower_span'] for e in table_entries]
+    z = [e['min_v_neg'] for e in table_entries]
+    scores = [e['score'] for e in table_entries]
+    print(numpy.max(scores))
+
+
+
+    fig = plt.figure()
+    ax = fig.gca(projection='3d')
+    # surf = ax.plot_surface(
+    #     x, y, z,
+    #     linewidth=2, antialiased=False, shade=False)
+    norm = matplotlib.colors.Normalize(vmin=0.5, vmax=1.)
+    surf = ax.scatter(x, y, z, c= scores, marker='o', s=50, cmap='OrRd', norm=norm)
+    colorbar = fig.colorbar(surf, shrink=0.5, aspect=5)
+    colorbar.set_label('AUC score')
+    ax.set_xlabel('upper span age')
+    ax.set_ylabel('lower span age')
+    ax.set_zlabel('min visits')
+    ax.set_xticks(numpy.unique(x))
+    ax.set_yticks(numpy.unique(y))
+    ax.set_zticks(numpy.unique(z))
+    plt.show()
+
+
+def format_table(*results_dirs: str):
+
+    table_entries = load_entries(*results_dirs)
 
     rows = []
     for e in table_entries:
         sep = " & "
-        s = str(e['upper_span'].item()) + sep + str(e['lower_span'].item()) + sep + str(
-            e['min_v_neg'].item()) + sep + "{:.2f}".format(e['score2'].item()) + \
-            sep + "{:.2f}".format(e['score'].item()) + sep + str(e['pos'].item()) + sep + str(e['neg'].item()) + """\\\\""" + '\n'
+        s = str(e['upper_span']) + sep + str(e['lower_span']) + sep + str(
+            e['min_v_neg']) + sep + "{:.2f}".format(e['score2']) + \
+            sep + "{:.2f}".format(e['score']) + sep + str(e['pos']) + sep + str(e['neg']) + """\\\\""" + '\n'
         rows.append(s)
     result = "".join(rows)
     print(result)
@@ -152,4 +190,6 @@ if __name__ == '__main__':
     # stats = LupusStats(mat_data=mat_data)
     # stats.plot_hists()
 
-    format_table('/home/giulio/Dropbox/completed/LupusDataset/lupusVip7_thr92/', '/home/giulio/Dropbox/completed/LupusDataset/lupusAll_thr92/')
+    dirs = ['/home/giulio/Dropbox/completed/LupusDataset/lupusVip7_thr92/', '/home/giulio/Dropbox/completed/LupusDataset/lupusAll_thr92/']
+    format_table(*dirs)
+    plot4d_scores(*dirs)

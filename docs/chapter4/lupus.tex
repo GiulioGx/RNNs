@@ -44,9 +44,10 @@ thin_edge/.style={line width=0.5pt}
 	\node[label]  (sdiLabel)[above of = y8] {AGE};
 	
 	\node[label] (arr) [left = 0.7cm of x5] {last training visit};
+	\node[label] (arr0) [left = 0.7cm of x1] {first training visit};
 	
 	\draw[decorate,decoration={brace,raise=8pt,amplitude=6pt}, thick]
-	(x1.center)--(x5.center) node [black,midway,xshift=-0.7cm, align=center, text width = 3cm] {
+	(x1.north)--(x5.south) node [black,midway,xshift=-0.7cm, align=center, text width = 3cm] {
 		training visits (at least \texttt{min visits})};
 	
 	\draw[decorate,decoration={brace,raise=8pt,amplitude=6pt, mirror}, thick]
@@ -58,11 +59,12 @@ thin_edge/.style={line width=0.5pt}
 		\texttt{lower span age}};
 	
 	\path[->]
-	(arr) edge []  node[]{} (x5);
+	(arr) edge []  node[]{} (x5)
+	(arr0) edge []  node[]{} (x1);
 	
 	
 	\end{tikzpicture}
-	\caption{Example of a negative training sequence.}
+	\caption{Example of a negative training sequence. Each row represents a visit. For display purposes are shown only the age and the SDI. The SDI is used only for the labels and not as a feature.}
 	\label{fig:lupus_neg_example}
 \end{figure}
 
@@ -78,10 +80,10 @@ where $TP, TN, P, N$ are the true positive, true negative, number of positive an
 We normalized all the data to lie in range (0,1). 
 We used RNNs with 50 hidden units trained with SGD paired with the gradient clipping technique (learning rate 0.001 and threshold 1).
 
-Since the number of available patients is not big enough to allow a split in train, validation and test sets, each experiment was done according to the following procedure. The entire dataset is split in train e test sets, we train the model until the
+Since the number of available patients is not large enough to allow a split in train, validation and test sets, each experiment was done according to the following procedure. The entire dataset is split in train and test sets, we train the model until the
 AUC score on the training set is below 0.92. Then we compute the predictions of the trained model on the test set. We repeat this procedure 8 times with 8 different split in train and test in such a way that all the examples are used once as test examples. We then aggregate all the predictions on the 8 different test sets to compute the final score.
  
-We explored all the combination for \texttt{upper span age} in [1, 2], \texttt{lower span age} in [1, 2], \texttt{min visits} in [2, 3, 4, 5].  We repeated the experiment twice: on time with all the features and next with the subset of selected features.
+We explored all the combination for \texttt{upper span age} in [0.8, 1, 2], \texttt{lower span age} in [0.8, 1, 2], \texttt{min visits} in [2, 3, 4, 5].  We repeated the experiment twice: on time with all the features and next with the subset of selected features.
 
 
 
@@ -144,21 +146,21 @@ We explored all the combination for \texttt{upper span age} in [1, 2], \texttt{l
 \begin{figure}[h]
 	\centering
 	\includegraphics[width= 0.8\textwidth]{chapter4/roc_curve_comp.png}
-	\caption{roc curve for models of Line \ref{table:line:best_config} of Table \ref{table:exp_res}.}
+	\caption{roc curve for models of Line 5 of Table \ref{table:exp_res}.}
 	\label{fig:roc_best}
 \end{figure}
 
 \begin{figure}[h]
 	\centering
 	\includegraphics[width= 0.8\textwidth]{chapter4/specificity_sensitivity_comp.png}
-	\caption{Sensitivity-specificity for models of Line \ref{table:line:best_config} of Table \ref{table:exp_res}.}
+	\caption{Sensitivity-specificity for models of Line 5 of Table \ref{table:exp_res}.}
 	\label{fig:sensitivity_specificity_best}
 \end{figure}
 
 \begin{figure}[h]
 	\centering
 	\includegraphics[width= 0.8\textwidth]{chapter4/precision_recall_comp.png}
-	\caption{Precision-recall curve for models of Line \ref{table:line:best_config} of Table \ref{table:exp_res}.}
+	\caption{Precision-recall curve for models of Line 5 of Table \ref{table:exp_res}.}
 	\label{fig:precision_recall_best}
 \end{figure}
 
