@@ -53,7 +53,7 @@ for f in files:
     plt.xlabel('recall')
     plt.ylabel('precision')
 
-    # SPECIFICITY-SENSIBILITY plot
+    # SPECIFICITY-SENSITIVITY plot
     plt.figure(3)
     plt.plot(specificity, sensitivity, colors[i], linewidth=2)
     plt.legend(legends, shadow=True, fancybox=True, loc=1)

@@ -70,6 +70,33 @@ class PerPatienceTargets(BuildBatchStrategy):
         return inputs, outputs, mask
 
 
+class TemporalDifferenceTargets(BuildBatchStrategy):
+    def keys(self) -> list:
+        return ['neg', 'late_pos']
+
+    def build_batch(self, patience):
+        feats = patience['features']
+        targets = patience['targets']
+
+        outputs = numpy.zeros(shape=(1, 1), dtype=Configs.floatType)
+        inputs = numpy.zeros(shape=(1, feats.shape[1]), dtype=Configs.floatType)
+
+        non_zero_indexes = numpy.where(targets > 0)[0]
+
+        if len(non_zero_indexes) > 0:
+            first_positive_idx = numpy.min(non_zero_indexes)
+            assert (first_positive_idx > 0)
+            outputs[0, :] = 1
+            inputs[0, :] = feats[first_positive_idx - 1, :] - feats[0, :]
+
+        else:
+            inputs[0, :] = feats[-2, :] - feats[0, :]
+            outputs[0, :] = targets[-2, :]
+        mask = numpy.zeros_like(outputs)
+        mask[0, :] = 1
+        return inputs, outputs, mask
+
+
 class LupusDataset(Dataset):
     # num_min_visit = 2  # dicard patients with lass than visits
     # num_min_visit_negative = 7  # discard negative patience with lass than visits
@@ -81,8 +108,8 @@ class LupusDataset(Dataset):
         positive_patients = mat_obj['pazientiPositivi']
         negative_patients = mat_obj['pazientiNegativi']
 
-        features_struct = mat_obj['selectedFeatures']
-        # features_struct = mat_obj['featuresVip7']
+        # features_struct = mat_obj['selectedFeatures']
+        features_struct = mat_obj['featuresVip7']
         features_names = LupusDataset.__find_features_names(features_struct)
         return positive_patients, negative_patients, features_names
 

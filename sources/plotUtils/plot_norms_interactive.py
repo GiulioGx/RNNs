@@ -3,14 +3,14 @@ import matplotlib.pyplot as plt
 
 __author__ = 'giulio'
 
-modelFile = '/home/giulio/RNNs/models/temporal_order_mixed, min_length: 200/stats.npz'
+modelFile = '/home/giulio/RNNs/models/Lupus_balanced/stats.npz'
 npz = numpy.load(modelFile)
 norms_dicts = npz['obj_separate_norms']
 check_freq = npz['settings_check_freq']
 length = npz['length']
 temporal_dots = npz['obj_grad_temporal_cos']
 
-sep = '#'*5
+sep = '#' * 5
 
 
 def on_button_press(event):
@@ -24,7 +24,7 @@ for i in x:
     dict = norms_dicts[i]
     keys = sorted(dict.keys())
     print(keys)
-    fig, axarr = plt.subplots(len(dict)+1, sharex=True, figsize=(20, 30))
+    fig, axarr = plt.subplots(len(dict) + 1, sharex=True, figsize=(20, 30))
 
     j = 0
     for key in keys:
@@ -42,11 +42,10 @@ for i in x:
     axarr[j].bar(range(len(y)), y, color='r')
     axarr[j].legend(['temporal_cos'], shadow=True, fancybox=True)
 
-
     cid = fig.canvas.mpl_connect('key_press_event', on_button_press)
     print(sep)
     print('Press a button to continue...')
-    fig.canvas.set_window_title('Gradient norms it: {:07d}'.format(i*check_freq))
+    fig.canvas.set_window_title('Gradient norms it: {:07d}'.format(i * check_freq))
 
     # fig, axarr = plt.subplots(1, sharex=True, figsize=(20, 30))
     # y = variance[i]
@@ -55,9 +54,3 @@ for i in x:
     # fig.canvas.set_window_title('grad_variance: {:07d}'.format(i*check_freq))
 
     plt.show()
-
-
-
-
-
-
