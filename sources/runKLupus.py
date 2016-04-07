@@ -193,7 +193,7 @@ if __name__ == '__main__':
     Configs.seed = seed
     k = 8
 
-    min_age_span_lower_list = [0.8]  # 0.8, 1, 2]
+    min_age_span_lower_list = [0.8, 1, 2]  # 0.8, 1, 2]
     min_age_span_upper_list = [0.8, 1, 2]  # [0.8, 1, 2]
     min_num_visits_neg = [1, 2, 3, 4, 5]
     min_num_visits_pos = [1]
