@@ -29,7 +29,7 @@ from model.RNNManager import RNNManager
 from output_fncs.Logistic import Logistic
 from output_fncs.Softmax import Softmax
 from datasets.Dataset import InfiniteDataset
-from datasets.LupusDataset import LupusDataset, PerPatienceTargets, TemporalDifferenceTargets
+from datasets.LupusDataset import LupusDataset, PerPatienceTargets, TemporalDifferenceTargets, LastAndFirstVisitsTargets
 from datasets.TemporalOrderTask import TemporalOrderTask
 from training.SGDTrainer import SGDTrainer
 from training.TrainingRule import TrainingRule
@@ -92,7 +92,7 @@ update_rule = SimpleUdpate()
 
 train_rule = TrainingRule(dir_rule, lr_rule, update_rule, loss_fnc, nan_check=True)
 
-dataset = next(LupusDataset.k_fold_test_datasets(mat_file=Paths.lupus_path, k=4, strategy=TemporalDifferenceTargets()))
+dataset = next(LupusDataset.k_fold_test_datasets(mat_file=Paths.lupus_path, k=4, strategy=LastAndFirstVisitsTargets()))
 
 batch = dataset.train_set[0]
 
