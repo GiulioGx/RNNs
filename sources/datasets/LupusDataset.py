@@ -3,6 +3,7 @@ import math
 from random import shuffle
 
 import numpy
+from numpy.core.fromnumeric import shape
 from scipy.io import loadmat
 
 from Configs import Configs
@@ -15,6 +16,10 @@ from infos.InfoGroup import InfoGroup
 from infos.InfoList import InfoList
 from datasets.Batch import Batch
 from datasets.Dataset import Dataset
+import os
+
+
+# TO CHECK normalization, selected features
 
 
 class BuildBatchStrategy(object):
@@ -35,7 +40,6 @@ class BuildBatchStrategy(object):
 
 
 class PerVisitTargets(BuildBatchStrategy):
-
     def n_in(self, num_pat_feats):
         return num_pat_feats
 
@@ -55,7 +59,6 @@ class PerVisitTargets(BuildBatchStrategy):
 
 
 class PerPatienceTargets(BuildBatchStrategy):
-
     def n_in(self, num_pat_feats):
         return num_pat_feats
 
@@ -84,7 +87,6 @@ class PerPatienceTargets(BuildBatchStrategy):
 
 
 class TemporalDifferenceTargets(BuildBatchStrategy):
-
     def n_in(self, num_pat_feats):
         return num_pat_feats
 
@@ -115,7 +117,6 @@ class TemporalDifferenceTargets(BuildBatchStrategy):
 
 
 class LastAndFirstVisitsTargets(BuildBatchStrategy):
-
     def n_in(self, num_pat_feats):
         return num_pat_feats * 2
 
@@ -153,9 +154,18 @@ class LupusDataset(Dataset):
         positive_patients = mat_obj['pazientiPositivi']
         negative_patients = mat_obj['pazientiNegativi']
 
-        # features_struct = mat_obj['selectedFeatures']
-        features_struct = mat_obj['featuresVip7']
+        features_struct = mat_obj['selectedFeatures']
+        # features_struct = mat_obj['featuresVip7']
+
         features_names = LupusDataset.__find_features_names(features_struct)
+
+        features_names = ['DNA', 'arthritis', 'c3level', 'c4level', 'hematological', 'skinrash', 'sledai2kInferred']
+
+        # features_names = ['APS' 'DNA' 'FM' 'Hashimoto' 'MyasteniaGravis' 'SdS' 'age'
+        #                   'arterialthrombosis' 'arthritis' 'c3level' 'c4level' 'dislipidemia' 'hcv'
+        #                   'hematological' 'hypertension' 'hypothyroidism' 'kidney' 'mthfr' 'npsle'
+        #                   'pregnancypathology' 'serositis' 'sex' 'skinrash' 'sledai2kInferred'
+        #                   'venousthrombosis' 'yearOfDisease']
         return positive_patients, negative_patients, features_names
 
     @staticmethod
@@ -178,6 +188,19 @@ class LupusDataset(Dataset):
 
         result = LupusDataset.__process_patients(data, features_names, features_normalizations,
                                                  visit_selector=visit_selector)
+
+        ####################
+        # folder = '/home/giulio'
+        # os.makedirs(folder, exist_ok=True)
+        # prefix = folder + '/'
+        # file = open(prefix + "visits_neg.txt", "w")
+        # exs = result["neg"]
+        # for i in range(len(exs)):
+        #     pat = LupusDataset.__get_patience_descr(exs[i]) + "\n"
+        #     file.write(pat)
+        # file.close()
+
+        ####################
 
         early_positives = result["early_pos"]
         late_positives = result["late_pos"]
@@ -253,6 +276,28 @@ class LupusDataset(Dataset):
                                                  InfoGroup('test', InfoList(LupusDataset.get_set_info(self.__test)))))
         self.__infos = InfoList(infos, split_info)
 
+    def format_row(self, row):
+        s = str(row).replace("[", '').replace("]", "")
+        return ' '.join(s.split()) + "\n"
+
+    def write_to_file(self, batch: Batch, folder: str, name: str):
+
+        os.makedirs(folder, exist_ok=True)
+        prefix = folder + '/' + name
+        feats_file = open(prefix + "_features.txt", "w")
+        labels_file = open(prefix + "_labels_txt", "w")
+
+        print('sum', sum(sum(batch.outputs[0, :, :])))
+        print(batch.inputs.shape)
+
+        for i in range(batch.inputs.shape[2]):
+            example = batch.inputs[0, :, i]
+            feats_file.write(self.format_row(example))
+            labels_file.write(self.format_row(batch.outputs[0, :, i]))
+
+        feats_file.close()
+        labels_file.close()
+
     @staticmethod
     def __find_features_names(features):
         names = []
@@ -313,7 +358,9 @@ class LupusDataset(Dataset):
                         f_name = features_names[k]
                         a = features_normalizations[f_name]['min']
                         b = features_normalizations[f_name]['max']
-                        pat_matrix[j, k] = (visits[j][f_name].item() - a) / (b - a)
+                        pat_matrix[j, k] = (visits[j][f_name].item() - a) / (b - a) # nomalization
+                        # pat_matrix[j, k] = visits[j][f_name].item()  # nomalization
+
                 d = dict(features=pat_matrix, targets=target_vec)
 
                 if visits[0]['sdi'] > 0:
@@ -327,13 +374,15 @@ class LupusDataset(Dataset):
         return result
 
     @staticmethod
-    def __print_patience(pat_dict):
+    def __get_patience_descr(pat_dict):
         features = pat_dict['features']
         targets = pat_dict['targets']
         n_visits = len(targets)
         assert (n_visits == features.shape[0])
+        visits_descr = []
         for i in range(n_visits):
-            print('Visit {}:\n features: {}\t targets(sdi): {}'.format(i, features[i, :], targets[i]))
+            visits_descr.append('Visit {}:\n features: {}\t targets(sdi): {}\n'.format(i, features[i, :], targets[i]))
+        return ''.join(visits_descr)
 
     @staticmethod
     def print_results(patient_number, batch, y):
@@ -563,3 +612,31 @@ if __name__ == '__main__':
     print(dataset.infos)
     batch = dataset.get_train_batch(batch_size=3)
     print(str(batch))
+
+    # XXX REMOVEME
+
+    strategy = TemporalDifferenceTargets()
+    dataset = next(LupusDataset.k_fold_test_datasets(Paths.lupus_path, k=8, strategy=strategy,
+                                                     visit_selector=TemporalSpanFilter(
+                                                         min_age_span_upper=0.8,
+                                                         min_age_span_lower=0.8, min_visits_neg=5,
+                                                         min_visits_pos=1)))
+
+    dataset.write_to_file(dataset.train_set[0], '/home/giulio', 'train')
+    dataset.write_to_file(dataset.test_set[0], '/home/giulio', 'test')
+
+    a = dataset.train_set[0].inputs
+    b = dataset.test_set[0].inputs
+
+    c = numpy.concatenate((a, b), axis=2)
+
+    print('cshape', c.shape)
+
+    stats = numpy.zeros(shape=(c.shape[1],))
+
+    for i in range(c.shape[2]):
+        for j in range(c.shape[1]):
+            a = c[:, j, i]
+            if len(set(a)) > 1:
+                stats[j] += 1
+    print('stats', stats)

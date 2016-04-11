@@ -129,8 +129,8 @@ def run_experiment(root_dir, min_age_lower, min_age_upper, min_visits_neg, min_v
     thread_count = 0
     thread_list = []
     dataset_infos = None
-    # strategy = PerPatienceTargets()
-    strategy = LastAndFirstVisitsTargets()
+    strategy = PerPatienceTargets()
+    # strategy = LastAndFirstVisitsTargets()
     for d in LupusDataset.k_fold_test_datasets(Paths.lupus_path, k=k, strategy=strategy,
                                                visit_selector=TemporalSpanFilter(
                                                    min_age_span_upper=min_age_upper,
