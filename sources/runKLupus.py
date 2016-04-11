@@ -74,7 +74,7 @@ class SplitThread(Thread):
 
         loss_monitor = LossMonitor(loss_fnc=loss_fnc)
         roc_monitor = RocMonitor(score_fnc=LupusDataset.get_scores_patients)
-        stopping_criterion = ThresholdCriterion(monitor=roc_monitor, threshold=0.96, mode='>')
+        stopping_criterion = ThresholdCriterion(monitor=roc_monitor, threshold=0.92, mode='>')
         saving_criterion = BestValueFoundCriterion(monitor=roc_monitor, mode='gt')
 
         trainer = SGDTrainer(train_rule, output_dir=self.__out_dir, max_it=10 ** 10,
@@ -193,7 +193,7 @@ if __name__ == '__main__':
     Configs.seed = seed
     k = 8
 
-    min_age_span_lower_list = [0.8, 1, 2]  # 0.8, 1, 2]
+    min_age_span_lower_list = [1]  # 0.8, 1, 2]
     min_age_span_upper_list = [0.8, 1, 2]  # [0.8, 1, 2]
     min_num_visits_neg = [1, 2, 3, 4, 5]
     min_num_visits_pos = [1]
@@ -201,7 +201,7 @@ if __name__ == '__main__':
     root_dir = Configs.output_dir + 'Lupus_k/'
     shutil.rmtree(root_dir, ignore_errors=True)
 
-    count = 0
+    count = 15
     for min_age_l in min_age_span_lower_list:
         for min_age_u in min_age_span_upper_list:
             for min_v_n in min_num_visits_neg:
