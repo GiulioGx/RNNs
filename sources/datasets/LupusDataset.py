@@ -616,14 +616,18 @@ if __name__ == '__main__':
     # XXX REMOVEME
 
     strategy = TemporalDifferenceTargets()
-    dataset = next(LupusDataset.k_fold_test_datasets(Paths.lupus_path, k=8, strategy=strategy,
-                                                     visit_selector=TemporalSpanFilter(
-                                                         min_age_span_upper=0.8,
-                                                         min_age_span_lower=0.8, min_visits_neg=5,
-                                                         min_visits_pos=1)))
 
-    dataset.write_to_file(dataset.train_set[0], '/home/giulio', 'train')
-    dataset.write_to_file(dataset.test_set[0], '/home/giulio', 'test')
+    id=0
+    for dataset in LupusDataset.k_fold_test_datasets(Paths.lupus_path, k=8, strategy=strategy,
+                                                     visit_selector=TemporalSpanFilter(
+                                                         min_age_span_upper=2,
+                                                         min_age_span_lower=2, min_visits_neg=5,
+                                                         min_visits_pos=1)):
+
+
+        dataset.write_to_file(dataset.train_set[0], '/home/giulio', 'train_'+str(id))
+        dataset.write_to_file(dataset.test_set[0], '/home/giulio', 'test_'+str(id))
+        id+=1
 
     a = dataset.train_set[0].inputs
     b = dataset.test_set[0].inputs
