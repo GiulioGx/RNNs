@@ -24,9 +24,9 @@ def load_entries(*results_dirs: str):
     table_entries = []
     subdir = next(os.walk(results_dir))[1]
     subdir = natsorted(subdir, key=lambda y: y.lower())
+
     for run_dir in subdir:
         npz_file = numpy.load(results_dir + run_dir + '/scores.npz')
-        npz_file2 = numpy.load(results_dirs[1] + run_dir + '/scores.npz')
 
         d = dict(pos=npz_file[lup_prefix + 'late positives'].item(),
                  neg=npz_file[lup_prefix + 'negatives'].item(),
@@ -34,9 +34,13 @@ def load_entries(*results_dirs: str):
                  min_v_neg=npz_file[filter_prefix + 'min visits neg'].item(),
                  lower_span=npz_file[filter_prefix + 'min age span lower'].item(),
                  upper_span=npz_file[filter_prefix + 'min age span upper'].item(),
-                 score=npz_file['cum_score'].item(),
-                 score2=npz_file2['cum_score'].item()
                  )
+
+        scores = []
+        for j in range(len(results_dirs)):
+            npz_filej = numpy.load(results_dirs[j] + run_dir + '/scores.npz')
+            scores.append(npz_filej['cum_score'].item())
+        d['scores'] = scores
         table_entries.append(d)
     return table_entries
 
@@ -47,10 +51,8 @@ def plot4d_scores(*results_dirs: str):
     x = [e['upper_span'] for e in table_entries]
     y = [e['lower_span'] for e in table_entries]
     z = [e['min_v_neg'] for e in table_entries]
-    scores = [e['score'] for e in table_entries]
+    scores = [e['scores'][0] for e in table_entries]
     print(numpy.max(scores))
-
-
 
     fig = plt.figure()
     ax = fig.gca(projection='3d')
@@ -78,8 +80,11 @@ def format_table(*results_dirs: str):
     for e in table_entries:
         sep = " & "
         s = str(e['upper_span']) + sep + str(e['lower_span']) + sep + str(
-            e['min_v_neg']) + sep + "{:.2f}".format(e['score2']) + \
-            sep + "{:.2f}".format(e['score']) + sep + str(e['pos']) + sep + str(e['neg']) + """\\\\""" + '\n'
+            e['min_v_neg']) + sep
+        scores = e["scores"]
+        for score in scores:
+            s+= "{:.2f}".format(score) + sep
+        s = s + str(e['pos']) + sep + str(e['neg']) + """\\\\""" + '\n'
         rows.append(s)
     result = "".join(rows)
     print(result)
@@ -190,6 +195,6 @@ if __name__ == '__main__':
     # stats = LupusStats(mat_data=mat_data)
     # stats.plot_hists()
 
-    dirs = ['/home/giulio/Dropbox/completed/LupusDataset/lupusVip7_thr92/', '/home/giulio/Dropbox/completed/LupusDataset/lupusAll_thr92/']
+    dirs = ['/home/giulio/lupus_new_feats_thr92/']
     format_table(*dirs)
     plot4d_scores(*dirs)
