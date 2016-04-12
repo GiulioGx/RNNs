@@ -169,7 +169,7 @@ class LupusDataset(Dataset):
         return positive_patients, negative_patients, features_names
 
     @staticmethod
-    def load_mat(mat_file: str, visit_selector: VisitsFilter = NullFIlter()):
+    def load_mat(mat_file: str, visit_selector: VisitsFilter = NullFIlter(), seed=Configs.seed):
 
         positive_patients, negative_patients, features_names = LupusDataset.parse_mat(mat_file=mat_file)
 
@@ -205,9 +205,14 @@ class LupusDataset(Dataset):
         early_positives = result["early_pos"]
         late_positives = result["late_pos"]
         negatives = result["neg"]
-        shuffle(early_positives)
-        shuffle(late_positives)
-        shuffle(negatives)
+
+        rng = numpy.random.RandomState(seed)
+
+        rng.shuffle(early_positives)
+        rng.shuffle(late_positives)
+        rng.shuffle(negatives)
+
+
 
         infos = InfoGroup('Lupus Dataset', InfoList(PrintableInfoElement('features', '', features_names),
                                                     PrintableInfoElement('normalizations', '', features_normalizations),
@@ -287,8 +292,6 @@ class LupusDataset(Dataset):
         feats_file = open(prefix + "_features.txt", "w")
         labels_file = open(prefix + "_labels_txt", "w")
 
-        print('sum', sum(sum(batch.outputs[0, :, :])))
-        print(batch.inputs.shape)
 
         for i in range(batch.inputs.shape[2]):
             example = batch.inputs[0, :, i]
@@ -633,8 +636,6 @@ if __name__ == '__main__':
     b = dataset.test_set[0].inputs
 
     c = numpy.concatenate((a, b), axis=2)
-
-    print('cshape', c.shape)
 
     stats = numpy.zeros(shape=(c.shape[1],))
 

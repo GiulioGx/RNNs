@@ -174,6 +174,8 @@ def run_experiment(root_dir, min_age_lower, min_age_upper, min_visits_neg, min_v
     save_info.update(dataset_infos.dictionary)
     numpy.savez(npz_file, **save_info)
 
+    return
+
 
 if __name__ == '__main__':
 
@@ -193,15 +195,15 @@ if __name__ == '__main__':
     Configs.seed = seed
     k = 8
 
-    min_age_span_lower_list = [2]  # 0.8, 1, 2]
+    min_age_span_lower_list = [1]  # 0.8, 1, 2]
     min_age_span_upper_list = [0.8, 1, 2]  # [0.8, 1, 2]
-    min_num_visits_neg = [1, 2, 3, 4, 5]
+    min_num_visits_neg = [1, 2, 3, 4, 5]  # [1, 2, 3, 4, 5]
     min_num_visits_pos = [1]
 
     root_dir = Configs.output_dir + 'Lupus_k/'
     shutil.rmtree(root_dir, ignore_errors=True)
 
-    count = 30
+    count = 15
     for min_age_l in min_age_span_lower_list:
         for min_age_u in min_age_span_upper_list:
             for min_v_n in min_num_visits_neg:

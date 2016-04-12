@@ -21,11 +21,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="NeuralNetwork.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/model/NeuralNetwork.py">
+      <file leaf-file-name="LupusDataset.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/datasets/LupusDataset.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1530">
-              <caret line="91" column="55" selection-start-line="91" selection-start-column="55" selection-end-line="91" selection-end-column="55" />
+            <state relative-caret-position="2089">
+              <caret line="638" column="0" selection-start-line="638" selection-start-column="0" selection-end-line="638" selection-end-column="0" />
               <folding>
                 <element signature="e#0#10#0" expanded="true" />
               </folding>
@@ -33,14 +33,12 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="LupusDataset.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/datasets/LupusDataset.py">
+      <file leaf-file-name="MarkerBasedTask.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/datasets/MarkerBasedTask.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="11070">
-              <caret line="633" column="0" selection-start-line="633" selection-start-column="0" selection-end-line="633" selection-end-column="0" />
-              <folding>
-                <element signature="e#0#10#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="252">
+              <caret line="16" column="43" selection-start-line="16" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -48,8 +46,18 @@
       <file leaf-file-name="runKLupus.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/runKLupus.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1044">
-              <caret line="89" column="55" selection-start-line="89" selection-start-column="55" selection-end-line="89" selection-end-column="55" />
+            <state relative-caret-position="55">
+              <caret line="187" column="20" selection-start-line="187" selection-start-column="20" selection-end-line="187" selection-end-column="20" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="plot_roc_lupus.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/plotUtils/docs_plots/plot_roc_lupus.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="522">
+              <caret line="34" column="31" selection-start-line="34" selection-start-column="31" selection-end-line="34" selection-end-column="31" />
               <folding />
             </state>
           </provider>
@@ -70,7 +78,7 @@
       <file leaf-file-name="LupusFilter.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/datasets/LupusFilter.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="505">
+            <state relative-caret-position="2988">
               <caret line="181" column="0" selection-start-line="181" selection-start-column="0" selection-end-line="181" selection-end-column="0" />
               <folding />
             </state>
@@ -177,12 +185,12 @@
         <option value="$PROJECT_DIR$/plotUtils/docs_plots/compare_simplex_add.py" />
         <option value="$PROJECT_DIR$/meanAdd.py" />
         <option value="$PROJECT_DIR$/plotUtils/plot_norms_interactive.py" />
-        <option value="$PROJECT_DIR$/plotUtils/docs_plots/plot_roc_lupus.py" />
         <option value="$PROJECT_DIR$/runLupus.py" />
         <option value="$PROJECT_DIR$/test/plos.py" />
         <option value="$PROJECT_DIR$/model/NeuralNetwork.py" />
-        <option value="$PROJECT_DIR$/datasets/LupusDataset.py" />
         <option value="$PROJECT_DIR$/datasets/LupusFilter.py" />
+        <option value="$PROJECT_DIR$/plotUtils/docs_plots/plot_roc_lupus.py" />
+        <option value="$PROJECT_DIR$/datasets/LupusDataset.py" />
         <option value="$PROJECT_DIR$/runKLupus.py" />
       </list>
     </option>
@@ -238,6 +246,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -266,6 +275,38 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="plotUtils" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="sources" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="sources" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="plotUtils" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="docs_plots" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="sources" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="sources" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
               <option name="myItemId" value="datasets" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
@@ -273,7 +314,6 @@
         </subPane>
       </pane>
       <pane id="Scope" />
-      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -305,7 +345,7 @@
       <recent name="$PROJECT_DIR$/training" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.LupusFilter">
+  <component name="RunManager" selected="Python.LupusDataset">
     <configuration default="false" name="LupusFilter" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -340,23 +380,6 @@
       <option name="SHOW_COMMAND_LINE" value="false" />
       <method />
     </configuration>
-    <configuration default="false" name="plot_norms_interactive" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="/usr/bin/python3.4" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/plotUtils" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="sources" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/plotUtils/plot_norms_interactive.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <method />
-    </configuration>
     <configuration default="false" name="plos" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -387,6 +410,23 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="sources" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/datasets/LupusDataset.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <method />
+    </configuration>
+    <configuration default="false" name="plot_roc_lupus" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="/usr/bin/python3.4" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/plotUtils/docs_plots" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="sources" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/plotUtils/docs_plots/plot_roc_lupus.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <method />
@@ -600,17 +640,17 @@
       <item index="3" class="java.lang.String" itemvalue="Python.plot_stats" />
       <item index="4" class="java.lang.String" itemvalue="Python.LupusFilter" />
       <item index="5" class="java.lang.String" itemvalue="Python.runLupus" />
-      <item index="6" class="java.lang.String" itemvalue="Python.plot_norms_interactive" />
-      <item index="7" class="java.lang.String" itemvalue="Python.plos" />
-      <item index="8" class="java.lang.String" itemvalue="Python.LupusDataset" />
+      <item index="6" class="java.lang.String" itemvalue="Python.plos" />
+      <item index="7" class="java.lang.String" itemvalue="Python.LupusDataset" />
+      <item index="8" class="java.lang.String" itemvalue="Python.plot_roc_lupus" />
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Python.LupusFilter" />
-        <item index="1" class="java.lang.String" itemvalue="Python.LupusDataset" />
-        <item index="2" class="java.lang.String" itemvalue="Python.plos" />
-        <item index="3" class="java.lang.String" itemvalue="Python.runLupus" />
-        <item index="4" class="java.lang.String" itemvalue="Python.plot_norms_interactive" />
+        <item index="0" class="java.lang.String" itemvalue="Python.LupusDataset" />
+        <item index="1" class="java.lang.String" itemvalue="Python.plot_roc_lupus" />
+        <item index="2" class="java.lang.String" itemvalue="Python.LupusFilter" />
+        <item index="3" class="java.lang.String" itemvalue="Python.plos" />
+        <item index="4" class="java.lang.String" itemvalue="Python.runLupus" />
       </list>
     </recent_temporary>
   </component>
@@ -900,13 +940,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/datasets/MarkerBasedTask.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/datasets/XorTask.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="860">
@@ -963,13 +996,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/plotUtils/docs_plots/plot_roc_lupus.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1026">
-          <caret line="62" column="8" selection-start-line="62" selection-start-column="8" selection-end-line="62" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/oldies/plot_fncs.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="216">
@@ -995,16 +1021,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1530">
           <caret line="91" column="55" selection-start-line="91" selection-start-column="55" selection-end-line="91" selection-end-column="55" />
-          <folding>
-            <element signature="e#0#10#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/datasets/LupusDataset.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="11070">
-          <caret line="633" column="0" selection-start-line="633" selection-start-column="0" selection-end-line="633" selection-end-column="0" />
           <folding>
             <element signature="e#0#10#0" expanded="true" />
           </folding>
@@ -1059,16 +1075,42 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/datasets/LupusFilter.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="505">
+        <state relative-caret-position="2988">
           <caret line="181" column="0" selection-start-line="181" selection-start-column="0" selection-end-line="181" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/plotUtils/docs_plots/plot_roc_lupus.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="522">
+          <caret line="34" column="31" selection-start-line="34" selection-start-column="31" selection-end-line="34" selection-end-column="31" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/datasets/MarkerBasedTask.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="252">
+          <caret line="16" column="43" selection-start-line="16" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/datasets/LupusDataset.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2089">
+          <caret line="638" column="0" selection-start-line="638" selection-start-column="0" selection-end-line="638" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#10#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/runKLupus.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1044">
-          <caret line="89" column="55" selection-start-line="89" selection-start-column="55" selection-end-line="89" selection-end-column="55" />
+        <state relative-caret-position="55">
+          <caret line="187" column="20" selection-start-line="187" selection-start-column="20" selection-end-line="187" selection-end-column="20" />
           <folding />
         </state>
       </provider>

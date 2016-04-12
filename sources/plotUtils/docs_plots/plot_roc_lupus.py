@@ -5,9 +5,9 @@ from sklearn.metrics import roc_auc_score
 
 from Configs import Configs
 
-files = ['/home/giulio/Dropbox/completed/LupusDataset/lupusAll_thr92/run_4/scores.npz', '/home/giulio/Dropbox/completed/LupusDataset/lupusVip7_thr92/run_4/scores.npz']
+files = ['/home/giulio/lupus_new_feats_thr92/run_9/scores.npz']
 colors = ['m', 'b']
-legends = ['all_feats', 'selected_feats']
+legends = ['new feats']
 
 i = 0
 for f in files:
