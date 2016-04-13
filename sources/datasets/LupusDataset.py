@@ -161,6 +161,12 @@ class LupusDataset(Dataset):
 
         features_names = ['DNA', 'arthritis', 'c3level', 'c4level', 'hematological', 'skinrash', 'sledai2kInferred']
 
+        features_names = ['APS', 'DNA', 'FM', 'Hashimoto', 'MyasteniaGravis', 'SdS',
+                          'arterialthrombosis', 'arthritis', 'c3level', 'c4level', 'dislipidemia', 'hcv',
+                          'hematological', 'hypertension', 'hypothyroidism', 'kidney', 'mthfr', 'npsle',
+                          'pregnancypathology', 'serositis', 'sex', 'skinrash', 'sledai2kInferred',
+                          'venousthrombosis']
+
         # features_names = ['APS' 'DNA' 'FM' 'Hashimoto' 'MyasteniaGravis' 'SdS' 'age'
         #                   'arterialthrombosis' 'arthritis' 'c3level' 'c4level' 'dislipidemia' 'hcv'
         #                   'hematological' 'hypertension' 'hypothyroidism' 'kidney' 'mthfr' 'npsle'

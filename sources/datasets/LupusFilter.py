@@ -195,6 +195,6 @@ if __name__ == '__main__':
     # stats = LupusStats(mat_data=mat_data)
     # stats.plot_hists()
 
-    dirs = ['/home/giulio/lupus_new_feats_thr92/']
+    dirs = ['/home/giulio/lupus_new_feats_thr96/']
     format_table(*dirs)
     plot4d_scores(*dirs)
