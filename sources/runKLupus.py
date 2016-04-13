@@ -74,7 +74,7 @@ class SplitThread(Thread):
 
         loss_monitor = LossMonitor(loss_fnc=loss_fnc)
         roc_monitor = RocMonitor(score_fnc=LupusDataset.get_scores_patients)
-        stopping_criterion = ThresholdCriterion(monitor=roc_monitor, threshold=0.96, mode='>')
+        stopping_criterion = ThresholdCriterion(monitor=roc_monitor, threshold=0.92, mode='>')
         saving_criterion = BestValueFoundCriterion(monitor=roc_monitor, mode='gt')
 
         trainer = SGDTrainer(train_rule, output_dir=self.__out_dir, max_it=50000,
@@ -129,8 +129,8 @@ def run_experiment(root_dir, min_age_lower, min_age_upper, min_visits_neg, min_v
     thread_count = 0
     thread_list = []
     dataset_infos = None
-    # strategy = PerPatienceTargets()
-    strategy = LastAndFirstVisitsTargets()
+    strategy = PerPatienceTargets()
+    # strategy = LastAndFirstVisitsTargets()
     for d in LupusDataset.k_fold_test_datasets(Paths.lupus_path, k=k, strategy=strategy,
                                                visit_selector=TemporalSpanFilter(
                                                    min_age_span_upper=min_age_upper,
@@ -196,8 +196,8 @@ if __name__ == '__main__':
     k = 8
 
     min_age_span_lower_list = [0.8]  # 0.8, 1, 2]
-    min_age_span_upper_list = [1]  # [0.8, 1, 2]
-    min_num_visits_neg = [5]  # [1, 2, 3, 4, 5]
+    min_age_span_upper_list = [0.8, 1, 2]  # [0.8, 1, 2]
+    min_num_visits_neg = [1, 2, 3, 4, 5]  # [1, 2, 3, 4, 5]
     min_num_visits_pos = [1]
 
     root_dir = Configs.output_dir + 'Lupus_k/'
