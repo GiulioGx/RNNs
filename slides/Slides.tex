@@ -75,13 +75,50 @@
 \title{Optimization methods for Recurrent Neural Networks training}
 %\subtitle{A nice subtitle}
 \date{20th April 2016}
-\author{Giulio Galvan}
+\author{Giulio Galvan\\ Gsss }
 \institute{Università degli studi di Firenze}
 \titlegraphic{\hfill\includegraphics[height=1.5cm]{stemma}}  % %TODO put the logo img here
+\usetitlepagetemplate{
+	\begin{center}
+		%\pgfuseimage{salom}
+		%\vskip0.5ex
+		\begin{figure}
+			\includegraphics[width=3cm]{stemma.pdf}
+		\end{figure}
+		\vskip4ex
+		\begin{beamerboxesrounded}[lower=lowercolor, shadow=true]{}
+			\begin{center}
+				\large{\textbf{Optimization methods for Recurrent Neural Networks training}}\\
+				
+			\end{center}
+		\end{beamerboxesrounded}
+		\vskip4ex
+		\begin{footnotesize}
+			\begin{center}
+				Giulio Galvan
+			\end{center}
+			\begin{columns}
+				\begin{column}{0.4\textwidth}
+					\flushleft{\textbf{Relatori}: }\\
+					Prof. Marco Sciandrone \\
+					Prof. Luís  Nunes Vicente
+				\end{column}
+				\begin{column}{0.4\textwidth}
+					\flushright{\textbf{Correlatore}: }\\
+					Prof. Fabio Schoen
+				\end{column}
+			\end{columns}
+			\vskip 1cm
+			20th April 2016
+		\end{footnotesize}
+		
+	\end{center}
+}
+
 
 \begin{document}
-\maketitle
-%\frame{\titlepage}
+%\maketitle
+\frame{\titlepage}
 \section{Introduction}
 \input{model}
 \section{Gradient of a RNN}
