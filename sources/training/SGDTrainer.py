@@ -184,7 +184,7 @@ class SGDTrainer(object):
             elif self.__stopping_criterion.is_satisfied:
                 logger.info('Training succeded, stopping criterion satisfied')
             logger.info('Elapsed time: {:2.2f} min'.format((end_time - start_time) / 60))
-        return net, stats
+        return net
 
     def __start_logger(self):
         os.makedirs(self.__output_dir, exist_ok=True)
