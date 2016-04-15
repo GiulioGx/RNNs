@@ -1,9 +1,7 @@
 import abc
 import math
-from random import shuffle
 
 import numpy
-from numpy.core.fromnumeric import shape
 from scipy.io import loadmat
 
 from Configs import Configs
@@ -159,19 +157,23 @@ class LupusDataset(Dataset):
 
         features_names = LupusDataset.__find_features_names(features_struct)
 
-        features_names = ['DNA', 'arthritis', 'c3level', 'c4level', 'hematological', 'skinrash', 'sledai2kInferred']
+        # features_names = ['DNA', 'arthritis', 'c3level', 'c4level', 'hematological', 'skinrash', 'sledai2kInferred']
 
-        features_names = ['APS', 'DNA', 'FM', 'Hashimoto', 'MyasteniaGravis', 'SdS',
-                          'arterialthrombosis', 'arthritis', 'c3level', 'c4level', 'dislipidemia', 'hcv',
-                          'hematological', 'hypertension', 'hypothyroidism', 'kidney', 'mthfr', 'npsle',
-                          'pregnancypathology', 'serositis', 'sex', 'skinrash', 'sledai2kInferred',
-                          'venousthrombosis']
+        # features_names = ['APS', 'DNA', 'FM', 'Hashimoto', 'MyasteniaGravis', 'SdS',
+        #                   'arterialthrombosis', 'arthritis', 'c3level', 'c4level', 'dislipidemia', 'hcv',
+        #                   'hematological', 'hypertension', 'hypothyroidism', 'kidney', 'mthfr', 'npsle',
+        #                   'pregnancypathology', 'serositis', 'sex', 'skinrash', 'sledai2kInferred',
+        #                   'venousthrombosis']
 
         # features_names = ['APS' 'DNA' 'FM' 'Hashimoto' 'MyasteniaGravis' 'SdS' 'age'
         #                   'arterialthrombosis' 'arthritis' 'c3level' 'c4level' 'dislipidemia' 'hcv'
         #                   'hematological' 'hypertension' 'hypothyroidism' 'kidney' 'mthfr' 'npsle'
         #                   'pregnancypathology' 'serositis' 'sex' 'skinrash' 'sledai2kInferred'
         #                   'venousthrombosis' 'yearOfDisease']
+
+        # features_names = ['age', 'MyasteniaGravis', 'arthritis', 'c3level', 'c4level', 'hematological', 'skinrash', 'sledai2kInferred']
+
+
         return positive_patients, negative_patients, features_names
 
     @staticmethod
@@ -199,8 +201,8 @@ class LupusDataset(Dataset):
         # folder = '/home/giulio'
         # os.makedirs(folder, exist_ok=True)
         # prefix = folder + '/'
-        # file = open(prefix + "visits_neg.txt", "w")
-        # exs = result["neg"]
+        # file = open(prefix + "visits_pos.txt", "w")
+        # exs = result["late_pos"]
         # for i in range(len(exs)):
         #     pat = LupusDataset.__get_patience_descr(exs[i]) + "\n"
         #     file.write(pat)

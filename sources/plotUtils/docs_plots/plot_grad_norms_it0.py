@@ -54,7 +54,7 @@ def __step(rho):
     return stats
 
 
-rho_values = [0.8, 0.9, 1, 1.1, 1.2]
+rho_values = [0.8]
 n_plots = len(rho_values)
 fig, axarr = plt.subplots(n_plots, sharex=True, sharey=False, figsize=(20, 30))
 
@@ -62,9 +62,9 @@ for i in range(n_plots):
     r = rho_values[i]
     stats = __step(r)
     y = stats.dictionary['obj_separate_norms'][0]['full_grad']
-    ax = axarr[i]
+    ax = axarr if n_plots == 1 else axarr[i]
     ax.bar(range(len(y)), y)
-    ax.legend(['rho={}'.format(r)], shadow=True, fancybox=True)
+    # ax.legend(['rho={}'.format(r)], shadow=True, fancybox=True)
     ax.set_yscale('log')
     # axarr[i].set_xlabel('t')
     # axarr[i].set_ylabel('temporal_grad_norm')

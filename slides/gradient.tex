@@ -1,0 +1,240 @@
+
+
+%\begin{frame}
+%	
+%	Let's consider a single output unit $u$, and a weight $w_{lj}$, we have
+%	
+%	\begin{align}
+%	\label{sum_over_time}
+%	\frac{\partial a^t_u}{\partial w_{lj}} &= \sum_{k=1}^t \frac{\partial a_u^t}{\partial a^k_l} \cdot \frac{\partial a^k_l}{\partial w_{lj}}\\
+%	&= \sum_{k=1}^t \delta^{tk}_{lu} \cdot \phi_j^{t-1}
+%	\end{align}
+%	where
+%	\begin{equation}
+%	\delta_{lu}^{tk} \triangleq \frac{\partial a_u^t}{\partial a^k_l}.
+%	\end{equation}
+%	
+%	Let $P(l)$ be the set of parents of neuron $l$, defined as the set of parents in the unfolded network.
+%	
+%	\begin{equation}
+%	\delta_{lu}^{tk} = \sum_{h\in P(l)} \delta_{hu}^{tk} \cdot \sigma'(a_h^{t-1})\cdot w_{hl}
+%	\end{equation}
+%\end{frame}
+%\begin{frame}
+%	\begin{figure}
+%		\centering
+%		\resizebox{5cm}{!}{
+%		\begin{tikzpicture}[RNN_style]
+%		
+%		
+%		\node[neuron]    (x1)[]   {$u$};
+%		\node[neuron]    (x2)[right of=x1]   {$l$};
+%		\node[neuron]    (x3)[right of=x2]   {};
+%		\node[label]     (xl)[left of=x1] {$t$};
+%		
+%		\node[neuron]    (h1)[below of =x1]   {$u$};
+%		\node[neuron]    (h2)[right of=h1]   {$l$};
+%		\node[neuron]    (h3)[right of=h2]   {};
+%		\node[label]     (hl)[left of=h1] {$\hdots$};
+%		
+%		\node[neuron]    (y1)[below of=h1]   {$u$};
+%		\node[neuron]    (y2)[right of=y1]   {$l$};
+%		\node[neuron]    (y3)[right of=y2]   {};
+%		\node[label]     (yl)[left of=y1] {$k+2$};
+%		
+%		
+%		\node[neuron]    (z1)[below of=y1]   {$u$};
+%		\node[neuron]    (z2)[right of=z1]   {$l$};
+%		\node[neuron]    (z3)[right of=z2]   {};
+%		\node[label]     (zl)[left of=z1] {$k+1$};
+%		
+%		\node[neuron]    (w1)[below of=z1]   {$u$};
+%		\node[neuron]    (w2)[right of=w1]   {$l$};
+%		\node[neuron]    (w3)[right of=w2]   {};
+%		\node[label]     (wl)[left of=w1] {$k$};
+%		
+%		
+%		%   \node[label]      (lu)[left of=u] {$u$};
+%		%   \node[label]      (ll)[left of=z1] {$l$};
+%		
+%		
+%		\path[->] (h1) edge [thick_edge]  (x1)
+%		(h1) edge [thin_edge]   (x2)
+%		(h1) edge [thin_edge]   (x3)
+%		(h2) edge [thick_edge]  (x1)
+%		(h2) edge [thin_edge]   (x2)
+%		(h2) edge [thin_edge]   (x3)
+%		(h3) edge [thick_edge]  (x1)
+%		(h3) edge [thin_edge]   (x2)
+%		(h3) edge [thin_edge]   (x3);
+%		
+%		\path[->] (y1) edge [thick_edge]   (h1)
+%		(y1) edge [thick_edge]   (h2)
+%		(y1) edge [thick_edge]   (h3)
+%		(y2) edge [thick_edge]   (h1)
+%		(y2) edge [thick_edge]   (h2)
+%		(y2) edge [thick_edge]   (h3)
+%		(y3) edge [thick_edge]   (h1)
+%		(y3) edge [thick_edge]   (h2)
+%		(y3) edge [thick_edge]   (h3);
+%		
+%		
+%		\path[->] (z1) edge [thin_edge]   (y1)
+%		(z1) edge [thick_edge]  (y2)
+%		(z1) edge [thin_edge]   (y3)
+%		(z2) edge [thick_edge]  (y1)
+%		(z2) edge [thick_edge]  (y2)
+%		(z2) edge [thick_edge]  (y3)
+%		(z3) edge [thin_edge]   (y1)
+%		(z3) edge [thin_edge]   (y2)
+%		(z3) edge [thin_edge]   (y3);
+%		
+%		\path[->] (w1) edge [thin_edge]   (z1)
+%		(w1) edge [thick_edge]  (z2)
+%		(w1) edge [thin_edge]   (z3)
+%		(w2) edge [thin_edge]   (z1)
+%		(w2) edge [thin_edge]   (z2)
+%		(w2) edge [thin_edge]   (z3)
+%		(w3) edge [thin_edge]   (z1)
+%		(w3) edge [thin_edge]   (z2)
+%		(w3) edge [thin_edge]   (z3);
+%		
+%		
+%		\end{tikzpicture}
+%		}
+%		\caption{Nodes involved in $\frac{\partial a^t_u }{\partial a^k_l}$.}
+%		\label{deriv_arcs_rnn}
+%	\end{figure}
+%\end{frame}
+
+
+\begin{frame}{Gradient structure: unfolding}
+	
+	\begin{figure}[h!]
+		\centering
+		\resizebox{8cm}{!}{
+			\begin{tikzpicture}[RNN_style, loopStyle/.style={in=120,out=60, distance=2.5cm}]
+			
+			%t=0
+			\node[layer] (hl1) {Hidden layer t=0};
+			
+			\node[neuron]    (x0)[below left=0.3cm and 1cm of hl1]       {};
+			\node[label]    (u0)[left of=x0]   {$\vec{u}_1$};
+			
+			
+			
+			\node[neuron] (o0) [above right=0.3cm and 1cm of hl1] {};
+			\node[label]    (y0)[right of=o0]   {$\vec{y}_1$};
+			
+			%t=1
+			\node[layer] (hl2)[above of=hl1,node distance=2.5cm] {Hidden layer t=1};
+			
+			\node[neuron]    (x1)[below left=0.3cm and 1cm of hl2]      {};
+			\node[label]    (u1)[left of=x1]   {$\vec{u}_2$};
+			
+			
+			\node[neuron] (o1) [above right=0.3cm and 1cm of hl2] {};
+			\node[label]    (y1)[right of=o1]   {$\vec{y}_2$};
+			
+			%dots
+			\node[label,font=\sffamily\Huge\bfseries] (hld)[above of=hl2,node distance=2cm] {$\hdots$};
+			
+			%t=T
+			\node[layer] (hlT)[above of=hld,node distance=2cm] {Hidden layer t=T};
+			
+			\node[neuron]    (xT)[below left=0.3cm and 1cm of hlT]      {};
+			\node[label]    (uT)[left of=xT]   {$\vec{u}_T$};
+			
+			
+			\node[neuron] (oT) [above right=0.3cm and 1cm of  hlT] {};
+			\node[label]    (yT)[right of=oT]   {$\vec{y}_T$};
+			
+			
+			%biases
+			\node[neuron](b) [right of=y1,node distance=1.4cm] {};
+			\node[label] (b_l) [above of=b,node distance=0.7cm] {bias=1};
+			
+			
+			\path[->] (x0) edge [bend right] node[]{$W^{in}$}   (hl1)
+			(u0) edge []   (x0)
+			(o0) edge []   (y0)
+			(x1) edge [bend right] node[]{$W^{in}$} (hl2)
+			(u1) edge []   (x1)
+			(o1) edge []   (y1)
+			(xT) edge [bend right] node[]{$W^{in}$} (hlT)
+			(uT) edge []   (xT)
+			(oT) edge []   (yT)
+			
+			
+			(hl1) edge [bend left]  node[]{$W^{out}$} (o0)
+			(hl2) edge [bend left]  node[]{$W^{out}$} (o1)
+			(hlT) edge [bend left]  node[]{$W^{out}$} (oT)
+			
+			(b)  edge [bend left,dotted,in = 90]  node[]{$b^{out}$} (o0)
+			(b)  edge [bend left, dotted, in = 90,out=80]  node[]{$b^{rec}$} (hl1)
+			(b)  edge [bend left, dotted]  node[]{$b^{rec}$} (hl2)
+			(b)  edge [bend left,dotted]  node[]{$b^{out}$} (o1)
+			(b)  edge [bend left, dotted,in = 200]  node[]{$b^{rec}$} (hlT)
+			(b)  edge [bend left,dotted,in =200]  node[]{$b^{out}$} (oT)
+			(hl1) edge [] node[]{$W^{rec} $} (hl2)
+			(hl2) edge [] node[]{$W^{rec} $} (hld)
+			(hld) edge [] node[]{$W^{rec} $} (hlT);
+			
+			\end{tikzpicture}
+		}
+		\caption{Unfolding of a $\net{RNN}$}
+		\label{rnn_unfolding}
+	\end{figure}
+\end{frame}
+
+\begin{frame}{Gradient structure: calculus}
+	Consider, for ease of notation, the case where the loss function $L(\bar{\vec{u}}, \bar{\vec{y}})$ is defined only on the last step $\tau$. Let $g(\vec{x}): \mathbb{R}$ be the function defined by
+	$$g(\vec{x}) \triangleq L(F(\vec{z}^\tau(\vec{\bar{\vec{u}};x}),\bar{\vec{y}}_\tau )).$$
+	
+	We compute the gradient as:
+	\begin{align}
+	\frac{\partial g}{\partial \mat{W}^{rec}} 
+	&= \frac{\partial g}{\partial \vec{a}^\tau} \cdot \frac{\partial \vec{a}^\tau}{\partial \mat{W^{rec}}}\\
+	&=  \nabla L^T \cdot J(F) \cdot \frac{\partial \vec{z}^\tau}{\partial \vec{a}^\tau} \cdot \frac{\partial \vec{a}^\tau}{\partial \mat{W}^{rec}}.
+	\end{align}
+\end{frame}
+
+\begin{frame}
+	In matrix notation we have:
+	
+	\begin{equation}
+	\frac{\partial \vec{a}^t}{\partial \mat{W}^{rec}} = \sum_{k=1}^t \frac{\partial \vec{a}^t}{\partial \vec{a}^k} \cdot \frac{\partial^+ \vec{a}^k}{\partial \mat{W}^{rec}}
+	\end{equation}
+	
+	
+	\begin{equation}
+	\frac{\partial^+ a^{k}}{\partial \mat{W}_j^{rec}} =
+	\begin{bmatrix}
+	h_j^{k}    & 0                & \cdots      & \cdots       & 0  \\
+	0               & h_j^{k}     & \cdots      & \cdots       & 0  \\
+	\vdots          & \vdots           & \ddots      & \vdots       &\vdots\\
+	0               & \cdots           & \cdots      & \cdots       & h^{k}_{j}
+	\end{bmatrix}
+	\end{equation}
+	
+	\begin{align}
+	\frac{\partial \vec{a}^t}{\partial \vec{a}^k} &= \frac{\partial \vec{a}^t}{\partial \vec{a}^{k+1}} \cdot diag(\sigma'(\vec{a}^k)) \cdot \mat{W}^{rec} \\
+	&= \prod_{i=t-1}^{k} diag(\sigma'(\vec{a}^i)) \cdot \mat{W}^{rec}
+	\label{rnn_delta}.
+	\end{align}
+	
+	The derivatives with respect to the other variables are computed in a similar fashion.
+	
+	
+\end{frame}
+
+\begin{frame}{Gradient structure: temporal components}
+	
+	Putting all together we obtain:
+	\begin{align}
+	\nabla_{\mat{W^{rec}}} g  &= \sum_{k=1}^{\tau} \frac{\partial g}{\partial \vec{a}^{\tau}} \cdot \frac{\partial \vec{a}^{\tau}}{\partial \vec{a}^k} \cdot \frac{\partial^+ \vec{a}^k}{\partial \mat{W}^{rec}}\\
+	&\defeq \sum_{k=1}^{\tau} \nabla_{\mat{W^{rec}}} L_{|k}.
+	\end{align}
+	
+	We refer to $\nabla_{\vec{x}} g_{|k}$ as the \textbf{temporal gradient} for time step $k$ w.r.t. the variable $\vec{x}$, and it is easy to see that it is the gradient we would compute if we replicated the variable $\vec{x}$ for each time step and took the derivatives w.r.t. to its k-th replicate.
+\end{frame}

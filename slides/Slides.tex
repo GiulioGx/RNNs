@@ -17,7 +17,7 @@
 \usepackage{color}
 \usepackage{amsmath,amsthm,amssymb}
 \usepackage[noend]{algpseudocode}
-\usepackage[ruled,noline,linesnumbered, slide]{algorithm2e}
+\usepackage[ruled,noline,linesnumbered]{algorithm2e}
 \usepackage{pgf}
 \usepackage{tikz}
 \usetikzlibrary{automata,arrows,decorations.pathreplacing}
@@ -25,6 +25,11 @@
 	\usetikzlibrary{backgrounds}
 	\usetikzlibrary{arrows}
 \usepackage{epstopdf}
+\usepackage[caption=false]{subfig}
+
+\usepackage{array}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+
 
 %% style for drawing RNNs
 \tikzstyle{RNN_style}=[
@@ -67,24 +72,28 @@
 \setbeamertemplate{items}[default]
 \setbeamertemplate{navigation symbols}{}
 
-\title{Recurrent neural networks}
-\subtitle{A nice subtitle}
-\date{\today}
+\title{Optimization methods for Recurrent Neural Networks training}
+%\subtitle{A nice subtitle}
+\date{20th April 2016}
 \author{Giulio Galvan}
 \institute{Università degli studi di Firenze}
-%\titlegraphic{\hfill\includegraphics[height=1.5cm]{logo}}  % %TODO put the logo img here
+\titlegraphic{\hfill\includegraphics[height=1.5cm]{stemma}}  % %TODO put the logo img here
 
 \begin{document}
 \maketitle
 %\frame{\titlepage}
 \section{Introduction}
 \input{model}
+\section{Gradient of a RNN}
+\input{gradient}
 \section{The vanishing gradient problem}
 \input{vanishing_prob}
-\section{Solutions}
-\input{solution}
-\section{Open issues}
-\input{issues}
+%\section{Existing solutions}
+%\input{solution}
+\section{A new SGD approach for training RNNs}
+\input{proposed_solution}
+\section{A real case: Lupus disease prediction}
+\input{lupus}
 
 \section{}
 \begin{frame}[allowframebreaks]{References}

@@ -5,17 +5,17 @@ Our approach for training RNNs is based entirely on the SGD framework described 
 Before focusing on each of the three above mentioned components we will introduce some notation needed in the following sections, as well as two artificial tasks which we will use as examples.
 Recall from Section \ref{sec:rnn_intro} that each time step is associated with a loss function. It could be zero for all time steps but for the last, for example if we want to classify the whole sequences, or it could be defined for all the time steps if each intermediate output is relevant. Consider now a loss function $g$ for a generic time step $\tau$. Defining 
 \begin{equation}
-\nabla_{\mat{W_{rec}}} g_{|k}  \defeq \frac{\partial g}{\partial \vec{a}^{\tau}} \cdot \frac{\partial \vec{a}^{\tau}}{\partial \vec{a}^k} \cdot \frac{\partial^+ \vec{a}^k}{\partial \mat{W}^{rec}},
+\nabla_{\mat{W^{rec}}} g_{|k}  \defeq \frac{\partial g}{\partial \vec{a}^{\tau}} \cdot \frac{\partial \vec{a}^{\tau}}{\partial \vec{a}^k} \cdot \frac{\partial^+ \vec{a}^k}{\partial \mat{W}^{rec}},
 \end{equation}
 and recalling the results of Section \ref{sec:rnn_grad}, we have
 \begin{equation}
-	\frac{\partial g_{\tau}}{\partial \mat{W}^{rec}} = \sum_{k=1}^{\tau} \nabla_{\mat{W_{rec}}} g_{|k}.
+	\frac{\partial g_{\tau}}{\partial \mat{W}^{rec}} = \sum_{k=1}^{\tau} \nabla_{\mat{W^{rec}}} g_{|k}.
 \end{equation}
 Same definition applies for $\vec{b}_{rec}$ and $\mat{W}_{in}$. For $\mat{W}_{out}$ (and in an analogous way $\vec{b}_{out}$) we put
 \begin{equation}
-\nabla_{\mat{W_{out}}} g_{|k}  \defeq \frac{\partial g}{\partial \vec{z}^{\tau}} \cdot \frac{\partial^+ \vec{z}^k}{\partial \mat{W}^{out}}.
+\nabla_{\mat{W^{out}}} g_{|k}  \defeq \frac{\partial g}{\partial \vec{z}^{\tau}} \cdot \frac{\partial^+ \vec{z}^k}{\partial \mat{W}^{out}}.
 \end{equation}
-We refer to $\nabla_{\vec{x}} g_{|k}$ as the temporal gradient for time step $k$ w.r.t. the variable $\vec{x}$, and it is easy to see that it is the gradient computed if we would replicate the variable $\vec{x}$  and take the derivatives w.r.t. to its k-th replicate.
+We refer to $\nabla_{\vec{x}} g_{|k}$ as the temporal gradient for time step $k$ w.r.t. the variable $\vec{x}$, and it is easy to see that it is the gradient we would compute if we replicated the variable $\vec{x}$ for each time step and took the derivatives w.r.t. to its k-th replicate.
 
 The \textbf{vanishing gradient} problem appears then, under this new notation, when the norm of the temporal components $\nabla_{\vec{x}} g_{|k}$ of recent time steps  are exponentially bigger than the ones of more distant ones.
 
@@ -97,18 +97,18 @@ which should not suffer from the vanishing problem. In the following we will con
 \begin{itemize}
 	\item Normalize the temporal gradients:
 	\begin{equation}
-	g_t(\vec{x}) = \frac{\nabla L_{|t}(\vec{x})}{\norm{\nabla L_{|t}(\vec{x})}}.
+	s_t(\vec{x}) = \frac{\nabla L_{|t}(\vec{x})}{\norm{\nabla L_{|t}(\vec{x})}}.
 	\end{equation}
 	
 	\item Combine the normalized gradients in a convex way:
 	\begin{equation}
-	g(\vec{x}) = \sum_{t=1}^T \beta_t \cdot g_t(\vec{x}).
+	s(\vec{x}) = \sum_{t=1}^T \beta_t \cdot s_t(\vec{x}).
 	\end{equation}
 	
 	with $\sum_{t=1}^T\beta_t=1, \beta_t>0$ (randomly picked at each iteration).
 	\item Introduce the gradient norm:
 	\begin{equation}
-	d(\vec{x}) = - \norm{\nabla L (\vec{x})}\frac{g(\vec{x})}{\norm{g(\vec{x})}}.
+	d(\vec{x}) = - \norm{\nabla L (\vec{x})}\frac{s(\vec{x})}{\norm{s(\vec{x})}}.
 	\end{equation}
 \end{itemize}
 
@@ -162,7 +162,6 @@ Now that we have described all the three main components of the algorithm we can
 		$\{\nabla_\theta L_{|t}\}_{t=1}^{T} \gets \mbox{compute\_temporal\_gradients}(\theta_k, I)$\\
 		\tcc{T is the length of the sequences. All sequences in a batch have the same length}
 		$\vec{d}_k \gets \mbox{simplex\_combination}(\{\nabla_\theta L_{|t}\})$\\
-		$\alpha \gets$ compute learning rate \\
 		
 		\If{$\norm{\nabla_{\theta}L(\theta_k)}_2 > \psi$}
 			{$\vec{d}_k \gets \nabla_{\theta}L(\theta_k)$ \\
