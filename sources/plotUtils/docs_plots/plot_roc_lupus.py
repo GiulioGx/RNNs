@@ -5,7 +5,7 @@ from sklearn.metrics import roc_auc_score
 
 from Configs import Configs
 
-files = ['/home/giulio/Dropbox/completed/LupusDataset/lupusAll_thr92/run_9/scores.npz']
+files = ['/home/giulio/lupus_all_feats_thr96/run_9/scores.npz']
 colors = ['m', 'b']
 legends = ['new feats']
 
@@ -47,8 +47,8 @@ for f in files:
 
     # RECALL-PRECISION plot
     plt.figure(2)
-    # plt.plot(recall, precision, colors[i], linewidth=2)
-    plt.plot(sensitivity, precision2, colors[i], linewidth=2)
+    plt.plot(recall, precision, colors[i], linewidth=2)
+    # plt.plot(sensitivity, precision2, colors[i], linewidth=2)
     plt.legend(legends, shadow=True, fancybox=True, loc=1)
     plt.xlabel('recall')
     plt.ylabel('precision')
