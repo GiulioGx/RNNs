@@ -203,7 +203,7 @@ if __name__ == '__main__':
     root_dir = Configs.output_dir + 'Lupus_k/'
     shutil.rmtree(root_dir, ignore_errors=True)
 
-    count = 15
+    count = 0
     for min_age_l in min_age_span_lower_list:
         for min_age_u in min_age_span_upper_list:
             for min_v_n in min_num_visits_neg:
