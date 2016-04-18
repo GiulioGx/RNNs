@@ -82,9 +82,16 @@
 	\begin{center}
 		%\pgfuseimage{salom}
 		\vskip2ex
-		\begin{figure}
-			\includegraphics[width=3cm]{stemma.pdf}
-		\end{figure}
+%		\begin{figure}
+%			\includegraphics[width=3cm]{stemma.pdf}
+%		\end{figure}
+		\begin{minipage}{3.5cm}
+			\includegraphics[width=\textwidth]{stemma.pdf}
+		\end{minipage}
+		\hspace*{1.5cm}
+		\begin{minipage}{3.5cm}
+			\includegraphics[width=\textwidth]{logoUC_transp.png}
+		\end{minipage}
 		\vskip3ex
 %		\begin{beamerboxesrounded}[lower=lowercolor, shadow=true]{}
 			\begin{center}
@@ -115,10 +122,13 @@
 	\end{center}
 }
 
-
+\def\maketitle{\frame{\titlepage}}
 \begin{document}
+\addtocounter{framenumber}{-1}
 %\maketitle
-\frame{\titlepage}
+\begin{frame}[plain] \titlepage \end{frame}
+%\frame{\titlepage}
+%\setcounter{page}{0}
 \section{Introduction}
 \input{model}
 \section{Gradient of a RNN}
@@ -129,7 +139,7 @@
 %\input{solution}
 \section{A new SGD approach for training RNNs}
 \input{proposed_solution}
-\section{A real case: Lupus disease prediction}
+\section{A case study: Lupus disease prediction}
 \input{lupus}
 
 \section{}

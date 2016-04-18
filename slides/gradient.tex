@@ -119,22 +119,22 @@
 			\node[layer] (hl1) {Hidden layer t=0};
 			
 			\node[neuron]    (x0)[below left=0.3cm and 1cm of hl1]       {};
-			\node[label]    (u0)[left of=x0]   {$\vec{u}_1$};
+			\node[label]    (u0)[left of=x0]   {$\vec{u}^1$};
 			
 			
 			
 			\node[neuron] (o0) [above right=0.3cm and 1cm of hl1] {};
-			\node[label]    (y0)[right of=o0]   {$\vec{y}_1$};
+			\node[label]    (y0)[right of=o0]   {$\vec{y}^1$};
 			
 			%t=1
 			\node[layer] (hl2)[above of=hl1,node distance=2.5cm] {Hidden layer t=1};
 			
 			\node[neuron]    (x1)[below left=0.3cm and 1cm of hl2]      {};
-			\node[label]    (u1)[left of=x1]   {$\vec{u}_2$};
+			\node[label]    (u1)[left of=x1]   {$\vec{u}^2$};
 			
 			
 			\node[neuron] (o1) [above right=0.3cm and 1cm of hl2] {};
-			\node[label]    (y1)[right of=o1]   {$\vec{y}_2$};
+			\node[label]    (y1)[right of=o1]   {$\vec{y}^2$};
 			
 			%dots
 			\node[label,font=\sffamily\Huge\bfseries] (hld)[above of=hl2,node distance=2cm] {$\hdots$};
@@ -143,11 +143,11 @@
 			\node[layer] (hlT)[above of=hld,node distance=2cm] {Hidden layer t=T};
 			
 			\node[neuron]    (xT)[below left=0.3cm and 1cm of hlT]      {};
-			\node[label]    (uT)[left of=xT]   {$\vec{u}_T$};
+			\node[label]    (uT)[left of=xT]   {$\vec{u}^T$};
 			
 			
 			\node[neuron] (oT) [above right=0.3cm and 1cm of  hlT] {};
-			\node[label]    (yT)[right of=oT]   {$\vec{y}_T$};
+			\node[label]    (yT)[right of=oT]   {$\vec{y}^T$};
 			
 			
 			%biases
@@ -182,7 +182,7 @@
 			
 			\end{tikzpicture}
 		}
-		\caption{Unfolding of a $\net{RNN}$}
+%		\caption{Unfolding of a $\net{RNN}$}
 		\label{rnn_unfolding}
 	\end{figure}
 \end{frame}

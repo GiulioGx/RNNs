@@ -1,11 +1,13 @@
 import matplotlib.pyplot as plt
 import numpy
+import sys
 from sklearn import metrics
 from sklearn.metrics import roc_auc_score
-
+import os
 from Configs import Configs
+from plotUtils.plt_utils import save_multiple_formats
 
-files = ['/home/giulio/lupus_all_feats_thr96/run_9/scores.npz']
+files = ['/home/giulio/Dropbox/completed/LupusDataset/lupus_all_feats_thr92/run_9/scores.npz']
 colors = ['m', 'b']
 legends = ['new feats']
 
@@ -38,27 +40,37 @@ for f in files:
     print('num positives: {}, num negatives: {}'.format(p, n))
     print('ROC score: {:.2f}'.format(roc_score))
 
+    filename = sys.argv[0]
+    filename = os.path.splitext(filename)[0]
+
     # ROC plot
     plt.figure(1)
     plt.plot(fpr, tpr, colors[i], linewidth=2)
-    plt.legend(legends, shadow=True, fancybox=True, loc=1)
+    # plt.legend(legends, shadow=True, fancybox=True, loc=1)
     plt.xlabel('false positives rate')
     plt.ylabel('true positives rate')
+
+    save_multiple_formats(filename+'_roc')
 
     # RECALL-PRECISION plot
     plt.figure(2)
     plt.plot(recall, precision, colors[i], linewidth=2)
     # plt.plot(sensitivity, precision2, colors[i], linewidth=2)
-    plt.legend(legends, shadow=True, fancybox=True, loc=1)
+    # plt.legend(legends, shadow=True, fancybox=True, loc=1)
     plt.xlabel('recall')
     plt.ylabel('precision')
+
+    save_multiple_formats(filename+'_recall_precision')
+
 
     # SPECIFICITY-SENSITIVITY plot
     plt.figure(3)
     plt.plot(specificity, sensitivity, colors[i], linewidth=2)
-    plt.legend(legends, shadow=True, fancybox=True, loc=1)
+    # plt.legend(legends, shadow=True, fancybox=True, loc=1)
     plt.ylabel('sensitivity')
     plt.xlabel('specificity')
+
+    save_multiple_formats(filename+'_specificity_sensitivity')
 
     i+=1
 

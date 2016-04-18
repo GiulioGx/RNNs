@@ -63,7 +63,7 @@
 \headcommand {\beamer@framepages {24}{24}}
 \headcommand {\slideentry {4}{0}{7}{25/25}{}{0}}
 \headcommand {\beamer@framepages {25}{25}}
-\headcommand {\sectionentry {5}{A real case: Lupus disease prediction}{26}{A real case: Lupus disease prediction}{0}}
+\headcommand {\sectionentry {5}{A case study: Lupus disease prediction}{26}{A case study: Lupus disease prediction}{0}}
 \headcommand {\beamer@sectionpages {19}{25}}
 \headcommand {\beamer@subsectionpages {19}{25}}
 \headcommand {\slideentry {5}{0}{1}{26/26}{}{0}}
@@ -78,10 +78,8 @@
 \headcommand {\beamer@framepages {30}{30}}
 \headcommand {\slideentry {6}{0}{2}{31/31}{}{0}}
 \headcommand {\beamer@framepages {31}{31}}
-\headcommand {\slideentry {6}{0}{2}{31/32}{}{0}}
-\headcommand {\beamer@framepages {31}{32}}
-\headcommand {\beamer@partpages {1}{32}}
-\headcommand {\beamer@subsectionpages {30}{32}}
-\headcommand {\beamer@sectionpages {30}{32}}
-\headcommand {\beamer@documentpages {32}}
-\headcommand {\def \inserttotalframenumber {25}}
+\headcommand {\beamer@partpages {1}{31}}
+\headcommand {\beamer@subsectionpages {30}{31}}
+\headcommand {\beamer@sectionpages {30}{31}}
+\headcommand {\beamer@documentpages {31}}
+\headcommand {\def \inserttotalframenumber {23}}

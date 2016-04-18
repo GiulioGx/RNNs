@@ -10,7 +10,22 @@
 %		Visit 4:& 45.58 & 0 & 0 & 76 & 6 & 0 & 0 & 1 \\
 %	\end{tabular}
 %\end{table}
-\begin{frame}{An example of patience record}
+
+\begin{frame}{Lupus disease prediction}
+
+	The \textbf{goal} is to predict whether a patience will develop the lupus disease in the near future given its medical history.
+	\vspace{2em}\\
+	Dataset:
+	\begin{itemize}
+		\item Gathered from "Lupus Clinic", Reumatologia, Università Sapienza, Rome.
+		\item Patients have a different number of visits.
+		\item Visits are not equally spaced over time.
+		\item Small dataset ($\sim100$ negatives, $40$ positives).
+	\end{itemize}
+
+\end{frame}
+
+\begin{frame}{An example of a record of a patience}
 \begin{table}[H]
 	\centering
 	\begin{tabular}{ C{2.5cm} | C{1cm} C{1cm} C{1cm} C{1cm} C{1cm}}
@@ -24,15 +39,11 @@
 		hematological & 0 & 0 & 6 & 6 & 6 \\
 		skinrash & 0 & 0 & 0 & 0 & 0 \\
 		sledai2kInferred & 12 & 2 & 2 & 2 & 0 \\
-		\dots & & & & & \\
+		\dots & \dots & \dots & \dots & \dots & \dots \\
 		\hline
 		SDI & 0 & 0 & 0 & 0 & \textbf{1}\\
 	\end{tabular}
 \end{table}	
-\end{frame}
-
-\begin{frame}
-	The goal is to predict ....
 \end{frame}
 
 
@@ -40,18 +51,16 @@
 
 \begin{figure}
 	\centering
-	\subfloat[roc curve. AUC score is 0.74]{
-		\includegraphics[width= 0.5\textwidth]{lupus_roc.png}
+		\includegraphics[width= 0.5\textwidth]{plot_roc_lupus_roc_.eps}
 		%			\caption{roc curve for models of Line 5 of Table \ref{table:exp_res}.}
-		\label{fig:roc_best}
-	}
-	\subfloat[Sensitivity-specificity curve]{
-		 	\centering
-		 	\includegraphics[width= 0.5\textwidth]{lupus_sensitivity_specificity.png}
-		 	%			\caption{Sensitivity-specificity for models of Line 5 of Table \ref{table:exp_res}.}
-		 	\label{fig:sensitivity_specificity_best}
-	 }
+		\caption{ROC curve. AUC score is 0.74}
+		\label{fig:lupus_roc}
 \end{figure}
+
+\begin{itemize}
+	\item Results considered promising by medical experts.
+	\item Improvable when more data will be available.
+\end{itemize}
 
 \end{frame}
 

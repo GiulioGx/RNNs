@@ -13,7 +13,7 @@ __author__ = 'giulio'
 folder1 = '/home/giulio/Dropbox/completed/add_task_100_comparison/antigradient/'
 folder2 = '/home/giulio/Dropbox/completed/add_task_100_comparison/checked_cos_only/'
 folder3 = '/home/giulio/Dropbox/completed/add_task_100_comparison/checked_all/'
-seed = 15
+seed = 13
 prefix = 'add_task, min_length: 100_'
 suffix = '/stats.npz'
 
@@ -26,6 +26,8 @@ n_models = len(stats_files)
 legends = ['anti-gradient', 'simplex', 'simplex with conditional switching']
 
 
+plt.figure(figsize=(0.8*10,0.8*6))
+
 for i in range(n_models):
     stats_file = stats_files[i]
     npz = numpy.load(stats_file)
@@ -34,7 +36,7 @@ for i in range(n_models):
     x_values = numpy.arange(length) * check_freq
     n_points = x_values.shape[0]
     valid_loss = npz['validation_loss']
-    plt.plot(x_values, valid_loss, 'o', color=colors[i])
+    plt.plot(x_values, valid_loss, 'o', color=colors[i], markersize=3)
     legends.append(legends[i])
 
 # plt.rcParams.update({'font.size': 24})

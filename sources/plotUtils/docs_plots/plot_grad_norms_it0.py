@@ -54,9 +54,11 @@ def __step(rho):
     return stats
 
 
-rho_values = [0.8]
+rho_values = [0.9]
 n_plots = len(rho_values)
-fig, axarr = plt.subplots(n_plots, sharex=True, sharey=False, figsize=(20, 30))
+fig, axarr = plt.subplots(n_plots, sharex=True, sharey=False, figsize=(9, 6))
+plt.rcParams.update({'font.size': 16})
+
 
 for i in range(n_plots):
     r = rho_values[i]
@@ -64,10 +66,13 @@ for i in range(n_plots):
     y = stats.dictionary['obj_separate_norms'][0]['full_grad']
     ax = axarr if n_plots == 1 else axarr[i]
     ax.bar(range(len(y)), y)
-    # ax.legend(['rho={}'.format(r)], shadow=True, fancybox=True)
+    ax.legend(['rho={}'.format(r)], shadow=True, fancybox=True)
     ax.set_yscale('log')
     # axarr[i].set_xlabel('t')
     # axarr[i].set_ylabel('temporal_grad_norm')
+    plt.xlabel('temporal gradients')
+    plt.ylabel('norm')
+    plt.xlim(xmax=200)
 
 filename = sys.argv[0]
 save_multiple_formats(filename)

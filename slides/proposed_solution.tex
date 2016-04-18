@@ -20,27 +20,38 @@ Motivated by the bounds for the vanishing gradient on the singular values of the
 \end{algorithm}
 \end{frame}
 
-\begin{frame}{Effect of initialization on the temporal gradients}
-	\vspace{-3em}
-	\begin{figure}[H]
-		\includegraphics[width=0.6\textwidth]{temporal_components_rho.eps}
-		\caption{Temporal gradients for the temporal order task varying the spectral radius of the recurrent matrix. y axis is in logarithmic scale.}
-		\label{fig:temporal_norms}
-	\end{figure}
+\begin{frame}{The effect of initialization on the temporal gradients}
+	\captionsetup[subfigure]{labelformat=empty}
+		\begin{figure}
+			\centering
+			\subfloat[][]{\includegraphics[width= 0.5\textwidth]{plot_grad_norms_it0_09.eps}\label{fig:temp_norms_09}}
+			\subfloat[][]{\includegraphics[width= 0.5\textwidth]{plot_grad_norms_it0_1.eps}\label{fig:temp_norms_1}}\\
+			\vspace{-2em}
+			\subfloat[][]{\includegraphics[width= 0.5\textwidth]{plot_grad_norms_it0_11.eps}\label{fig:temp_norms_11}}
+			\subfloat[][]{\includegraphics[width= 0.5\textwidth]{plot_grad_norms_it0_12.eps}\label{fig:temp_norms_12}}
+		\end{figure}
+	
+%	\vspace{-3em}
+%	\begin{figure}[H]
+%		\includegraphics[width=0.6\textwidth]{temporal_components_rho.eps}
+%		\caption{Temporal gradients for the temporal order task varying the spectral radius of the recurrent matrix. y axis is in logarithmic scale.}
+%		\label{fig:temporal_norms}
+%	\end{figure}
 \end{frame}
 
-\begin{frame}{Effect of initialization on the rate of success}
+\begin{frame}{The effect of initialization on the rate of success}
 	\begin{figure}
 		\centering
-		\includegraphics[width= 0.7\textwidth]{temporal_rates.png}
-		\caption{Rate of success (mean of 3 runs) for the temporal order task for various lengths with SGD modified with gradient clipping. In blue and red the results when $W_{rec}$ is initialized with spectral radius bigger and smaller than one respectively.}
+%		\input{images/temporal_rates.pgf}
+		\includegraphics[width= 0.8\textwidth]{temporal_rates.eps}
+		\caption{Rate of success for the temporal order task.}
 		\label{fig:temporal_rates}
 	\end{figure}
 \end{frame}
 
 
 \begin{frame}{A different descent direction}
-	The idea is to use the structure of the gradient to compute a "descent" direction which does not suffer from the vanishing problem.
+	The idea is to use the structure of the gradient to compute a descent direction which does not suffer from the vanishing gradient problem.
 \begin{itemize}
 	\item Normalize the temporal gradients:
 	\begin{equation}
@@ -118,7 +129,7 @@ Motivated by the bounds for the vanishing gradient on the singular values of the
 	
 	\begin{figure}
 		\centering
-	     \subfloat[][ Loss (in log scale) for the addition task during training]{\includegraphics[width= 0.55\textwidth]{compare_add_simplex_13.png}\label{fig:compare_add_13}}
+	     \subfloat[][ Loss (in log scale) for the addition task during training]{\includegraphics[width= 0.5\textwidth]{compare_add_simplex_13.eps}\label{fig:compare_add_13}}
 	     \subfloat[][Number of iterations]{\raisebox{3em}{\resizebox{0.5\columnwidth}{!}{
 	     		{\renewcommand{\arraystretch}{1.3}
 	     		\begin{tabular}[b]{C{3cm} | C{2cm} C{4cm}}

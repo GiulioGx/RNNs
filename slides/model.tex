@@ -2,8 +2,10 @@
 \subsection{The model}
 \begin{frame}{The model}
 	
-\begin{block}{Definition of RNN}
-	Given an input sequence $\{\vec{u}\}_{t=1,...,T}$, with $ \vec{u}_t \in \mathbb{R}^p$, the output sequence of a RNN $\{\vec{y}\}_{t=1,...,T}$, with $\vec{y}_t \in \mathbb{R}^o$,  is defined by the following:
+%\begin{block}{Definition of RNN}
+\textbf{Definition of RNN}
+\\
+	Given an input sequence $\{\vec{u}^t\}_{t=1,...,T}$, with $ \vec{u}^t \in \mathbb{R}^p$, an RNN yields the output sequence $\{\vec{y}^t\}_{t=1,...,T}$, with $\vec{y}^t \in \mathbb{R}^o$,  defined by the following:
 \begin{align}
 		&\vec{y}^t \defeq F(\vec{z}^t)\\
 		&\vec{z}^t \defeq \mat{W}^{out}\cdot\vec{a}^t + \vec{b}^{out}\\
@@ -12,14 +14,14 @@
 		&\vec{h}^0 \defeq \vec{0},
 \end{align}
 where $\sigma(\cdot):\mathbb{R}\rightarrow\mathbb{R}$ is a non linear function applied element-wise called \textbf{activation function}, $F(\cdot)$ is called \textbf{output function}. 
-\end{block}
+%\end{block}
 
-\begin{block}{}
-	The parameters of the net are $\{\mat{W}^{out}, \mat{W}^{in},  \mat{W}^{rec}, \vec{b}^{rec}, \vec{b}^{out}\}$.
-\end{block}
+%\begin{block}{}
+	The \textbf{parameters} of the net are $\{\mat{W}^{out}, \mat{W}^{in},  \mat{W}^{rec}, \vec{b}^{rec}, \vec{b}^{out}\}$.
+%\end{block}
 \end{frame}
 
-\begin{frame}
+\begin{frame}{The model}
 	\begin{figure}[!h]
 		\centering
 		\resizebox{7cm}{!}{
@@ -31,10 +33,10 @@ where $\sigma(\cdot):\mathbb{R}\rightarrow\mathbb{R}$ is a non linear function a
 		\node[missing]   (x3)[right of=x2]   { $\hdots$};
 		\node[neuron]    (xn)[right of=x3]   {};
 		
-		\node[label]    (u0)[below of=x0]   {$u_0[t]$};
-		\node[label]    (u1)[below of=x1]   {$u_1[t]$};
-		\node[label]    (u2)[below of=x2]   {$u_2[t]$};
-		\node[label]    (un)[below of=xn]   {$u_n[t]$};
+		\node[label]    (u0)[below of=x0]   {$u_0^t$};
+		\node[label]    (u1)[below of=x1]   {$u_1^t$};
+		\node[label]    (u2)[below of=x2]   {$u_2^t$};
+		\node[label]    (un)[below of=xn]   {$u_n^t$};
 		
 		
 		\node[layer] (hl)[above of=x2,node distance=2cm] {Hidden layer};
@@ -49,10 +51,10 @@ where $\sigma(\cdot):\mathbb{R}\rightarrow\mathbb{R}$ is a non linear function a
 		\node[neuron] (on)[right of=o4] {};
 		
 		
-		\node[label]    (y0)[above of=o1]   {$y_0[t]$};
-		\node[label]    (y1)[above of=o2]   {$y_1[t]$};
-		\node[label]    (y2)[above of=o3]   {$y_2[t]$};
-		\node[label]    (yn)[above of=on]   {$y_n[t]$};
+		\node[label]    (y0)[above of=o1]   {$y_0^t$};
+		\node[label]    (y1)[above of=o2]   {$y_1^t$};
+		\node[label]    (y2)[above of=o3]   {$y_2^t$};
+		\node[label]    (yn)[above of=on]   {$y_n^t$};
 		
 		
 		\path[->] (x0) edge [] node[]{$W_{in}$}   (hl)
@@ -78,7 +80,7 @@ where $\sigma(\cdot):\mathbb{R}\rightarrow\mathbb{R}$ is a non linear function a
 		
 		\end{tikzpicture}
 		}
-		\caption{$\net{RNN}$ model.}
+%		\caption{$\net{RNN}$ model.}
 		\label{rnn_model}
 	\end{figure}
 \end{frame}
@@ -86,16 +88,19 @@ where $\sigma(\cdot):\mathbb{R}\rightarrow\mathbb{R}$ is a non linear function a
 \subsection{The optimization problem}
 \begin{frame}{The optimization problem}
 Given a dataset $D$:
+%\begin{equation}
+%D\defeq\{\{\overline{\vec{u}}^t\}_{t=1,...,T}^{(i)}, \overline{\vec{u}}^{(i)}_t \in \mathbb{R}^p, \{\overline{\vec{y}}^{(i)}\}_{t=1,...,T}, \overline{\vec{y}}^{(i)}_t \in \mathbb{R}^o;  i=1,...,N\}
+%\end{equation}
 \begin{equation}
-D\defeq\{\{\overline{\vec{u}}^{(i)}\}_{t=1,...,T}, \overline{\vec{u}}^{(i)}_t \in \mathbb{R}^p, \{\overline{\vec{y}}^{(i)}\}_{t=1,...,T}, \overline{\vec{y}}^{(i)}_t \in \mathbb{R}^o;  i=1,...,N\}
+	D\defeq\{\{\overline{\vec{u}}^t\}_{t=1,...,T(i)}^{(i)}, \{\overline{\vec{y}}^t\}_{t=1,...,T(i)}^{(i)};  i=1,...,N\}
 \end{equation}
 we define a loss function $L_D(\vec{x})$ over $D$  as
 \begin{equation}
-L_D(\vec{x})\defeq\frac{1}{N}\sum_{i=1}^N \sum_{t=1}^T L_t(\overline{\vec{y}}_t^{(i)},\vec{y}_t^{(i)}(\vec{x})),
+L_D(\vec{x})\defeq\frac{1}{N}\sum_{i=1}^N \sum_{t=1}^{T(i)} L_t(\overline{\vec{y}}_t^{(i)},\vec{y}_t^{(i)}(\vec{x})),
 \end{equation}
 where $L_t(\cdot, \cdot)$ is an arbitrary loss function for the time step $t$ and $\vec{x}$ represents all the parameters of the network.
 The problem is \begin{equation}
-\min_{\vec{x}} L_D(\vec{x})
+\min_{\vec{x}} L_D(\vec{x}).
 \end{equation}
 \end{frame}
 

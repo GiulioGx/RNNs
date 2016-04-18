@@ -16,17 +16,19 @@
 	The predicted output should be the sum of the two one-marked positions (1.1). 
 	\pause
 	\vspace{1em}
-	\begin{block}{Why is this a difficult problem?}
+%	\begin{block}{Why is this a difficult problem?}
+\\
+\textbf{Why is this a difficult problem?}
 		Because of its long time dependencies.
-	\end{block}
+%	\end{block}
 	
 \end{frame}
 
 \begin{frame}{Vanishing gradient: an illustration}
 	\begin{figure}
 		\centering
-		\includegraphics[width=1\textwidth]{temporal_gradients.png}
-		\caption{Norm of the temporal gradients at different time steps.}
+		\includegraphics[width=1\textwidth]{plot_grad_norms_it0.eps}
+%		\caption{Norm of the temporal gradients at different time steps at the beginning of the training (addition task).}
 	\end{figure}
 \end{frame}
 
@@ -52,7 +54,7 @@
 	Since $\mat{U}$ and $\mat{V}$ are orthogonal matrix, hence $$\norm{\mat{U}}_2=\norm{\mat{V}^T}_2 = 1,$$ and $$\norm{diag(\lambda_1, \lambda_2,...,\lambda_r)}_2 = \lambda_{max},$$ we get
 	\begin{align}
 	\norm{\frac{\partial \vec{a}^t}{\partial \vec{a}^k}}_2 &= \norm{ (\prod_{i=t-1}^{k} diag(\sigma'(\vec{a}^i)) \cdot \mat{S}\cdot \mat{D} \cdot \mat{V}^T)}_2\\
-	&\leq (\sigma'_{max} \cdot \mu_{max})^{t-k-1}
+	&\leq (\sigma'_{max} \cdot \mu_{max})^{t-k-1}.
 	\end{align}
 \end{frame}
 

@@ -4,11 +4,13 @@
 \beamer@slide {rnn_delta}{11}
 \beamer@slide {eq:temporalComponent}{17}
 \beamer@slide {algo:init_scaling}{20}
-\beamer@slide {fig:temporal_norms}{21}
+\beamer@slide {fig:temp_norms_09}{21}
+\beamer@slide {fig:temp_norms_1}{21}
+\beamer@slide {fig:temp_norms_11}{21}
+\beamer@slide {fig:temp_norms_12}{21}
 \beamer@slide {fig:temporal_rates}{22}
 \beamer@slide {algo:line:condition}{24}
 \beamer@slide {algo:complete_solution}{24}
 \beamer@slide {fig:compare_add_13}{25}
 \beamer@slide {fig:1}{25}
-\beamer@slide {fig:roc_best}{29}
-\beamer@slide {fig:sensitivity_specificity_best}{29}
+\beamer@slide {fig:lupus_roc}{29}
