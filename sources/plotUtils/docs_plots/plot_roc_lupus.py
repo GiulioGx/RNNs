@@ -10,6 +10,7 @@ from plotUtils.plt_utils import save_multiple_formats
 files = ['/home/giulio/Dropbox/completed/LupusDataset/lupus_all_feats_thr92/run_9/scores.npz']
 colors = ['m', 'b']
 legends = ['new feats']
+size=(6,5)
 
 i = 0
 for f in files:
@@ -44,7 +45,7 @@ for f in files:
     filename = os.path.splitext(filename)[0]
 
     # ROC plot
-    plt.figure(1)
+    plt.figure(1, figsize=size)
     plt.plot(fpr, tpr, colors[i], linewidth=2)
     # plt.legend(legends, shadow=True, fancybox=True, loc=1)
     plt.xlabel('false positives rate')
@@ -53,7 +54,7 @@ for f in files:
     save_multiple_formats(filename+'_roc')
 
     # RECALL-PRECISION plot
-    plt.figure(2)
+    plt.figure(2,figsize=size)
     plt.plot(recall, precision, colors[i], linewidth=2)
     # plt.plot(sensitivity, precision2, colors[i], linewidth=2)
     # plt.legend(legends, shadow=True, fancybox=True, loc=1)
@@ -64,7 +65,7 @@ for f in files:
 
 
     # SPECIFICITY-SENSITIVITY plot
-    plt.figure(3)
+    plt.figure(3, figsize=size)
     plt.plot(specificity, sensitivity, colors[i], linewidth=2)
     # plt.legend(legends, shadow=True, fancybox=True, loc=1)
     plt.ylabel('sensitivity')

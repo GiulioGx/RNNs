@@ -1,6 +1,6 @@
 \begin{frame}{Initialization}
 	
-Motivated by the bounds for the vanishing gradient on the singular values of the recurrent matrix we explored an initialization scheme which \textbf{scales the spectral radius} of such matrix.
+The matrix $\mat{W}^{rec}$ is \textbf{scaled} to have a desired spectral radius.
 
 \vspace{2em}
 
@@ -51,7 +51,7 @@ Motivated by the bounds for the vanishing gradient on the singular values of the
 
 
 \begin{frame}{A different descent direction}
-	The idea is to use the structure of the gradient to compute a descent direction which does not suffer from the vanishing gradient problem.
+	Combine the temporal gradients to obtain a descent direction which does not suffer from the vanishing gradient problem.
 \begin{itemize}
 	\item Normalize the temporal gradients:
 	\begin{equation}
@@ -129,10 +129,13 @@ Motivated by the bounds for the vanishing gradient on the singular values of the
 	
 	\begin{figure}
 		\centering
-	     \subfloat[][ Loss (in log scale) for the addition task during training]{\includegraphics[width= 0.5\textwidth]{compare_add_simplex_13.eps}\label{fig:compare_add_13}}
-	     \subfloat[][Number of iterations]{\raisebox{3em}{\resizebox{0.5\columnwidth}{!}{
+		\vspace{-2em}
+	     \subfloat[][ Loss (in log scale) for the addition task during training.]{\includegraphics[width= 1\textwidth]{compare_simplex_add_new.eps}\label{fig:compare_add_13}}\\
+	     \vspace{0em}
+	     \subfloat[][Number of iterations.]{\raisebox{0em}{\resizebox{0.7\columnwidth}{!}{
 	     		{\renewcommand{\arraystretch}{1.3}
-	     		\begin{tabular}[b]{C{3cm} | C{2cm} C{4cm}}
+	     			\setlength{\tabcolsep}{5pt}
+	     		\begin{tabular}[b]{C{3cm} | C{3cm} C{5cm}}
 	     		& anti-gradient & simplex with conditional switching \\
 	     		\hline
 	     		addition & 1807466 & \textbf{1630666} \\
@@ -140,7 +143,7 @@ Motivated by the bounds for the vanishing gradient on the singular values of the
 	     	\end{tabular}}}
 	     }
 	    }
-		\caption{Comparison between SGD using as descent direction the anti-gradient, the simplex direction and the simplex direction with conditional switching.}
+%		\caption{Comparison between SGD using as descent direction the anti-gradient, the simplex direction and the simplex direction with conditional switching.}
 		\label{fig:1}
 	\end{figure}
 	

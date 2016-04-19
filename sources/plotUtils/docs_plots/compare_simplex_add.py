@@ -26,7 +26,7 @@ n_models = len(stats_files)
 legends = ['anti-gradient', 'simplex', 'simplex with conditional switching']
 
 
-plt.figure(figsize=(0.8*10,0.8*6))
+plt.figure(figsize=(1*10,0.8*6))
 
 for i in range(n_models):
     stats_file = stats_files[i]
@@ -41,7 +41,7 @@ for i in range(n_models):
 
 # plt.rcParams.update({'font.size': 24})
 plt.yscale('log')
-# plt.ylim(ymin=4, ymax=13)
+plt.ylim(ymax=0.1)
 # plt.yticks([4, 5, 6, 7, 8, 9, 10, 13])
 # plt.xlim(xmin=0, xmax=6 * 10 ** 5)
 plt.legend(legends, shadow=True, fancybox=True)
@@ -49,8 +49,10 @@ plt.xlabel('iterations')
 plt.ylabel('validation loss')
 
 ax = plt.gca()
-# ax.yaxis.set_minor_formatter(FormatStrFormatter("%.1f"))
-# ax.yaxis.set_major_formatter(FormatStrFormatter("%.1f"))
+# ax.xaxis.set_minor_formatter(FormatStrFormatter("%.1f"))
+# ax.xaxis.set_major_formatter(FormatStrFormatter("%.1e"))
+plt.ticklabel_format(style='sci', axis='x', scilimits=(0,0))
+
 
 filename = sys.argv[0]
 save_multiple_formats(filename)
