@@ -188,8 +188,8 @@
 \end{frame}
 
 \begin{frame}{Gradient structure: calculus}
-	Consider the case where the loss function $L(\bar{\vec{u}}, \bar{\vec{y}})$ is defined only on the last step $\tau$. Let $g(\vec{x}): \mathbb{R}$ be the function defined by
-	$$g(\vec{x}) \triangleq L(F(\vec{z}^\tau(\vec{\bar{\vec{u}};x}),\bar{\vec{y}}_\tau )).$$
+	Consider the case where the loss function $L(\vec{y}, \bar{\vec{y}})$ is defined only on the last step $\tau$. Let $g(\vec{x}): \mathbb{R}$ be the function defined by
+	$$g(\vec{x}) \triangleq L(F(\vec{z}^\tau(\vec{\bar{\vec{u}};x}),\bar{\vec{y}}^\tau )).$$
 	
 	We compute the gradient as:
 	\begin{align}
@@ -230,11 +230,14 @@
 
 \begin{frame}{Gradient structure: temporal components}
 	
-	Putting all together we obtain:
+	Putting all together:
 	\begin{align}
 	\nabla_{\mat{W^{rec}}} g  &= \sum_{k=1}^{\tau} \frac{\partial g}{\partial \vec{a}^{\tau}} \cdot \frac{\partial \vec{a}^{\tau}}{\partial \vec{a}^k} \cdot \frac{\partial^+ \vec{a}^k}{\partial \mat{W}^{rec}}\\
 	&\defeq \sum_{k=1}^{\tau} \nabla_{\mat{W^{rec}}} L_{|k}.
 	\end{align}
 	
-	We refer to $\nabla_{\vec{x}} g_{|k}$ as the \textbf{temporal gradient} for time step $k$ w.r.t. the variable $\vec{x}$, and it is easy to see that it is the gradient we would compute if we replicated the variable $\vec{x}$ for each time step and took the derivatives w.r.t. to its k-th replicate.
+	We refer to $\nabla_{\vec{x}} g_{|k}$ as the \textbf{temporal gradient} for time step $k$ w.r.t. the variable $\vec{x}$.
+	\\
+	\vspace{1em}
+	It is the gradient we would compute if we replicated the variable $\vec{x}$ for each time step and took the derivatives w.r.t. to its k-th replicate.
 \end{frame}
