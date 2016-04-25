@@ -1,0 +1,33 @@
+
+Prediction of chronic damage in systemic lupus erythematosus using neural networks
+
+Category: Organ damage and survival
+3200 characters
+
+Purpose: The prevention of chronic damage is a major goal in the management of SLE patients. 
+In the study published so far, up to 50% of patients develop damage after 10 years from the diagnosis. 
+In the present study, we aimed at predicting chronic damage in a large monocentric SLE cohort by using neural networks. 
+
+Methods: We enrolled 357 consecutive patients affected by SLE diagnosed according to the American College of Rheumatology (ACR) 1997 revised criteria 
+(M/F 27/330; mean age ±SD 40.9 ± 12.9 years; mean disease duration ±SD 106.8 ± 98.4 months) referring to an out-patient Lupus Clinic. 
+Chronic damage was determined by using the SLICC/ACR Damage Index (SDI).
+Predictors of patients at increased risk of damage were identified and validated using recurrent neural networks, a data mining model
+that automatically learns from data using sequential information.
+In our setting we have used, as input to the neural network, 
+the set of available features (27) describing the clinical status of the patients observed in the sequential
+visits performed in the years. The binary output of the neural network (for the classification task) indicates whether or not 
+a chronic damage will be detected at the next visit of a given patient.
+
+Results: At the time of the first visit in the Lupus Clinic, 137 patients (38.4%) showed chronic damage, defined as SDI=1.
+The training and test sets were built by data of patients having at least six visits.
+Thus, experiments were performed by using the data of 40 patients  with damage (positive examples) and of 100 patients without
+damage (positive examples). 
+The available data were randomly splitted into eight different training and test sets preserving the percentage
+of positive and negative examples.
+The recurrent neural network was trained by a standard stochastic gradient descent method.
+The area under receiver-operator characteristic curves (AUC) was used to measure the discrimination ability of the 
+neural network prediction model. The average AUC obtained for the eight folds was 0.74. 
+
+
+
+Conclusion: 

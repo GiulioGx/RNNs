@@ -2,7 +2,7 @@
 BACKPROPAGATION
 
 @incollection{Rumelhart86,
- author = {Rumelhart, D. E. and Hinton, G. E. and Williams, R. J.},
+ author = {Rumelhart, David E. and Hinton, Geoffry E. and Williams, Ronald J.},
  chapter = {Learning Internal Representations by Error Propagation},
  title = {Parallel Distributed Processing: Explorations in the Microstructure of Cognition, Vol. 1},
  editor = {Rumelhart, David E. and McClelland, James L. and PDP Research Group, CORPORATE},
@@ -14,6 +14,7 @@ BACKPROPAGATION
  acmid = {104293},
  publisher = {MIT Press},
  address = {Cambridge, MA, USA},
+booktitle = {Parallel Distributed Processing: Explorations in the Microstructure of Cognition, {V}olume 1: {F}oundations},
 } 
 
 @article{Williams90anefficient,
@@ -31,9 +32,9 @@ ON EXPRESSIVENESS
 
 ##FFNN
 @article{Hornik89,
- author = {Hornik, K. and Stinchcombe, M. and White, H.},
+ author = {Hornik, Kurt and Stinchcombe, Maxwell and White, Halbert},
  title = {Multilayer Feedforward Networks Are Universal Approximators},
- journal = {Neural Netw.},
+ journal = {Neural Networks},
  issue_date = {1989},
  volume = {2},
  number = {5},
@@ -54,7 +55,7 @@ ON EXPRESSIVENESS
 @article{Scarselli98,
  author = {Scarselli, Franco and Tsoi, Ah Chung},
  title = {Universal Approximation Using Feedforward Neural Networks: A Survey of Some Existing Methods, and Some New Results},
- journal = {Neural Netw.},
+ journal = {Neural Networks},
  issue_date = {Jan. 1998},
  volume = {11},
  number = {1},
@@ -73,11 +74,22 @@ ON EXPRESSIVENESS
 
 ##TURING
 
-@misc{Hyotyniemi96turingmachines,
-    author = {Heikki Hyotyniemi},
-    title = {Turing Machines are Recurrent Neural Networks},
-    year = {1996}
+@inproceedings{Hyotyniemi96turingmachines,
+  author = {Hyötyniemi, Heikki},
+  title = {Turing machines are recurrent neural networks},
+  year = {1996},
+  booktitle = {STeP '96 - Genes, Nets and Symbols; Finnish
+ Artificial Intelligence Conference, Vaasa 20-23 Aug.
+ 1996},
+  editor = {Alander, J. and Honkela, T. and Jakobsson M},
+  publisher = {University of Vaasa, Finnish Artificial Intelligence Society
+    (FAIS)},
+  address = {Vaasa, Finland},
+  pages = {13--24},
+  note = {STeP '96 - Genes, Nets and Symbols; Finnish Artificial
+    Intelligence Conference, Vaasa, Finland, 20-23 August 1996}
 }
+
 
 @article{Siegelmann91turingcomputability,
     author = {Hava T. Siegelmann and Eduardo D. Sontag},
@@ -94,7 +106,7 @@ ON LEARNING
 @article{lstm,
  author = {Hochreiter, Sepp and Schmidhuber, J\"{u}rgen},
  title = {Long Short-Term Memory},
- journal = {Neural Comput.},
+ journal = {Neural Computation},
  issue_date = {November 15, 1997},
  volume = {9},
  number = {8},
@@ -163,10 +175,21 @@ ON LEARNING
   bibsource = {dblp computer science bibliography, http://dblp.org}
 }
 
-@misc{learningIsDifficult,
-    author = {Yoshua Bengio and Patrice Simard and Paolo Frasconi},
-    title = {Learning Long-Term Dependencies with Gradient Descent is Difficult},
-    year = {}
+@article{learningIsDifficult,
+  added-at = {2008-09-16T23:39:07.000+0200},
+  author = {Bengio, Yoshua and Simard, Patrice and Frasconi, Paolo},
+  biburl = {http://www.bibsonomy.org/bibtex/23241e3cc17a659131f52bd0f0d9a32dd/brian.mingus},
+  description = {CCNLab BibTeX},
+  interhash = {dc63076a6924e888ceda10f23158c23d},
+  intrahash = {3241e3cc17a659131f52bd0f0d9a32dd},
+  journal = {IEEE Transactions on Neural Networks},
+  keywords = {CCP JRR,},
+  number = 2,
+  pages = {157-166},
+  timestamp = {2008-09-16T23:39:19.000+0200},
+  title = {Learning long-term dependencies with gradient descent is difficult},
+  volume = 5,
+  year = 1994
 }
 
 @article{learningToExecute,
@@ -312,7 +335,7 @@ ON LEARNING
 }
 
 @article{liquidStateMachines,
-  author	= {W. Maass and T. Natschlaeger and H. Markram},
+  author	= {Wolfgang Maass and Thomas Natschlaeger and Henry Markram},
   title		= {Real-time Computing Without Stable States: A New Framework
 		  for Neural Computation Based on Perturbations},
   journal	= {Neural Computation},
@@ -325,7 +348,7 @@ ON LEARNING
 @article{echoStateNetworks,
  author = {Luko\v{s}evi\v{c}ius, Mantas and Jaeger, Herbert},
  title = {Survey: Reservoir Computing Approaches to Recurrent Neural Network Training},
- journal = {Comput. Sci. Rev.},
+ journal = {Computer Science Review},
  issue_date = {August, 2009},
  volume = {3},
  number = {3},
@@ -356,6 +379,20 @@ ON LEARNING
   doi       = {10.1109/ICASSP.2013.6639349},
   timestamp = {Sat, 02 Nov 2013 16:17:16 +0100},
   biburl    = {http://dblp.uni-trier.de/rec/bib/conf/icassp/BengioBP13},
+  bibsource = {dblp computer science bibliography, http://dblp.org}
+}
+
+@article{understandingExplodingGradients,
+  author    = {Razvan Pascanu and
+               Tomas Mikolov and
+               Yoshua Bengio},
+  title     = {Understanding the exploding gradient problem},
+  journal   = {CoRR},
+  volume    = {abs/1211.5063},
+  year      = {2012},
+  url       = {http://arxiv.org/abs/1211.5063},
+  timestamp = {Sat, 01 Dec 2012 20:32:38 +0100},
+  biburl    = {http://dblp.uni-trier.de/rec/bib/journals/corr/abs-1211-5063},
   bibsource = {dblp computer science bibliography, http://dblp.org}
 }
 
@@ -414,17 +451,17 @@ ON LEARNING
 }
 
 @article{momentum,
-title = "Some methods of speeding up the convergence of iteration methods",
-journal = "USSR Computational Mathematics and Mathematical Physics",
-volume = "4",
-number = "5",
-pages = "1 - 17",
-year = "1964",
-note = "",
-issn = "0041-5553",
-doi = "http://dx.doi.org/10.1016/0041-5553(64)90137-5",
-url = "http://www.sciencedirect.com/science/article/pii/0041555364901375",
-author = "B.T. Polyak",
+title = {Some methods of speeding up the convergence of iteration methods},
+journal = {USSR Computational Mathematics and Mathematical Physics},
+volume = {4},
+number = {5},
+pages = {1 - 17},
+year = {1964},
+note = {},
+issn = {0041-5553},
+doi = {http://dx.doi.org/10.1016/0041-5553(64)90137-5},
+url = {http://www.sciencedirect.com/science/article/pii/0041555364901375},
+author = {Boris T. Polyak},
 }
 
 @article{nesterov,
@@ -489,7 +526,24 @@ author = "B.T. Polyak",
   bibsource = {dblp computer science bibliography, http://dblp.org}
 }
 
-#### STOCHASTIC
+#Polyphonic music
+@inproceedings{BoulangerMuse,
+  author    = {Nicolas Boulanger{-}Lewandowski and
+               Yoshua Bengio and
+               Pascal Vincent},
+  title     = {Modeling Temporal Dependencies in High-Dimensional Sequences: Application
+               to Polyphonic Music Generation and Transcription},
+  booktitle = {Proceedings of the 29th International Conference on Machine Learning,
+               {ICML} 2012, Edinburgh, Scotland, UK, June 26 - July 1, 2012},
+  publisher = {icml.cc / Omnipress},
+  year      = {2012},
+  url       = {http://icml.cc/discuss/2012/590.html},
+  timestamp = {Fri, 25 Jan 2013 09:27:52 +0100},
+  biburl    = {http://dblp.uni-trier.de/rec/bib/conf/icml/Boulanger-LewandowskiBV12},
+  bibsource = {dblp computer science bibliography, http://dblp.org}
+}
+
+#Stochastic
 
 @article{Nemirovski,
   author    = {Arkadi Nemirovski and
@@ -502,4 +556,25 @@ author = "B.T. Polyak",
   number    = {4},
   pages     = {1574--1609},
   year      = {2009}
+}
+
+# Metrics
+@article{RocMetrics,
+ author = {Fawcett, Tom},
+ title = {An Introduction to ROC Analysis},
+ journal = {Pattern Recognition Letters},
+ issue_date = {June 2006},
+ volume = {27},
+ number = {8},
+ month = jun,
+ year = {2006},
+ issn = {0167-8655},
+ pages = {861--874},
+ numpages = {14},
+ url = {http://dx.doi.org/10.1016/j.patrec.2005.10.010},
+ doi = {10.1016/j.patrec.2005.10.010},
+ acmid = {1159475},
+ publisher = {Elsevier Science Inc.},
+ address = {New York, NY, USA},
+ keywords = {Classifier evaluation, Evaluation metrics, ROC analysis},
 }

@@ -184,16 +184,6 @@ class LupusDataset(Dataset):
         data = numpy.concatenate((positive_patients, negative_patients), axis=0)
         features_normalizations = LupusDataset.__find_normalization_factors(features_names, data)
 
-        # positives, max_visits_pos = LupusDataset.__process_patients(positive_patients, features_names,
-        #                                                                        features_normalizations)
-        # early_positives, late_positives = LupusDataset.__split_positive(positives)
-        #
-        #
-        # negatives, max_visits_neg = LupusDataset.__process_patients(negative_patients,
-        #                                                                        features_names,
-        #                                                                        features_normalizations,
-        #                                                                        LupusDataset.num_min_visit_negative)
-
         result = LupusDataset.__process_patients(data, features_names, features_normalizations,
                                                  visit_selector=visit_selector)
 
@@ -220,8 +210,6 @@ class LupusDataset(Dataset):
         rng.shuffle(late_positives)
         rng.shuffle(negatives)
 
-
-
         infos = InfoGroup('Lupus Dataset', InfoList(PrintableInfoElement('features', '', features_names),
                                                     PrintableInfoElement('normalizations', '', features_normalizations),
                                                     PrintableInfoElement('early positives', ':d',
@@ -243,9 +231,9 @@ class LupusDataset(Dataset):
 
     @staticmethod
     def no_test_dataset(mat_file: str, strategy: BuildBatchStrategy = PerVisitTargets, seed: int = Configs.seed,
-                        visit_selector: VisitsFilter = NullFIlter()):
+                        visit_filter: VisitsFilter = NullFIlter()):
         early_positives, late_positives, negatives, max_visits_pos, max_visits_neg, features_names, infos = LupusDataset.load_mat(
-            mat_file, visit_selector=visit_selector)
+            mat_file, visit_selector=visit_filter)
         train_set = dict(early_pos=early_positives, late_pos=late_positives, neg=negatives, max_pos=max_visits_pos,
                          max_neg=max_visits_neg)
         data_dict = dict(train=train_set, test=train_set, features=features_names)
@@ -299,7 +287,6 @@ class LupusDataset(Dataset):
         prefix = folder + '/' + name
         feats_file = open(prefix + "_features.txt", "w")
         labels_file = open(prefix + "_labels_txt", "w")
-
 
         for i in range(batch.inputs.shape[2]):
             example = batch.inputs[0, :, i]
@@ -369,7 +356,7 @@ class LupusDataset(Dataset):
                         f_name = features_names[k]
                         a = features_normalizations[f_name]['min']
                         b = features_normalizations[f_name]['max']
-                        pat_matrix[j, k] = (visits[j][f_name].item() - a) / (b - a) # nomalization
+                        pat_matrix[j, k] = (visits[j][f_name].item() - a) / (b - a)  # nomalization
                         # pat_matrix[j, k] = visits[j][f_name].item()  # nomalization
 
                 d = dict(features=pat_matrix, targets=target_vec)
@@ -617,9 +604,9 @@ class LupusDataset(Dataset):
 
 
 if __name__ == '__main__':
-    formatter = TemporalSpanFilter(min_age_span_upper=2, min_age_span_lower=2, min_visits_neg=4)
+    filter = TemporalSpanFilter(min_age_span_upper=2, min_age_span_lower=2, min_visits_neg=4)
     dataset = LupusDataset.no_test_dataset(Paths.lupus_path, seed=13, strategy=PerPatienceTargets(),
-                                           visit_selector=formatter)
+                                           visit_filter=filter)
     print(dataset.infos)
     batch = dataset.get_train_batch(batch_size=3)
     print(str(batch))
@@ -628,17 +615,15 @@ if __name__ == '__main__':
 
     strategy = TemporalDifferenceTargets()
 
-    id=0
+    id = 0
     for dataset in LupusDataset.k_fold_test_datasets(Paths.lupus_path, k=8, strategy=strategy,
                                                      visit_selector=TemporalSpanFilter(
                                                          min_age_span_upper=2,
                                                          min_age_span_lower=2, min_visits_neg=5,
                                                          min_visits_pos=1)):
-
-
-        dataset.write_to_file(dataset.train_set[0], '/home/giulio', 'train_'+str(id))
-        dataset.write_to_file(dataset.test_set[0], '/home/giulio', 'test_'+str(id))
-        id+=1
+        dataset.write_to_file(dataset.train_set[0], '/home/giulio', 'train_' + str(id))
+        dataset.write_to_file(dataset.test_set[0], '/home/giulio', 'test_' + str(id))
+        id += 1
 
     a = dataset.train_set[0].inputs
     b = dataset.test_set[0].inputs
