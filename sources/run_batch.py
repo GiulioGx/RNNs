@@ -69,7 +69,7 @@ def train_run(seed: int, task_length: int, prefix: str):
     dir_rule = CheckedDirection(dir_rule, max_cos=0, max_dir_norm=0.9)
     dir_rule = Antigradient()
 
-    lr_rule = GradientClipping(lr_value=0.01, clip_thr=1, normalize_wrt_dimension=False)  # 0.01
+    lr_rule = GradientClipping(lr_value=0.001, clip_thr=1, normalize_wrt_dimension=False)  # 0.01
 
     # update_rule = FixedAveraging(t=10)
     update_rule = SimpleUdpate()
