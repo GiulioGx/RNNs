@@ -47,6 +47,8 @@ class RNNVars(Variables):
             return norm2(self.__W_rec, self.__W_in, self.__W_out, self.__b_rec, self.__b_out) # FIXME
         elif L==1:
             return self.flatten().norm(L=1)
+        else:
+            raise ValueError('unsupported norm {}'.format(L))
 
     def scale_norms_as(self, other):
         if not isinstance(other, RNNVars):
