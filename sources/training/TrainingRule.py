@@ -2,10 +2,12 @@ import theano as T
 
 from ObjectiveFunction import ObjectiveFunction
 from descentDirectionRule import DescentDirectionRule
+from infos import Info
+from infos.InfoElement import PrintableInfoElement
 from infos.InfoGroup import InfoGroup
 from infos.InfoList import InfoList
 from infos.InfoProducer import SimpleInfoProducer
-from infos.SymbolicInfo import NullSymbolicInfos
+from infos.SymbolicInfo import NullSymbolicInfos, SymbolicInfo
 from learningRule import LearningStepRule
 from lossFunctions import LossFunction
 from lossFunctions.SquaredError import SquaredError
@@ -110,8 +112,20 @@ class TrainingRule(SimpleInfoProducer):
             if rule.nan_check:
                 nan_check = NanCheckRule()
                 to_check = [dict(value=lr, name='lr'), dict(value=direction, name='direction'),
-                            dict(value=self.__obj_fnc.current_loss, name='loss'), dict(value=net.symbols.y_shared, name='y')]
+                            dict(value=self.__obj_fnc.current_loss, name='loss'),
+                            dict(value=net.symbols.y_shared, name='y')]
                 self.__symbolic_error_list.append(nan_check.check(*to_check))  # XXX separate
+
+            add_penalty = True
+            lambda_lasso = 0.00001
+            if add_penalty:
+                penalty_grad, penalty_cost = net_symbols.regularization_penalty(net_symbols.u, net_symbols.t, net_symbols.mask,
+                                                                  net_symbols.current_params)
+                penalty_grad_norm = penalty_grad.norm(2)
+                penalty_symbolic_info = PenaltyInfos(penalty_cost, penalty_grad_norm)
+                self.__symbolic_infos_list.append(penalty_symbolic_info)
+
+                update_vars += penalty_grad * lambda_lasso
 
             network_updates = net_symbols.current_params.update_list(update_vars)
 
@@ -164,3 +178,19 @@ class TrainingRule(SimpleInfoProducer):
         @property
         def mask(self):
             return self.__obj_fnc.loss_mask
+
+
+class PenaltyInfos(SymbolicInfo): ##TODO move elsewhere
+    def __init__(self, penalty_cost, penalty_grad_norm):
+        self.__symbols = [penalty_cost, penalty_grad_norm]
+
+    @property
+    def symbols(self):
+        return self.__symbols
+
+    def fill_symbols(self, symbols_replacements: list) -> Info:
+        penalty_cost_info = PrintableInfoElement('cost', ':1.2f', symbols_replacements[0].item())
+        penalty_grad_info = PrintableInfoElement('grad', ':1.2f', symbols_replacements[1].item())
+
+        info = InfoGroup("penalty", InfoList(penalty_cost_info, penalty_grad_info))
+        return info
