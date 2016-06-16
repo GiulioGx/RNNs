@@ -43,7 +43,10 @@ class RNNVars(Variables):
         return self.dot(other) / (self.norm() * other.norm())
 
     def norm(self, L=2):  # XXX
-        return norm2(self.__W_rec, self.__W_in, self.__W_out, self.__b_rec, self.__b_out)
+        if L==2:
+            return norm2(self.__W_rec, self.__W_in, self.__W_out, self.__b_rec, self.__b_out) # FIXME
+        elif L==1:
+            return self.flatten().norm(L=1)
 
     def scale_norms_as(self, other):
         if not isinstance(other, RNNVars):

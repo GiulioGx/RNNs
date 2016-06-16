@@ -20,7 +20,7 @@ class GradientClipping(LearningStepRule):
     def compute_lr(self, net, obj_fnc: ObjectiveFunction, direction):
 
         if self.__clip_wrt_max_comp:
-            norm = max(abs(direction))
+            norm = direction.norm(1)
         else:
             norm = direction.norm(2)
 
