@@ -11,13 +11,18 @@ __author__ = 'giulio'
 
 
 class GradientClipping(LearningStepRule):
-    def __init__(self, lr_value=0.01, clip_thr=1., normalize_wrt_dimension: bool = False):
+    def __init__(self, lr_value=0.01, clip_thr=1., clip_wrt_max_comp:bool = False, normalize_wrt_dimension: bool = False):
         self.__lr_value = lr_value
         self.__clip_thr = clip_thr
         self.__normalize_wrt_dimension = normalize_wrt_dimension
+        self.__clip_wrt_max_comp = clip_wrt_max_comp
 
     def compute_lr(self, net, obj_fnc: ObjectiveFunction, direction):
-        norm = direction.norm(2)
+
+        if self.__clip_wrt_max_comp:
+            norm = max(abs(direction))
+        else:
+            norm = direction.norm(2)
 
         lr = self.__lr_value
         if self.__normalize_wrt_dimension:

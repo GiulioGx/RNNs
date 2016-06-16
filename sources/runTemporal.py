@@ -49,7 +49,7 @@ print(separator)
 seed = 13
 Configs.seed = seed
 
-task = TemporalOrderTask(150, seed)
+task = TemporalOrderTask(50, seed)
 out_dir = Configs.output_dir + str(task) + '_' + str(seed)
 # network setup
 std_dev = 0.1  # 0.14 Tanh # 0.21 Relu
@@ -95,7 +95,7 @@ dir_rule = Antigradient()
 # learning step rule
 # lr_rule = WRecNormalizedStep(0.0001) #0.01
 # lr_rule = ConstantNormalizedStep(0.001)  # 0.01
-lr_rule = GradientClipping(lr_value=0.01, clip_thr=1, normalize_wrt_dimension=False)  # 0.01
+lr_rule = GradientClipping(lr_value=0.01, clip_thr=1, clip_wrt_max_comp=True, normalize_wrt_dimension=False)  # 0.01
 # lr_rule = AdaptiveStep(init_lr=0.001, num_tokens=50, prob_augment=0.4, sliding_window_size=50, steps_int_the_past=5,
 #                               beta_augment=1.1, beta_lessen=0.1, seed=seed)
 # lr_rule = ArmijoStep(alpha=0.5, beta=0.1, init_step=1, max_steps=50)
