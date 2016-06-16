@@ -116,7 +116,7 @@ class TrainingRule(SimpleInfoProducer):
                             dict(value=net.symbols.y_shared, name='y')]
                 self.__symbolic_error_list.append(nan_check.check(*to_check))  # XXX separate
 
-            add_penalty = True
+            add_penalty = False
             lambda_lasso = 0.00001
             if add_penalty:
                 penalty_grad, penalty_cost = net_symbols.regularization_penalty(net_symbols.u, net_symbols.t, net_symbols.mask,

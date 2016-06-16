@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="77c32530-cce1-4df6-af7c-f3f8f06b5914" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sources/runTemporal.py" afterPath="$PROJECT_DIR$/sources/runTemporal.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sources/training/TrainingRule.py" afterPath="$PROJECT_DIR$/sources/training/TrainingRule.py" />
     </list>
     <ignored path="RNNs.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -59,13 +59,25 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="runTemporal.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="runTemporal.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/sources/runTemporal.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="341">
               <caret line="97" column="54" selection-start-line="97" selection-start-column="54" selection-end-line="97" selection-end-column="54" />
               <folding>
                 <element signature="e#0#10#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="TrainingRule.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/sources/training/TrainingRule.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="504">
+              <caret line="118" column="31" selection-start-line="118" selection-start-column="31" selection-end-line="118" selection-end-column="31" />
+              <folding>
+                <element signature="e#0#18#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -83,6 +95,7 @@
         <option value="$PROJECT_DIR$/sources/learningRule/GradientClipping.py" />
         <option value="$PROJECT_DIR$/sources/model/RNNVars.py" />
         <option value="$PROJECT_DIR$/sources/runTemporal.py" />
+        <option value="$PROJECT_DIR$/sources/training/TrainingRule.py" />
       </list>
     </option>
   </component>
@@ -146,6 +159,24 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="sources" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="RNNs" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="RNNs" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="sources" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="training" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -430,6 +461,16 @@
           <caret line="97" column="54" selection-start-line="97" selection-start-column="54" selection-end-line="97" selection-end-column="54" />
           <folding>
             <element signature="e#0#10#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sources/training/TrainingRule.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="504">
+          <caret line="118" column="31" selection-start-line="118" selection-start-column="31" selection-end-line="118" selection-end-column="31" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
           </folding>
         </state>
       </provider>
