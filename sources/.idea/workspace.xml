@@ -36,12 +36,33 @@
       <file leaf-file-name="runKLupus.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/runKLupus.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="160">
-              <caret line="64" column="1" selection-start-line="64" selection-start-column="1" selection-end-line="64" selection-end-column="1" />
+            <state relative-caret-position="376">
+              <caret line="70" column="71" selection-start-line="70" selection-start-column="71" selection-end-line="70" selection-end-column="71" />
               <folding>
-                <marker date="1466234827539" expanded="true" signature="1331:1598" placeholder="..." />
-                <marker date="1466234827539" expanded="true" signature="1363:1380" placeholder="..." />
-                <marker date="1466234827539" expanded="true" signature="4903:4907" placeholder="..." />
+                <marker date="1466237051205" expanded="true" signature="1331:1598" placeholder="..." />
+                <marker date="1466237051205" expanded="true" signature="1363:1380" placeholder="..." />
+                <marker date="1466237051205" expanded="true" signature="4906:4910" placeholder="..." />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="SGDTrainer.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/training/SGDTrainer.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="592">
+              <caret line="186" column="25" selection-start-line="186" selection-start-column="25" selection-end-line="186" selection-end-column="25" />
+              <folding>
+                <marker date="1462262131835" expanded="true" signature="694:1929" placeholder="..." />
+                <marker date="1462262131835" expanded="true" signature="732:834" placeholder="..." />
+                <marker date="1462262131835" expanded="true" signature="799:830" placeholder="..." />
+                <marker date="1462262131835" expanded="true" signature="1966:1977" placeholder="..." />
+                <marker date="1462262131835" expanded="true" signature="2148:2158" placeholder="..." />
+                <marker date="1462262131835" expanded="true" signature="2253:2263" placeholder="..." />
+                <marker date="1462262131835" expanded="true" signature="3641:3662" placeholder="..." />
+                <marker date="1462262131835" expanded="true" signature="7970:7991" placeholder="..." />
+                <marker date="1462262131835" expanded="true" signature="8428:8449" placeholder="..." />
+                <marker date="1462262131835" expanded="true" signature="9513:9525" placeholder="..." />
               </folding>
             </state>
           </provider>
@@ -84,7 +105,9 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="54">
               <caret line="3" column="30" selection-start-line="3" selection-start-column="30" selection-end-line="3" selection-end-column="30" />
-              <folding />
+              <folding>
+                <marker date="1466234745819" expanded="true" signature="20:233" placeholder="..." />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -236,34 +259,6 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="training" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="sources" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="sources" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="learningRule" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="sources" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="sources" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="descentDirectionRule" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -697,7 +692,7 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="61" />
+      <option name="time" value="62" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -894,25 +889,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/training/SGDTrainer.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2988">
-          <caret line="186" column="25" selection-start-line="186" selection-start-column="25" selection-end-line="186" selection-end-column="25" />
-          <folding>
-            <marker date="1462262131835" expanded="true" signature="694:1929" placeholder="..." />
-            <marker date="1462262131835" expanded="true" signature="732:834" placeholder="..." />
-            <marker date="1462262131835" expanded="true" signature="799:830" placeholder="..." />
-            <marker date="1462262131835" expanded="true" signature="1966:1977" placeholder="..." />
-            <marker date="1462262131835" expanded="true" signature="2148:2158" placeholder="..." />
-            <marker date="1462262131835" expanded="true" signature="2253:2263" placeholder="..." />
-            <marker date="1462262131835" expanded="true" signature="3641:3662" placeholder="..." />
-            <marker date="1462262131835" expanded="true" signature="7970:7991" placeholder="..." />
-            <marker date="1462262131835" expanded="true" signature="8428:8449" placeholder="..." />
-            <marker date="1462262131835" expanded="true" signature="9513:9525" placeholder="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/plotUtils/docs_plots/plot_roc_lupus.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="90">
@@ -985,7 +961,7 @@
         <state relative-caret-position="217">
           <caret line="15" column="0" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
           <folding>
-            <element signature="e#0#18#0" expanded="true" />
+            <element signature="e#0#18#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1010,7 +986,7 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#0#10#0" expanded="true" />
+            <element signature="e#0#10#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1020,7 +996,7 @@
         <state relative-caret-position="612">
           <caret line="34" column="0" selection-start-line="34" selection-start-column="0" selection-end-line="48" selection-end-column="23" />
           <folding>
-            <element signature="e#0#47#0" expanded="true" />
+            <element signature="e#0#47#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1040,7 +1016,7 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#0#31#0" expanded="true" />
+            <element signature="e#0#31#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1050,7 +1026,7 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#0#12#0" expanded="true" />
+            <element signature="e#0#12#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1060,7 +1036,7 @@
         <state relative-caret-position="700">
           <caret line="140" column="73" selection-start-line="140" selection-start-column="70" selection-end-line="140" selection-end-column="75" />
           <folding>
-            <element signature="e#0#12#0" expanded="true" />
+            <element signature="e#0#12#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1095,7 +1071,28 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="54">
           <caret line="3" column="30" selection-start-line="3" selection-start-column="30" selection-end-line="3" selection-end-column="30" />
-          <folding />
+          <folding>
+            <marker date="1466234745819" expanded="true" signature="20:233" placeholder="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/training/SGDTrainer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="592">
+          <caret line="186" column="25" selection-start-line="186" selection-start-column="25" selection-end-line="186" selection-end-column="25" />
+          <folding>
+            <marker date="1462262131835" expanded="true" signature="694:1929" placeholder="..." />
+            <marker date="1462262131835" expanded="true" signature="732:834" placeholder="..." />
+            <marker date="1462262131835" expanded="true" signature="799:830" placeholder="..." />
+            <marker date="1462262131835" expanded="true" signature="1966:1977" placeholder="..." />
+            <marker date="1462262131835" expanded="true" signature="2148:2158" placeholder="..." />
+            <marker date="1462262131835" expanded="true" signature="2253:2263" placeholder="..." />
+            <marker date="1462262131835" expanded="true" signature="3641:3662" placeholder="..." />
+            <marker date="1462262131835" expanded="true" signature="7970:7991" placeholder="..." />
+            <marker date="1462262131835" expanded="true" signature="8428:8449" placeholder="..." />
+            <marker date="1462262131835" expanded="true" signature="9513:9525" placeholder="..." />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1111,12 +1108,12 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/runKLupus.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="160">
-          <caret line="64" column="1" selection-start-line="64" selection-start-column="1" selection-end-line="64" selection-end-column="1" />
+        <state relative-caret-position="376">
+          <caret line="70" column="71" selection-start-line="70" selection-start-column="71" selection-end-line="70" selection-end-column="71" />
           <folding>
-            <marker date="1466234827539" expanded="true" signature="1331:1598" placeholder="..." />
-            <marker date="1466234827539" expanded="true" signature="1363:1380" placeholder="..." />
-            <marker date="1466234827539" expanded="true" signature="4903:4907" placeholder="..." />
+            <marker date="1466237051205" expanded="true" signature="1331:1598" placeholder="..." />
+            <marker date="1466237051205" expanded="true" signature="1363:1380" placeholder="..." />
+            <marker date="1466237051205" expanded="true" signature="4906:4910" placeholder="..." />
           </folding>
         </state>
       </provider>

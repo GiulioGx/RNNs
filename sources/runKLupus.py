@@ -83,7 +83,7 @@ class SplitThread(Thread):
         trainer.set_saving_criterion(saving_criterion)
         trainer.set_stopping_criterion(stopping_criterion)
 
-        self.__net = trainer.train(self.__dataset, net_builder)
+        self.__net, _ = trainer.train(self.__dataset, net_builder)
 
     def __test(self):
         batch = self.__dataset.split_test['late_pos']
