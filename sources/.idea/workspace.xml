@@ -33,15 +33,15 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="runKLupus.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="runKLupus.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/runKLupus.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="592">
-              <caret line="142" column="25" selection-start-line="142" selection-start-column="25" selection-end-line="142" selection-end-column="25" />
+            <state relative-caret-position="160">
+              <caret line="64" column="1" selection-start-line="64" selection-start-column="1" selection-end-line="64" selection-end-column="1" />
               <folding>
-                <marker date="1462262131835" expanded="true" signature="1331:1598" placeholder="..." />
-                <marker date="1462262131835" expanded="true" signature="1363:1380" placeholder="..." />
-                <marker date="1462262131835" expanded="true" signature="4901:4905" placeholder="..." />
+                <marker date="1466234827539" expanded="true" signature="1331:1598" placeholder="..." />
+                <marker date="1466234827539" expanded="true" signature="1363:1380" placeholder="..." />
+                <marker date="1466234827539" expanded="true" signature="4903:4907" placeholder="..." />
               </folding>
             </state>
           </provider>
@@ -79,7 +79,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Paths.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Paths.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Paths.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="54">
@@ -138,7 +138,6 @@
         <option value="$PROJECT_DIR$/runLupus.py" />
         <option value="$PROJECT_DIR$/test/plos.py" />
         <option value="$PROJECT_DIR$/model/NeuralNetwork.py" />
-        <option value="$PROJECT_DIR$/runKLupus.py" />
         <option value="$PROJECT_DIR$/training/SGDTrainer.py" />
         <option value="$PROJECT_DIR$/plotUtils/docs_plots/plot_grad_norms_it0.py" />
         <option value="$PROJECT_DIR$/plotUtils/docs_plots/compare_simplex_add.py" />
@@ -152,6 +151,7 @@
         <option value="$PROJECT_DIR$/training/TrainingRule.py" />
         <option value="$PROJECT_DIR$/model/RNN.py" />
         <option value="$PROJECT_DIR$/Paths.py" />
+        <option value="$PROJECT_DIR$/runKLupus.py" />
       </list>
     </option>
   </component>
@@ -1065,16 +1065,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/datasets/LupusDataset.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1672">
-          <caret line="234" column="13" selection-start-line="234" selection-start-column="13" selection-end-line="234" selection-end-column="13" />
-          <folding>
-            <element signature="e#0#10#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/updateRule/SimpleUpdate.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="72">
@@ -1101,23 +1091,33 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/runKLupus.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="592">
-          <caret line="142" column="25" selection-start-line="142" selection-start-column="25" selection-end-line="142" selection-end-column="25" />
-          <folding>
-            <marker date="1462262131835" expanded="true" signature="1331:1598" placeholder="..." />
-            <marker date="1462262131835" expanded="true" signature="1363:1380" placeholder="..." />
-            <marker date="1462262131835" expanded="true" signature="4901:4905" placeholder="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Paths.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="54">
           <caret line="3" column="30" selection-start-line="3" selection-start-column="30" selection-end-line="3" selection-end-column="30" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/datasets/LupusDataset.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1672">
+          <caret line="234" column="13" selection-start-line="234" selection-start-column="13" selection-end-line="234" selection-end-column="13" />
+          <folding>
+            <element signature="e#0#10#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/runKLupus.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="160">
+          <caret line="64" column="1" selection-start-line="64" selection-start-column="1" selection-end-line="64" selection-end-column="1" />
+          <folding>
+            <marker date="1466234827539" expanded="true" signature="1331:1598" placeholder="..." />
+            <marker date="1466234827539" expanded="true" signature="1363:1380" placeholder="..." />
+            <marker date="1466234827539" expanded="true" signature="4903:4907" placeholder="..." />
+          </folding>
         </state>
       </provider>
     </entry>
