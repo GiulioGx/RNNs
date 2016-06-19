@@ -7,7 +7,7 @@ import os
 #from Configs import Configs
 from plotUtils.plt_utils import save_multiple_formats
 
-files = ['/home/giulio/LupusHidden/tmpLupus/run_0/scores.npz']
+files = ['/home/giulio/tmpLupus100_thr01_var/run_0/scores.npz']
 colors = ['m', 'b']
 legends = ['new feats']
 size=(6,5)
@@ -24,6 +24,10 @@ for f in files:
     precision, recall, thresholds_2 = metrics.precision_recall_curve(labels, scores)
 
     # print('t', thresholds_1-thresholds_2)
+
+    print(precision)
+    print(recall)
+
 
     p = len(numpy.nonzero(labels)[0])  # number of positives
     n = len(labels) - p  # number of negatives
@@ -51,7 +55,7 @@ for f in files:
     plt.xlabel('false positives rate')
     plt.ylabel('true positives rate')
 
-    save_multiple_formats(filename+'_roc')
+    #save_multiple_formats(filename+'_roc')
 
     # RECALL-PRECISION plot
     plt.figure(2,figsize=size)
@@ -61,7 +65,7 @@ for f in files:
     plt.xlabel('recall')
     plt.ylabel('precision')
 
-    save_multiple_formats(filename+'_recall_precision')
+    #save_multiple_formats(filename+'_recall_precision')
 
 
     # SPECIFICITY-SENSITIVITY plot
@@ -71,7 +75,7 @@ for f in files:
     plt.ylabel('sensitivity')
     plt.xlabel('specificity')
 
-    save_multiple_formats(filename+'_specificity_sensitivity')
+    #save_multiple_formats(filename+'_specificity_sensitivity')
 
     i+=1
 

@@ -171,7 +171,7 @@ class LupusDataset(Dataset):
         #                   'pregnancypathology' 'serositis' 'sex' 'skinrash' 'sledai2kInferred'
         #                   'venousthrombosis' 'yearOfDisease']
 
-        # features_names = ['age', 'MyasteniaGravis', 'arthritis', 'c3level', 'c4level', 'hematological', 'skinrash', 'sledai2kInferred']
+        features_names = ['age', 'MyasteniaGravis', 'arthritis', 'c3level', 'c4level', 'hematological', 'skinrash', 'sledai2kInferred']
 
 
         return positive_patients, negative_patients, features_names
