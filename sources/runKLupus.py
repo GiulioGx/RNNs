@@ -35,7 +35,7 @@ __author__ = 'giulio'
 
 
 class SplitThread(Thread):
-    def __init__(self, out_dir: str, dataset, id: int, logger):
+    def __init__(self, out_dir: str, dataset, id: int, logger, n_hidden: int, stop_thr: float):
         super().__init__()
         self.__net = None
         self.__dataset = dataset
@@ -43,6 +43,8 @@ class SplitThread(Thread):
         self.__id = id
         self.__results = None
         self.__logger = logger
+        self.__n_hidden = n_hidden
+        self.__stop_thr = stop_thr
 
     @property
     def net(self):
@@ -62,7 +64,7 @@ class SplitThread(Thread):
             W_in_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed),
             W_out_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed), b_rec_init=ConstantInit(0),
             b_out_init=ConstantInit(0))
-        net_initializer = RNNInitializer(vars_initializer, n_hidden=50)
+        net_initializer = RNNInitializer(vars_initializer, n_hidden=self.__n_hidden)
         net_builder = RNNManager(initializer=net_initializer, activation_fnc=Tanh(),
                                  output_fnc=Logistic())
 
@@ -74,7 +76,7 @@ class SplitThread(Thread):
 
         loss_monitor = LossMonitor(loss_fnc=loss_fnc)
         roc_monitor = RocMonitor(score_fnc=LupusDataset.get_scores_patients)
-        stopping_criterion = ThresholdCriterion(monitor=roc_monitor, threshold=0.9, mode='>')
+        stopping_criterion = ThresholdCriterion(monitor=roc_monitor, threshold=self.__stop_thr, mode='>')
         saving_criterion = BestValueFoundCriterion(monitor=roc_monitor, mode='gt')
 
         trainer = SGDTrainer(train_rule, output_dir=self.__out_dir, max_it=50000,
@@ -111,7 +113,7 @@ class SplitThread(Thread):
         self.__logger.info('Thread {} has finished....'.format(self.__id))
 
 
-def run_experiment(root_dir, min_age_lower, min_age_upper, min_visits_neg, min_visits_pos, id: int):
+def run_experiment(root_dir, min_age_lower, min_age_upper, min_visits_neg, min_visits_pos, n_hidden, stop_thr, id: int):
     # start main logger
     run_out_dir = root_dir + 'run_{}/'.format(id)
     os.makedirs(run_out_dir, exist_ok=True)
@@ -137,7 +139,8 @@ def run_experiment(root_dir, min_age_lower, min_age_upper, min_visits_neg, min_v
                                                    min_age_span_lower=min_age_lower, min_visits_neg=min_visits_neg,
                                                    min_visits_pos=min_visits_pos)):
         out_dir = run_out_dir + str(thread_count)
-        t = SplitThread(out_dir=out_dir, dataset=d, id=thread_count, logger=logger)
+        t = SplitThread(out_dir=out_dir, dataset=d, id=thread_count, logger=logger, n_hidden=n_hidden,
+                        stop_thr=stop_thr)
         thread_list.append(t)
         t.start()
         thread_count += 1
@@ -199,6 +202,8 @@ if __name__ == '__main__':
     min_age_span_upper_list = [0.8]  # [0.8, 1, 2]
     min_num_visits_neg = [5]  # [1, 2, 3, 4, 5]
     min_num_visits_pos = [1]
+    n_hidden_list = [25, 50, 100]
+    stop_thr_list = [0.9, 0.95, 0.99]
 
     root_dir = Configs.output_dir + 'Lupus_k/'
     shutil.rmtree(root_dir, ignore_errors=True)
@@ -208,6 +213,9 @@ if __name__ == '__main__':
         for min_age_u in min_age_span_upper_list:
             for min_v_n in min_num_visits_neg:
                 for min_v_p in min_num_visits_pos:
-                    run_experiment(root_dir=root_dir, min_age_lower=min_age_l, min_age_upper=min_age_u,
-                                   min_visits_neg=min_v_n, min_visits_pos=min_v_p, id=count)
+                    for stop_thr in stop_thr_list:
+                        for n_hidden in n_hidden_list:
+                            run_experiment(root_dir=root_dir, min_age_lower=min_age_l, min_age_upper=min_age_u,
+                                           min_visits_neg=min_v_n, min_visits_pos=min_v_p, id=count, n_hidden=n_hidden,
+                                           stop_thr=stop_thr)
                     count += 1
