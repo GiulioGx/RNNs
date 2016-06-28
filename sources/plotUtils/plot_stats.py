@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy
+import matplotlib
 
 __author__ = 'giulio'
 
@@ -18,6 +19,13 @@ equi_cos = {'label': 'W_rec_equi_cos', 'legend': 'equi_cos', 'color': 'b', 'scal
 rho = {'label': 'rho', 'legend': 'W_rec spetral radius', 'color': 'r', 'scale': 'linear'}
 grad_var = {'label': 'obj_g_var', 'legend': 'gradient var', 'color': 'g', 'scale': 'linear'}
 dots_var = {'label': 'obj_dots_var', 'legend': 'dots var', 'color': 'b', 'scale': 'linear'}
+
+font = {'family': 'normal',
+        'weight': 'bold',
+        'size': 48}
+
+matplotlib.rc('font', **font)
+matplotlib.rcParams.update({'font.size': 44})
 
 
 # only elements in this list gets displayed, elements in the same list get displayed togheter

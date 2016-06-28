@@ -2,9 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="77c32530-cce1-4df6-af7c-f3f8f06b5914" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/RNNs.iml" afterPath="$PROJECT_DIR$/.idea/RNNs.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sources/datasets/LupusDataset.py" afterPath="$PROJECT_DIR$/sources/datasets/LupusDataset.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sources/runKLupus.py" afterPath="$PROJECT_DIR$/sources/runKLupus.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sources/.idea/misc.xml" afterPath="$PROJECT_DIR$/sources/.idea/misc.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sources/.idea/sources.iml" afterPath="$PROJECT_DIR$/sources/.idea/sources.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sources/.idea/workspace.xml" afterPath="$PROJECT_DIR$/sources/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sources/plotUtils/plot_stats.py" afterPath="$PROJECT_DIR$/sources/plotUtils/plot_stats.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sources/plotUtils/plt_utils.py" afterPath="$PROJECT_DIR$/sources/plotUtils/plt_utils.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sources/prova.py" afterPath="$PROJECT_DIR$/sources/prova.py" />
     </list>
     <ignored path="RNNs.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -28,22 +34,37 @@
       <file leaf-file-name="GradientClipping.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/sources/learningRule/GradientClipping.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="215">
+            <state relative-caret-position="432">
               <caret line="19" column="69" selection-start-line="19" selection-start-column="69" selection-end-line="19" selection-end-column="69" />
               <folding>
                 <element signature="e#0#31#0" expanded="true" />
+                <marker date="1466499384796" expanded="true" signature="364:675" ph="..." />
+                <marker date="1466499384796" expanded="true" signature="434:471" ph="..." />
+                <marker date="1466499384796" expanded="true" signature="715:744" ph="..." />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="runKLupus.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="runKLupus.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/sources/runKLupus.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="287">
-              <caret line="200" column="49" selection-start-line="200" selection-start-column="49" selection-end-line="200" selection-end-column="49" />
+            <state relative-caret-position="1224">
+              <caret line="34" column="0" selection-start-line="34" selection-start-column="0" selection-end-line="34" selection-end-column="0" />
               <folding>
                 <element signature="e#0#14#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="prova.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/sources/prova.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="0">
+              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding>
+                <element signature="e#0#31#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -52,10 +73,34 @@
       <file leaf-file-name="LupusDataset.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/sources/datasets/LupusDataset.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="342">
+            <state relative-caret-position="5400">
               <caret line="166" column="0" selection-start-line="166" selection-start-column="0" selection-end-line="166" selection-end-column="0" />
               <folding>
                 <element signature="e#0#10#0" expanded="true" />
+                <marker date="1466499384792" expanded="true" signature="546:822" ph="..." />
+                <marker date="1466499384792" expanded="true" signature="742:744" ph="..." />
+                <marker date="1466499384792" expanded="true" signature="1064:1243" ph="..." />
+                <marker date="1466499384792" expanded="true" signature="1187:1189" ph="..." />
+                <marker date="1466499384792" expanded="true" signature="1545:1673" ph="..." />
+                <marker date="1466499384792" expanded="true" signature="1630:1632" ph="..." />
+                <marker date="1466499384792" expanded="true" signature="2403:2531" ph="..." />
+                <marker date="1466499384792" expanded="true" signature="2488:2490" ph="..." />
+                <marker date="1466499384792" expanded="true" signature="3367:3499" ph="..." />
+                <marker date="1466499384792" expanded="true" signature="3456:3458" ph="..." />
+                <marker date="1466499384792" expanded="true" signature="4371:5991" ph="..." />
+                <marker date="1466499384792" expanded="true" signature="4417:4421" ph="..." />
+                <marker date="1466499384792" expanded="true" signature="6037:6057" ph="..." />
+                <marker date="1466499384792" expanded="true" signature="8423:8437" ph="..." />
+                <marker date="1466499384792" expanded="true" signature="8489:8539" ph="..." />
+                <marker date="1466499384792" expanded="true" signature="9145:9152" ph="..." />
+                <marker date="1466499384792" expanded="true" signature="9194:9246" ph="..." />
+                <marker date="1466499384792" expanded="true" signature="10539:10551" ph="..." />
+                <marker date="1466499384792" expanded="true" signature="10603:10643" ph="..." />
+                <marker date="1466499384792" expanded="true" signature="11437:11451" ph="..." />
+                <marker date="1466499384792" expanded="true" signature="13256:13258" ph="..." />
+                <marker date="1466499384792" expanded="true" signature="16011:16013" ph="..." />
+                <marker date="1466499384792" expanded="true" signature="17623:17627" ph="..." />
+                <marker date="1466499384792" expanded="true" signature="18329:18346" ph="..." />
               </folding>
             </state>
           </provider>
@@ -64,10 +109,15 @@
       <file leaf-file-name="TemporalOrderTask.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/sources/datasets/TemporalOrderTask.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="504">
+            <state relative-caret-position="1008">
               <caret line="35" column="48" selection-start-line="35" selection-start-column="48" selection-end-line="35" selection-end-column="48" />
               <folding>
                 <element signature="e#0#12#0" expanded="true" />
+                <marker date="1466499384792" expanded="true" signature="346:586" ph="..." />
+                <marker date="1466499384792" expanded="true" signature="399:409" ph="..." />
+                <marker date="1466499384792" expanded="true" signature="721:725" ph="..." />
+                <marker date="1466499384792" expanded="true" signature="1056:1060" ph="..." />
+                <marker date="1466499384792" expanded="true" signature="2411:2415" ph="..." />
               </folding>
             </state>
           </provider>
@@ -76,10 +126,12 @@
       <file leaf-file-name="RNNVars.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/sources/model/RNNVars.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="702">
+            <state relative-caret-position="1404">
               <caret line="48" column="46" selection-start-line="48" selection-start-column="46" selection-end-line="48" selection-end-column="46" />
               <folding>
                 <element signature="e#0#26#0" expanded="true" />
+                <marker date="1466499384796" expanded="true" signature="370:6213" ph="..." />
+                <marker date="1466499384796" expanded="true" signature="5372:5377" ph="..." />
               </folding>
             </state>
           </provider>
@@ -88,7 +140,7 @@
       <file leaf-file-name="runTemporal.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/sources/runTemporal.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1170">
+            <state relative-caret-position="2340">
               <caret line="97" column="54" selection-start-line="97" selection-start-column="54" selection-end-line="97" selection-end-column="54" />
               <folding>
                 <element signature="e#0#10#0" expanded="true" />
@@ -100,10 +152,20 @@
       <file leaf-file-name="TrainingRule.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/sources/training/TrainingRule.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1836">
+            <state relative-caret-position="3672">
               <caret line="118" column="31" selection-start-line="118" selection-start-column="31" selection-end-line="118" selection-end-column="31" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
+                <marker date="1466499384832" expanded="true" signature="752:1737" ph="..." />
+                <marker date="1466499384832" expanded="true" signature="911:941" ph="..." />
+                <marker date="1466499384832" expanded="true" signature="943:989" ph="..." />
+                <marker date="1466499384832" expanded="true" signature="1045:1087" ph="..." />
+                <marker date="1466499384832" expanded="true" signature="2317:2402" ph="..." />
+                <marker date="1466499384832" expanded="true" signature="2353:2358" ph="..." />
+                <marker date="1466499384832" expanded="true" signature="2721:7111" ph="..." />
+                <marker date="1466499384832" expanded="true" signature="6275:6287" ph="..." />
+                <marker date="1466499384832" expanded="true" signature="7211:7219" ph="..." />
+                <marker date="1466499384832" expanded="true" signature="7898:7903" ph="..." />
               </folding>
             </state>
           </provider>
@@ -128,10 +190,8 @@
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="65" />
-    <option name="y" value="24" />
-    <option name="width" value="1535" />
-    <option name="height" value="876" />
+    <option name="width" value="3840" />
+    <option name="height" value="2094" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -158,6 +218,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
+      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -264,12 +326,10 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
-      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="$USER_HOME$/builds/anaconda3/bin/python3.5" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
     <property name="settings.editor.splitter.proportion" value="0.2" />
   </component>
@@ -426,10 +486,10 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="65" y="24" width="1535" height="876" extended-state="6" />
+    <frame x="0" y="0" width="3840" height="2094" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24885994" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24869792" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -466,120 +526,422 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/sources/learningRule/GradientClipping.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#31#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sources/datasets/TemporalOrderTask.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="504">
-          <caret line="35" column="48" selection-start-line="35" selection-start-column="48" selection-end-line="35" selection-end-column="48" />
-          <folding>
-            <element signature="e#0#12#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sources/model/RNNVars.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="702">
-          <caret line="48" column="46" selection-start-line="48" selection-start-column="46" selection-end-line="48" selection-end-column="46" />
-          <folding>
-            <element signature="e#0#26#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sources/runTemporal.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1170">
-          <caret line="97" column="54" selection-start-line="97" selection-start-column="54" selection-end-line="97" selection-end-column="54" />
-          <folding>
-            <element signature="e#0#10#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sources/training/TrainingRule.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1836">
-          <caret line="118" column="31" selection-start-line="118" selection-start-column="31" selection-end-line="118" selection-end-column="31" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sources/model/RNNVars.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="702">
-          <caret line="48" column="46" selection-start-line="48" selection-start-column="46" selection-end-line="48" selection-end-column="46" />
-          <folding>
-            <element signature="e#0#26#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sources/datasets/TemporalOrderTask.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="504">
-          <caret line="35" column="48" selection-start-line="35" selection-start-column="48" selection-end-line="35" selection-end-column="48" />
-          <folding>
-            <element signature="e#0#12#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sources/runTemporal.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1170">
-          <caret line="97" column="54" selection-start-line="97" selection-start-column="54" selection-end-line="97" selection-end-column="54" />
-          <folding>
-            <element signature="e#0#10#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sources/training/TrainingRule.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1836">
-          <caret line="118" column="31" selection-start-line="118" selection-start-column="31" selection-end-line="118" selection-end-column="31" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sources/learningRule/GradientClipping.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="215">
+        <state relative-caret-position="432">
           <caret line="19" column="69" selection-start-line="19" selection-start-column="69" selection-end-line="19" selection-end-column="69" />
           <folding>
             <element signature="e#0#31#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sources/datasets/LupusDataset.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="342">
-          <caret line="166" column="0" selection-start-line="166" selection-start-column="0" selection-end-line="166" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#10#0" expanded="true" />
+            <marker date="1466499384796" expanded="true" signature="364:675" ph="..." />
+            <marker date="1466499384796" expanded="true" signature="434:471" ph="..." />
+            <marker date="1466499384796" expanded="true" signature="715:744" ph="..." />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/sources/runKLupus.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="287">
-          <caret line="200" column="49" selection-start-line="200" selection-start-column="49" selection-end-line="200" selection-end-column="49" />
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="e#0#14#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sources/datasets/LupusDataset.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="5400">
+          <caret line="166" column="0" selection-start-line="166" selection-start-column="0" selection-end-line="166" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#10#0" expanded="true" />
+            <marker date="1466499384792" expanded="true" signature="546:822" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="742:744" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="1064:1243" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="1187:1189" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="1545:1673" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="1630:1632" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="2403:2531" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="2488:2490" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="3367:3499" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="3456:3458" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="4371:5991" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="4417:4421" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="6037:6057" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="8423:8437" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="8489:8539" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="9145:9152" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="9194:9246" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="10539:10551" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="10603:10643" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="11437:11451" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="13256:13258" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="16011:16013" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="17623:17627" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="18329:18346" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sources/datasets/TemporalOrderTask.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1008">
+          <caret line="35" column="48" selection-start-line="35" selection-start-column="48" selection-end-line="35" selection-end-column="48" />
+          <folding>
+            <element signature="e#0#12#0" expanded="true" />
+            <marker date="1466499384792" expanded="true" signature="346:586" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="399:409" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="721:725" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="1056:1060" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="2411:2415" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sources/model/RNNVars.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1404">
+          <caret line="48" column="46" selection-start-line="48" selection-start-column="46" selection-end-line="48" selection-end-column="46" />
+          <folding>
+            <element signature="e#0#26#0" expanded="true" />
+            <marker date="1466499384796" expanded="true" signature="370:6213" ph="..." />
+            <marker date="1466499384796" expanded="true" signature="5372:5377" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sources/runTemporal.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2340">
+          <caret line="97" column="54" selection-start-line="97" selection-start-column="54" selection-end-line="97" selection-end-column="54" />
+          <folding>
+            <element signature="e#0#10#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sources/training/TrainingRule.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3672">
+          <caret line="118" column="31" selection-start-line="118" selection-start-column="31" selection-end-line="118" selection-end-column="31" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+            <marker date="1466499384832" expanded="true" signature="752:1737" ph="..." />
+            <marker date="1466499384832" expanded="true" signature="911:941" ph="..." />
+            <marker date="1466499384832" expanded="true" signature="943:989" ph="..." />
+            <marker date="1466499384832" expanded="true" signature="1045:1087" ph="..." />
+            <marker date="1466499384832" expanded="true" signature="2317:2402" ph="..." />
+            <marker date="1466499384832" expanded="true" signature="2353:2358" ph="..." />
+            <marker date="1466499384832" expanded="true" signature="2721:7111" ph="..." />
+            <marker date="1466499384832" expanded="true" signature="6275:6287" ph="..." />
+            <marker date="1466499384832" expanded="true" signature="7211:7219" ph="..." />
+            <marker date="1466499384832" expanded="true" signature="7898:7903" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sources/learningRule/GradientClipping.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="432">
+          <caret line="19" column="69" selection-start-line="19" selection-start-column="69" selection-end-line="19" selection-end-column="69" />
+          <folding>
+            <element signature="e#0#31#0" expanded="true" />
+            <marker date="1466499384796" expanded="true" signature="364:675" ph="..." />
+            <marker date="1466499384796" expanded="true" signature="434:471" ph="..." />
+            <marker date="1466499384796" expanded="true" signature="715:744" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sources/runKLupus.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#14#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sources/datasets/LupusDataset.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="5400">
+          <caret line="166" column="0" selection-start-line="166" selection-start-column="0" selection-end-line="166" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#10#0" expanded="true" />
+            <marker date="1466499384792" expanded="true" signature="546:822" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="742:744" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="1064:1243" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="1187:1189" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="1545:1673" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="1630:1632" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="2403:2531" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="2488:2490" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="3367:3499" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="3456:3458" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="4371:5991" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="4417:4421" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="6037:6057" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="8423:8437" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="8489:8539" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="9145:9152" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="9194:9246" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="10539:10551" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="10603:10643" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="11437:11451" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="13256:13258" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="16011:16013" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="17623:17627" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="18329:18346" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sources/datasets/TemporalOrderTask.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1008">
+          <caret line="35" column="48" selection-start-line="35" selection-start-column="48" selection-end-line="35" selection-end-column="48" />
+          <folding>
+            <element signature="e#0#12#0" expanded="true" />
+            <marker date="1466499384792" expanded="true" signature="346:586" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="399:409" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="721:725" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="1056:1060" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="2411:2415" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sources/model/RNNVars.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1404">
+          <caret line="48" column="46" selection-start-line="48" selection-start-column="46" selection-end-line="48" selection-end-column="46" />
+          <folding>
+            <element signature="e#0#26#0" expanded="true" />
+            <marker date="1466499384796" expanded="true" signature="370:6213" ph="..." />
+            <marker date="1466499384796" expanded="true" signature="5372:5377" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sources/runTemporal.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2340">
+          <caret line="97" column="54" selection-start-line="97" selection-start-column="54" selection-end-line="97" selection-end-column="54" />
+          <folding>
+            <element signature="e#0#10#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sources/training/TrainingRule.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3672">
+          <caret line="118" column="31" selection-start-line="118" selection-start-column="31" selection-end-line="118" selection-end-column="31" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+            <marker date="1466499384832" expanded="true" signature="752:1737" ph="..." />
+            <marker date="1466499384832" expanded="true" signature="911:941" ph="..." />
+            <marker date="1466499384832" expanded="true" signature="943:989" ph="..." />
+            <marker date="1466499384832" expanded="true" signature="1045:1087" ph="..." />
+            <marker date="1466499384832" expanded="true" signature="2317:2402" ph="..." />
+            <marker date="1466499384832" expanded="true" signature="2353:2358" ph="..." />
+            <marker date="1466499384832" expanded="true" signature="2721:7111" ph="..." />
+            <marker date="1466499384832" expanded="true" signature="6275:6287" ph="..." />
+            <marker date="1466499384832" expanded="true" signature="7211:7219" ph="..." />
+            <marker date="1466499384832" expanded="true" signature="7898:7903" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sources/learningRule/GradientClipping.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#31#0" expanded="true" />
+            <marker date="1466499384796" expanded="true" signature="364:675" ph="..." />
+            <marker date="1466499384796" expanded="true" signature="434:471" ph="..." />
+            <marker date="1466499384796" expanded="true" signature="715:744" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sources/datasets/TemporalOrderTask.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="504">
+          <caret line="35" column="48" selection-start-line="35" selection-start-column="48" selection-end-line="35" selection-end-column="48" />
+          <folding>
+            <element signature="e#0#12#0" expanded="true" />
+            <marker date="1466499384792" expanded="true" signature="346:586" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="399:409" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="721:725" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="1056:1060" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="2411:2415" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sources/model/RNNVars.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="702">
+          <caret line="48" column="46" selection-start-line="48" selection-start-column="46" selection-end-line="48" selection-end-column="46" />
+          <folding>
+            <element signature="e#0#26#0" expanded="true" />
+            <marker date="1466499384796" expanded="true" signature="370:6213" ph="..." />
+            <marker date="1466499384796" expanded="true" signature="5372:5377" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sources/runTemporal.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1170">
+          <caret line="97" column="54" selection-start-line="97" selection-start-column="54" selection-end-line="97" selection-end-column="54" />
+          <folding>
+            <element signature="e#0#10#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sources/training/TrainingRule.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1836">
+          <caret line="118" column="31" selection-start-line="118" selection-start-column="31" selection-end-line="118" selection-end-column="31" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+            <marker date="1466499384832" expanded="true" signature="752:1737" ph="..." />
+            <marker date="1466499384832" expanded="true" signature="911:941" ph="..." />
+            <marker date="1466499384832" expanded="true" signature="943:989" ph="..." />
+            <marker date="1466499384832" expanded="true" signature="1045:1087" ph="..." />
+            <marker date="1466499384832" expanded="true" signature="2317:2402" ph="..." />
+            <marker date="1466499384832" expanded="true" signature="2353:2358" ph="..." />
+            <marker date="1466499384832" expanded="true" signature="2721:7111" ph="..." />
+            <marker date="1466499384832" expanded="true" signature="6275:6287" ph="..." />
+            <marker date="1466499384832" expanded="true" signature="7211:7219" ph="..." />
+            <marker date="1466499384832" expanded="true" signature="7898:7903" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sources/model/RNNVars.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1404">
+          <caret line="48" column="46" selection-start-line="48" selection-start-column="46" selection-end-line="48" selection-end-column="46" />
+          <folding>
+            <element signature="e#0#26#0" expanded="true" />
+            <marker date="1466499384796" expanded="true" signature="370:6213" ph="..." />
+            <marker date="1466499384796" expanded="true" signature="5372:5377" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sources/datasets/TemporalOrderTask.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1008">
+          <caret line="35" column="48" selection-start-line="35" selection-start-column="48" selection-end-line="35" selection-end-column="48" />
+          <folding>
+            <element signature="e#0#12#0" expanded="true" />
+            <marker date="1466499384792" expanded="true" signature="346:586" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="399:409" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="721:725" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="1056:1060" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="2411:2415" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sources/runTemporal.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2340">
+          <caret line="97" column="54" selection-start-line="97" selection-start-column="54" selection-end-line="97" selection-end-column="54" />
+          <folding>
+            <element signature="e#0#10#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sources/training/TrainingRule.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3672">
+          <caret line="118" column="31" selection-start-line="118" selection-start-column="31" selection-end-line="118" selection-end-column="31" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+            <marker date="1466499384832" expanded="true" signature="752:1737" ph="..." />
+            <marker date="1466499384832" expanded="true" signature="911:941" ph="..." />
+            <marker date="1466499384832" expanded="true" signature="943:989" ph="..." />
+            <marker date="1466499384832" expanded="true" signature="1045:1087" ph="..." />
+            <marker date="1466499384832" expanded="true" signature="2317:2402" ph="..." />
+            <marker date="1466499384832" expanded="true" signature="2353:2358" ph="..." />
+            <marker date="1466499384832" expanded="true" signature="2721:7111" ph="..." />
+            <marker date="1466499384832" expanded="true" signature="6275:6287" ph="..." />
+            <marker date="1466499384832" expanded="true" signature="7211:7219" ph="..." />
+            <marker date="1466499384832" expanded="true" signature="7898:7903" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sources/learningRule/GradientClipping.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="432">
+          <caret line="19" column="69" selection-start-line="19" selection-start-column="69" selection-end-line="19" selection-end-column="69" />
+          <folding>
+            <element signature="e#0#31#0" expanded="true" />
+            <marker date="1466499384796" expanded="true" signature="364:675" ph="..." />
+            <marker date="1466499384796" expanded="true" signature="434:471" ph="..." />
+            <marker date="1466499384796" expanded="true" signature="715:744" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sources/datasets/LupusDataset.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="5400">
+          <caret line="166" column="0" selection-start-line="166" selection-start-column="0" selection-end-line="166" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#10#0" expanded="true" />
+            <marker date="1466499384792" expanded="true" signature="546:822" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="742:744" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="1064:1243" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="1187:1189" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="1545:1673" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="1630:1632" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="2403:2531" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="2488:2490" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="3367:3499" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="3456:3458" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="4371:5991" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="4417:4421" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="6037:6057" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="8423:8437" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="8489:8539" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="9145:9152" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="9194:9246" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="10539:10551" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="10603:10643" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="11437:11451" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="13256:13258" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="16011:16013" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="17623:17627" ph="..." />
+            <marker date="1466499384792" expanded="true" signature="18329:18346" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sources/runKLupus.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1224">
+          <caret line="34" column="0" selection-start-line="34" selection-start-column="0" selection-end-line="34" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#14#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sources/prova.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#31#0" expanded="true" />
           </folding>
         </state>
       </provider>
