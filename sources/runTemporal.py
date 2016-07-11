@@ -89,13 +89,13 @@ combining_rule = SimplexCombination(normalize_components=True, seed=seed)
 # combining_rule = SimpleSum()
 dir_rule = CombinedGradients(combining_rule)
 dir_rule = CheckedDirection(dir_rule, max_cos=0, max_dir_norm=0.9)
-dir_rule = Antigradient()
+#dir_rule = Antigradient()
 # dir_rule = LBFGSDirection(n_pairs=7)
 
 # learning step rule
 # lr_rule = WRecNormalizedStep(0.0001) #0.01
 # lr_rule = ConstantNormalizedStep(0.001)  # 0.01
-lr_rule = GradientClipping(lr_value=0.005, clip_thr=0.01, clip_wrt_max_comp=True, normalize_wrt_dimension=False)  # 0.01
+lr_rule = GradientClipping(lr_value=0.2, clip_thr=1, clip_wrt_max_comp=True, normalize_wrt_dimension=False)  # 0.01
 # lr_rule = AdaptiveStep(init_lr=0.001, num_tokens=50, prob_augment=0.4, sliding_window_size=50, steps_int_the_past=5,
 #                               beta_augment=1.1, beta_lessen=0.1, seed=seed)
 # lr_rule = ArmijoStep(alpha=0.5, beta=0.1, init_step=1, max_steps=50)

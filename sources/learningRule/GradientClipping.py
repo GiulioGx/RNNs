@@ -19,10 +19,10 @@ class GradientClipping(LearningStepRule):
 
     def compute_lr(self, net, obj_fnc: ObjectiveFunction, direction):
 
+        norm = direction.norm(2)
         if self.__clip_wrt_max_comp:
-            norm = direction.norm(1)
-        else:
-            norm = direction.norm(2)
+            comp_norm = direction.norm(1) * direction.shape[0] * direction.shape[1]
+            norm = ifelse(norm > comp_norm, norm, comp_norm)
 
         lr = self.__lr_value
         if self.__normalize_wrt_dimension:

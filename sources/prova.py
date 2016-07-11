@@ -22,9 +22,12 @@ files = [root+'run_0/scores.npz',
 colors = ['m', 'b', 'r', 'y', 'g', 'c', 'm', 'r', 'k']
 legends = ['25h,  0.90thr', '50h,  0.90thr', '100h, 0.90thr', '25h,  0.95thr', '50h,  0.95thr', '100h, 0.95thr',
            '25h,  0.99thr', '50h,  0.99thr', '100h, 0.99thr']
-size = (24, 20)
+size = (12, 12)
 fontsize=24
 linewidth=4
+
+files = [root + 'run_6/scores.npz']
+colors = ['b']
 
 i = 0
 for f in files:
@@ -63,13 +66,14 @@ for f in files:
     filename = os.path.splitext(filename)[0]
     filename = "/home/giulio/"
 
-    color = cm.Spectral(i/len(files),1)
+    #color = cm.Spectral(i/len(files),1)
+    color = 'm'
 
 
     # ROC plot
     plt.figure(1, figsize=size)
     plt.plot(fpr, tpr, color=color, linewidth=linewidth)
-    plt.legend(legends, shadow=True, fancybox=True, loc=1, fontsize=fontsize)
+    #plt.legend(legends, shadow=True, fancybox=True, loc=1, fontsize=fontsize)
     plt.xlabel('false positives rate', fontsize=fontsize)
     plt.ylabel('true positives rate', fontsize=fontsize)
     plt.setp(plt.gca().get_xticklabels(), rotation='horizontal', fontsize=fontsize)
