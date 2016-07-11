@@ -1,4 +1,3 @@
-from scipy.linalg._flapack import dtgsen
 from theano import tensor as TT
 from theano.ifelse import ifelse
 

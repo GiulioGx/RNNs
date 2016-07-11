@@ -21,7 +21,7 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="runTemporal.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="runTemporal.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/runTemporal.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="389">
@@ -63,13 +63,13 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="GradientClipping.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="GradientClipping.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/learningRule/GradientClipping.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1025">
-              <caret line="31" column="63" selection-start-line="31" selection-start-column="63" selection-end-line="31" selection-end-column="63" />
+            <state relative-caret-position="0">
+              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
               <folding>
-                <element signature="e#0#40#0" expanded="true" />
+                <element signature="e#0#31#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -146,8 +146,8 @@
         <option value="$PROJECT_DIR$/plotUtils/docs_plots/rate_success_temporal.py" />
         <option value="$PROJECT_DIR$/plotUtils/plt_utils.py" />
         <option value="$PROJECT_DIR$/prova.py" />
-        <option value="$PROJECT_DIR$/learningRule/GradientClipping.py" />
         <option value="$PROJECT_DIR$/runTemporal.py" />
+        <option value="$PROJECT_DIR$/learningRule/GradientClipping.py" />
       </list>
     </option>
   </component>
@@ -1004,21 +1004,21 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/learningRule/GradientClipping.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1025">
-          <caret line="31" column="63" selection-start-line="31" selection-start-column="63" selection-end-line="31" selection-end-column="63" />
-          <folding>
-            <element signature="e#0#40#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/runTemporal.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="389">
           <caret line="88" column="30" selection-start-line="88" selection-start-column="30" selection-end-line="88" selection-end-column="30" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/learningRule/GradientClipping.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#31#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
