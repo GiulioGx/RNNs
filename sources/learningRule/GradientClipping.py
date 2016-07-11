@@ -1,3 +1,4 @@
+from scipy.linalg._flapack import dtgsen
 from theano import tensor as TT
 from theano.ifelse import ifelse
 
@@ -27,7 +28,7 @@ class GradientClipping(LearningStepRule):
         lr = self.__lr_value
         if self.__normalize_wrt_dimension:
             lr = lr * direction.shape.prod()
-        computed_learning_rate = ifelse(TT.or_(norm < self.__clip_thr, is_inf_or_nan(norm)), lr, (self.__clip_thr / norm) * lr)
+        computed_learning_rate = ifelse(TT.or_(norm < self.__clip_thr, is_inf_or_nan(norm)), TT.cast(lr, dtype='float64'), (self.__clip_thr / norm) * lr)
         #computed_learning_rate = (self.__clip_thr / norm) * lr
 
         return computed_learning_rate, LearningStepRule.Infos(computed_learning_rate)
