@@ -95,7 +95,7 @@ def train_run(seed: int, task_length: int, prefix: str, lr: float, thr: float, i
 
 
 seeds = [13, 14, 15]
-lengths = [150]
+lengths = [100]
 thrs = [0.1, 0.5, 0.7, 0.8, 1]
 lrs = [0.1, 0.2, 0.3, 0.5]
 prefix = 'train_run'
