@@ -1,30 +1,27 @@
 import shutil
-import sys
 
 import theano
 
 from ActivationFunction import Tanh
 from Configs import Configs
 from combiningRule.SimplexCombination import SimplexCombination
+from datasets.Dataset import InfiniteDataset
+from datasets.TemporalOrderTask import TemporalOrderTask
 from descentDirectionRule.Antigradient import Antigradient
 from descentDirectionRule.CheckedDirection import CheckedDirection
 from descentDirectionRule.CombinedGradients import CombinedGradients
 from initialization.ConstantInit import ConstantInit
 from initialization.GaussianInit import GaussianInit
 from initialization.SpectralInit import SpectralInit
-from initialization.UniformInit import UniformInit
 from learningRule.GradientClipping import GradientClipping
 from lossFunctions.FullCrossEntropy import FullCrossEntropy
 from metrics.BestValueFoundCriterion import BestValueFoundCriterion
 from metrics.ErrorMonitor import ErrorMonitor
 from metrics.LossMonitor import LossMonitor
 from metrics.ThresholdCriterion import ThresholdCriterion
-from model.RNNGrowingPolicy import RNNIncrementalGrowing
 from model.RNNInitializer import RNNInitializer, RNNVarsInitializer
 from model.RNNManager import RNNManager
 from output_fncs.Softmax import Softmax
-from datasets.Dataset import InfiniteDataset
-from datasets.TemporalOrderTask import TemporalOrderTask
 from training.SGDTrainer import SGDTrainer
 from training.TrainingRule import TrainingRule
 from updateRule.SimpleUpdate import SimpleUdpate
@@ -44,7 +41,7 @@ print('floatType: ' + floatX)
 print(separator)
 
 
-def train_run(seed: int, task_length: int, prefix: str):
+def train_run(seed: int, task_length: int, prefix: str, lr: float, thr: float, id: int):
     Configs.seed = seed
 
     # network setup
@@ -66,10 +63,11 @@ def train_run(seed: int, task_length: int, prefix: str):
     combining_rule = SimplexCombination(normalize_components=True, seed=seed)
     # combining_rule = SimpleSum()
     dir_rule = CombinedGradients(combining_rule)
-    dir_rule = CheckedDirection(dir_rule, max_cos=0, max_dir_norm=0.9)
-    dir_rule = Antigradient()
+    dir_rule = CheckedDirection(dir_rule, max_cos=0, max_dir_norm=1.5)
+    #dir_rule = Antigradient()
 
-    lr_rule = GradientClipping(lr_value=0.001, clip_thr=1, normalize_wrt_dimension=False)  # 0.01
+    lr_rule = GradientClipping(lr_value=lr, clip_thr=thr, clip_wrt_max_comp=True,
+                               normalize_wrt_dimension=False)  # 0.01
 
     # update_rule = FixedAveraging(t=10)
     update_rule = SimpleUdpate()
@@ -77,7 +75,7 @@ def train_run(seed: int, task_length: int, prefix: str):
     train_rule = TrainingRule(dir_rule, lr_rule, update_rule, loss_fnc)
 
     task = TemporalOrderTask(task_length, seed)
-    out_dir = Configs.output_dir + prefix + '/' + str(task) + '_' + str(seed)
+    out_dir = Configs.output_dir + prefix + '/' + str(task) + '_' + str(seed) + '/' + str(id)
     dataset = InfiniteDataset(task=task, validation_size=10 ** 4, n_batches=5)
 
     loss_monitor = LossMonitor(loss_fnc=loss_fnc)
@@ -85,7 +83,7 @@ def train_run(seed: int, task_length: int, prefix: str):
     stopping_criterion = ThresholdCriterion(monitor=error_monitor, threshold=1. / 100)
     saving_criterion = BestValueFoundCriterion(monitor=error_monitor)
 
-    trainer = SGDTrainer(train_rule, output_dir=out_dir, max_it=10 ** 10,
+    trainer = SGDTrainer(train_rule, output_dir=out_dir, max_it= int(1.5 * 10 ** 6),  # 10 ** 10
                          monitor_update_freq=200, batch_size=100)
     trainer.add_monitors(dataset.validation_set, 'validation', loss_monitor, error_monitor)
     trainer.set_stopping_criterion(stopping_criterion)
@@ -96,15 +94,21 @@ def train_run(seed: int, task_length: int, prefix: str):
     return net
 
 
-seeds = [13, 14, 15, 16, 17]
+seeds = [13, 14, 15]
 lengths = [150]
+thrs = [0.1, 0.5, 0.7, 0.8, 1]
+lrs = [0.1, 0.2, 0.3, 0.5]
 prefix = 'train_run'
 
 print('Beginning train run...')
 print('seeds: {}, lengths: {}'.format(seeds, lengths))
 
-shutil.rmtree(Configs.output_dir+prefix, ignore_errors=True)
+shutil.rmtree(Configs.output_dir + prefix, ignore_errors=True)
 
 for i in range(len(seeds)):
     for j in range(len(lengths)):
-        train_run(seed=seeds[i], task_length=lengths[j], prefix=prefix)
+        id = 0
+        for thr in thrs:
+            for lr in lrs:
+                train_run(seed=seeds[i], task_length=lengths[j], prefix=prefix, thr=thr, lr=lr, id=id)
+                id += 1

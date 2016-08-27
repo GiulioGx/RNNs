@@ -40,5 +40,6 @@ class GradientClipping(LearningStepRule):
     def infos(self):
         step_info = PrintableInfoElement('constant_step', ':02.2e', self.__lr_value)
         thr_info = PrintableInfoElement('clipping_thr', ':02.2e', self.__clip_thr)
-        info = InfoList(step_info, thr_info)
+        clip_style = PrintableInfoElement('clip_style', '', 'l1' if self.__clip_wrt_max_comp else 'l2')
+        info = InfoList(step_info, thr_info, clip_style)
         return info
