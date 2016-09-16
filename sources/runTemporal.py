@@ -1,13 +1,17 @@
 import sys
 
-import theano
+import theano, numpy
 
-from ActivationFunction import Tanh
+from ActivationFunction import Tanh, Relu
 from Configs import Configs
+from combiningRule.ReducedSimplexCombination import ReducedSimplexCombination
 from combiningRule.SimplexCombination import SimplexCombination
+from combiningRule.TimeSmoothingCombination import TimeSmoothingCombination
+from combiningRule.UniformRandomCombination import UniformRandomCombination
 from descentDirectionRule.Antigradient import Antigradient
 from descentDirectionRule.CheckedDirection import CheckedDirection
 from descentDirectionRule.CombinedGradients import CombinedGradients
+from descentDirectionRule.DropoutDirection import DropoutDirection
 from descentDirectionRule.LBFGSDirection import LBFGSDirection
 from initialization.ConstantInit import ConstantInit
 from initialization.GaussianInit import GaussianInit
@@ -54,16 +58,16 @@ out_dir = Configs.output_dir + str(task) + '_' + str(seed)
 # network setup
 std_dev = 0.1  # 0.14 Tanh # 0.21 Relu
 mean = 0
+vars_initializer = RNNVarsInitializer(
+     W_rec_init=SpectralInit(matrix_init=GaussianInit(mean=mean, std_dev=std_dev, seed=seed), rho=1.2),
+     W_in_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed),
+     W_out_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed), b_rec_init=ConstantInit(0),
+     b_out_init=ConstantInit(0))
 # vars_initializer = RNNVarsInitializer(
-#     W_rec_init=SpectralInit(matrix_init=GaussianInit(mean=mean, std_dev=std_dev, seed=seed), rho=1.2),
+#     W_rec_init=GaussianInit(seed=seed, std_dev=std_dev),
 #     W_in_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed),
 #     W_out_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed), b_rec_init=ConstantInit(0),
 #     b_out_init=ConstantInit(0))
-vars_initializer = RNNVarsInitializer(
-    W_rec_init=SpectralInit(matrix_init=GaussianInit(seed=seed, std_dev=std_dev), rho=1.2),
-    W_in_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed),
-    W_out_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed), b_rec_init=ConstantInit(0),
-    b_out_init=ConstantInit(0))
 net_initializer = RNNInitializer(vars_initializer, n_hidden=50)
 net_builder = RNNManager(initializer=net_initializer, activation_fnc=Tanh(),
                          output_fnc=Softmax())  # , growing_policy=net_growing_policy)
@@ -72,30 +76,23 @@ net_builder = RNNManager(initializer=net_initializer, activation_fnc=Tanh(),
 
 loss_fnc = FullCrossEntropy(single_probability_ouput=False)
 
-# penalty strategy
-# penalty = MeanPenalty()
-# penalty = ConstantPenalty(c=5)
-# penalty = MeanPenalty()
-
-# direction strategy
-# dir_rule = AntiGradient()
-# dir_rule = AntiGradientWithPenalty(penalty, 1) #0.001
-# dir_rule = MidAnglePenaltyDirection(penalty)
-# dir_rule = FrozenGradient(penalty)
-# dir_rule = SepareteGradient()
-
+#combining_rule = UniformRandomCombination(normalize_components=True, seed=seed)
 # combining_rule = OnesCombination(normalize_components=False)
 combining_rule = SimplexCombination(normalize_components=True, seed=seed)
+#combining_rule = TimeSmoothingCombination(normalize_components=False, seed=seed)
+#combining_rule = ReducedSimplexCombination(keep_ratio=0.5, normalize_components=True, seed=seed)
+
 # combining_rule = SimpleSum()
 dir_rule = CombinedGradients(combining_rule)
-dir_rule = CheckedDirection(dir_rule, max_cos=0, max_dir_norm=1.5)
-#dir_rule = Antigradient()
+dir_rule = CheckedDirection(dir_rule, max_cos=0, max_dir_norm=numpy.inf)
+# dir_rule = Antigradient()
 # dir_rule = LBFGSDirection(n_pairs=7)
+#dir_rule = DropoutDirection(dir_rule=dir_rule, drop_rate=0.7, seed=seed)
 
 # learning step rule
 # lr_rule = WRecNormalizedStep(0.0001) #0.01
 # lr_rule = ConstantNormalizedStep(0.001)  # 0.01
-lr_rule = GradientClipping(lr_value=0.5, clip_thr=0.8, clip_wrt_max_comp=True, normalize_wrt_dimension=False)  # 0.01
+lr_rule = GradientClipping(lr_value=0.3, clip_thr=0.5, clip_wrt_max_comp=True, normalize_wrt_dimension=False)  # 0.01
 # lr_rule = AdaptiveStep(init_lr=0.001, num_tokens=50, prob_augment=0.4, sliding_window_size=50, steps_int_the_past=5,
 #                               beta_augment=1.1, beta_lessen=0.1, seed=seed)
 # lr_rule = ArmijoStep(alpha=0.5, beta=0.1, init_step=1, max_steps=50)
@@ -116,7 +113,7 @@ stopping_criterion = ThresholdCriterion(monitor=error_monitor, threshold=1. / 10
 saving_criterion = BestValueFoundCriterion(monitor=error_monitor)
 
 trainer = SGDTrainer(train_rule, output_dir=out_dir, max_it=10 ** 10,
-                     monitor_update_freq=200, batch_size=100)
+                     monitor_update_freq=200, batch_size=20)
 trainer.add_monitors(dataset.validation_set, "validation", loss_monitor, error_monitor)
 trainer.set_saving_criterion(saving_criterion)
 trainer.set_stopping_criterion(stopping_criterion)

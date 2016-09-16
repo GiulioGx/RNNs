@@ -26,7 +26,7 @@ size = (12, 12)
 fontsize=24
 linewidth=4
 
-files = [root + 'run_6/scores.npz']
+files = [root + 'run_8/scores.npz']
 colors = ['b']
 
 i = 0
@@ -39,10 +39,14 @@ for f in files:
     roc_score = roc_auc_score(y_true=labels, y_score=scores)
     precision, recall, thresholds_2 = metrics.precision_recall_curve(labels, scores)
 
-    # print('t', thresholds_1-thresholds_2)
+    print('t', thresholds_1)
+    print(fpr)
+    print(tpr)
 
-    # print(precision)
-    # print(recall)
+    for j in range(len(thresholds_1)):
+        if (1-fpr[j]) >0.7 and tpr[j]>0.7:
+            print(thresholds_1[j], 1-fpr[j], tpr[j])
+
 
     p = len(numpy.nonzero(labels)[0])  # number of positives
     n = len(labels) - p  # number of negatives

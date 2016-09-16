@@ -3,16 +3,19 @@ import matplotlib.pyplot as plt
 from PIL import Image
 
 from Configs import Configs
+from datasets.TemporalOrderTask import TemporalOrderTask
 from model import RNN
 from datasets.AdditionTask import AdditionTask
 from datasets.XorTaskHot import XorTaskHot
 import numpy
 
 seed = 132
-task = AdditionTask(144, seed)
+task = TemporalOrderTask(100, seed)
+modelFile = '/home/giulio/RNNs/models/temporal_order_plain, min_length: 100_14/current_model.npz'
+
 #out_dir = Configs.output_dir + str(datasets)
 #net = Rnn.load_model('/home/giulio/RNNs/models/completed/100 hidden/add_task, min_length: 144_average/model.npz')
-net = RNN.load_model('/home/giulio/RNNs/models/add_task, min_length: 144/current_model.npz')
+net = RNN.load_model(modelFile)
 batch = task.get_batch(1)
 
 y, h = net.net_ouput_numpy(batch.inputs)
@@ -20,8 +23,8 @@ y, h = net.net_ouput_numpy(batch.inputs)
 h_mean = numpy.mean(h, axis=2)
 
 # tanh
-saturation_b1 = numpy.tanh(2)
-saturation_b2 = numpy.tanh(-2)
+saturation_b1 = numpy.tanh(1.5)
+saturation_b2 = numpy.tanh(-1.5)
 
 # relu
 # saturation_b1 = numpy.tanh(0.)

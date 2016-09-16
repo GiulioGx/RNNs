@@ -10,14 +10,11 @@ from theano.tensor.shared_randomstreams import RandomStreams
 __author__ = 'giulio'
 
 
-class SimplexCombination(LinearCombination):
+class UniformRandomCombination(LinearCombination):
     def get_linear_coefficients(self, H):
         n = H.shape[0]
         u = self.__srng.uniform(low=0, high=1, size=(n, 1))
-        x = TT.exp(1. - u)
-        r = x / (x.sum() + 1e-10)
-        # r = u / u.sum()  # XXX simplex
-        return r
+        return u
 
     def __init__(self, normalize_components: bool = True, seed=Configs.seed):
         super().__init__(normalize_components=normalize_components)
@@ -25,12 +22,12 @@ class SimplexCombination(LinearCombination):
 
     @property
     def infos(self):
-        return InfoGroup('simplex_combination', super(SimplexCombination, self).infos)
+        return InfoGroup('random_uniform_combination', super(UniformRandomCombination, self).infos)
 
 
 if __name__ == '__main__':
     n = TT.scalar('n', dtype='int32')
-    combination = SimplexCombination(seed=14, normalize_components=False)
+    combination = UniformRandomCombination(seed=14, normalize_components=False)
 
     betas = combination.get_linear_coefficients(TT.zeros((n, 1)))
     f = T.function([n], [betas])

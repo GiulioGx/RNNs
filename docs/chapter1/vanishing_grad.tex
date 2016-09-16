@@ -5,11 +5,11 @@ As we have seen the gradient is composed of terms of the form:
 \frac{\partial \vec{a}^t}{\partial \vec{a}^k} = \prod_{i=t-1}^{k}  diag(\sigma'(\vec{a}^i)) \cdot \mat{W}^{rec}.
 \label{eq:temporalComponent}
 \end{equation}
-The terms $\frac{\partial \vec{a}^t}{\partial \vec{a}^k}$ capture the "dependecy" of neurons at time step $t$ from neurons at time $k$.
+The terms $\frac{\partial \vec{a}^t}{\partial \vec{a}^k}$ capture the "dependency" of neurons at time step $t$ from neurons at time $k$.
 Such term are usually distinguished between \textit{long term} contributions when $k\ll t$ and \textit{short term} contributions otherwise. We can notice that each temporal contribution is the product of $l=t-k-1$ matrices, so in \textit{long term} components, where $l$ can be very large, we can intuitively understand that such product can go exponentially fast towards 0 or infinity depending on the spectral radius of the matrices involved.
 
 The \textit{vanishing} gradient problem is directly linked to the notion of memory; when the term $\frac{\partial \vec{a}^t}{\partial \vec{a}^k}$ approaches zero value changes in the output of the neurons at time $k$ have little impact on the output at time $t$. This, in turn, leads to the fact that the output of the net does not depend on inputs of distant temporal steps, i.e. the output
-sequence is determined only by recent temporal input: we say that the network doesn't have memory. Evidently this can have catastrophic effects on the classification error. Imagine we would like
+sequence is determined only by recent temporal input: we say that the network does not have memory. Evidently this can have catastrophic effects on the classification error. Imagine we would like
 to classify an input sequence as positive whether or not it contains a given character. It would seem a rather easy task, however, if when training the network, we incur in the \textit{vanishing} gradient, we may train a network which performs the classification using only the most recent temporal inputs. What if the character was at the beginning of the sequence? Of course the prediction would be wrong.
 
 \textit{Exploding} gradient seems to be a rather different kind of a problem, it does not affect the ability of the network to use information from distant temporal steps, on the contrary we have very strong information about where to go using the gradient direction. 
