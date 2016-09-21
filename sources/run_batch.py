@@ -1,5 +1,6 @@
 import shutil
 
+import numpy
 import theano
 
 from ActivationFunction import Tanh
@@ -59,15 +60,12 @@ def train_run(seed: int, task_length: int, prefix: str, lr: float, thr: float, i
 
     loss_fnc = FullCrossEntropy(single_probability_ouput=False)
 
-    # combining_rule = OnesCombination(normalize_components=False)
     combining_rule = SimplexCombination(normalize_components=True, seed=seed)
-    # combining_rule = SimpleSum()
     dir_rule = CombinedGradients(combining_rule)
-    dir_rule = CheckedDirection(dir_rule, max_cos=0, max_dir_norm=1.5)
+    dir_rule = CheckedDirection(dir_rule, max_cos=0, max_dir_norm=numpy.inf)
     #dir_rule = Antigradient()
 
-    lr_rule = GradientClipping(lr_value=lr, clip_thr=thr, clip_wrt_max_comp=True,
-                               normalize_wrt_dimension=False)  # 0.01
+    lr_rule = GradientClipping(lr_value=lr, clip_thr=thr, clip_style='l1')  # 0.01
 
     # update_rule = FixedAveraging(t=10)
     update_rule = SimpleUdpate()
@@ -83,7 +81,7 @@ def train_run(seed: int, task_length: int, prefix: str, lr: float, thr: float, i
     stopping_criterion = ThresholdCriterion(monitor=error_monitor, threshold=1. / 100)
     saving_criterion = BestValueFoundCriterion(monitor=error_monitor)
 
-    trainer = SGDTrainer(train_rule, output_dir=out_dir, max_it= int(1.5 * 10 ** 6),  # 10 ** 10
+    trainer = SGDTrainer(train_rule, output_dir=out_dir, max_it= int(3 * 10 ** 6),  # 10 ** 10
                          monitor_update_freq=200, batch_size=100)
     trainer.add_monitors(dataset.validation_set, 'validation', loss_monitor, error_monitor)
     trainer.set_stopping_criterion(stopping_criterion)
@@ -94,10 +92,10 @@ def train_run(seed: int, task_length: int, prefix: str, lr: float, thr: float, i
     return net
 
 
-seeds = [13, 14, 15]
-lengths = [100]
-thrs = [0.1, 0.5, 0.7, 0.8, 1]
-lrs = [0.1, 0.2, 0.3, 0.5]
+seeds = [13, 14, 15, 16, 17]
+lengths = [150]
+thrs = [0.01]
+lrs = [0.01]
 prefix = 'train_run'
 
 print('Beginning train run...')

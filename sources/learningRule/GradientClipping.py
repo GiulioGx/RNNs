@@ -11,24 +11,24 @@ __author__ = 'giulio'
 
 
 class GradientClipping(LearningStepRule):
-    def __init__(self, lr_value=0.01, clip_thr=1., clip_wrt_max_comp:bool = False, normalize_wrt_dimension: bool = False):
+    def __init__(self, lr_value=0.01, clip_thr=1., clip_style: str = 'l1'):
         self.__lr_value = lr_value
         self.__clip_thr = clip_thr
-        self.__normalize_wrt_dimension = normalize_wrt_dimension
-        self.__clip_wrt_max_comp = clip_wrt_max_comp
+        self.__clip_style = clip_style.lower()
 
     def compute_lr(self, net, obj_fnc: ObjectiveFunction, direction):
 
-        norm = direction.norm(2)
-        if self.__clip_wrt_max_comp:
-            comp_norm = direction.norm(1) * direction.shape[0] * direction.shape[1]
-            norm = ifelse(norm > comp_norm, norm, comp_norm)
+        if self.__clip_style == "l2":
+            norm = direction.norm(2)
+        elif self.__clip_style == "l1":
+            norm = direction.norm(1)  # * direction.shape[0] * direction.shape[1]
+        else:
+            raise AttributeError(
+                "not supported clip_style '{}', available styles are 'l1' and 'l2'".format(self.__clip_style))
 
         lr = self.__lr_value
-        if self.__normalize_wrt_dimension:
-            lr = lr * direction.shape.prod()
-        computed_learning_rate = ifelse(TT.or_(norm < self.__clip_thr, is_inf_or_nan(norm)), TT.cast(lr, dtype='float64'), (self.__clip_thr / norm) * lr)
-        #computed_learning_rate = (self.__clip_thr / norm) * lr
+        computed_learning_rate = ifelse(TT.or_(norm < self.__clip_thr, is_inf_or_nan(norm)),
+                                        TT.cast(lr, dtype='float64'), (self.__clip_thr / norm) * lr)
 
         return computed_learning_rate, LearningStepRule.Infos(computed_learning_rate)
 
@@ -40,6 +40,6 @@ class GradientClipping(LearningStepRule):
     def infos(self):
         step_info = PrintableInfoElement('constant_step', ':02.2e', self.__lr_value)
         thr_info = PrintableInfoElement('clipping_thr', ':02.2e', self.__clip_thr)
-        clip_style = PrintableInfoElement('clip_style', '', 'l1' if self.__clip_wrt_max_comp else 'l2')
+        clip_style = PrintableInfoElement('clip_style', '', self.__clip_style)
         info = InfoList(step_info, thr_info, clip_style)
         return info

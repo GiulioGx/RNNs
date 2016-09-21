@@ -11,7 +11,7 @@ import numpy
 
 seed = 132
 task = TemporalOrderTask(100, seed)
-modelFile = '/home/giulio/RNNs/models/temporal_order_plain, min_length: 100_14/current_model.npz'
+modelFile = '/home/giulio/RNNs/models/temporal_order_plain, min_length: 57_14/current_model.npz'
 
 #out_dir = Configs.output_dir + str(datasets)
 #net = Rnn.load_model('/home/giulio/RNNs/models/completed/100 hidden/add_task, min_length: 144_average/model.npz')
