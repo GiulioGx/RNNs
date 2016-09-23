@@ -82,7 +82,7 @@ def train_run(seed: int, task_length: int, prefix: str, lr: float, thr: float, i
     saving_criterion = BestValueFoundCriterion(monitor=error_monitor)
 
     trainer = SGDTrainer(train_rule, output_dir=out_dir, max_it= int(3 * 10 ** 6),  # 10 ** 10
-                         monitor_update_freq=200, batch_size=100)
+                         monitor_update_freq=200, batch_size=20)
     trainer.add_monitors(dataset.validation_set, 'validation', loss_monitor, error_monitor)
     trainer.set_stopping_criterion(stopping_criterion)
     trainer.set_saving_criterion(saving_criterion)
