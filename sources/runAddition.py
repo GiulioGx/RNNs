@@ -1,5 +1,6 @@
 import sys
 
+import numpy
 import theano
 
 from ActivationFunction import Tanh
@@ -92,14 +93,15 @@ loss_fnc = FullSquaredError()
 combining_rule = SimplexCombination(normalize_components=True, seed=seed)
 # combining_rule = SimpleSum()
 dir_rule = CombinedGradients(combining_rule)
-dir_rule = CheckedDirection(dir_rule, max_cos=0, max_dir_norm=0.5)
+#dir_rule = CheckedDirection(dir_rule, max_cos=0, max_dir_norm=0.5)
+dir_rule = CheckedDirection(dir_rule, max_cos=0, max_dir_norm=numpy.inf)
 # dir_rule = Antigradient()
 # dir_rule = LBFGSDirection(n_pairs=7)
 
 # learning step rule
 # lr_rule = WRecNormalizedStep(0.0001) #0.01
 # lr_rule = ConstantNormalizedStep(0.001)  # 0.01
-lr_rule = GradientClipping(lr_value=0.005, clip_thr=1, normalize_wrt_dimension=False)  # 0.01
+lr_rule = GradientClipping(lr_value=0.001, clip_thr=0.05, clip_style='l1')  # 0.01
 # lr_rule = AdaptiveStep(init_lr=0.001, num_tokens=50, prob_augment=0.4, sliding_window_size=50, steps_int_the_past=5,
 #                               beta_augment=1.1, beta_lessen=0.1, seed=seed)
 # lr_rule = ArmijoStep(alpha=0.5, beta=0.1, init_step=1, max_steps=50)
@@ -115,7 +117,7 @@ train_rule = TrainingRule(dir_rule, lr_rule, update_rule, loss_fnc)
 dataset = InfiniteDataset(task=task, validation_size=10 ** 4, n_batches=5)
 
 loss_monitor = LossMonitor(loss_fnc=loss_fnc)
-error_monitor = ErrorMonitor(dataset=dataset)
+error_monitor = ErrorMonitor(dataset=dataset, error_fnc=task.error_fnc)
 stopping_criterion = ThresholdCriterion(monitor=error_monitor, threshold=1. / 100)
 saving_criterion = BestValueFoundCriterion(monitor=error_monitor)
 
