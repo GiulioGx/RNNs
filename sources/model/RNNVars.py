@@ -43,9 +43,9 @@ class RNNVars(Variables):
         return self.dot(other) / (self.norm() * other.norm())
 
     def norm(self, L=2):  # XXX
-        if L==2:
-            return norm2(self.__W_rec, self.__W_in, self.__W_out, self.__b_rec, self.__b_out) # FIXME
-        elif L==1:
+        if L == 2:
+            return norm2(self.__W_rec, self.__W_in, self.__W_out, self.__b_rec, self.__b_out)  # FIXME
+        elif L == 1:
             return (abs(self.flatten()).max())
         else:
             raise ValueError('unsupported norm {}'.format(L))
@@ -99,6 +99,12 @@ class RNNVars(Variables):
         lr_b_rec, lr_b_rec_symbolic_infos = strategy.compute_lr(self.__net, None, self.__b_rec)
         lr_b_out, lr_b_out_symbolic_infos = strategy.compute_lr(self.__net, None, self.__b_out)
 
+        #lr_w_out *= 0.5
+        #lr_b_out *= 0.5
+
+        #lr_w_rec *= 0.5
+        #lr_b_rec *= 0.5
+
         info = RNNVars.StepInfo(lr_w_rec_symbolic_infos, lr_w_in_symbolic_infos, lr_w_out_symbolic_infos,
                                 lr_b_rec_symbolic_infos, lr_b_out_symbolic_infos)
 
@@ -126,14 +132,18 @@ class RNNVars(Variables):
 
         def fill_symbols(self, symbols_replacedments: list) -> Info:
             lr_w_rec_info = self.__lr_w_rec_symbolic_infos.fill_symbols(symbols_replacedments)
+            i = len(self.__lr_w_rec_symbolic_infos.symbols)
             lr_w_in_info = self.__lr_w_in_symbolic_infos.fill_symbols(
-                symbols_replacedments[len(self.__lr_w_rec_symbolic_infos.symbols):])
+                symbols_replacedments[i:])
+            i += len(self.__lr_w_in_symbolic_infos.symbols)
             lr_w_out_info = self.__lr_w_out_symbolic_infos.fill_symbols(
-                symbols_replacedments[len(self.__lr_w_in_symbolic_infos.symbols):])
+                symbols_replacedments[i:])
+            i += len(self.__lr_w_out_symbolic_infos.symbols)
             lr_b_rec_info = self.__lr_b_rec_symbolic_infos.fill_symbols(
-                symbols_replacedments[len(self.__lr_w_out_symbolic_infos.symbols):])
+                symbols_replacedments[i:])
+            i += len(self.__lr_b_rec_symbolic_infos.symbols)
             lr_b_out_info = self.__lr_b_out_symbolic_infos.fill_symbols(
-                symbols_replacedments[len(self.__lr_b_rec_symbolic_infos.symbols):])
+                symbols_replacedments[i:])
             return InfoList(lr_w_rec_info, lr_w_in_info, lr_w_out_info, lr_b_rec_info, lr_b_out_info)
 
     # XXX

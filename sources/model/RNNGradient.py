@@ -15,7 +15,7 @@ class RNNGradient(object):
     def __init__(self, net, gW_rec_T, gW_in_T, gW_out_T, gb_rec_T, gb_out_T, obj_fnc: ObjectiveFunction):
 
         self.__preserve_norm = True
-        self.__type = 'togheter'  # FIXME
+        self.__type = 'separate'  # FIXME
         self.__net = net
         self.__obj_fnc = obj_fnc
 
@@ -143,18 +143,21 @@ class RNNGradient(object):
         gb_rec_tensor = flatten_list_element(self.__gb_rec_T).squeeze()
 
         # # these are the indexes where the loss is not null by design
-        indexes = (self.__net.mask.sum(axis=1).sum(axis=1)).nonzero()[0]
+        indexes = (self.__net.symbols.mask.sum(axis=1).sum(axis=1)).nonzero()[0]
         gW_out_tensor = flatten_list_element(self.__gW_out_T.take(indexes, axis=0)).squeeze()
         gb_out_tensor = flatten_list_element(self.__gb_out_T.take(indexes, axis=0)).squeeze()
 
-        gW_rec_combinantion, _ = strategy.combine(gW_rec_tensor)
-        gW_in_combinantion, _ = strategy.combine(gW_in_tensor)
-        gW_out_combinantion, _ = strategy.combine(gW_out_tensor)
-        gb_rec_combinantion, _ = strategy.combine(gb_rec_tensor)
-        gb_out_combinantion, _ = strategy.combine(gb_out_tensor)
+        gW_rec_combination, _ = strategy.combine(gW_rec_tensor)
+        gW_in_combination, _ = strategy.combine(gW_in_tensor)
+        gW_out_combination, _ = strategy.combine(gW_out_tensor)
+        gb_rec_combination, _ = strategy.combine(gb_rec_tensor)
+        gb_out_combination, _ = strategy.combine(gb_out_tensor)
 
-        flattened = as_vector(gW_rec_combinantion, gW_in_combinantion, gW_out_combinantion,
-                              gb_rec_combinantion, gb_out_combinantion)
+        gW_out_combination = self.__gW_out_T.sum(axis=0).flatten()
+        gb_out_combination = self.__gb_out_T.sum(axis=0).flatten()
+
+        flattened = as_vector(gW_rec_combination, gW_in_combination, gW_out_combination,
+                              gb_rec_combination, gb_out_combination)
         combination = self.__net.from_tensor(flattened)
 
         return combination, NullSymbolicInfos()

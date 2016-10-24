@@ -281,14 +281,24 @@ class RNN(object):
             y_t = self.__net.y_t(h_t, W_out_fixes, b_out_fixes)
             return h_t, y_t
 
-        def regularization_penalty(self, u, t, mask, params: RNNVars):
+        def regularization_penalty(self, u, t, mask, params: RNNVars, type:str):
             y, h, W_rec, W_in, W_out, b_rec, b_out = self.net_output(u=u, params=params)
 
-            h1 = abs(h)
-            cost = h1.mean(axis=0).mean(axis=0).mean(axis=0)
-            gW_rec, gW_in, gb_rec = T.grad(cost=cost, wrt=[W_rec, W_in, b_rec])
-            gW_out = TT.zeros_like(W_out)
-            gb_out = TT.zeros_like(b_out)
+            if type == "h":
+                h1 = abs(h)
+                cost = h1.mean(axis=0).mean(axis=0).mean(axis=0)
+                gW_rec, gW_in, gb_rec = T.grad(cost=cost, wrt=[W_rec, W_in, b_rec])
+                gW_out = TT.zeros_like(W_out)
+                gb_out = TT.zeros_like(b_out)
+            else:
+                cost = (W_rec**2).sum(axis=1).sum(axis=1).mean(axis=0)
+                gW_rec = T.grad(cost=cost, wrt=[W_rec])[0]
+                gW_in = TT.zeros_like(W_in)
+                gb_rec = TT.zeros_like(b_rec)
+                gW_out = TT.zeros_like(W_out)
+                gb_out = TT.zeros_like(b_out)
+
+                g = (W_rec).mean(axis=0)
             return RNNVars(self.__net, W_rec=gW_rec.sum(), W_in=gW_in.sum(), W_out=gW_out.sum(), b_rec=gb_rec.sum(), b_out=gb_out.sum()), cost
 
         def gradient(self, u, t, mask, params: RNNVars, obj_fnc: ObjectiveFunction):
