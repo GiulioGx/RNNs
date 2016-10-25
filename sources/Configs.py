@@ -6,3 +6,4 @@ class Configs:
     seed = 13
     output_dir = '/home/giulio/RNNs/models/'
 
+7
