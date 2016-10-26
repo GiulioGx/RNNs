@@ -53,16 +53,16 @@ print(separator)
 seed = 14
 Configs.seed = seed
 
-task = TemporalOrderTask(100, seed)
+task = TemporalOrderTask(50, seed)
 out_dir = Configs.output_dir + str(task) + '_' + str(seed)
 # network setup
 std_dev = 0.1  # 0.14 Tanh # 0.21 Relu
 mean = 0
 vars_initializer = RNNVarsInitializer(
-     W_rec_init=SpectralInit(matrix_init=GaussianInit(mean=mean, std_dev=std_dev, seed=seed), rho=1.2),
-     W_in_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed),
-     W_out_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed), b_rec_init=ConstantInit(0),
-     b_out_init=ConstantInit(0))
+    W_rec_init=SpectralInit(matrix_init=GaussianInit(mean=mean, std_dev=std_dev, seed=seed), rho=1.2),
+    W_in_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed),
+    W_out_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed), b_rec_init=ConstantInit(0),
+    b_out_init=ConstantInit(0))
 # vars_initializer = RNNVarsInitializer(
 #     W_rec_init=GaussianInit(seed=seed, std_dev=std_dev),
 #     W_in_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed),
@@ -76,18 +76,18 @@ net_builder = RNNManager(initializer=net_initializer, activation_fnc=Tanh(),
 
 loss_fnc = FullCrossEntropy(single_probability_ouput=False)
 
-#combining_rule = UniformRandomCombination(normalize_components=True, seed=seed)
+# combining_rule = UniformRandomCombination(normalize_components=True, seed=seed)
 # combining_rule = OnesCombination(normalize_components=False)
 combining_rule = SimplexCombination(normalize_components=True, seed=seed)
-#combining_rule = TimeSmoothingCombination(normalize_components=False, seed=seed)
-#combining_rule = ReducedSimplexCombination(keep_ratio=0.5, normalize_components=True, seed=seed)
+# combining_rule = TimeSmoothingCombination(normalize_components=False, seed=seed)
+# combining_rule = ReducedSimplexCombination(keep_ratio=0.5, normalize_components=True, seed=seed)
 
 # combining_rule = SimpleSum()
 dir_rule = CombinedGradients(combining_rule)
 dir_rule = CheckedDirection(dir_rule, max_cos=0, max_dir_norm=numpy.inf)
-#dir_rule = Antigradient()
+# dir_rule = Antigradient()
 # dir_rule = LBFGSDirection(n_pairs=7)
-#dir_rule = DropoutDirection(dir_rule=dir_rule, drop_rate=0.7, seed=seed)
+# dir_rule = DropoutDirection(dir_rule=dir_rule, drop_rate=0.7, seed=seed)
 
 # learning step rule
 # lr_rule = WRecNormalizedStep(0.0001) #0.01
