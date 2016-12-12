@@ -4,7 +4,7 @@ from infos.InfoGroup import InfoGroup
 from infos.InfoList import InfoList
 from initialization.GaussianInit import GaussianInit
 from initialization.MatrixInit import MatrixInit
-import numpy
+import numpy as np
 
 __author__ = 'giulio'
 
@@ -21,7 +21,16 @@ class SpectralInit(MatrixInit):
         assert len(w.shape) == 2
         assert w.shape[0] == w.shape[1]
         rho = MatrixInit.spectral_radius(w)
-        return w / rho * self.__rho
+        scale_factor = self.__rho / rho
+
+        diagonal = np.repeat(scale_factor, w.shape[0]).astype(dtype)
+        # diagonal[::2] *= 1
+        # diagonal[1::2] *= -1
+        s = np.diag(diagonal)
+
+        print(s)
+
+        return np.dot(w, s)
 
     @property
     def infos(self):

@@ -85,7 +85,7 @@ class TrainingRule(SimpleInfoProducer):
     class TrainCompiled(object):
         def __init__(self, rule, net):
 
-            self.__separate = True
+            self.__separate = False
             self.__symbolic_infos_list = []
             self.__symbolic_error_list = []
             net_symbols = net.symbols
@@ -103,7 +103,8 @@ class TrainingRule(SimpleInfoProducer):
 
             else:
                 step, lr_symbolic_infos = direction.step_as_direction(rule.lr_rule)
-                update_vars = net_symbols.current_params + step
+                update_vars, update_symbolic_info = rule.update_rule.compute_update(net, 1., direction)
+                # update_vars = net_symbols.current_params + step
                 update_symbolic_info = NullSymbolicInfos()
 
             self.__symbolic_infos_list.append(lr_symbolic_infos)

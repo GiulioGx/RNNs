@@ -4,8 +4,11 @@ import theano, numpy
 
 from ActivationFunction import Tanh, Relu
 from Configs import Configs
+from combiningRule.ClippingCombination import ClippingCombination
+from combiningRule.OnesCombination import OnesCombination
 from combiningRule.ReducedSimplexCombination import ReducedSimplexCombination
 from combiningRule.SimplexCombination import SimplexCombination
+from combiningRule.TemporalClippingCombination import TemporalClippingCombination
 from combiningRule.TimeSmoothingCombination import TimeSmoothingCombination
 from combiningRule.UniformRandomCombination import UniformRandomCombination
 from descentDirectionRule.Antigradient import Antigradient
@@ -16,6 +19,7 @@ from descentDirectionRule.LBFGSDirection import LBFGSDirection
 from initialization.ConstantInit import ConstantInit
 from initialization.GaussianInit import GaussianInit
 from initialization.SVDInit import SVDInit
+from initialization.SparseGaussianInit import SparseGaussianInit
 from initialization.SpectralInit import SpectralInit
 from initialization.UniformInit import UniformInit
 from learningRule.AdaptiveStep import AdaptiveStep
@@ -34,6 +38,7 @@ from datasets.Dataset import InfiniteDataset
 from datasets.TemporalOrderTask import TemporalOrderTask
 from training.SGDTrainer import SGDTrainer
 from training.TrainingRule import TrainingRule
+from updateRule.CyclicUpdate import CyclicUdpate
 from updateRule.SimpleUpdate import SimpleUdpate
 
 __author__ = 'giulio'
@@ -56,12 +61,12 @@ Configs.seed = seed
 task = TemporalOrderTask(50, seed)
 out_dir = Configs.output_dir + str(task) + '_' + str(seed)
 # network setup
-std_dev = 0.1  # 0.14 Tanh # 0.21 Relu
+std_dev = 0.01  # 0.14 Tanh # 0.21 Relu
 mean = 0
 vars_initializer = RNNVarsInitializer(
     W_rec_init=SpectralInit(matrix_init=GaussianInit(mean=mean, std_dev=std_dev, seed=seed), rho=1.2),
-    W_in_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed),
-    W_out_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed), b_rec_init=ConstantInit(0),
+    W_in_init=GaussianInit(mean=mean, std_dev=std_dev, seed=seed),
+    W_out_init=GaussianInit(mean=mean, std_dev=std_dev, seed=seed), b_rec_init=ConstantInit(0),
     b_out_init=ConstantInit(0))
 # vars_initializer = RNNVarsInitializer(
 #     W_rec_init=GaussianInit(seed=seed, std_dev=std_dev),
@@ -77,10 +82,12 @@ net_builder = RNNManager(initializer=net_initializer, activation_fnc=Tanh(),
 loss_fnc = FullCrossEntropy(single_probability_ouput=False)
 
 # combining_rule = UniformRandomCombination(normalize_components=True, seed=seed)
-# combining_rule = OnesCombination(normalize_components=False)
+# combining_rule = OnesCombination(normalize_components=True)
 combining_rule = SimplexCombination(normalize_components=True, seed=seed)
 # combining_rule = TimeSmoothingCombination(normalize_components=False, seed=seed)
 # combining_rule = ReducedSimplexCombination(keep_ratio=0.5, normalize_components=True, seed=seed)
+
+# combining_rule = TemporalClippingCombination(thr=0.1, clip_style="nothing_for_now")
 
 # combining_rule = SimpleSum()
 dir_rule = CombinedGradients(combining_rule)
@@ -92,7 +99,7 @@ dir_rule = CheckedDirection(dir_rule, max_cos=0, max_dir_norm=numpy.inf)
 # learning step rule
 # lr_rule = WRecNormalizedStep(0.0001) #0.01
 # lr_rule = ConstantNormalizedStep(0.001)  # 0.01
-lr_rule = GradientClipping(lr_value=0.3, clip_thr=0.01, clip_style='l1')  # 0.01
+lr_rule = GradientClipping(lr_value=0.1, clip_thr=0.05, clip_style='l1')  # 0.01
 # lr_rule = AdaptiveStep(init_lr=0.001, num_tokens=50, prob_augment=0.4, sliding_window_size=50, steps_int_the_past=5,
 #                               beta_augment=1.1, beta_lessen=0.1, seed=seed)
 # lr_rule = ArmijoStep(alpha=0.5, beta=0.1, init_step=1, max_steps=50)
@@ -100,12 +107,17 @@ lr_rule = GradientClipping(lr_value=0.3, clip_thr=0.01, clip_style='l1')  # 0.01
 # update_rule = FixedAveraging(t=10)
 update_rule = SimpleUdpate()
 # update_rule = Momentum(gamma=0.1)
+update_rule = CyclicUdpate()
 
 
 train_rule = TrainingRule(dir_rule, lr_rule, update_rule, loss_fnc)
 
 # dataset = Dataset.no_valid_dataset_from_task(size=1000, datasets=datasets)
 dataset = InfiniteDataset(task=task, validation_size=10 ** 4, n_batches=5)
+val_batches = dataset.validation_set
+print("validation set batches:")
+for b in val_batches:
+    print("\t", b.inputs.shape)
 
 loss_monitor = LossMonitor(loss_fnc=loss_fnc)
 error_monitor = ErrorMonitor(dataset=dataset, error_fnc=task.error_fnc)
