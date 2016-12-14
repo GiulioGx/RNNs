@@ -5,7 +5,6 @@ from infos.InfoProducer import SimpleInfoProducer
 from initialization.GaussianInit import GaussianInit
 from initialization.MatrixInit import MatrixInit
 
-
 class RNNVarsInitializer(SimpleInfoProducer):
     def __init__(self, W_rec_init: MatrixInit = GaussianInit(), W_in_init: MatrixInit = GaussianInit(),
                  W_out_init: MatrixInit = GaussianInit(), b_rec_init: MatrixInit = GaussianInit(),
@@ -19,6 +18,7 @@ class RNNVarsInitializer(SimpleInfoProducer):
     def generate_variables(self, n_in: int, n_out, n_hidden: int):
         # init network matrices
         W_rec = self.__W_rec_init.init_matrix((n_hidden, n_hidden), Configs.floatType)
+
         W_in = self.__W_in_init.init_matrix((n_hidden, n_in), Configs.floatType)
         W_out = self.__W_out_init.init_matrix((n_out, n_hidden), Configs.floatType)
 

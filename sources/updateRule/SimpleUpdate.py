@@ -30,7 +30,7 @@ class SimpleUdpate(UpdateRule):
 
 class UpdateInfos(SymbolicInfo):
     def __init__(self, updated_params, step):
-        self.__symbols = [TT.max(abs(updated_params.W_rec)), TT.sum(updated_params.W_rec), TT.max(abs(step.W_rec)),
+        self.__symbols = [TT.max(abs(updated_params.W_rec)), TT.mean(updated_params.W_rec), TT.max(abs(step.W_rec)),
                           TT.max(abs(step.W_in)), TT.max(abs(step.W_out)), TT.max(abs(step.b_rec)), TT.max(abs(step.b_out))]
 
     @property

@@ -58,13 +58,13 @@ print(separator)
 seed = 14
 Configs.seed = seed
 
-task = TemporalOrderTask(50, seed)
+task = TemporalOrderTask(70, seed)
 out_dir = Configs.output_dir + str(task) + '_' + str(seed)
 # network setup
-std_dev = 0.01  # 0.14 Tanh # 0.21 Relu
+std_dev = 0.15  # 0.14 Tanh # 0.21 Relu
 mean = 0
 vars_initializer = RNNVarsInitializer(
-    W_rec_init=SpectralInit(matrix_init=GaussianInit(mean=mean, std_dev=std_dev, seed=seed), rho=1.2),
+    W_rec_init=SpectralInit(matrix_init=GaussianInit(mean=mean, std_dev=.01, seed=seed), rho=1.2),
     W_in_init=GaussianInit(mean=mean, std_dev=std_dev, seed=seed),
     W_out_init=GaussianInit(mean=mean, std_dev=std_dev, seed=seed), b_rec_init=ConstantInit(0),
     b_out_init=ConstantInit(0))
@@ -99,7 +99,7 @@ dir_rule = CheckedDirection(dir_rule, max_cos=0, max_dir_norm=numpy.inf)
 # learning step rule
 # lr_rule = WRecNormalizedStep(0.0001) #0.01
 # lr_rule = ConstantNormalizedStep(0.001)  # 0.01
-lr_rule = GradientClipping(lr_value=0.1, clip_thr=0.05, clip_style='l1')  # 0.01
+lr_rule = GradientClipping(lr_value=0.03, clip_thr=0.01, clip_style='l1')  # 0.01
 # lr_rule = AdaptiveStep(init_lr=0.001, num_tokens=50, prob_augment=0.4, sliding_window_size=50, steps_int_the_past=5,
 #                               beta_augment=1.1, beta_lessen=0.1, seed=seed)
 # lr_rule = ArmijoStep(alpha=0.5, beta=0.1, init_step=1, max_steps=50)
@@ -107,7 +107,7 @@ lr_rule = GradientClipping(lr_value=0.1, clip_thr=0.05, clip_style='l1')  # 0.01
 # update_rule = FixedAveraging(t=10)
 update_rule = SimpleUdpate()
 # update_rule = Momentum(gamma=0.1)
-update_rule = CyclicUdpate()
+# update_rule = CyclicUdpate()
 
 
 train_rule = TrainingRule(dir_rule, lr_rule, update_rule, loss_fnc)
@@ -125,7 +125,7 @@ stopping_criterion = ThresholdCriterion(monitor=error_monitor, threshold=1. / 10
 saving_criterion = BestValueFoundCriterion(monitor=error_monitor)
 
 trainer = SGDTrainer(train_rule, output_dir=out_dir, max_it=10 ** 10,
-                     monitor_update_freq=200, batch_size=20)
+                     monitor_update_freq=200, batch_size=20) # update_freq 200
 trainer.add_monitors(dataset.validation_set, "validation", loss_monitor, error_monitor)
 trainer.set_saving_criterion(saving_criterion)
 trainer.set_stopping_criterion(stopping_criterion)

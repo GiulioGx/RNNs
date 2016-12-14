@@ -27,10 +27,10 @@ class SpectralInit(MatrixInit):
         # diagonal[::2] *= 1
         # diagonal[1::2] *= -1
         s = np.diag(diagonal)
+        result = np.dot(w, s)
 
-        print(s)
-
-        return np.dot(w, s)
+        print("std: {:.2f}, mean: {:.2f}".format(np.std(result), np.mean(result)))
+        return result
 
     @property
     def infos(self):

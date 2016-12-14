@@ -19,6 +19,7 @@ class RNNManager(NetManager):
 
     def get_net(self, n_in: int, n_out: int):
         W_rec, W_in, W_out, b_rec, b_out = self.__initializer.generate_variables(n_in=n_in, n_out=n_out)
+
         rnn = RNN(W_rec=W_rec, W_in=W_in, W_out=W_out, b_rec=b_rec, b_out=b_out, activation_fnc=self.__activation_fnc,
                   output_fnc=self.__output_fnc)
 
