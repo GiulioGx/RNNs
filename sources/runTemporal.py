@@ -83,23 +83,23 @@ loss_fnc = FullCrossEntropy(single_probability_ouput=False)
 
 # combining_rule = UniformRandomCombination(normalize_components=True, seed=seed)
 # combining_rule = OnesCombination(normalize_components=True)
-combining_rule = SimplexCombination(normalize_components=True, seed=seed)
+# combining_rule = SimplexCombination(normalize_components=True, seed=seed)
 # combining_rule = TimeSmoothingCombination(normalize_components=False, seed=seed)
 # combining_rule = ReducedSimplexCombination(keep_ratio=0.5, normalize_components=True, seed=seed)
 
 # combining_rule = TemporalClippingCombination(thr=0.1, clip_style="nothing_for_now")
 
 # combining_rule = SimpleSum()
-dir_rule = CombinedGradients(combining_rule)
-dir_rule = CheckedDirection(dir_rule, max_cos=0, max_dir_norm=numpy.inf)
-# dir_rule = Antigradient()
+# dir_rule = CombinedGradients(combining_rule)
+# dir_rule = CheckedDirection(dir_rule, max_cos=0, max_dir_norm=numpy.inf)
+dir_rule = Antigradient()
 # dir_rule = LBFGSDirection(n_pairs=7)
 # dir_rule = DropoutDirection(dir_rule=dir_rule, drop_rate=0.7, seed=seed)
 
 # learning step rule
 # lr_rule = WRecNormalizedStep(0.0001) #0.01
 # lr_rule = ConstantNormalizedStep(0.001)  # 0.01
-lr_rule = GradientClipping(lr_value=0.03, clip_thr=0.01, clip_style='l1')  # 0.01
+lr_rule = GradientClipping(lr_value=0.03, clip_thr=0.05, clip_style='l1')  # 0.01
 # lr_rule = AdaptiveStep(init_lr=0.001, num_tokens=50, prob_augment=0.4, sliding_window_size=50, steps_int_the_past=5,
 #                               beta_augment=1.1, beta_lessen=0.1, seed=seed)
 # lr_rule = ArmijoStep(alpha=0.5, beta=0.1, init_step=1, max_steps=50)
