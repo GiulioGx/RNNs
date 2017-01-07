@@ -17,6 +17,7 @@ from descentDirectionRule.CombinedGradients import CombinedGradients
 from descentDirectionRule.DropoutDirection import DropoutDirection
 from descentDirectionRule.LBFGSDirection import LBFGSDirection
 from initialization.ConstantInit import ConstantInit
+from initialization.EigenInit import EigenInit
 from initialization.GaussianInit import GaussianInit
 from initialization.SVDInit import SVDInit
 from initialization.SparseGaussianInit import SparseGaussianInit
@@ -58,13 +59,14 @@ print(separator)
 seed = 14
 Configs.seed = seed
 
-task = TemporalOrderTask(70, seed)
+task = TemporalOrderTask(200, seed)
 out_dir = Configs.output_dir + str(task) + '_' + str(seed)
 # network setup
-std_dev = 0.15  # 0.14 Tanh # 0.21 Relu
+std_dev = 0.05  # 0.14 Tanh # 0.21 Relu
 mean = 0
 vars_initializer = RNNVarsInitializer(
-    W_rec_init=SpectralInit(matrix_init=GaussianInit(mean=mean, std_dev=.01, seed=seed), rho=1.2),
+    # W_rec_init=SpectralInit(matrix_init=GaussianInit(mean=mean, std_dev=.01, seed=seed), rho=1.2),
+    W_rec_init=EigenInit(mean=1.2, std_dev=0.01, seed=seed),
     W_in_init=GaussianInit(mean=mean, std_dev=std_dev, seed=seed),
     W_out_init=GaussianInit(mean=mean, std_dev=std_dev, seed=seed), b_rec_init=ConstantInit(0),
     b_out_init=ConstantInit(0))
@@ -99,7 +101,7 @@ dir_rule = Antigradient()
 # learning step rule
 # lr_rule = WRecNormalizedStep(0.0001) #0.01
 # lr_rule = ConstantNormalizedStep(0.001)  # 0.01
-lr_rule = GradientClipping(lr_value=0.03, clip_thr=0.05, clip_style='l1')  # 0.01
+lr_rule = GradientClipping(lr_value=0.005, clip_thr=0.1, clip_style='l1')  # 0.01
 # lr_rule = AdaptiveStep(init_lr=0.001, num_tokens=50, prob_augment=0.4, sliding_window_size=50, steps_int_the_past=5,
 #                               beta_augment=1.1, beta_lessen=0.1, seed=seed)
 # lr_rule = ArmijoStep(alpha=0.5, beta=0.1, init_step=1, max_steps=50)

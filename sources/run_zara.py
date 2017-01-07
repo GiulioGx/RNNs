@@ -1,5 +1,6 @@
+import shutil
+
 import theano, numpy
-from neuralflow.enel.enel import export_results
 
 from ActivationFunction import Tanh
 from Configs import Configs
@@ -20,6 +21,7 @@ from metrics.LossMonitor import LossMonitor
 from metrics.ThresholdCriterion import ThresholdCriterion
 from model.RNNInitializer import RNNInitializer, RNNVarsInitializer
 from model.RNNManager import RNNManager
+from neuralflow.enel.utils import export_results
 from output_fncs.Softmax import Softmax
 from datasets.Dataset import InfiniteDataset
 from datasets.TemporalOrderTask import TemporalOrderTask
@@ -69,7 +71,7 @@ def run(parameters, task, output_dir, id):
     dir_rule = Antigradient()
 
     # learning step rule
-    lr_rule = GradientClipping(lr_value=parameters["lr"], clip_thr=parameters["clip_thr"], clip_style='l1')  # 0.01
+    lr_rule = GradientClipping(lr_value=parameters["lr"], clip_thr=parameters["clip_thr"], clip_style='l2')  # 0.01
     update_rule = SimpleUdpate()
 
     train_rule = TrainingRule(dir_rule, lr_rule, update_rule, loss_fnc)
@@ -85,7 +87,7 @@ def run(parameters, task, output_dir, id):
     stopping_criterion = ThresholdCriterion(monitor=error_monitor, threshold=1. / 100)
     saving_criterion = BestValueFoundCriterion(monitor=error_monitor)
 
-    trainer = SGDTrainer(train_rule, output_dir=output_dir + "{}/".format(id), max_it=2000000,
+    trainer = SGDTrainer(train_rule, output_dir=output_dir + "{}/".format(id), max_it=150000,
                          monitor_update_freq=200, batch_size=20)  # update_freq 200
     trainer.add_monitors(dataset.validation_set, "validation", loss_monitor, error_monitor)
     trainer.set_saving_criterion(saving_criterion)
@@ -101,14 +103,16 @@ if __name__ == "__main__":
     seed = 14
     Configs.seed = seed
 
-    task = TemporalOrderTask(70, seed)
-    output_dir = Configs.output_dir + str(task) + '_' + str(seed) + "_multi_run/"
+    task = TemporalOrderTask(150, seed)
+    output_dir = Configs.output_dir + str(task) + '_' + str(seed) + "_multi_diag/"
+
+    shutil.rmtree(output_dir, ignore_errors=True)
 
     id = 0
     result_list = []
-    for lr in numpy.linspace(0.01, 0.1, 10):
-        for clip_thr in numpy.linspace(0.01, 0.1, 10):
-            for std_dev in [0.01, 0.05, 0.1, 0.15]:
+    for lr in [1e-3, 3e-3, 5e-3, 1e-2]: #numpy.linspace(0.01, 0.1, 10):
+        for clip_thr in [0.4, 0.7, 1]: # numpy.linspace(0.01, 0.1, 10):
+            for std_dev in [0.01, 0.05]:
                 parameters = {
                     "id": id,
                     "lr": lr,

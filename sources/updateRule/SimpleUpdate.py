@@ -21,7 +21,7 @@ class SimpleUdpate(UpdateRule):
     def compute_update(self, net, lr, direction):
         step = direction * lr
         updated_params = net.symbols.current_params + step
-        return updated_params, UpdateInfos(updated_params, step)
+        return updated_params, NullSymbolicInfos()  # UpdateInfos(updated_params, step)
 
     @property
     def updates(self):
