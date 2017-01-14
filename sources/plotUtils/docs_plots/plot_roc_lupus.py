@@ -4,17 +4,16 @@ import sys
 from sklearn import metrics
 from sklearn.metrics import roc_auc_score
 import os
-#from Configs import Configs
+# from Configs import Configs
 from plotUtils.plt_utils import save_multiple_formats
 
-files = ['/home/giulio/LupusHidden/tmpLupus/run_0/scores.npz']
+files = ['/home/galvan/development/RNNs/models/Lupus_k/run_0/scores.npz']
 colors = ['m', 'b']
 legends = ['new feats']
-size=(6,5)
+size = (6, 5)
 
 i = 0
 for f in files:
-
     print('Analizing file: {}'.format(f))
     npz = numpy.load(f)
     scores = npz['scores']
@@ -33,9 +32,9 @@ for f in files:
     fn = p - tp  # false negatives
 
     specificity = tn / n
-    sensitivity = tpr # same as recall
+    sensitivity = tpr  # same as recall
 
-    precision2  = tp / (tp +fp)
+    precision2 = tp / (tp + fp)
     print(p, n)
 
     print('num positives: {}, num negatives: {}'.format(p, n))
@@ -51,18 +50,17 @@ for f in files:
     plt.xlabel('false positives rate')
     plt.ylabel('true positives rate')
 
-    save_multiple_formats(filename+'_roc')
+    save_multiple_formats(filename + '_roc')
 
     # RECALL-PRECISION plot
-    plt.figure(2,figsize=size)
+    plt.figure(2, figsize=size)
     plt.plot(recall, precision, colors[i], linewidth=2)
     # plt.plot(sensitivity, precision2, colors[i], linewidth=2)
     # plt.legend(legends, shadow=True, fancybox=True, loc=1)
     plt.xlabel('recall')
     plt.ylabel('precision')
 
-    save_multiple_formats(filename+'_recall_precision')
-
+    save_multiple_formats(filename + '_recall_precision')
 
     # SPECIFICITY-SENSITIVITY plot
     plt.figure(3, figsize=size)
@@ -71,8 +69,8 @@ for f in files:
     plt.ylabel('sensitivity')
     plt.xlabel('specificity')
 
-    save_multiple_formats(filename+'_specificity_sensitivity')
+    save_multiple_formats(filename + '_specificity_sensitivity')
 
-    i+=1
+    i += 1
 
 plt.show()

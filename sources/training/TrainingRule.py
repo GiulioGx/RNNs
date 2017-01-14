@@ -103,7 +103,7 @@ class TrainingRule(SimpleInfoProducer):
 
             else:
                 step, lr_symbolic_infos = direction.step_as_direction(rule.lr_rule)
-                update_vars, update_symbolic_info = rule.update_rule.compute_update(net, 1., direction)
+                update_vars, update_symbolic_info = rule.update_rule.compute_update(net, 1., step)#direction)
                 # update_vars = net_symbols.current_params + step
                 update_symbolic_info = NullSymbolicInfos()
 

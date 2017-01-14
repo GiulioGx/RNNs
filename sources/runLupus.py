@@ -82,7 +82,7 @@ dir_rule = Antigradient()
 # learning step rule
 # lr_rule = WRecNormalizedStep(0.0001) #0.01
 # lr_rule = ConstantNormalizedStep(0.001)  # 0.01
-lr_rule = GradientClipping(lr_value=0.001, clip_thr=1, normalize_wrt_dimension=False)  # 0.01
+lr_rule = GradientClipping(lr_value=0.001, clip_thr=1)  # 0.01
 # lr_rule = ArmijoStep(alpha=0.5, beta=0.1, init_step=1, max_steps=50)
 
 # update_rule = FixedAveraging(t=10)

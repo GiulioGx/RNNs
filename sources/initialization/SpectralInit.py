@@ -31,11 +31,11 @@ class SpectralInit(MatrixInit):
         result = np.dot(w, s)
 
         # experimental (comment this entire block to return to the old strategy)
-        rnd = np.random.RandomState(14)  # XXX pass the seed in init method
-        q = OrtoghonalInit().init_matrix(size=size, dtype=dtype)
-        diagonal = rnd.normal(loc=1, scale=0.01, size=(w.shape[0]))
-        d = np.diag(diagonal)
-        result = np.dot(np.dot(q, d), np.transpose(q))
+        # rnd = np.random.RandomState(14)  # XXX pass the seed in init method
+        # q = OrtoghonalInit().init_matrix(size=size, dtype=dtype)
+        # diagonal = rnd.normal(loc=1, scale=0.01, size=(w.shape[0]))
+        # d = np.diag(diagonal)
+        # result = np.dot(np.dot(q, d), np.transpose(q))
 
         # stats
         eig_values = np.abs(np.linalg.eigvals(result))

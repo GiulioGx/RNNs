@@ -25,7 +25,9 @@ from initialization.SpectralInit import SpectralInit
 from initialization.UniformInit import UniformInit
 from learningRule.AdaptiveStep import AdaptiveStep
 from learningRule.GradientClipping import GradientClipping
+from learningRule.GradientClippingExp import GradientClippingExp
 from learningRule.ProbabilisticSearch import ProbabilisticSearch
+from learningRule.SimplifiedArmijoStep import SimplifiedArmijoStep
 from lossFunctions.FullCrossEntropy import FullCrossEntropy
 from metrics.BestValueFoundCriterion import BestValueFoundCriterion
 from metrics.ErrorMonitor import ErrorMonitor
@@ -66,7 +68,7 @@ std_dev = 0.05  # 0.14 Tanh # 0.21 Relu
 mean = 0
 vars_initializer = RNNVarsInitializer(
     # W_rec_init=SpectralInit(matrix_init=GaussianInit(mean=mean, std_dev=.01, seed=seed), rho=1.2),
-    W_rec_init=EigenInit(mean=1.2, std_dev=0.01, seed=seed),
+    W_rec_init=EigenInit(mean=1.1, std_dev=std_dev, seed=seed),
     W_in_init=GaussianInit(mean=mean, std_dev=std_dev, seed=seed),
     W_out_init=GaussianInit(mean=mean, std_dev=std_dev, seed=seed), b_rec_init=ConstantInit(0),
     b_out_init=ConstantInit(0))
@@ -101,10 +103,14 @@ dir_rule = Antigradient()
 # learning step rule
 # lr_rule = WRecNormalizedStep(0.0001) #0.01
 # lr_rule = ConstantNormalizedStep(0.001)  # 0.01
-lr_rule = GradientClipping(lr_value=0.005, clip_thr=0.1, clip_style='l1')  # 0.01
+# lr_rule = GradientClipping(lr_value=0.0005, clip_thr=1, clip_style='l2')  # 0.01
+lr_rule = GradientClippingExp(lr_value=0.01, clip_thr_l2=1, clip_thr_l1=0.1)  # 0.01
+
 # lr_rule = AdaptiveStep(init_lr=0.001, num_tokens=50, prob_augment=0.4, sliding_window_size=50, steps_int_the_past=5,
 #                               beta_augment=1.1, beta_lessen=0.1, seed=seed)
 # lr_rule = ArmijoStep(alpha=0.5, beta=0.1, init_step=1, max_steps=50)
+
+# lr_rule = SimplifiedArmijoStep(beta=0.5, init_step=1)
 
 # update_rule = FixedAveraging(t=10)
 update_rule = SimpleUdpate()

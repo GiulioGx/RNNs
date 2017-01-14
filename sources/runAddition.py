@@ -11,6 +11,7 @@ from descentDirectionRule.CheckedDirection import CheckedDirection
 from descentDirectionRule.CombinedGradients import CombinedGradients
 from descentDirectionRule.LBFGSDirection import LBFGSDirection
 from initialization.ConstantInit import ConstantInit
+from initialization.EigenInit import EigenInit
 from initialization.GaussianInit import GaussianInit
 from initialization.SVDInit import SVDInit
 from initialization.SpectralInit import SpectralInit
@@ -56,18 +57,13 @@ Configs.seed = seed
 task = AdditionTask(100, seed)
 out_dir = Configs.output_dir + str(task) + '_' + str(seed)
 
-# network setup
-std_dev = 0.1  # 0.14 Tanh # 0.21 Relu
+std_dev = 0.05  # 0.14 Tanh # 0.21 Relu
 mean = 0
-# vars_initializer = RNNVarsInitializer(
-#     W_rec_init=SpectralInit(matrix_init=GaussianInit(mean=mean, std_dev=std_dev, seed=seed), rho=1.2),
-#     W_in_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed),
-#     W_out_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed), b_rec_init=ConstantInit(0),
-#     b_out_init=ConstantInit(0))
 vars_initializer = RNNVarsInitializer(
-    W_rec_init=SpectralInit(matrix_init=GaussianInit(seed=seed, std_dev=std_dev), rho=1.2),
-    W_in_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed),
-    W_out_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed), b_rec_init=ConstantInit(0),
+    # W_rec_init=SpectralInit(matrix_init=GaussianInit(mean=mean, std_dev=.01, seed=seed), rho=1.2),
+    W_rec_init=EigenInit(mean=1.1, std_dev=std_dev, seed=seed),
+    W_in_init=GaussianInit(mean=mean, std_dev=std_dev, seed=seed),
+    W_out_init=GaussianInit(mean=mean, std_dev=std_dev, seed=seed), b_rec_init=ConstantInit(0),
     b_out_init=ConstantInit(0))
 net_initializer = RNNInitializer(vars_initializer, n_hidden=50)
 net_builder = RNNManager(initializer=net_initializer, activation_fnc=Tanh(),
@@ -90,18 +86,18 @@ loss_fnc = FullSquaredError()
 # dir_rule = SepareteGradient()
 
 # combining_rule = OnesCombination(normalize_components=False)
-combining_rule = SimplexCombination(normalize_components=True, seed=seed)
+# combining_rule = SimplexCombination(normalize_components=True, seed=seed)
 # combining_rule = SimpleSum()
-dir_rule = CombinedGradients(combining_rule)
-#dir_rule = CheckedDirection(dir_rule, max_cos=0, max_dir_norm=0.5)
-dir_rule = CheckedDirection(dir_rule, max_cos=0, max_dir_norm=numpy.inf)
-# dir_rule = Antigradient()
+# dir_rule = CombinedGradients(combining_rule)
+# dir_rule = CheckedDirection(dir_rule, max_cos=0, max_dir_norm=0.5)
+# dir_rule = CheckedDirection(dir_rule, max_cos=0, max_dir_norm=numpy.inf)
+dir_rule = Antigradient()
 # dir_rule = LBFGSDirection(n_pairs=7)
 
 # learning step rule
 # lr_rule = WRecNormalizedStep(0.0001) #0.01
 # lr_rule = ConstantNormalizedStep(0.001)  # 0.01
-lr_rule = GradientClipping(lr_value=0.001, clip_thr=0.05, clip_style='l1')  # 0.01
+lr_rule = GradientClipping(lr_value=0.0005, clip_thr=1, clip_style='l2')  # 0.01
 # lr_rule = AdaptiveStep(init_lr=0.001, num_tokens=50, prob_augment=0.4, sliding_window_size=50, steps_int_the_past=5,
 #                               beta_augment=1.1, beta_lessen=0.1, seed=seed)
 # lr_rule = ArmijoStep(alpha=0.5, beta=0.1, init_step=1, max_steps=50)

@@ -8,6 +8,7 @@ from descentDirectionRule.Antigradient import Antigradient
 from descentDirectionRule.CheckedDirection import CheckedDirection
 from descentDirectionRule.CombinedGradients import CombinedGradients
 from initialization.ConstantInit import ConstantInit
+from initialization.EigenInit import EigenInit
 from initialization.GaussianInit import GaussianInit
 from initialization.SVDInit import SVDInit
 from initialization.SparseGaussianInit import SparseGaussianInit
@@ -47,9 +48,11 @@ print(separator)
 def run(parameters, task, output_dir, id):
     # network setup
     std_dev = parameters["std_dev"]  # 0.14 Tanh # 0.21 Relu
+    eig_mean = parameters["eig_mean"]
     mean = 0
     vars_initializer = RNNVarsInitializer(
-        W_rec_init=SpectralInit(matrix_init=GaussianInit(mean=mean, std_dev=.01, seed=seed), rho=1.2),
+        # W_rec_init=SpectralInit(matrix_init=GaussianInit(mean=mean, std_dev=.01, seed=seed), rho=1.2),
+        W_rec_init=EigenInit(mean=eig_mean, std_dev=std_dev, seed=seed),
         W_in_init=GaussianInit(mean=mean, std_dev=std_dev, seed=seed),
         W_out_init=GaussianInit(mean=mean, std_dev=std_dev, seed=seed), b_rec_init=ConstantInit(0),
         b_out_init=ConstantInit(0))
@@ -87,42 +90,61 @@ def run(parameters, task, output_dir, id):
     stopping_criterion = ThresholdCriterion(monitor=error_monitor, threshold=1. / 100)
     saving_criterion = BestValueFoundCriterion(monitor=error_monitor)
 
-    trainer = SGDTrainer(train_rule, output_dir=output_dir + "{}/".format(id), max_it=150000,
-                         monitor_update_freq=200, batch_size=20)  # update_freq 200
+    max_it = 5*10**4
+    update_freq = 200
+
+    trainer = SGDTrainer(train_rule, output_dir=output_dir + "{}_{}/".format(str(task), str(seed)), max_it=max_it,
+                         monitor_update_freq=update_freq, batch_size=20)  # update_freq 200
     trainer.add_monitors(dataset.validation_set, "validation", loss_monitor, error_monitor)
     trainer.set_saving_criterion(saving_criterion)
     trainer.set_stopping_criterion(stopping_criterion)
 
     net, stats = trainer.train(dataset, net_builder)
-    n_iters = stats.n_iters
-    return n_iters
+
+    max_reached = True if stats.n_iters == (max_it - update_freq) else False
+    return stats, max_reached
 
 
 if __name__ == "__main__":
 
-    seed = 14
-    Configs.seed = seed
-
-    task = TemporalOrderTask(150, seed)
-    output_dir = Configs.output_dir + str(task) + '_' + str(seed) + "_multi_diag/"
-
+    seeds = [13, 14, 15, 16, 17]
+    name = "multi_diag_200_zara"
+    output_dir = Configs.output_dir + name + "/"
     shutil.rmtree(output_dir, ignore_errors=True)
+    length = 200
 
     id = 0
     result_list = []
-    for lr in [1e-3, 3e-3, 5e-3, 1e-2]: #numpy.linspace(0.01, 0.1, 10):
-        for clip_thr in [0.4, 0.7, 1]: # numpy.linspace(0.01, 0.1, 10):
-            for std_dev in [0.01, 0.05]:
-                parameters = {
-                    "id": id,
-                    "lr": lr,
-                    "clip_thr": clip_thr,
-                    "std_dev": std_dev,
-                }
-                print("Beginning instance {}...".format(id))
-                n_iters = run(parameters, task, output_dir, id)
-                parameters.update({
-                    "n_iters": n_iters})
-                result_list.append(parameters)
-                export_results(result_list, output_dir)
-                id += 1
+    for lr in [5e-4, 1e-3, 3e-3, 5e-3, 1e-2]:  # numpy.linspace(0.01, 0.1, 10):
+        for clip_thr in [0.1, 0.4, 0.7, 1]:  # numpy.linspace(0.01, 0.1, 10):
+            for std_dev in [0.01]:
+                for rho in [1.1]:
+                    parameters = {
+                        "id": id,
+                        "lr": lr,
+                        "clip_thr": clip_thr,
+                        "std_dev": std_dev,
+                        "eig_mean": rho
+                    }
+                    print("Beginning instance {}...".format(id))
+
+                    n_iters = 0
+                    n_succ = 0
+                    loss = 0.
+
+                    for seed in seeds:
+                        task = TemporalOrderTask(length, seed)
+                        stats, max_reached = run(parameters, task, output_dir + str(id) + "/", id)
+                        if not max_reached:
+                            n_succ += 1
+                            n_iters += stats.n_iters  # iteration are computed only on the successes
+                        loss += stats.dictionary["validation_loss"][-1]
+                        print("n_iters: {}, n_succ:{}, loss:{:.2f}".format(n_iters, n_succ, loss))
+
+                    parameters.update({
+                        "n_iters": int(float(n_iters) / len(seeds)), "n_succ": n_succ,
+                        "loss": round(loss / len(seeds), 2) if loss > 0 else numpy.inf})
+                    print(parameters)
+                    result_list.append(parameters)
+                    export_results(result_list, output_dir)
+                    id += 1

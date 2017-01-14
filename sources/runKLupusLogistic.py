@@ -7,6 +7,7 @@ import numpy
 import shutil
 import theano
 from sklearn import metrics
+from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import roc_auc_score
 
 from ActivationFunction import Tanh
@@ -35,7 +36,7 @@ __author__ = 'giulio'
 
 
 class SplitThread(Thread):
-    def __init__(self, out_dir: str, dataset, id: int, logger, n_hidden: int, stop_thr: float):
+    def __init__(self, out_dir: str, dataset, id: int, logger, C: float):
         super().__init__()
         self.__net = None
         self.__dataset = dataset
@@ -43,8 +44,9 @@ class SplitThread(Thread):
         self.__id = id
         self.__results = None
         self.__logger = logger
-        self.__n_hidden = n_hidden
-        self.__stop_thr = stop_thr
+        self.__C = C
+
+        print("MAX", sum(sum(dataset.test_set[0].outputs.squeeze())))
 
     @property
     def net(self):
@@ -54,57 +56,60 @@ class SplitThread(Thread):
     def results(self):
         return self.__results
 
+    def convert_X(self, X, mask):
+        output = numpy.zeros(shape=(X.shape[2], X.shape[1]))
+
+        for i in range(X.shape[2]):
+            l = numpy.argmax(mask[:, 0, i])
+            output[i] = X[l, :, i]
+        return output
+
+    def convert_Y(self, y, mask):
+        output = numpy.zeros_like(mask)
+        for i in range(mask.shape[2]):
+            l = numpy.argmax(mask[:, 0, i])
+            output[l, 0, i] = y[i]
+        return output
+
     def __train(self):
         self.__logger.info('Starting thread {}'.format(self.__id))
         # network setup
-        std_dev = 0.1  # 0.14 Tanh # 0.21 Relu
-        mean = 0
-        vars_initializer = RNNVarsInitializer(
-            W_rec_init=SpectralInit(matrix_init=GaussianInit(seed=seed, std_dev=std_dev), rho=1.2),
-            W_in_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed),
-            W_out_init=GaussianInit(mean=mean, std_dev=0.1, seed=seed), b_rec_init=ConstantInit(0),
-            b_out_init=ConstantInit(0))
-        net_initializer = RNNInitializer(vars_initializer, n_hidden=self.__n_hidden)
-        net_builder = RNNManager(initializer=net_initializer, activation_fnc=Tanh(),
-                                 output_fnc=Logistic())
 
-        loss_fnc = FullCrossEntropy(single_probability_ouput=True)
-        dir_rule = Antigradient()
-        lr_rule = GradientClipping(lr_value=0.001, clip_thr=1)  # 0.01
-        update_rule = SimpleUdpate()
-        train_rule = TrainingRule(dir_rule, lr_rule, update_rule, loss_fnc, nan_check=True)
-
-        loss_monitor = LossMonitor(loss_fnc=loss_fnc)
-        roc_monitor = RocMonitor(score_fnc=LupusDataset.get_scores_patients)
-        stopping_criterion = ThresholdCriterion(monitor=roc_monitor, threshold=self.__stop_thr, mode='>')
-        saving_criterion = BestValueFoundCriterion(monitor=roc_monitor, mode='gt')
-
-        trainer = SGDTrainer(train_rule, output_dir=self.__out_dir, max_it=50000,
-                             monitor_update_freq=50, batch_size=20)
-        trainer.add_monitors(self.__dataset.train_set, 'train', loss_monitor, roc_monitor)
-        trainer.set_saving_criterion(saving_criterion)
-        trainer.set_stopping_criterion(stopping_criterion)
-
-        self.__net, _ = trainer.train(self.__dataset, net_builder)
+        self.__model = LogisticRegression(penalty='l2', fit_intercept=False, C=self.__C, class_weight="balanced")
+        train_set = self.__dataset.train_set[0]
+        X = self.convert_X(train_set.inputs, train_set.mask)
+        y = self.convert_X(train_set.outputs, train_set.mask)
+        # X = numpy.swapaxes(train_set.inputs[-1], 1, 0)
+        print(X.shape)
+        print(y.shape)
+        print("Out", train_set.outputs.shape)
+        # print(y)
+        self.__model.fit(X=X, y=y.squeeze())
 
     def __test(self):
-        batch = self.__dataset.split_test['late_pos']
-        y = self.__net.net_ouput_numpy(batch.inputs)[0]
-        scores, labels = LupusDataset.get_scores_patients(y, batch.outputs, batch.mask)
-        late_fpr, late_tpr, thresholds = metrics.roc_curve(labels, scores, pos_label=1)
 
         batch = self.__dataset.test_set[0]
-        y = self.__net.net_ouput_numpy(batch.inputs)[0]
-        scores, labels = LupusDataset.get_scores_patients(y, batch.outputs, batch.mask)
+        X = self.convert_X(batch.inputs, batch.mask)
+
+        y = self.__model.predict_proba(X)[:, 0]
+        print(y.shape)
+
+        y_padded = self.convert_Y(y, batch.mask)
+
+        print(y_padded.shape)
+
+        scores, labels = LupusDataset.get_scores_patients(y_padded, batch.outputs, batch.mask)
         # fpr, tpr, thresholds = metrics.roc_curve(labels, scores, pos_label=1)
         score = roc_auc_score(y_true=labels, y_score=scores)
 
-        result = dict(score=score, late_pos_fpr=late_fpr, late_pos_tpr=late_tpr, y=y, batch=batch)
+        result = dict(score=score, late_pos_fpr=0, late_pos_tpr=0, y=y_padded, batch=batch)
         return result
 
     def run(self):
         self.__train()
         # save dataset to disk
+        os.makedirs(self.__out_dir, exist_ok=True)
+
         pickfile = open(self.__out_dir + '/dataset.pkl', "wb")
         pickle.dump(self.__dataset, pickfile)
         self.__logger.info('Thread {} has fineshed training -> beginning test'.format(self.__id))
@@ -113,7 +118,7 @@ class SplitThread(Thread):
         self.__logger.info('Thread {} has finished....'.format(self.__id))
 
 
-def run_experiment(root_dir, min_age_lower, min_age_upper, min_visits_neg, min_visits_pos, n_hidden, stop_thr, id: int):
+def run_experiment(root_dir, min_age_lower, min_age_upper, min_visits_neg, min_visits_pos, C: float, id: int):
     # start main logger
     run_out_dir = root_dir + 'run_{}/'.format(id)
     os.makedirs(run_out_dir, exist_ok=True)
@@ -139,11 +144,9 @@ def run_experiment(root_dir, min_age_lower, min_age_upper, min_visits_neg, min_v
                                                    min_age_span_lower=min_age_lower, min_visits_neg=min_visits_neg,
                                                    min_visits_pos=min_visits_pos)):
         out_dir = run_out_dir + str(thread_count)
-        t = SplitThread(out_dir=out_dir, dataset=d, id=thread_count, logger=logger, n_hidden=n_hidden,
-                        stop_thr=stop_thr)
+        t = SplitThread(out_dir=out_dir, dataset=d, id=thread_count, logger=logger, C=C)
         thread_list.append(t)
         t.start()
-        t.join()
         thread_count += 1
         dataset_infos = d.infos
 
@@ -153,7 +156,7 @@ def run_experiment(root_dir, min_age_lower, min_age_upper, min_visits_neg, min_v
     score = 0.
     # Wait for all threads to complete
     for t in thread_list:
-        #sudo t.join()
+        t.join()
         score += t.results['score']
         ys.append(t.results['y'])
         batch = t.results['batch']
@@ -200,11 +203,10 @@ if __name__ == '__main__':
     k = 8
 
     min_age_span_lower_list = [0.8]  # 0.8, 1, 2]
-    min_age_span_upper_list = [0.8]  # [0.8, 1, 2] 2????
+    min_age_span_upper_list = [0.8]  # [0.8, 1, 2]
     min_num_visits_neg = [5]  # [1, 2, 3, 4, 5]
     min_num_visits_pos = [1]
-    n_hidden_list = [100]
-    stop_thr_list = [0.95]
+    C_list = [1, 5, 10, 20, 50, 100, 150, 200]
 
     root_dir = Configs.output_dir + 'Lupus_k/'
     shutil.rmtree(root_dir, ignore_errors=True)
@@ -214,9 +216,7 @@ if __name__ == '__main__':
         for min_age_u in min_age_span_upper_list:
             for min_v_n in min_num_visits_neg:
                 for min_v_p in min_num_visits_pos:
-                    for stop_thr in stop_thr_list:
-                        for n_hidden in n_hidden_list:
-                            run_experiment(root_dir=root_dir, min_age_lower=min_age_l, min_age_upper=min_age_u,
-                                           min_visits_neg=min_v_n, min_visits_pos=min_v_p, id=count, n_hidden=n_hidden,
-                                           stop_thr=stop_thr)
-                            count += 1
+                    for C in C_list:
+                        run_experiment(root_dir=root_dir, min_age_lower=min_age_l, min_age_upper=min_age_u,
+                                       min_visits_neg=min_v_n, min_visits_pos=min_v_p, id=count, C=C)
+                        count += 1
