@@ -231,17 +231,17 @@ class LupusDataset(Dataset):
 
     @staticmethod
     def no_test_dataset(mat_file: str, strategy: BuildBatchStrategy = PerVisitTargets, seed: int = Configs.seed,
-                        visit_filter: VisitsFilter = NullFIlter()):
+                        visit_filter: VisitsFilter = NullFIlter(), feats: list = None):
         early_positives, late_positives, negatives, max_visits_pos, max_visits_neg, features_names, infos = LupusDataset.load_mat(
             mat_file, visit_selector=visit_filter)
         train_set = dict(early_pos=early_positives, late_pos=late_positives, neg=negatives, max_pos=max_visits_pos,
                          max_neg=max_visits_neg)
         data_dict = dict(train=train_set, test=train_set, features=features_names)
-        return LupusDataset(data=data_dict, infos=infos, seed=seed, strategy=strategy)
+        return LupusDataset(data=data_dict, infos=infos, seed=seed, strategy=strategy, feats=feats)
 
     @staticmethod
     def k_fold_test_datasets(mat_file: str, k: int = 1, strategy: BuildBatchStrategy = PerVisitTargets(),
-                             seed: int = Configs.seed, visit_selector: VisitsFilter = NullFIlter()):
+                             seed: int = Configs.seed, visit_selector: VisitsFilter = NullFIlter(), feats: list = None):
         early_positives, late_positives, negatives, max_visits_pos, max_visits_neg, features_names, infos = LupusDataset.load_mat(
             mat_file, visit_selector=visit_selector)
         for i in range(k):
@@ -254,7 +254,7 @@ class LupusDataset(Dataset):
             test_set = dict(early_pos=epts, late_pos=lpts, neg=nts, max_pos=max_visits_pos,
                             max_neg=max_visits_neg)
             data_dict = dict(train=train_set, test=test_set, features=features_names)
-            yield LupusDataset(data=data_dict, infos=infos, seed=seed, strategy=strategy)
+            yield LupusDataset(data=data_dict, infos=infos, seed=seed, strategy=strategy, feats=feats)
 
     @staticmethod
     def get_set_info(set):
@@ -263,11 +263,11 @@ class LupusDataset(Dataset):
                         PrintableInfoElement('neg', ':d', len(set['neg'])))
 
     def __init__(self, data: dict, infos: Info = NullInfo(), strategy: BuildBatchStrategy = PerVisitTargets(),
-                 seed: int = Configs.seed):
+                 seed: int = Configs.seed, feats: list = None):
 
         self.__train = data['train']
         self.__test = data['test']
-        self.__features = data['features']
+        self.__features = data['features'] if feats is None else feats
         self.__rng = numpy.random.RandomState(seed)
         self.__n_in = strategy.n_in(len(self.__features))
         self.__n_out = 1
