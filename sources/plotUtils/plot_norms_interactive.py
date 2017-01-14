@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 __author__ = 'giulio'
 
-modelFile = '/home/giulio/RNNs/models/add_task, min_length: 100_13/stats.npz'
+modelFile = '/home/galvan/development/RNNs/models/add_task, min_length: 100_13/stats.npz'
 npz = numpy.load(modelFile)
 norms_dicts = npz['obj_separate_norms']
 check_freq = npz['settings_check_freq']

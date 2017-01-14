@@ -136,6 +136,10 @@ class SGDTrainer(object):
 
             batch = dataset.get_train_batch(self.__batch_size)
 
+            # W_rec = net.symbols.current_params.W_rec.get_value()
+            # import numpy as np
+            # print("std: {:.2f}, mean: {:.2f}".format(np.std(W_rec), np.mean(W_rec)))
+
             if i % self.__check_freq == 0:  # FIXME 1st iteration
 
                 train_info, train_errors = train_step.step(batch.inputs, batch.outputs, batch.mask, report_info=True)

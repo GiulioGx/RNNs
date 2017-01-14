@@ -49,7 +49,7 @@ def is_inf_or_nan(number):
 
 
 def is_not_trustworthy(norm_v):
-    lowest_norm = 1e-7  # FOXME aggiustare in base a floatType e dimensionalità v
+    lowest_norm = 1e-8  # FOXME aggiustare in base a floatType e dimensionalità v
     negative_norm = (norm_v <= 0)
     too_close_to_zero = (norm_v < lowest_norm)
     # return TT.or_(norm_v < 0, TT.or_(norm_v > 1e10, norm_v < 1e-20))
@@ -90,3 +90,11 @@ def vec_dot(a, b):
 
 def ifelse_vars(condition, arg_if, arg_else, net):
     return net.from_tensor(ifelse(condition, arg_if.as_tensor(), arg_else.as_tensor()))
+
+
+def tensor_median(tensor):
+    return TT.switch(TT.eq((tensor.shape[0] % 2), 0),
+                     # if even vector
+                     TT.mean(TT.sort(tensor)[((tensor.shape[0] / 2) - 1): ((tensor.shape[0] / 2) + 1)]),
+                     # if odd vector
+                     TT.sort(tensor)[tensor.shape[0] // 2])

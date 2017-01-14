@@ -28,7 +28,7 @@ class GradientClipping(LearningStepRule):
 
         lr = self.__lr_value
         computed_learning_rate = ifelse(TT.or_(norm < self.__clip_thr, is_inf_or_nan(norm)),
-                                        TT.cast(lr, dtype='float64'), (self.__clip_thr / norm) * lr)
+                                        TT.cast(lr, dtype='float32'), TT.cast((self.__clip_thr / norm) * lr, dtype="float32"))
 
         return computed_learning_rate, LearningStepRule.Infos(computed_learning_rate)
 

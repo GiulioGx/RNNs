@@ -1,5 +1,5 @@
 import theano as T
-
+import theano.tensor as TT
 from ObjectiveFunction import ObjectiveFunction
 from descentDirectionRule import DescentDirectionRule
 from infos import Info
@@ -103,7 +103,8 @@ class TrainingRule(SimpleInfoProducer):
 
             else:
                 step, lr_symbolic_infos = direction.step_as_direction(rule.lr_rule)
-                update_vars = net_symbols.current_params + step
+                update_vars, update_symbolic_info = rule.update_rule.compute_update(net, 1., step)#direction)
+                # update_vars = net_symbols.current_params + step
                 update_symbolic_info = NullSymbolicInfos()
 
             self.__symbolic_infos_list.append(lr_symbolic_infos)
@@ -117,15 +118,16 @@ class TrainingRule(SimpleInfoProducer):
                 self.__symbolic_error_list.append(nan_check.check(*to_check))  # XXX separate
 
             add_penalty = False
-            lambda_lasso = 0.00001
+            lambda_lasso = 0.01
             if add_penalty:
                 penalty_grad, penalty_cost = net_symbols.regularization_penalty(net_symbols.u, net_symbols.t, net_symbols.mask,
-                                                                  net_symbols.current_params)
+                                                                  net_symbols.current_params, type="W_rec")
                 penalty_grad_norm = penalty_grad.norm(2)
                 penalty_symbolic_info = PenaltyInfos(penalty_cost, penalty_grad_norm)
                 self.__symbolic_infos_list.append(penalty_symbolic_info)
 
-                update_vars += penalty_grad * lambda_lasso
+                c = TT.switch(penalty_grad_norm < 1, 1,  1/penalty_grad_norm)
+                update_vars -= penalty_grad * lambda_lasso * c
 
             network_updates = net_symbols.current_params.update_list(update_vars)
 

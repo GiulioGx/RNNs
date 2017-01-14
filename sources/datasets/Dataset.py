@@ -1,4 +1,5 @@
 import abc
+from typing import List
 
 from infos.Info import NullInfo
 from infos.InfoElement import PrintableInfoElement
@@ -46,7 +47,7 @@ class InfiniteDataset(Dataset):
         return self.__task.get_batch(batch_size)
 
     @property
-    def validation_set(self):
+    def validation_set(self)->List[Batch]:
         batches = []
         n_seqs_per_batch = round(float(self.__validation_size) / self.__n_batches)
         for i in range(self.__n_batches):

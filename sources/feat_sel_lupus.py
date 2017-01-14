@@ -70,7 +70,7 @@ class SplitThread(Thread):
 
         loss_fnc = FullCrossEntropy(single_probability_ouput=True)
         dir_rule = Antigradient()
-        lr_rule = GradientClipping(lr_value=0.001, clip_thr=1, normalize_wrt_dimension=False)  # 0.01
+        lr_rule = GradientClipping(lr_value=0.001, clip_thr=1)  # 0.01
         update_rule = SimpleUdpate()
         train_rule = TrainingRule(dir_rule, lr_rule, update_rule, loss_fnc, nan_check=True)
 
@@ -114,7 +114,7 @@ class SplitThread(Thread):
 
 
 def run_experiment(root_dir, min_age_lower, min_age_upper, min_visits_neg, min_visits_pos, n_hidden, stop_thr, id: int,
-                   feats: list):
+                   feats):
     # start main logger
     run_out_dir = root_dir + 'run_{}/'.format(id)
     os.makedirs(run_out_dir, exist_ok=True)
@@ -144,6 +144,7 @@ def run_experiment(root_dir, min_age_lower, min_age_upper, min_visits_neg, min_v
                         stop_thr=stop_thr)
         thread_list.append(t)
         t.start()
+        t.join()
         thread_count += 1
         dataset_infos = d.infos
 
@@ -153,7 +154,7 @@ def run_experiment(root_dir, min_age_lower, min_age_upper, min_visits_neg, min_v
     score = 0.
     # Wait for all threads to complete
     for t in thread_list:
-        t.join()
+        # sudo t.join()
         score += t.results['score']
         ys.append(t.results['y'])
         batch = t.results['batch']
@@ -206,7 +207,13 @@ if __name__ == '__main__':
     n_hidden = 100
     stop_thr = 0.95
 
-    root_dir = Configs.output_dir + 'Lupus_k/'
+    feats = ['APS', 'DNA', 'FM', 'Hashimoto', 'MyasteniaGravis', 'SdS',
+             'arterialthrombosis', 'arthritis', 'c3level', 'c4level', 'dislipidemia', 'hcv',
+             'hematological', 'hypertension', 'hypothyroidism', 'kidney', 'mthfr', 'npsle',
+             'pregnancypathology', 'serositis', 'sex', 'skinrash', 'sledai2kInferred',
+             'venousthrombosis']
+
+    root_dir = Configs.output_dir + 'Lupus_feat_sel/'
     shutil.rmtree(root_dir, ignore_errors=True)
 
     count = 0
