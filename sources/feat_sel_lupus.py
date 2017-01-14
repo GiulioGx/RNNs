@@ -218,7 +218,6 @@ if __name__ == '__main__':
 
     count = 0
     j = 0
-    feats = []
     best_score = 0
     trail_feats = feats
     rnd = numpy.random.RandomState(seed)
@@ -226,7 +225,7 @@ if __name__ == '__main__':
     exit = False
     while not exit:
 
-        print("Executing experiment with {} feats: {}".format(len(feats), str(feats)))
+        print("Executing experiment with {} feats: {}".format(len(trail_feats), str(trail_feats)))
 
         score = run_experiment(root_dir=root_dir, min_age_lower=min_age_lower, min_age_upper=min_age_upper,
                                min_visits_neg=min_num_visits_neg, min_visits_pos=min_num_visits_pos, id=count,
