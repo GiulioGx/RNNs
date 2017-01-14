@@ -146,34 +146,34 @@ class LastAndFirstVisitsTargets(BuildBatchStrategy):
 
 class LupusDataset(Dataset):
     @staticmethod
-    def parse_mat(mat_file: str):
+    def parse_mat(mat_file: str, feature_names:list=None):
         mat_obj = loadmat(mat_file)
 
         positive_patients = mat_obj['pazientiPositivi']
         negative_patients = mat_obj['pazientiNegativi']
 
-        # features_struct = mat_obj['selectedFeatures']
+        features_struct = mat_obj['selectedFeatures']
         # features_struct = mat_obj['featuresVip7']
 
-        # features_names = LupusDataset.__find_features_names(features_struct)
+        features_names = LupusDataset.__find_features_names(features_struct) if feature_names is None else feature_names
 
         # features_names = ['DNA', 'arthritis', 'c3level', 'c4level', 'hematological', 'skinrash', 'sledai2kInferred']
-
-        features_names = ['APS', 'DNA', 'FM', 'Hashimoto', 'MyasteniaGravis', 'SdS',
-                          'arterialthrombosis', 'arthritis', 'c3level', 'c4level', 'dislipidemia', 'hcv',
-                          'hematological', 'hypertension', 'hypothyroidism', 'kidney', 'mthfr', 'npsle',
-                          'pregnancypathology', 'serositis', 'sex', 'skinrash', 'sledai2kInferred',
-                          'venousthrombosis']
+        #
+        # features_names = ['APS', 'DNA', 'FM', 'Hashimoto', 'MyasteniaGravis', 'SdS',
+        #                   'arterialthrombosis', 'arthritis', 'c3level', 'c4level', 'dislipidemia', 'hcv',
+        #                   'hematological', 'hypertension', 'hypothyroidism', 'kidney', 'mthfr', 'npsle',
+        #                   'pregnancypathology', 'serositis', 'sex', 'skinrash', 'sledai2kInferred',
+        #                   'venousthrombosis']
 
         # first 10 in ranking
         # features_names = ["c4level", "c3level", "arthritis", "arterialthrombosis", "SdS", "MyasteniaGravis", "Hashimoto", "FM", "DNA", "APS"]
 
         # last 10 in ranking
-        features_names = ["venousthrombosis", "sledai2kInferred", "skinrash", "sex", "serositis", "pregnancypathology",
-                          "npsle", "mthfr", "kidney", "hypothyroidism"]
+        # features_names = ["venousthrombosis", "sledai2kInferred", "skinrash", "sex", "serositis", "pregnancypathology",
+        #                   "npsle", "mthfr", "kidney", "hypothyroidism"]
 
         # last 10 without sledai
-        features_names = ["venousthrombosis", "serositis", "pregnancypathology", "mthfr", "kidney", "hypothyroidism"]
+        # features_names = ["venousthrombosis", "serositis", "pregnancypathology", "mthfr", "kidney", "hypothyroidism"]
 
         # in-between
         # features_names = ["hypertension", "hematological", "hcv", "dislipidemia"]
@@ -190,9 +190,9 @@ class LupusDataset(Dataset):
         return positive_patients, negative_patients, features_names
 
     @staticmethod
-    def load_mat(mat_file: str, visit_selector: VisitsFilter = NullFIlter(), seed=Configs.seed):
+    def load_mat(mat_file: str, visit_selector: VisitsFilter = NullFIlter(), seed=Configs.seed, features_names:list=None):
 
-        positive_patients, negative_patients, features_names = LupusDataset.parse_mat(mat_file=mat_file)
+        positive_patients, negative_patients, features_names = LupusDataset.parse_mat(mat_file=mat_file, feature_names=features_names)
 
         data = numpy.concatenate((positive_patients, negative_patients), axis=0)
         features_normalizations = LupusDataset.__find_normalization_factors(features_names, data)
@@ -247,7 +247,7 @@ class LupusDataset(Dataset):
                         visit_selector: VisitsFilter = NullFIlter(), feats: list = None):
 
         early_positives, late_positives, negatives, max_visits_pos, max_visits_neg, features_names, infos = LupusDataset.load_mat(
-            mat_file, visit_selector=visit_selector)
+            mat_file, visit_selector=visit_selector, features_names=feats)
         train_set = dict(early_pos=early_positives, late_pos=late_positives, neg=negatives, max_pos=max_visits_pos,
                          max_neg=max_visits_neg)
         data_dict = dict(train=train_set, test=train_set, features=features_names)
@@ -258,7 +258,7 @@ class LupusDataset(Dataset):
                              seed: int = Configs.seed, visit_selector: VisitsFilter = NullFIlter(), feats: list = None):
 
         early_positives, late_positives, negatives, max_visits_pos, max_visits_neg, features_names, infos = LupusDataset.load_mat(
-            mat_file, visit_selector=visit_selector)
+            mat_file, visit_selector=visit_selector, features_names=feats)
 
         for i in range(k):
             eptr, epts = LupusDataset.__split_set(early_positives, i=i, k=k)
