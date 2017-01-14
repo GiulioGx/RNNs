@@ -237,7 +237,7 @@ if __name__ == '__main__':
             best_score = score
             j = 0
             feats = trail_feats
-            feats = rnd.shuffle(feats)
+            rnd.shuffle(feats)
         elif j == len(feats) - 1:
             exit = True
             print("Quitting->an unsuccesful loop was performed.")
