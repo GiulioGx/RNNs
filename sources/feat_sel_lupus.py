@@ -238,11 +238,13 @@ if __name__ == '__main__':
             j = 0
             feats = trail_feats
             rnd.shuffle(feats)
-        elif j == len(feats) - 1:
-            exit = True
-            print("Quitting->an unsuccesful loop was performed.")
         else:
-            j += 1
+            print("Got score {} which is not an improvement of the best score: {}.".format(score, best_score))
+            if j == len(feats) - 1:
+                exit = True
+                print("Quitting->an unsuccesful loop was performed.")
+            else:
+                j += 1
 
         print("Next feature to be tried: {}; j={}.".format(feats[j], j))
         trail_feats = feats[:j] + feats[j + 1:]
