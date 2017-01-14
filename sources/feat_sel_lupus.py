@@ -213,7 +213,7 @@ if __name__ == '__main__':
              'pregnancypathology', 'serositis', 'sex', 'skinrash', 'sledai2kInferred',
              'venousthrombosis']
 
-    root_dir = Configs.output_dir + 'Lupus_feat_sel/'
+    root_dir = Configs.output_dir + 'Lupus_feat_sel_1/'
     shutil.rmtree(root_dir, ignore_errors=True)
 
     count = 0
@@ -232,7 +232,7 @@ if __name__ == '__main__':
                                n_hidden=n_hidden,
                                stop_thr=stop_thr, feats=trail_feats)
 
-        if score > best_score:
+        if score >= best_score:
             print("Best score found: {:.2f}".format(score))
             best_score = score
             j = 0
