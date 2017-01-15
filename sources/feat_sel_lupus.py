@@ -202,7 +202,7 @@ if __name__ == '__main__':
 
     min_age_lower = 0.8  # 0.8, 1, 2]
     min_age_upper = 0.8  # [0.8, 1, 2]
-    min_num_visits_neg = 5  # [1, 2, 3, 4, 5]
+    min_num_visits_neg = 1  # [1, 2, 3, 4, 5] #5
     min_num_visits_pos = 1
     n_hidden = 100
     stop_thr = 0.95
@@ -234,12 +234,13 @@ if __name__ == '__main__':
                                n_hidden=n_hidden,
                                stop_thr=stop_thr, feats=trail_feats)
 
-        if score >= best_score-score_thr:
+        if score >= best_score - score_thr:
             print("Best score found: {:.2f}".format(score))
             best_score = score
             j = 0
             feats = trail_feats
             rnd.shuffle(feats)
+
         else:
             print("Got score {:.2f} which is not an improvement of the best score: {:.2f}.".format(score, best_score))
             if j == len(feats) - 1:
@@ -248,7 +249,13 @@ if __name__ == '__main__':
             else:
                 j += 1
 
-        print("Next feature to be tried: {}; j={}.".format(feats[j], j))
-        trail_feats = feats[:j] + feats[j + 1:]
+        if len(feats) == 1:
+            exit = True
+            print("Quitting-> Min subset (1 feats) found.")
+        else:
+            print("Next feature to be tried: {}; j={}.".format(feats[j], j))
+            trail_feats = feats[:j] + feats[j + 1:]
 
         count += 1
+
+print("Best feat subset: {}".format(str(feats)))
