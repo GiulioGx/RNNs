@@ -34,10 +34,11 @@ class SGDTrainer(object):
         self.__output_dir = output_dir
 
         # XXX for now the monitors used for the criterions must be added manually
+
         # these are the deafult criterions, they can be changed with
         # the set_stopping_criterion and set_saving_criterion methods
         self.__stopping_criterion = AlwaysFalseCriterion()
-        self.__saving_criterion = AlwaysTrueCriterion()
+        self.__saving_criterion = AlwaysFalseCriterion()
 
         self.__monitor_dicts = []
 

@@ -25,12 +25,12 @@ class EigenInit(MatrixInit):
         result = np.dot(np.dot(q, d), np.transpose(q))
 
         # experimental
-        u, _, v = np.linalg.svd(self.__rnd.normal(loc=0, scale=self.__std_dev, size=size))
+        # u, d, v = np.linalg.svd(self.__rnd.normal(loc=0, scale=self.__std_dev, size=size))
+        # d = np.diag(diagonal)
         # result = np.dot(np.dot(u, d), v)
 
         # experimental 2
         # result = d
-
 
         # stats
         eig_values = np.abs(np.linalg.eigvals(result))

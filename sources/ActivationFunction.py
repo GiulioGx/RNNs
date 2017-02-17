@@ -22,7 +22,6 @@ class ActivationFunction(object):
 
 # predefined activation functions
 class Relu(ActivationFunction):
-
     def f(self, x):
         return TT.switch(x < 0, 0, x)
 
@@ -35,12 +34,14 @@ class Relu(ActivationFunction):
 
 
 class Tanh(ActivationFunction):
+    def __init__(self, beta: float = 1.):
+        self.__beta = beta
 
     def f(self, x):
-        return TT.tanh(x)
+        return TT.tanh(self.__beta * x)
 
     def grad_f(self, x):
-        return 1 - (TT.tanh(x) ** 2)
+        return self.__beta * (1 - (TT.tanh(x) ** 2))
 
     def __str__(self):
         return 'tanh'
@@ -51,9 +52,31 @@ class Identity(ActivationFunction):
         return x
 
     def grad_f(self, x):
-        return TT.ones_like(x) # XXX
+        return TT.ones_like(x)  # XXX
 
     def __str__(self):
         return 'identity'
 
-# TODO sigmoid
+
+class Sigmoid(ActivationFunction):
+    def __init__(self, beta: float = 1.):
+        self.__beta = beta
+
+    def f(self, x):
+        return 1. / (1. + TT.exp(-self.__beta * x))
+
+    def grad_f(self, x):
+        y = self.f(x)
+        return self.__beta * y * (1 - y)
+
+
+class Experimental(ActivationFunction):
+    def __init__(self, beta: float = 1.):
+        self.__beta = beta
+
+    def f(self, x):
+        # return x + TT.tanh(x)
+        return TT.exp((-x) ** 2)
+
+    def grad_f(self, x):
+        return 0

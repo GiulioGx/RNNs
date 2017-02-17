@@ -118,16 +118,21 @@ class TrainingRule(SimpleInfoProducer):
                 self.__symbolic_error_list.append(nan_check.check(*to_check))  # XXX separate
 
             add_penalty = False
-            lambda_lasso = 0.01
+            lambda_lasso = 0.0001
             if add_penalty:
-                penalty_grad, penalty_cost = net_symbols.regularization_penalty(net_symbols.u, net_symbols.t, net_symbols.mask,
-                                                                  net_symbols.current_params, type="W_rec")
+                # penalty_grad, penalty_cost = net_symbols.regularization_penalty(net_symbols.u, net_symbols.t, net_symbols.mask,
+                #                                                   net_symbols.current_params, type="W_rec")
+
+                penalty_grad, penalty_cost = net_symbols.whitening_penalty(net_symbols.u, net_symbols.t, net_symbols.mask,
+                                                                  net_symbols.current_params)
+
                 penalty_grad_norm = penalty_grad.norm(2)
-                penalty_symbolic_info = PenaltyInfos(penalty_cost, penalty_grad_norm)
+                c = TT.switch(penalty_grad_norm < 1., 0.5,  1./penalty_grad_norm) * lambda_lasso
+
+                penalty_symbolic_info = PenaltyInfos(penalty_cost, penalty_grad_norm, c)
                 self.__symbolic_infos_list.append(penalty_symbolic_info)
 
-                c = TT.switch(penalty_grad_norm < 1, 1,  1/penalty_grad_norm)
-                update_vars -= penalty_grad * lambda_lasso * c
+                update_vars -= (penalty_grad * c)
 
             network_updates = net_symbols.current_params.update_list(update_vars)
 
@@ -183,8 +188,8 @@ class TrainingRule(SimpleInfoProducer):
 
 
 class PenaltyInfos(SymbolicInfo): ##TODO move elsewhere
-    def __init__(self, penalty_cost, penalty_grad_norm):
-        self.__symbols = [penalty_cost, penalty_grad_norm]
+    def __init__(self, penalty_cost, penalty_grad_norm, c):
+        self.__symbols = [penalty_cost, penalty_grad_norm, c]
 
     @property
     def symbols(self):
@@ -193,6 +198,7 @@ class PenaltyInfos(SymbolicInfo): ##TODO move elsewhere
     def fill_symbols(self, symbols_replacements: list) -> Info:
         penalty_cost_info = PrintableInfoElement('cost', ':1.2f', symbols_replacements[0].item())
         penalty_grad_info = PrintableInfoElement('grad', ':1.2f', symbols_replacements[1].item())
+        penalty_c_info = PrintableInfoElement('c', ':1.2e', symbols_replacements[2].item())
 
-        info = InfoGroup("penalty", InfoList(penalty_cost_info, penalty_grad_info))
+        info = InfoGroup("penalty", InfoList(penalty_cost_info, penalty_grad_info, penalty_c_info))
         return info

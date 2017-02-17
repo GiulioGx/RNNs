@@ -112,6 +112,8 @@ class RNN(object):
 
     def h_t(self, u_t, h_tm1, W_rec, W_in, b_rec):
         a_t = TT.dot(W_rec, h_tm1) + TT.dot(W_in, u_t) + b_rec
+        # a_t = a_t - TT.mean(a_t, axis=0)# XXX remove me
+        # a_t = a_t / (TT.sqrt(TT.sum(a_t**2)))
         return self.__activation_fnc.f(a_t), a_t
 
     def y_t(self, h_t, W_out, b_out):
@@ -178,11 +180,11 @@ class RNN(object):
     def load_model(filename):
         npz = numpy.load(filename)
 
-        W_rec = npz["W_rec"]
-        W_in = npz["W_in"]
-        W_out = npz["W_out"]
-        b_rec = npz["b_rec"]
-        b_out = npz["b_out"]
+        W_rec = npz["W_rec"].astype(Configs.floatType)
+        W_in = npz["W_in"].astype(Configs.floatType)
+        W_out = npz["W_out"].astype(Configs.floatType)
+        b_rec = npz["b_rec"].astype(Configs.floatType)
+        b_out = npz["b_out"].astype(Configs.floatType)
 
         filename, file_extension = os.path.splitext(filename)
         pickle_file = filename + '.pkl'
@@ -280,6 +282,21 @@ class RNN(object):
             h_t, _ = self.__net.h_t(u_t, h_tm1, W_rec_fixes, W_in_fixes, b_rec_fixes)
             y_t = self.__net.y_t(h_t, W_out_fixes, b_out_fixes)
             return h_t, y_t
+
+        def whitening_penalty(self, u, t, mask, params: RNNVars):
+            y, h, W_rec, W_in, W_out, b_rec, b_out = self.net_output(u=u, params=params)
+
+            m = TT.mean(h, axis=2)
+            var2 = TT.mean(h**2, axis=2)
+            cost2 = TT.mean(TT.mean(abs(var2 - 1)))
+            cost = TT.mean(TT.mean(abs(m-0), axis=0), axis=0)
+
+            gW_rec, gW_in, gb_rec = T.grad(cost=cost2+cost, wrt=[W_rec, W_in, b_rec])
+            gW_out = TT.zeros_like(W_out)
+            gb_out = TT.zeros_like(b_out)
+
+            return RNNVars(self.__net, W_rec=gW_rec.sum(), W_in=gW_in.sum(), W_out=gW_out.sum(), b_rec=gb_rec.sum(), b_out=gb_out.sum()), cost
+
 
         def regularization_penalty(self, u, t, mask, params: RNNVars, type:str):
             y, h, W_rec, W_in, W_out, b_rec, b_out = self.net_output(u=u, params=params)
